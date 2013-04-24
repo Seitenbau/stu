@@ -1,0 +1,53 @@
+apply plugin: "maven"
+
+/**
+ * Support optional dependencies in maven poms.
+ */
+def deployers = []
+
+install {
+  dependsOn build
+  deployers << repositories.mavenInstaller
+}
+
+def poms = deployers*.pom
+def optionalDeps = []
+
+ext {
+  modifyPom = { Closure modification ->
+	poms.each {
+	  it.whenConfigured(modification)
+	}
+  }
+  optional = { optionalDeps << it; it }
+}
+
+modifyPom { pom ->
+  optionalDeps.each { dep ->
+	pom.dependencies.find { it.artifactId == dep.name }.optional = true
+  }
+}
+
+/**
+ * Builds a source jar artifact for all main java sources.
+ */
+task sourceJar(type: Jar) {
+	description = 'Builds a source jar artifact suitable for maven deployment.'
+	classifier = 'sources'
+	from sourceSets.main.java
+}
+build.dependsOn sourceJar
+
+// Add the source jar archive to the set of artifacts for this project.
+// Note that the regular 'jar' archive is already added by default.
+artifacts {
+	archives sourceJar
+}
+
+/**
+ * Setup the maven repos artifactory and local.
+ */
+repositories {
+  maven { url "http://repo1.maven.org/maven2/" }
+}
+

@@ -1,0 +1,7 @@
+apply plugin: "eclipse"
+
+eclipseJdt << {
+  File resourcesPrefsFile = file('.settings/org.eclipse.core.resources.prefs')
+  resourcesPrefsFile.write('eclipse.preferences.version=1\n')
+  resourcesPrefsFile.append("encoding/<project>=${project.sourceEncoding}")
+}
