@@ -1,8 +1,5 @@
 # SB Database Testing
 
-<<<<<<< Upstream, based on origin/master
-=======
-
->>>>>>> 2df76ba update README
+TEXT
 
 Some description TODO
