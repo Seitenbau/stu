@@ -35,12 +35,10 @@ dependencies {
 	compile("commons-lang:commons-lang:$commonLangVersion")
 	compile("org.slf4j:slf4j-api:$slf4jVersion")
 	
-	
 	groovy("org.codehaus.groovy:groovy-all:$groovyVersion")
 	testCompile("org.spockframework:spock-core:0.7-groovy-2.0")
 	testCompile("org.slf4j:slf4j-log4j12:$slf4jVersion")
 }
-
 
 task wrapper(type: Wrapper) { 
 	gradleVersion = "1.5" 
