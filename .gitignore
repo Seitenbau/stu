@@ -1,0 +1,11 @@
+# Eclipse
+.cache
+.classpath
+.project
+.settings
+
+# Mac
+.DS_Store
+
+# Gradle
+build
