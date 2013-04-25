@@ -1,7 +1,6 @@
 package com.seitenbau.testing.dbunit.extend.impl;
 
 import static org.mockito.Mockito.*;
-import static com.seitenbau.testing.asserts.fest.Assertions.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
