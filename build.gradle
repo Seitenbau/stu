@@ -8,6 +8,7 @@ sourceCompatibility   = 1.6
 targetCompatibility   = 1.6
 
 ext.junitVersion      = "4.10"
+ext.mockitoVersion    = "1.9.5"
 ext.festAssertVersion = "1.4"
 ext.velocityVersion   = "1.7"
 ext.commonLangVersion = "2.6"
@@ -31,6 +32,7 @@ dependencies {
     exclude module: 'slf4j-api'
     exclude module: 'slf4j-nop'
   }
+  compile("org.mockito:mockito-all:${mockitoVersion}", optional)
   compile("org.easytesting:fest-assert:${festAssertVersion}")
   compile("org.apache.solr:solr-solrj:4.0.0", optional)
   compile("org.apache.velocity:velocity:$velocityVersion")
