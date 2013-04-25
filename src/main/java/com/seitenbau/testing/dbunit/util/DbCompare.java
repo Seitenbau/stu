@@ -2,6 +2,7 @@ package com.seitenbau.testing.dbunit.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -45,9 +46,14 @@ public class DbCompare
   public static Date jetztNurDatum()
   {
     Date jetzt = new Date((System.currentTimeMillis() / 1000) * 1000);
-    jetzt.setHours(0);
-    jetzt.setMinutes(0);
-    jetzt.setSeconds(0);
+
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(jetzt);
+    calendar.set(Calendar.HOUR_OF_DAY, 0);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+
+    jetzt.setTime(calendar.getTimeInMillis());
     return new ReplaceDate(jetzt, new DateCompareImpl());
   }
 
