@@ -22,7 +22,7 @@ public class OracleSequenceResetTest
     // verify
     assertThat(sql).isEqualTo("CREATE SEQUENCE name_seq START WITH 123");
   }
-  
+
   @Test
   public void checkDropCommand()
   {

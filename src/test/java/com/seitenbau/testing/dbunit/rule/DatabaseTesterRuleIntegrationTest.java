@@ -34,9 +34,7 @@ public class DatabaseTesterRuleIntegrationTest
 
   @Rule
   public DatabaseTesterRule db = new DatabaseTesterRule("com.mysql.jdbc.Driver",
-      "jdbc:mysql://192.168.0.85:3308/test_weinhold_B",
-      "db_weinhold",
-      "weinhold08")
+      "jdbc:mysql://192.168.0.85:3308/test_weinhold_B", "db_weinhold", "weinhold08")
       .setDatabaseOperationFactory(new NoneFactory());
 
   @InjectDataSet
@@ -60,7 +58,7 @@ public class DatabaseTesterRuleIntegrationTest
     invokedBeforeDS2++;
   }
 
-  @DatabaseBefore(id="explicit")
+  @DatabaseBefore(id = "explicit")
   public void beforeExplicit(DataSet1 ds)
   {
     invokedBeforeExp++;
@@ -90,7 +88,7 @@ public class DatabaseTesterRuleIntegrationTest
 
   @Test
   @Ignore("not testable, because exception happens in rule")
-  @DatabaseBefore(id="else")
+  @DatabaseBefore(id = "else")
   public void testDatasetInjectionExplicit2()
   {
     exception.expectMessage("Unable to find prepare Method with id = 'else'");

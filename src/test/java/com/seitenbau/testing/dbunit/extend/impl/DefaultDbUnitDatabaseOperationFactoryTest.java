@@ -9,35 +9,29 @@ public class DefaultDbUnitDatabaseOperationFactoryTest
 {
 
   @Test
-  public void testTruncateOperation()
-      throws Exception
+  public void testTruncateOperation() throws Exception
   {
-    assertThat(new DefaultDbUnitDatabaseOperationFactory().truncateOperation())
-        .isSameAs(DatabaseOperation.TRUNCATE_TABLE);
+    assertThat(new DefaultDbUnitDatabaseOperationFactory().truncateOperation()).isSameAs(
+        DatabaseOperation.TRUNCATE_TABLE);
   }
 
   @Test
-  public void testDeleteOperation()
-      throws Exception
+  public void testDeleteOperation() throws Exception
   {
-    assertThat(new DefaultDbUnitDatabaseOperationFactory().deleteOperation())
-        .isSameAs(DatabaseOperation.DELETE_ALL);
+    assertThat(new DefaultDbUnitDatabaseOperationFactory().deleteOperation()).isSameAs(DatabaseOperation.DELETE_ALL);
   }
 
   @Test
-  public void testInsertOperation()
-      throws Exception
+  public void testInsertOperation() throws Exception
   {
-    assertThat(new DefaultDbUnitDatabaseOperationFactory().insertOperation())
-        .isSameAs(DatabaseOperation.INSERT);
+    assertThat(new DefaultDbUnitDatabaseOperationFactory().insertOperation()).isSameAs(DatabaseOperation.INSERT);
   }
 
   @Test
-  public void testCleanInsertOperation()
-      throws Exception
+  public void testCleanInsertOperation() throws Exception
   {
-    assertThat(new DefaultDbUnitDatabaseOperationFactory().cleanInsertOperation())
-        .isSameAs(DatabaseOperation.CLEAN_INSERT);
+    assertThat(new DefaultDbUnitDatabaseOperationFactory().cleanInsertOperation()).isSameAs(
+        DatabaseOperation.CLEAN_INSERT);
   }
 
 }

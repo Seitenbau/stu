@@ -24,9 +24,8 @@ public class MySQLDisableAllConstraintsTest
 
   MySQLDisableAllConstraints sut = new MySQLDisableAllConstraints()
   {
-    protected java.sql.Connection getConnection(
-        com.seitenbau.testing.dbunit.tester.DatabaseTesterBase<?> tester) throws java.sql.SQLException,
-        ClassNotFoundException, org.dbunit.DatabaseUnitException
+    protected java.sql.Connection getConnection(com.seitenbau.testing.dbunit.tester.DatabaseTesterBase<?> tester)
+        throws java.sql.SQLException, ClassNotFoundException, org.dbunit.DatabaseUnitException
     {
       return mock;
     };
@@ -37,28 +36,28 @@ public class MySQLDisableAllConstraintsTest
   {
     // prepare
     when(mock.prepareStatement("set foreign_key_checks=?")).thenReturn(preparedStatementMock);
-    
+
     // execute
     sut.doCleanDatabase(null, null);
-    
+
     // verify
-    verify(preparedStatementMock).setInt(1,0);
+    verify(preparedStatementMock).setInt(1, 0);
     verify(preparedStatementMock).execute();
     verify(preparedStatementMock).close();
     verifyNoMoreInteractions(preparedStatementMock);
   }
-  
+
   @Test
   public void enableChecks() throws Exception
   {
     // prepare
     when(mock.prepareStatement("set foreign_key_checks=?")).thenReturn(preparedStatementMock);
-    
+
     // execute
     sut.doPrepareDatabase(null, null);
-    
+
     // verify
-    verify(preparedStatementMock).setInt(1,1);
+    verify(preparedStatementMock).setInt(1, 1);
     verify(preparedStatementMock).execute();
     verify(preparedStatementMock).close();
     verifyNoMoreInteractions(preparedStatementMock);

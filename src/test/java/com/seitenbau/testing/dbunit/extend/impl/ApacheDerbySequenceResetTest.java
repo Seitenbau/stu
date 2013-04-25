@@ -3,7 +3,7 @@ package com.seitenbau.testing.dbunit.extend.impl;
 import org.junit.Test;
 import static com.seitenbau.testing.asserts.fest.Assertions.*;
 
-public class ApacheDerbySequenceResetTest 
+public class ApacheDerbySequenceResetTest
 {
   @Test
   public void checkCreateCommand()
@@ -15,7 +15,7 @@ public class ApacheDerbySequenceResetTest
     // verify
     assertThat(sql).isEqualTo("CREATE SEQUENCE name_seq START WITH 123");
   }
-  
+
   @Test
   public void checkDropCommand()
   {

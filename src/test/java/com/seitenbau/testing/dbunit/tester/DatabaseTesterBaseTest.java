@@ -14,14 +14,15 @@ public class DatabaseTesterBaseTest
   {
     DatabaseTesterBase base = new DatabaseTesterBase(MyConfig.class);
     assertThat(base.fUrl).isEqualTo("test-loadingof-configvalues-dburl");
-    
+
     // this also works:
     new DatabaseTesterBase(TestConfigDatabase.class);
   }
 
   static class MyConfig implements TestConfigDatabase
   {
-    static {
+    static
+    {
       TestConfiguration.load(MyConfig.class);
     }
   }

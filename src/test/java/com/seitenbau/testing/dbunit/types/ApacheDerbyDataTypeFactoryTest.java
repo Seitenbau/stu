@@ -12,16 +12,14 @@ public class ApacheDerbyDataTypeFactoryTest
   @Test
   public void test3_is_Decimal() throws DataTypeException
   {
-    DataType result =
-        sut.createDataType(3, "sqlTypeName", "tableName", "columnName");
+    DataType result = sut.createDataType(3, "sqlTypeName", "tableName", "columnName");
     assertThat(result).isEqualTo(DataType.DECIMAL);
   }
 
   @Test
   public void test5_is_Boolean() throws DataTypeException
   {
-    DataType result =
-        sut.createDataType(5, "sqlTypeName", "tableName", "columnName");
+    DataType result = sut.createDataType(5, "sqlTypeName", "tableName", "columnName");
     assertThat(result).isEqualTo(DataType.BOOLEAN);
   }
 }

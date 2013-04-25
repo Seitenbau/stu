@@ -19,5 +19,4 @@ public class DBAssertionTest
     assertEquals(results, "NAME");
   }
 
-
 }

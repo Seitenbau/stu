@@ -13,7 +13,6 @@ import org.junit.Test;
 import com.seitenbau.testing.dbunit.DatabaseTester;
 import com.seitenbau.testing.dbunit.tester.DatabaseTesterBase;
 
-
 public class SimpleDatabaseSequenceResetTest
 {
   List<String> _sequences = new ArrayList<String>();
@@ -61,14 +60,14 @@ public class SimpleDatabaseSequenceResetTest
   {
     // preapre
     sut.sequenceName(null);
-    
+
     // execute
     sut.doCleanDatabase(null, new DefaultDataSet());
-    
+
     // verify
     assertThat(_sequences).isEmpty();
   }
-  
+
   @Test
   public void testEmptyDatabaseFixedSequences() throws Exception
   {
@@ -87,14 +86,14 @@ public class SimpleDatabaseSequenceResetTest
   {
     // preapre
     sut.autoDerivateFromTablename("_SEQ");
-    
+
     // execute
     sut.doCleanDatabase(null, new DefaultDataSet());
-    
+
     // verify
     assertThat(_sequences).isEmpty();
   }
-  
+
   @Test
   public void testAutoDerive_WithPrefix() throws Exception
   {
@@ -106,27 +105,20 @@ public class SimpleDatabaseSequenceResetTest
     sut.doCleanDatabase(null, dataset);
 
     // verify
-    assertThat(_sequences).containsExactly(
-        "Tabelle1_SEQ",
-        "Tabelle2_SEQ",
-        "Tabelle3_SEQ"
-        );
+    assertThat(_sequences).containsExactly("Tabelle1_SEQ", "Tabelle2_SEQ", "Tabelle3_SEQ");
   }
-  
+
   @Test
   public void testAutoDerive_WithPrefixAndBlacklist() throws Exception
   {
     // preapre
     sut.autoDerivateFromTablename("_SEQ");
     sut.noResetFor("Tabelle1");
-    
+
     // execute
     sut.doCleanDatabase(null, dataset);
-    
+
     // verify
-    assertThat(_sequences).containsExactly(
-        "Tabelle2_SEQ",
-        "Tabelle3_SEQ"
-        );
+    assertThat(_sequences).containsExactly("Tabelle2_SEQ", "Tabelle3_SEQ");
   }
 }

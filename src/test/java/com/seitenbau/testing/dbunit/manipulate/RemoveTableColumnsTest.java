@@ -50,8 +50,7 @@ public class RemoveTableColumnsTest
   @Test
   public void testExclude_Include() throws Exception
   {
-    IDataSetFilter sut = RemoveTableColumns.fromTable("Rainer").includeOnly(
-        "c2");
+    IDataSetFilter sut = RemoveTableColumns.fromTable("Rainer").includeOnly("c2");
     IDataSet current = createDS("Rainer", "c1", "c2", "c3");
 
     // execute

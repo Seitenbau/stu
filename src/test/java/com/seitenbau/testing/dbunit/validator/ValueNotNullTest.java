@@ -51,8 +51,7 @@ public class ValueNotNullTest
     assertTrue(sut.getReplacementObject() instanceof IDataSetOverwriteCompare);
 
     // Get Compare Instance
-    IDataSetOverwriteCompare compare = (IDataSetOverwriteCompare) sut
-        .getReplacementObject();
+    IDataSetOverwriteCompare compare = (IDataSetOverwriteCompare) sut.getReplacementObject();
     return compare;
   }
 

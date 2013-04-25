@@ -26,15 +26,19 @@ public class DatasetFactoryCompositeTest
   @Rule
   public MockitoRule rule = new MockitoRule();
 
-  @Mock   DbUnitDatasetFactory datasetFactory1;
-  @Mock   DbUnitDatasetFactory datasetFactory2;
-  
+  @Mock
+  DbUnitDatasetFactory datasetFactory1;
+
+  @Mock
+  DbUnitDatasetFactory datasetFactory2;
+
   @Before
-  public void setupMocks() {
+  public void setupMocks()
+  {
     DefaultDataSet ds1 = new DefaultDataSet();
     ds1.addTable(new DefaultTable("rainer"));
     when(datasetFactory1.createDBUnitDataSet()).thenReturn(ds1);
-    
+
     DefaultDataSet ds2 = new DefaultDataSet();
     ds2.addTable(new DefaultTable("rainer2"));
     when(datasetFactory2.createDBUnitDataSet()).thenReturn(ds2);
@@ -60,9 +64,8 @@ public class DatasetFactoryCompositeTest
   {
     // prepare
 
-
     // execute
-    DbUnitDatasetFactory result = DatasetFactoryComposite.of(datasetFactory1,datasetFactory2);
+    DbUnitDatasetFactory result = DatasetFactoryComposite.of(datasetFactory1, datasetFactory2);
 
     // verify
     assertThat(result.createDBUnitDataSet().getTableNames()).hasSize(2);

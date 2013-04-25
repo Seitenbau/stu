@@ -22,15 +22,14 @@ public class DatabaseTesterRuleTest
   @Test
   public void testBefore_BugNoDefaultDsIsFixed() throws Exception
   {
-    DatabaseTesterRule sut = new DatabaseTesterRule(((Future<DataSource> )null));
+    DatabaseTesterRule sut = new DatabaseTesterRule(((Future<DataSource>) null));
     sut.before(method("doNotRenameThisMethod_NoModification"));
   }
-  
-  JUnitTestMethodDescriptor method(String name) throws SecurityException,
-      NoSuchMethodException
+
+  JUnitTestMethodDescriptor method(String name) throws SecurityException, NoSuchMethodException
   {
     Method method = DatabaseTesterRuleTest.class.getDeclaredMethod(name);
-    return new JUnitTestMethodDescriptor( new FrameworkMethod(method) ,this, null ) ;
+    return new JUnitTestMethodDescriptor(new FrameworkMethod(method), this, null);
   }
 
   @DatabaseSetup(assertNoModification = true)
@@ -55,18 +54,14 @@ public class DatabaseTesterRuleTest
     public DatabaseTesterRule db = new DatabaseTesterRule(null, "", "", "")
     {
       @Override
-      public void prepare(IDataSet dataset,
-          DatabaseOperation operation,
-          com.seitenbau.testing.dbunit.modifier.IDataSetModifier[] modifiers)
-          throws Exception
+      public void prepare(IDataSet dataset, DatabaseOperation operation,
+          com.seitenbau.testing.dbunit.modifier.IDataSetModifier[] modifiers) throws Exception
       {
       };
 
       @Override
-      public void prepare(DbUnitDatasetFactory datasetFactory,
-          org.dbunit.operation.DatabaseOperation operation,
-          com.seitenbau.testing.dbunit.modifier.IDataSetModifier[] modifiers)
-          throws Exception
+      public void prepare(DbUnitDatasetFactory datasetFactory, org.dbunit.operation.DatabaseOperation operation,
+          com.seitenbau.testing.dbunit.modifier.IDataSetModifier[] modifiers) throws Exception
       {
       };
     };
@@ -85,7 +80,7 @@ public class DatabaseTesterRuleTest
   {
     @InjectDataSet
     String ds2;
-    
+
     @Test
     public void testInjectionInHierachy() throws Exception
     {

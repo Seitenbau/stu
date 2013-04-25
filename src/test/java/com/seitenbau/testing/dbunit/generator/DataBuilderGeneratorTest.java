@@ -44,25 +44,22 @@ public class DataBuilderGeneratorTest
     long time = System.currentTimeMillis();
 
     Date sqlDate = new Date(time);
-    assertThat(dateToJava(sqlDate, sqlDate.getClass().getCanonicalName()))
-        .isEqualTo("new java.sql.Date(" + time + ") /* " + sqlDate + " */");
+    assertThat(dateToJava(sqlDate, sqlDate.getClass().getCanonicalName())).isEqualTo(
+        "new java.sql.Date(" + time + ") /* " + sqlDate + " */");
 
     Time sqlTime = new Time(time);
-    assertThat(dateToJava(sqlTime, sqlTime.getClass().getCanonicalName()))
-        .isEqualTo("new java.sql.Time(" + time + ") /* " + sqlTime + " */");
+    assertThat(dateToJava(sqlTime, sqlTime.getClass().getCanonicalName())).isEqualTo(
+        "new java.sql.Time(" + time + ") /* " + sqlTime + " */");
 
     Timestamp sqlTimestamp = new Timestamp(time);
-    assertThat(
-        dateToJava(sqlTimestamp, sqlTimestamp.getClass().getCanonicalName()))
-        .isEqualTo(
-            "new java.sql.Timestamp(" + time + ") /* " + sqlTimestamp + " */");
+    assertThat(dateToJava(sqlTimestamp, sqlTimestamp.getClass().getCanonicalName())).isEqualTo(
+        "new java.sql.Timestamp(" + time + ") /* " + sqlTimestamp + " */");
   }
 
   @Test
   public void testByteArrayToJava()
   {
-    assertThat(byteArrayToJava(new byte[] {0, 1, -1, 127, -128})).isEqualTo(
-        "new byte[] {0,1,-1,127,-128}");
+    assertThat(byteArrayToJava(new byte[] {0, 1, -1, 127, -128})).isEqualTo("new byte[] {0,1,-1,127,-128}");
   }
 
   @Test
@@ -89,14 +86,11 @@ public class DataBuilderGeneratorTest
   @Test
   public void testToJava()
   {
-    assertThat(toJava(Integer.MIN_VALUE, Integer.class.getCanonicalName()))
-        .isEqualTo(Integer.toString(Integer.MIN_VALUE));
-    assertThat(toJava(Long.MIN_VALUE, Long.class.getCanonicalName()))
-        .isEqualTo(Long.toString(Long.MIN_VALUE));
-    assertThat(toJava(Double.MIN_VALUE, Double.class.getCanonicalName()))
-        .isEqualTo(Double.toString(Double.MIN_VALUE));
-    assertThat(toJava(Float.MIN_VALUE, Float.class.getCanonicalName()))
-        .isEqualTo(Float.toString(Float.MIN_VALUE));
+    assertThat(toJava(Integer.MIN_VALUE, Integer.class.getCanonicalName())).isEqualTo(
+        Integer.toString(Integer.MIN_VALUE));
+    assertThat(toJava(Long.MIN_VALUE, Long.class.getCanonicalName())).isEqualTo(Long.toString(Long.MIN_VALUE));
+    assertThat(toJava(Double.MIN_VALUE, Double.class.getCanonicalName())).isEqualTo(Double.toString(Double.MIN_VALUE));
+    assertThat(toJava(Float.MIN_VALUE, Float.class.getCanonicalName())).isEqualTo(Float.toString(Float.MIN_VALUE));
     assertThat(toJava(new Object(), null)).isNull();
   }
 
