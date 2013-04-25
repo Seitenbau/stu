@@ -50,7 +50,6 @@ public class DataSet
     _tables.add(table);
   }
 
-
   public static String makeNiceJavaName(String name)
   {
     if (name == null)
@@ -69,7 +68,7 @@ public class DataSet
 
   public String getCreateException()
   {
-    if(_createException == null) 
+    if (_createException == null)
     {
       // Autodetect newer DBUnit Versions
       try
@@ -85,8 +84,9 @@ public class DataSet
     return _createException;
   }
 
-  public String getSuffix() {
-      return NAME_SUFFIX;
+  public String getSuffix()
+  {
+    return NAME_SUFFIX;
   }
 
   public void setCaller(String caller)

@@ -11,13 +11,11 @@ public interface IDataSetFilter extends IDataSetModifier
   /**
    * Führt eine Filterung auf dem übergeben DataSet aus.
    * 
-   * @param current
-   *          Das aktuelle DataSet.
+   * @param current Das aktuelle DataSet.
    * 
    * @return Das gefilterte DataSet
    * 
-   * @throws Exception
-   *           Fehler.
+   * @throws Exception Fehler.
    */
   public IDataSet filter(IDataSet current) throws Exception;
 }

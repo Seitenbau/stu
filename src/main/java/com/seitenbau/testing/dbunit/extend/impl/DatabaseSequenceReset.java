@@ -14,194 +14,192 @@ import com.seitenbau.testing.logger.TestLoggerFactory;
 
 public abstract class DatabaseSequenceReset<THAT> implements DatabaseTesterCleanAction
 {
-    protected String _postfix;
+  protected String _postfix;
 
-    protected Integer _startIndex = 10000;
+  protected Integer _startIndex = 10000;
 
-    protected List<String> _blacklistedTableNames = new ArrayList<String>();
+  protected List<String> _blacklistedTableNames = new ArrayList<String>();
 
-    protected List<String> _sequencesToClear = new ArrayList<String>();
+  protected List<String> _sequencesToClear = new ArrayList<String>();
 
-    protected boolean _stopOnDropSequenceException;
-    
-    protected Logger logger = TestLoggerFactory.get(this.getClass());
-    
-    protected boolean _logOnInfo;
+  protected boolean _stopOnDropSequenceException;
 
-    /**
-     * @return this
-     */
-    public THAT autoDerivateFromTablename(String postfix)
-    {
-        _postfix = postfix;
-        return that();
-    }
-    
-    /**
+  protected Logger logger = TestLoggerFactory.get(this.getClass());
+
+  protected boolean _logOnInfo;
+
+  /**
+   * @return this
+   */
+  public THAT autoDerivateFromTablename(String postfix)
+  {
+    _postfix = postfix;
+    return that();
+  }
+
+  /**
      * 
      */
-    public THAT setLogOnLevelInfo(boolean onInfo) 
+  public THAT setLogOnLevelInfo(boolean onInfo)
+  {
+    _logOnInfo = onInfo;
+    return that();
+  }
+
+  /**
+   * By default exception occuring when droping a sequence get
+   * ignored!
+   * 
+   * @param stop set to true
+   * @return
+   */
+  public THAT stopOnDropSequenceException(boolean stop)
+  {
+    _stopOnDropSequenceException = stop;
+    return that();
+  }
+
+  /**
+   * Specify the Start index a Sequence will get reseted to.
+   * 
+   * @param _startIndex Start index. BY default 10000
+   * 
+   * @return this
+   */
+  public THAT setStartIndex(Integer _startIndex)
+  {
+    this._startIndex = _startIndex;
+    return that();
+  }
+
+  /**
+   * Blacklist given TableName's so the derivation via
+   * {@code #autoDerivateFromTablename(String)} does not reset them.
+   * 
+   * @param blacklistedTableName List of tables to reset. {@code null}
+   *        to reset.
+   * @return this
+   */
+  public THAT noResetFor(String... blacklistedTableName)
+  {
+    if (blacklistedTableName == null)
     {
-      _logOnInfo = onInfo;
+      _blacklistedTableNames = new ArrayList<String>();
       return that();
     }
-    
+    this._blacklistedTableNames.addAll(Arrays.asList(blacklistedTableName));
+    return that();
+  }
 
-    /**
-     * By default exception occuring when droping a sequence get ignored!
-     * 
-     * @param stop set to true
-     * @return
-     */
-    public THAT stopOnDropSequenceException(boolean stop)
-    {
-        _stopOnDropSequenceException = stop;
-        return that();
-    }
+  @SuppressWarnings("unchecked")
+  protected THAT that()
+  {
+    return (THAT) this;
+  }
 
-    /**
-     * Specify the Start index a Sequence will get reseted to.
-     * 
-     * @param _startIndex Start index. BY default 10000
-     * 
-     * @return this
-     */
-    public THAT setStartIndex(Integer _startIndex)
+  /**
+   * List of sequence names to reset.
+   * 
+   * @param nameOfSequenceToReset list of names, or {@code null} to
+   *        reset
+   * @return this
+   */
+  public THAT sequenceName(String... nameOfSequenceToReset)
+  {
+    if (nameOfSequenceToReset == null)
     {
-        this._startIndex = _startIndex;
-        return that();
+      _sequencesToClear = new ArrayList<String>();
+      return that();
     }
+    this._sequencesToClear.addAll(Arrays.asList(nameOfSequenceToReset));
+    return that();
+  }
 
-    /**
-     * Blacklist given TableName's so the derivation via
-     * {@code #autoDerivateFromTablename(String)} does not reset them.
-     * 
-     * @param blacklistedTableName List of tables to reset. {@code null} to
-     *        reset.
-     * @return this
-     */
-    public THAT noResetFor(String... blacklistedTableName)
+  public void doCleanDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception
+  {
+    if (_postfix != null)
     {
-        if (blacklistedTableName == null)
-        {
-            _blacklistedTableNames = new ArrayList<String>();
-            return that();
-        }
-        this._blacklistedTableNames.addAll(Arrays.asList(blacklistedTableName));
-        return that();
+      clearByPostfix(tester, dataset);
     }
+    for (String sequenceName : _sequencesToClear)
+    {
+      callResetSequence(tester, sequenceName);
+    }
+    clearAfter(tester);
+  }
 
-    @SuppressWarnings("unchecked")
-    protected THAT that()
-    {
-        return (THAT) this;
-    }
+  /**
+   * Template method to do cleanup code after doCleanDatabase
+   * @param tester
+   * @throws Exception
+   */
+  protected void clearAfter(DatabaseTesterBase<?> tester) throws Exception
+  {
+  }
 
-    /**
-     * List of sequence names to reset.
-     * 
-     * @param nameOfSequenceToReset list of names, or {@code null} to reset
-     * @return this
-     */
-    public THAT sequenceName(String... nameOfSequenceToReset)
+  protected void clearByPostfix(DatabaseTesterBase<?> tester, IDataSet dataset) throws DataSetException, Exception
+  {
+    String[] names = dataset.getTableNames();
+    if (names == null)
     {
-        if (nameOfSequenceToReset == null)
-        {
-            _sequencesToClear = new ArrayList<String>();
-            return that();
-        }
-        this._sequencesToClear.addAll(Arrays.asList(nameOfSequenceToReset));
-        return that();
+      return;
     }
+    for (String tableName : names)
+    {
+      doCleanSequenceForTable(tester, dataset, tableName);
+    }
+  }
 
-    public void doCleanDatabase(DatabaseTesterBase<?> tester, IDataSet dataset)
-            throws Exception
+  protected void doCleanSequenceForTable(DatabaseTesterBase<?> tester, IDataSet dataset, String tableName)
+      throws Exception
+  {
+    if (_blacklistedTableNames.contains(tableName) || _sequencesToClear.contains(tableName))
     {
-        if (_postfix != null)
-        {
-            clearByPostfix(tester, dataset);
-        }
-        for (String sequenceName : _sequencesToClear)
-        {
-            callResetSequence(tester, sequenceName);
-        }
-        clearAfter(tester);
+      return;
     }
+    String sequenceName = tableName + _postfix;
+    callResetSequence(tester, sequenceName);
+  }
 
-    /**
-     * Template method to do cleanup code after doCleanDatabase
-     * @param tester
-     * @throws Exception
-     */
-    protected void clearAfter(DatabaseTesterBase<?> tester) throws Exception {
-    }
+  protected boolean isLogOnLevelInfo()
+  {
+    return _logOnInfo;
+  }
 
-    protected void clearByPostfix(DatabaseTesterBase<?> tester, IDataSet dataset)
-            throws DataSetException, Exception
+  protected void logAction(String message)
+  {
+    if (isLogOnLevelInfo())
     {
-        String[] names = dataset.getTableNames();
-        if (names == null)
-        {
-            return;
-        }
-        for (String tableName : names)
-        {
-            doCleanSequenceForTable(tester, dataset, tableName);
-        }
+      logger.info(message);
     }
+    else
+    {
+      logger.trace(message);
+    }
+  }
 
-    protected void doCleanSequenceForTable(DatabaseTesterBase<?> tester,
-            IDataSet dataset,
-            String tableName) throws Exception
-    {
-        if (_blacklistedTableNames.contains(tableName)
-                || _sequencesToClear.contains(tableName))
-        {
-            return;
-        }
-        String sequenceName = tableName + _postfix;
-        callResetSequence(tester, sequenceName);
-    }
-    
-    protected boolean isLogOnLevelInfo() 
-    {
-      return _logOnInfo;
-    }
+  protected void callResetSequence(DatabaseTesterBase<?> tester, String sequenceName) throws Exception
+  {
+    clearSequence(tester, sequenceName);
+  }
 
-    protected void logAction(String message)
-    {
-      if(isLogOnLevelInfo()) 
-      {
-        logger.info(message);
-      } 
-      else 
-      {
-        logger.trace(message);
-      }
-    }
-    
-    protected void callResetSequence(DatabaseTesterBase<?> tester, String sequenceName) throws Exception
-    {
-      clearSequence(tester,sequenceName);
-    }
+  /**
+   * Template to do cleanup code for one detected Sequence
+   * @param tester
+   * @throws Exception
+   */
+  abstract protected void clearSequence(DatabaseTesterBase<?> tester, String sequenceName) throws Exception;
 
-    /**
-     * Template to do cleanup code for one detected Sequence
-     * @param tester
-     * @throws Exception
-     */
-    abstract protected void clearSequence(DatabaseTesterBase<?> tester, String sequenceName) throws Exception;
+  public void doPrepareDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception
+  {
+  }
 
-    public void doPrepareDatabase(DatabaseTesterBase<?> tester, IDataSet dataset)
-            throws Exception
-    {
-    }
-    
-    /**
-     * Get the start index new sequences will start from. 
-     */
-    public int getStartIndex() {
-        return _startIndex;
-    }
+  /**
+   * Get the start index new sequences will start from.
+   */
+  public int getStartIndex()
+  {
+    return _startIndex;
+  }
 
 }

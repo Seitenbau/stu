@@ -29,8 +29,8 @@ public class ReflectionUtils
     return methods;
   }
 
-  protected static void findByAnnotations(List<Method> methods, Class<? extends Object> clazz,
-      Class annotationClazz, boolean searchInHierachy)
+  protected static void findByAnnotations(List<Method> methods, Class<? extends Object> clazz, Class annotationClazz,
+      boolean searchInHierachy)
   {
     Method[] allMethods = clazz.getDeclaredMethods();
     for (Method m : allMethods)

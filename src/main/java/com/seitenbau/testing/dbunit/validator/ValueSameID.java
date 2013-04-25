@@ -9,7 +9,7 @@ package com.seitenbau.testing.dbunit.validator;
 public class ValueSameID extends AbstractValueValidator
 {
   protected Object firstID;
-  
+
   /**
    * Compares Cross Reference IDs between Table Values. In both Values
    * must be a equal object. Which Value it has is not of
@@ -42,8 +42,7 @@ public class ValueSameID extends AbstractValueValidator
     }
     else if (!firstID.equals(objectToCompareTo))
     {
-      throw new AssertionError("ID's weichen voneinander ab. erwartete = "
-          + firstID + " war = " + objectToCompareTo);
+      throw new AssertionError("ID's weichen voneinander ab. erwartete = " + firstID + " war = " + objectToCompareTo);
     }
     return IS_EQUAL;
   }

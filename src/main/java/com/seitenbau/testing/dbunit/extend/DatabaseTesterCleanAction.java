@@ -5,7 +5,7 @@ import org.dbunit.dataset.IDataSet;
 import com.seitenbau.testing.dbunit.tester.DatabaseTesterBase;
 
 /**
- * Interface for running Before and after Clean scripts 
+ * Interface for running Before and after Clean scripts
  */
 public interface DatabaseTesterCleanAction
 {
@@ -17,7 +17,7 @@ public interface DatabaseTesterCleanAction
    * @throws Exception
    */
   void doCleanDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception;
-  
+
   /**
    * Got invoked after the cleanInsert / truncate action
    * @param tester

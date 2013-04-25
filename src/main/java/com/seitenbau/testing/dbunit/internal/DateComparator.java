@@ -5,8 +5,6 @@ import java.util.Date;
 public interface DateComparator
 {
 
-  
-  public boolean isDateSimilarTo(Date date); 
-  
-  
+  public boolean isDateSimilarTo(Date date);
+
 }

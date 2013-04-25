@@ -121,8 +121,7 @@ public class DumpDatabaseFrame extends JDialog
     {
       try
       {
-        FileInputStream fin = new FileInputStream(new File(
-            "./database-dumper-default.properties"));
+        FileInputStream fin = new FileInputStream(new File("./database-dumper-default.properties"));
         Properties properties = new Properties();
         properties.load(fin);
         fin.close();
@@ -154,7 +153,7 @@ public class DumpDatabaseFrame extends JDialog
     try
     {
       tester.dumpDatabase(filename);
-    } 
+    }
     catch (Throwable t)
     {
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -175,8 +174,7 @@ public class DumpDatabaseFrame extends JDialog
     String username = fieldUserName.getText();
     String schema = fieldSchema.getText();
 
-    DatabaseTesterBase<DatabaseTester> tester = new DatabaseTester(driverName, url, username,
-        password);
+    DatabaseTesterBase<DatabaseTester> tester = new DatabaseTester(driverName, url, username, password);
     if (schema != null && schema.length() > 0)
     {
       tester.setSchema(schema);
@@ -188,8 +186,7 @@ public class DumpDatabaseFrame extends JDialog
   {
     try
     {
-      FileOutputStream fin = new FileOutputStream(new File(
-          "./database-dumper-default.properties"));
+      FileOutputStream fin = new FileOutputStream(new File("./database-dumper-default.properties"));
       Properties properties = new Properties();
 
       properties.setProperty("db.driver", fieldDriver.getText());

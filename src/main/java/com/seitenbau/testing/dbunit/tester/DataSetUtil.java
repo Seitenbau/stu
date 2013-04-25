@@ -42,8 +42,7 @@ public class DataSetUtil
    * @throws org.dbunit.dataset.DataSetException Fehler beim
    *         interpretieren des Inhaltes als XMLDataSet.
    */
-  static public IDataSet getDataSetFromFile(String fileName)
-      throws IOException, org.dbunit.dataset.DataSetException
+  static public IDataSet getDataSetFromFile(String fileName) throws IOException, org.dbunit.dataset.DataSetException
   {
     return new XmlDataSet(new FileInputStream(fileName));
   }
@@ -65,8 +64,8 @@ public class DataSetUtil
    * 
    * @throws Exception Fehler beim Laden.
    */
-  static public IDataSet getDataSetFromClasspath(Class<?> clazz,
-      String filename, IDataSetModifier... modifiers) throws Exception
+  static public IDataSet getDataSetFromClasspath(Class<?> clazz, String filename, IDataSetModifier... modifiers)
+      throws Exception
   {
     String packageName = clazz.getPackage().getName();
     packageName = packageName.replace('.', '/');
@@ -100,8 +99,7 @@ public class DataSetUtil
    * 
    * @throws Exception Fehler beim Ausführen der Modifier.
    */
-  static public IDataSet modifyDataSet(IDataSet orginalDataSet,
-      IDataSetModifier... modifiers) throws Exception
+  static public IDataSet modifyDataSet(IDataSet orginalDataSet, IDataSetModifier... modifiers) throws Exception
   {
     if (modifiers == null)
     {
@@ -114,13 +112,12 @@ public class DataSetUtil
       if (modifier instanceof IDataSetReplacer)
       {
         IDataSetReplacer dataSetReplacer = (IDataSetReplacer) modifier;
-        replacedDataset.addReplacementObject(dataSetReplacer.getMarkerString(),
-            dataSetReplacer.getReplacementObject());
+        replacedDataset.addReplacementObject(dataSetReplacer.getMarkerString(), dataSetReplacer.getReplacementObject());
       }
 
     }
     IDataSet current = runDataSetFilters(replacedDataset, modifiers);
-    
+
     return current;
   }
 
@@ -141,8 +138,7 @@ public class DataSetUtil
    * @throws Exception Fehler die Fähren der Filterung aufgetreten
    *         sind.
    */
-  public static IDataSet filterOutTableRows(IDataSet theDataSet,
-      String... tableName) throws Exception
+  public static IDataSet filterOutTableRows(IDataSet theDataSet, String... tableName) throws Exception
   {
     if (tableName == null)
     {
@@ -181,8 +177,7 @@ public class DataSetUtil
    * 
    * @throws IOException Fehler beim Schreiben der Datei.
    */
-  public static void saveDataSet(IDataSet snapshot, String fileName)
-      throws DataSetException, IOException
+  public static void saveDataSet(IDataSet snapshot, String fileName) throws DataSetException, IOException
   {
     OutputStream out = new FileOutputStream(fileName);
     XmlDataSet.write(snapshot, out);
@@ -197,8 +192,7 @@ public class DataSetUtil
    * @param user
    * @param password
    */
-  public static void dumpDatabase(String driver, String url, String user,
-      String password)
+  public static void dumpDatabase(String driver, String url, String user, String password)
   {
     DatabaseTesterBase<DatabaseTester> tester = new DatabaseTester(driver, url, user, password);
     IDataSet snapshot;
@@ -222,15 +216,13 @@ public class DataSetUtil
    * 
    * @throws Exception bei einem Fehler.
    */
-  public static void dumpDatabase(DatabaseTesterBase<?> tester, String fileName)
-      throws Exception
+  public static void dumpDatabase(DatabaseTesterBase<?> tester, String fileName) throws Exception
   {
     IDataSet snapshot = tester.createDatabaseSnapshot();
     DataSetUtil.saveDataSet(snapshot, fileName);
   }
 
-  public static IDataSet syncOder(IDataSet dataset, List<String> targetOrder)
-      throws DataSetException
+  public static IDataSet syncOder(IDataSet dataset, List<String> targetOrder) throws DataSetException
   {
     DefaultDataSet result = new DefaultDataSet();
     Map<String, Boolean> done = new HashMap<String, Boolean>();
@@ -267,8 +259,7 @@ public class DataSetUtil
     }
   }
 
-  public static IDataSet runDataSetFilters(IDataSet orginalDataSet,
-      IDataSetModifier[] modifiers) throws Exception
+  public static IDataSet runDataSetFilters(IDataSet orginalDataSet, IDataSetModifier[] modifiers) throws Exception
   {
     if (modifiers == null)
     {

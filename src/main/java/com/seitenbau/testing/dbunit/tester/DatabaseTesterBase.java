@@ -48,23 +48,39 @@ public class DatabaseTesterBase<MY_TYPE>
    * beim Laden von XML Dateien.
    */
   private Class<?> fClazz;
+
   protected IDatabaseConnection fDatabaseConnection;
+
   protected List<IDataSetModifier> fDefaultModifierList = new ArrayList<IDataSetModifier>();
+
   protected String fDriverName;
+
   protected IDataSet fLastInsertedDataSet;
+
   protected boolean fKeepLastInsertedDataSet = true;
+
   protected String fPassword;
+
   protected String fPrefixClasspath = "";
+
   protected String fUrl;
+
   protected String fUsername;
+
   protected String fSchema;
+
   protected IDataTypeFactory _registerTypeFactory;
+
   protected Future<DataSource> _lazySource;
+
   protected List<DatabaseTesterCleanAction> _cleanActions = new ArrayList<DatabaseTesterCleanAction>();
+
   protected Map<String, Boolean> _dbUnitFeatures;
+
   protected Map<String, Object> _dbUnitProperty;
+
   protected DatabaseOperationFactory _databaseOperationFactory;
-  
+
   /**
    * Konstruktor welcher gleich die Verbindungsdaten zur Datenbank
    * setzt.
@@ -86,8 +102,8 @@ public class DatabaseTesterBase<MY_TYPE>
    * 
    * @param password Datenbank Benutzer Passwort
    */
-  public DatabaseTesterBase(String driverName, String url, String username,
-      String password, IDataSetModifier... defaultModifiers)
+  public DatabaseTesterBase(String driverName, String url, String username, String password,
+      IDataSetModifier... defaultModifiers)
   {
     fDriverName = driverName;
     fUrl = url;
@@ -122,8 +138,8 @@ public class DatabaseTesterBase<MY_TYPE>
    * 
    * @param password Datenbank Benutzer Passwort
    */
-  public DatabaseTesterBase(String driverName, String url, String username,
-      String password, Class<?> clazz, IDataSetModifier... defaultModifiers)
+  public DatabaseTesterBase(String driverName, String url, String username, String password, Class<?> clazz,
+      IDataSetModifier... defaultModifiers)
   {
     fDriverName = driverName;
     fUrl = url;
@@ -156,8 +172,8 @@ public class DatabaseTesterBase<MY_TYPE>
    * 
    * @param fSchema Datenbank Schema
    */
-  public DatabaseTesterBase(String driverName, String url, String username,
-      String password, String schemema, IDataSetModifier... defaultModifiers)
+  public DatabaseTesterBase(String driverName, String url, String username, String password, String schemema,
+      IDataSetModifier... defaultModifiers)
   {
     fDriverName = driverName;
     fUrl = url;
@@ -166,41 +182,33 @@ public class DatabaseTesterBase<MY_TYPE>
     fSchema = schemema;
     init(defaultModifiers, null);
   }
-  
-  public DatabaseTesterBase(Class<? extends TestConfigDatabase> configClass,
-      IDataSetModifier... defaultModifiers)
+
+  public DatabaseTesterBase(Class<? extends TestConfigDatabase> configClass, IDataSetModifier... defaultModifiers)
   {
-    this(
-        TestConfiguration.getString("db.driver"),
-        TestConfiguration.getString("db.url"),
-        TestConfiguration.getString("db.username"),
-        TestConfiguration.getString("db.password") ,
-        defaultModifiers);
+    this(TestConfiguration.getString("db.driver"), TestConfiguration.getString("db.url"), TestConfiguration
+        .getString("db.username"), TestConfiguration.getString("db.password"), defaultModifiers);
     String schema = TestConfiguration.getString("db.schema");
-    if(schema != null && schema!=StoredProperty.NOT_SET_VALUE && !schema.isEmpty()) 
+    if (schema != null && schema != StoredProperty.NOT_SET_VALUE && !schema.isEmpty())
     {
       setSchema(schema);
     }
   }
-  
-  public DatabaseTesterBase(DataSource ds, String schema,
-      IDataSetModifier... defaultModifiers)
+
+  public DatabaseTesterBase(DataSource ds, String schema, IDataSetModifier... defaultModifiers)
   {
     init(defaultModifiers, null);
     setSchema(schema);
     setConnection(ds);
   }
 
-  public DatabaseTesterBase(Future<DataSource> lazySource,
-      IDataSetModifier... defaultModifiers)
+  public DatabaseTesterBase(Future<DataSource> lazySource, IDataSetModifier... defaultModifiers)
   {
     addDefaultModifier(defaultModifiers);
     init(defaultModifiers, null);
     _lazySource = lazySource;
   }
 
-  public DatabaseTesterBase(BasicDataSource dataSource,
-      IDataSetModifier... defaultModifiers)  
+  public DatabaseTesterBase(BasicDataSource dataSource, IDataSetModifier... defaultModifiers)
   {
     init(defaultModifiers, null);
     setConnection(dataSource);
@@ -232,8 +240,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   public void init(IDataSetModifier[] defaultModifiers, Class<?> clazz)
   {
-    setDbUnitFeature("http://www.dbunit.org/features/caseSensitiveTableNames",
-        false);
+    setDbUnitFeature("http://www.dbunit.org/features/caseSensitiveTableNames", false);
     addDefaultModifier(defaultModifiers);
     if (clazz != null)
     {
@@ -297,8 +304,7 @@ public class DatabaseTesterBase<MY_TYPE>
    */
   public void assertDataBase(IDataSet expectedDataSet, IDataSetModifier... modifiers) throws Exception
   {
-    DBAssertion.assertDataSet(createDatabaseSnapshot(), expectedDataSet,
-        getModifiers(modifiers));
+    DBAssertion.assertDataSet(createDatabaseSnapshot(), expectedDataSet, getModifiers(modifiers));
   }
 
   /**
@@ -311,30 +317,30 @@ public class DatabaseTesterBase<MY_TYPE>
    */
   public void assertDataBase(DbUnitDatasetFactory factory, IDataSetModifier... modifiers) throws Exception
   {
-    DBAssertion.assertDataSet(createDatabaseSnapshot(),
-        factory.createDBUnitDataSet(), getModifiers(modifiers));
+    DBAssertion.assertDataSet(createDatabaseSnapshot(), factory.createDBUnitDataSet(), getModifiers(modifiers));
   }
 
-  public void assertDataBaseSorted(DbUnitDatasetFactory factory, SortConfig[] config, IDataSetModifier... modifiers) throws Exception
+  public void assertDataBaseSorted(DbUnitDatasetFactory factory, SortConfig[] config, IDataSetModifier... modifiers)
+      throws Exception
   {
     assertDataBaseSorted(factory.createDBUnitDataSet(), config, modifiers);
   }
-  
-  public void assertDataBaseSorted(IDataSet expectedDataSet, SortConfig[] config, IDataSetModifier... modifiers) throws Exception
+
+  public void assertDataBaseSorted(IDataSet expectedDataSet, SortConfig[] config, IDataSetModifier... modifiers)
+      throws Exception
   {
-    DBAssertion.assertDataSet(sortTables(createDatabaseSnapshot(), config),
-        sortTables(expectedDataSet, config), getModifiers(modifiers));
+    DBAssertion.assertDataSet(sortTables(createDatabaseSnapshot(), config), sortTables(expectedDataSet, config),
+        getModifiers(modifiers));
   }
 
   public void assertDataBaseSorted(DbUnitDatasetFactory factory, IDataSetModifier... modifiers) throws Exception
   {
     assertDataBaseSorted(factory.createDBUnitDataSet(), modifiers);
   }
-  
+
   public void assertDataBaseSorted(IDataSet expectedDataSet, IDataSetModifier... modifiers) throws Exception
   {
-    DBAssertion.assertDataSet(true, createDatabaseSnapshot(), expectedDataSet,
-        getModifiers(modifiers));
+    DBAssertion.assertDataSet(true, createDatabaseSnapshot(), expectedDataSet, getModifiers(modifiers));
   }
 
   public IDataSet sortTables(IDataSet ds, SortConfig[] config)
@@ -373,7 +379,7 @@ public class DatabaseTesterBase<MY_TYPE>
     {
       throw new RuntimeException(e);
     }
-  
+
     return dataSet;
   }
 
@@ -409,17 +415,15 @@ public class DatabaseTesterBase<MY_TYPE>
    */
   public void assertDataBase(String xmlFileRelativToClass, IDataSetModifier... modifiers) throws Exception
   {
-    IDataSet expectedDS = getDataSet(xmlFileRelativToClass,
-        getModifiers(modifiers));
+    IDataSet expectedDS = getDataSet(xmlFileRelativToClass, getModifiers(modifiers));
     DBAssertion.assertDataSet(createDatabaseSnapshot(), expectedDS, modifiers);
   }
 
-  public void assertDataBaseSorted(String xmlFileRelativToClass, SortConfig[] config, IDataSetModifier... modifiers) throws Exception
+  public void assertDataBaseSorted(String xmlFileRelativToClass, SortConfig[] config, IDataSetModifier... modifiers)
+      throws Exception
   {
-    IDataSet expectedDS = getDataSet(xmlFileRelativToClass,
-        getModifiers(modifiers));
-    DBAssertion.assertDataSet(sortTables(createDatabaseSnapshot(), config),
-        sortTables(expectedDS, config), modifiers);
+    IDataSet expectedDS = getDataSet(xmlFileRelativToClass, getModifiers(modifiers));
+    DBAssertion.assertDataSet(sortTables(createDatabaseSnapshot(), config), sortTables(expectedDS, config), modifiers);
   }
 
   /**
@@ -447,14 +451,12 @@ public class DatabaseTesterBase<MY_TYPE>
   {
     if (!fKeepLastInsertedDataSet)
     {
-      throw new AssertionError(
-          "Didn't keep the old dataset. Unable to compare!");
+      throw new AssertionError("Didn't keep the old dataset. Unable to compare!");
     }
     IDataSet lastDS = getLastInsertedDataSet();
     if (lastDS == null)
     {
-      throw new AssertionError(
-          "Last dataset was null. Did you call a insert first?");
+      throw new AssertionError("Last dataset was null. Did you call a insert first?");
     }
     if (sortConfig == null)
     {
@@ -475,7 +477,8 @@ public class DatabaseTesterBase<MY_TYPE>
    * @param modifiers Zusätzlich werden die Default-modifier zu
    * @throws Exception
    */
-  public void prepare(DbUnitDatasetFactory datasetFactory, DatabaseOperation operation, IDataSetModifier... modifiers) throws Exception
+  public void prepare(DbUnitDatasetFactory datasetFactory, DatabaseOperation operation, IDataSetModifier... modifiers)
+      throws Exception
   {
     prepare(datasetFactory.createDBUnitDataSet(), operation, modifiers);
   }
@@ -491,11 +494,10 @@ public class DatabaseTesterBase<MY_TYPE>
    */
   public void prepare(IDataSet dataset, DatabaseOperation operation, IDataSetModifier... modifiers) throws Exception
   {
-    IDataSet loadedDS = DataSetUtil.modifyDataSet(dataset,
-        getModifiers(modifiers));
-  
+    IDataSet loadedDS = DataSetUtil.modifyDataSet(dataset, getModifiers(modifiers));
+
     setLastInsertedDataSet(loadedDS);
-  
+
     operation.execute(getConnection(), loadedDS);
   }
 
@@ -559,8 +561,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   public void cleanInsert(String xmlFileRelativToClass, IDataSetModifier... modifiers) throws Exception
   {
-    IDataSet loadedDS = getDataSet(xmlFileRelativToClass,
-        getModifiers(modifiers));
+    IDataSet loadedDS = getDataSet(xmlFileRelativToClass, getModifiers(modifiers));
     doCleanAction(loadedDS);
     setLastInsertedDataSet(loadedDS);
     prepare(loadedDS, getOperationFactory().cleanInsertOperation(), modifiers);
@@ -569,18 +570,16 @@ public class DatabaseTesterBase<MY_TYPE>
 
   public void insert(String xmlFileRelativToClass, IDataSetModifier... modifiers) throws Exception
   {
-  IDataSet loadedDS = getDataSet(xmlFileRelativToClass,
-      getModifiers(modifiers));
-  doCleanAction(loadedDS);
-  setLastInsertedDataSet(loadedDS);
-  prepare(loadedDS, getOperationFactory().insertOperation(), modifiers);
-  trySetAnnotatedField(loadedDS);
-    }
+    IDataSet loadedDS = getDataSet(xmlFileRelativToClass, getModifiers(modifiers));
+    doCleanAction(loadedDS);
+    setLastInsertedDataSet(loadedDS);
+    prepare(loadedDS, getOperationFactory().insertOperation(), modifiers);
+    trySetAnnotatedField(loadedDS);
+  }
 
   public void truncate(String xmlFileRelativToClass, IDataSetModifier... modifiers) throws Exception
   {
-    IDataSet loadedDS = getDataSet(xmlFileRelativToClass,
-        getModifiers(modifiers));
+    IDataSet loadedDS = getDataSet(xmlFileRelativToClass, getModifiers(modifiers));
     doCleanAction(loadedDS);
     setLastInsertedDataSet(loadedDS);
     prepare(loadedDS, getOperationFactory().truncateOperation(), modifiers);
@@ -640,8 +639,7 @@ public class DatabaseTesterBase<MY_TYPE>
     }
     if (_lazySource == null)
     {
-      Connection dConn = DriverManager
-          .getConnection(fUrl, fUsername, fPassword);
+      Connection dConn = DriverManager.getConnection(fUrl, fUsername, fPassword);
       return setConnection(dConn, fSchema);
     }
     return setConnection(getLazyDatasource());
@@ -656,19 +654,16 @@ public class DatabaseTesterBase<MY_TYPE>
   {
     if (!(dataSource instanceof BasicDataSource))
     {
-      throw new IllegalArgumentException("DataSource is not of type "
-          + BasicDataSource.class.getCanonicalName() + " value " + dataSource);
+      throw new IllegalArgumentException("DataSource is not of type " + BasicDataSource.class.getCanonicalName()
+          + " value " + dataSource);
     }
     try
     {
-      ((BasicDataSource) dataSource)
-          .setAccessToUnderlyingConnectionAllowed(true);
-      Connection dconn = ((DelegatingConnection) dataSource.getConnection())
-          .getInnermostDelegate();
+      ((BasicDataSource) dataSource).setAccessToUnderlyingConnectionAllowed(true);
+      Connection dconn = ((DelegatingConnection) dataSource.getConnection()).getInnermostDelegate();
       if (null == dconn)
       {
-        dconn = ((DelegatingConnection) dataSource.getConnection())
-            .getDelegate();
+        dconn = ((DelegatingConnection) dataSource.getConnection()).getDelegate();
       }
       if (null == dconn)
       {
@@ -751,8 +746,8 @@ public class DatabaseTesterBase<MY_TYPE>
    */
   public IDataSet getDataSet(String xmlFileRelativToClass, IDataSetModifier... modifiers) throws Exception
   {
-    return DataSetUtil.getDataSetFromClasspath(getClazz(), fPrefixClasspath
-        + xmlFileRelativToClass, getModifiers(modifiers));
+    return DataSetUtil.getDataSetFromClasspath(getClazz(), fPrefixClasspath + xmlFileRelativToClass,
+        getModifiers(modifiers));
   }
 
   /**
@@ -899,7 +894,8 @@ public class DatabaseTesterBase<MY_TYPE>
    * @param modifiers
    * @throws Exception
    */
-  public void assertTable(String xmlFileRelativToClass, String tableName, IDataSetModifier... modifiers) throws Exception
+  public void assertTable(String xmlFileRelativToClass, String tableName, IDataSetModifier... modifiers)
+      throws Exception
   {
     IDataSet dataset = getDataSet(xmlFileRelativToClass, modifiers);
     DBAssertion.assertTable(this.getConnection(), tableName, dataset);
@@ -910,8 +906,7 @@ public class DatabaseTesterBase<MY_TYPE>
     if (_registerTypeFactory != null && databaseConnection != null)
     {
       DatabaseConfig config = databaseConnection.getConfig();
-      config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-          _registerTypeFactory);
+      config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, _registerTypeFactory);
     }
   }
 
@@ -948,8 +943,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   public MY_TYPE setUseCaseSensitiveNames(boolean useCaseSensitiveNames)
   {
-    setDbUnitFeature("http://www.dbunit.org/features/caseSensitiveTableNames",
-        useCaseSensitiveNames);
+    setDbUnitFeature("http://www.dbunit.org/features/caseSensitiveTableNames", useCaseSensitiveNames);
     return myself();
   }
 
@@ -986,9 +980,7 @@ public class DatabaseTesterBase<MY_TYPE>
       }
       if (time > maxTime)
       {
-        throw new AssertionError(
-            "timeout while waiting for new rows to appear in Table "
-                + tableName);
+        throw new AssertionError("timeout while waiting for new rows to appear in Table " + tableName);
       }
       Thread.sleep(250);
       time += 250;
@@ -1015,7 +1007,7 @@ public class DatabaseTesterBase<MY_TYPE>
       table = fSchema + "." + tableName;
     }
     String sql = "select count(*) from " + table;
-  
+
     return executeSQLandReturnInt(sql);
   }
 
@@ -1066,7 +1058,7 @@ public class DatabaseTesterBase<MY_TYPE>
   {
     Connection connection = getConnection().getConnection();
     connection.setAutoCommit(false);
-    boolean result=false;
+    boolean result = false;
     try
     {
       final Statement statement = connection.createStatement();
@@ -1215,13 +1207,13 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Internal getter of the OperationFactory, used to create 
-   * @return the actual Factory or lazy initialize the factory as 
-   *          {@linkplain DefaultDbUnitDatabaseOperationFactory}.
+   * Internal getter of the OperationFactory, used to create
+   * @return the actual Factory or lazy initialize the factory as
+   *         {@linkplain DefaultDbUnitDatabaseOperationFactory}.
    */
   protected DatabaseOperationFactory getOperationFactory()
   {
-    if(_databaseOperationFactory == null) 
+    if (_databaseOperationFactory == null)
     {
       _databaseOperationFactory = new DefaultDbUnitDatabaseOperationFactory();
     }

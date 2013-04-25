@@ -38,8 +38,7 @@ public interface ITestMethodDescriptor
    *        at the Class level.
    * @return The found Annotation instance of {@code null}
    */
-  <T extends Annotation> T getAnnotation(Class<T> annotationClass,
-      boolean searchHierachy);
+  <T extends Annotation> T getAnnotation(Class<T> annotationClass, boolean searchHierachy);
 
   /**
    * If the current Testrunner is parameterized,

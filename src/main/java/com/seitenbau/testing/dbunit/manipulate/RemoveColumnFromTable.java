@@ -13,14 +13,14 @@ import com.seitenbau.testing.dbunit.modifier.IDataSetFilter;
 
 /**
  * @deprecated use RemoveTableColumns instead
- * RemoveTableColumns.fromTable("tablename").includeOnly("col1","col2");
+ *             RemoveTableColumns.fromTable
+ *             ("tablename").includeOnly("col1","col2");
  */
 public class RemoveColumnFromTable implements IDataSetFilter
 {
   private String fTableName;
 
   private String[] fColumns;
-
 
   public RemoveColumnFromTable(String tableName, String... columns)
   {
@@ -33,9 +33,8 @@ public class RemoveColumnFromTable implements IDataSetFilter
     return filterOutTableColumns(current, fTableName, fColumns);
   }
 
-  public static IDataSet filterOutTableColumns(IDataSet theDataSet,
-      final String inTableName, final String... columnToFilterOut)
-      throws Exception
+  public static IDataSet filterOutTableColumns(IDataSet theDataSet, final String inTableName,
+      final String... columnToFilterOut) throws Exception
   {
     if (columnToFilterOut == null)
     {
@@ -72,8 +71,7 @@ public class RemoveColumnFromTable implements IDataSetFilter
           return true;
         }
       };
-      ds.addTable(new CompositeTable(new FilteredTableMetaData(oldtable
-          .getTableMetaData(), rowFilter), oldtable));
+      ds.addTable(new CompositeTable(new FilteredTableMetaData(oldtable.getTableMetaData(), rowFilter), oldtable));
     }
     return ds;
   }

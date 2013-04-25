@@ -8,7 +8,8 @@ import com.seitenbau.testing.dbunit.tester.DataSetUtil;
  * Entfernt alle Zeilen aus dem angebenen Tabellen. Convenient Klasse
  * um {@link DataSetUtil#filterOutTableRows(IDataSet, String...)}
  */
-@Deprecated // Use RemoveTableConent instead.
+@Deprecated
+// Use RemoveTableConent instead.
 public class MakeTableEmpty implements IDataSetFilter
 {
 
@@ -19,8 +20,8 @@ public class MakeTableEmpty implements IDataSetFilter
    * Klasse um
    * {@link DataSetUtil#filterOutTableRows(IDataSet, String...)}
    * 
-   * @param tablesToMakeEmpty
-   *          Liste an Tabellen die geleert werden sollen.
+   * @param tablesToMakeEmpty Liste an Tabellen die geleert werden
+   *        sollen.
    */
   public MakeTableEmpty(String... tablesToMakeEmpty)
   {

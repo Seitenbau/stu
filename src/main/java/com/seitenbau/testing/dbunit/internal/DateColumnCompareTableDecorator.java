@@ -6,13 +6,11 @@ import org.dbunit.dataset.DefaultTableMetaData;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableMetaData;
 
-
-
 public class DateColumnCompareTableDecorator implements ITable
 {
 
   public ITable table;
-  
+
   private String rangeColumn;
 
   public DateColumnCompareTableDecorator(String rangeColumn, ITable table)
@@ -34,16 +32,16 @@ public class DateColumnCompareTableDecorator implements ITable
     {
       Column[] newColumns = new Column[tableMetaData.getColumns().length];
       Column[] columns = tableMetaData.getColumns();
-      for (int i=0; i < columns.length; i++)
+      for (int i = 0; i < columns.length; i++)
       {
         Column column = columns[i];
-        if(isRangeColumn(column.getColumnName()))
+        if (isRangeColumn(column.getColumnName()))
         {
           newColumns[i] = new Column(column.getColumnName(), new CompareDateRangeDataType());
         }
         else
         {
-          newColumns[i] = new Column(column.getColumnName(),column.getDataType());
+          newColumns[i] = new Column(column.getColumnName(), column.getDataType());
         }
         defaultTableMetaData = new DefaultTableMetaData(tableMetaData.getTableName(), newColumns);
       }
@@ -66,8 +64,7 @@ public class DateColumnCompareTableDecorator implements ITable
     }
   }
 
-  public Object createCompareModel(int row, String column)
-      throws DataSetException
+  public Object createCompareModel(int row, String column) throws DataSetException
   {
     return new DateCompareType(table.getValue(row, column));
   }

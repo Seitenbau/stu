@@ -10,7 +10,5 @@ import java.lang.annotation.RetentionPolicy;
  * or by a manual call of cleanInsert()
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface InjectSolrDataSet
-{
+public @interface InjectSolrDataSet {
 }
-

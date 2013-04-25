@@ -41,31 +41,32 @@ public class Table
 
   public Table addColumn(String dbColName, String type, String javaType)
   {
-    _columns.add(new Column(this,dbColName, null, type, javaType, new Column[] {}, new Flags[] {}));
+    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {}, new Flags[] {}));
     return this;
   }
 
   public Table addColumn(String dbColName, String javaName, String type, String javaType)
   {
-    _columns.add(new Column(this,dbColName, javaName, type, javaType, new Column[] {}, new Flags[] {}));
+    _columns.add(new Column(this, dbColName, javaName, type, javaType, new Column[] {}, new Flags[] {}));
     return this;
   }
 
   public Table addColumn(String dbColName, String type, String javaType, Flags... flags)
   {
-    _columns.add(new Column(this,dbColName, null, type, javaType, new Column[] {}, flags));
+    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {}, flags));
     return this;
   }
 
   public Table addColumn(String dbColName, String type, String javaType, Column reference, Flags... flags)
   {
-    _columns.add(new Column(this,dbColName, null, type, javaType, new Column[] {reference}, flags));
+    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {reference}, flags));
     return this;
   }
-  
+
   public Table addColumn(String dbColName, DataType type, Column reference, Flags... flags)
   {
-    _columns.add(new Column(this,dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference}, flags));
+    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference},
+        flags));
     return this;
   }
 

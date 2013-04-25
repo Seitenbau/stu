@@ -3,6 +3,7 @@ package com.seitenbau.testing.dbunit;
 public class SortConfig
 {
   private String tablename;
+
   public String getTablename()
   {
     return tablename;

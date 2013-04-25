@@ -41,13 +41,13 @@ public class Datum
   {
     return DateUtil.createCopy(_datum);
   }
-  
+
   @Override
   public String toString()
   {
-    return DateUtil.formatDate(asCalendar(),"yyyy-MM-dd HH:mm:ss.SSS");
+    return DateUtil.formatDate(asCalendar(), "yyyy-MM-dd HH:mm:ss.SSS");
   }
-  
+
   /**
    * Remove the Miliseconds part, e.g. set miliseconds to 0.
    * @return
@@ -106,28 +106,28 @@ public class Datum
   {
     return new Setter(value, this);
   }
-  
+
   /**
-   * Calculate the timespan between this an another  
+   * Calculate the timespan between this an another
    * 
    * @param datum the other date
    * @return a Zeitspanne
    */
-  public Zeitspanne calcDifferencTo(Datum datum) 
+  public Zeitspanne calcDifferencTo(Datum datum)
   {
     long now = _datum.getTimeInMillis();
     long then = datum._datum.getTimeInMillis();
-    long diff= now - then;
+    long diff = now - then;
     return new Zeitspanne(diff);
   }
-  
+
   /**
-   * Calculate the timespan between this an another  
+   * Calculate the timespan between this an another
    * 
    * @param datum the other date
    * @return a Zeitspanne
    */
-  public Zeitspanne calcDifferencTo(String datum) 
+  public Zeitspanne calcDifferencTo(String datum)
   {
     return calcDifferencTo(DateUtil.asDatum(datum));
   }
@@ -140,8 +140,7 @@ public class Datum
   }
 
   /**
-   * Month is 1 based! (not zero based as in the underlying
-   * Calendar)
+   * Month is 1 based! (not zero based as in the underlying Calendar)
    */
   protected Datum set(int field, int amount)
   {
@@ -156,7 +155,7 @@ public class Datum
     }
     return new Datum(datum);
   }
-  
+
   public class Incrementer
   {
 

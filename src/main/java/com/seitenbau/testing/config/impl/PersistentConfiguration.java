@@ -16,8 +16,7 @@ import com.seitenbau.testing.config.StoredProperty;
 import com.seitenbau.testing.config.ValueProcessor;
 import com.seitenbau.testing.config.ValueProvider;
 
-public class PersistentConfiguration implements ValueProvider,
-    ValueProvider.ValuesAsMap, ValueProvider.ValuesPrintable
+public class PersistentConfiguration implements ValueProvider, ValueProvider.ValuesAsMap, ValueProvider.ValuesPrintable
 {
   public static final String CONFIG_PATH_DEFAULT = "/config/test/";
 
@@ -30,7 +29,7 @@ public class PersistentConfiguration implements ValueProvider,
   protected VariableDslProcessor _dsl;
 
   protected Map<String, Map<String, String>> _maps;
-  
+
   protected Map<String, Map<String, String>> _processed;
 
   protected String _configPath;
@@ -40,11 +39,11 @@ public class PersistentConfiguration implements ValueProvider,
     _dsl = variableDslProcessor;
   }
 
-  public void initValuesFor(String[] environment,ValueProcessor processor)
+  public void initValuesFor(String[] environment, ValueProcessor processor)
   {
     try
     {
-      loadStateInernal(environment,processor);
+      loadStateInernal(environment, processor);
     }
     catch (IOException e)
     {
@@ -52,7 +51,7 @@ public class PersistentConfiguration implements ValueProvider,
     }
   }
 
-  private void loadStateInernal(String[] environments,ValueProcessor processor) throws IOException
+  private void loadStateInernal(String[] environments, ValueProcessor processor) throws IOException
   {
     if (_properties != null)
     {
@@ -64,8 +63,7 @@ public class PersistentConfiguration implements ValueProvider,
     System.out.print("##### Loading Configuration for Environment : ");
     for (String environment : environments)
     {
-      String id = (environment != null ? environment.trim().toLowerCase()
-          : "");
+      String id = (environment != null ? environment.trim().toLowerCase() : "");
       if (id.length() > 0)
       {
         System.out.print("'" + id + "' ");
@@ -117,7 +115,7 @@ public class PersistentConfiguration implements ValueProvider,
       }
     }
     _maps = maps;
-    _processed=new HashMap<String, Map<String,String>>();
+    _processed = new HashMap<String, Map<String, String>>();
   }
 
   String toPath(String part)
@@ -132,11 +130,9 @@ public class PersistentConfiguration implements ValueProvider,
     }
   }
 
-  protected boolean loadProperties(Properties prop, String filename)
-      throws IOException
+  protected boolean loadProperties(Properties prop, String filename) throws IOException
   {
-    InputStream stream = PersistentConfiguration.class
-        .getResourceAsStream(filename);
+    InputStream stream = PersistentConfiguration.class.getResourceAsStream(filename);
     if (stream != null)
     {
       prop.load(stream);
@@ -273,18 +269,18 @@ public class PersistentConfiguration implements ValueProvider,
     {
       return null;
     }
-    Map<String, String> map=null;
-    if( _processed!=null) 
+    Map<String, String> map = null;
+    if (_processed != null)
     {
       map = _processed.get(key);
     }
-    if(map==null) 
+    if (map == null)
     {
       Map<String, String> tmp = _maps.get(key);
       Map<String, String> neu = new HashMap<String, String>();
-      for(Entry<String, String> entry : tmp.entrySet()) 
+      for (Entry<String, String> entry : tmp.entrySet())
       {
-        String valueProcessed = _dsl.processDsl(getValueMap(), entry.getValue(),StoredProperty.NOT_SET_VALUE);
+        String valueProcessed = _dsl.processDsl(getValueMap(), entry.getValue(), StoredProperty.NOT_SET_VALUE);
         neu.put(entry.getKey(), valueProcessed);
       }
       map = neu;

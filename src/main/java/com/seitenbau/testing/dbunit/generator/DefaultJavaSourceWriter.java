@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class DefaultJavaSourceWriter implements JavaSourceWriter {
+public class DefaultJavaSourceWriter implements JavaSourceWriter
+{
 
-  public void write(String into, String pkg, String filename, String content) {
+  public void write(String into, String pkg, String filename, String content)
+  {
     if (filename == null)
     {
       throw new IllegalArgumentException("filename not set by the template");
@@ -19,15 +21,21 @@ public class DefaultJavaSourceWriter implements JavaSourceWriter {
     }
     String fn = path + filename + ".java";
 
-    try {
+    try
+    {
       FileWriter out = new FileWriter(fn);
-      try {
+      try
+      {
         out.append(content);
-      } finally {
+      }
+      finally
+      {
         out.close();
       }
-    } catch (IOException e) {
-      //  TODO: Exception Handling
+    }
+    catch (IOException e)
+    {
+      // TODO: Exception Handling
       e.printStackTrace();
     }
   }

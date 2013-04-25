@@ -17,11 +17,10 @@ public class Replacer implements IDataSetReplacer
    * Spezifiziert die im DBUnit-xml zu ersetzende Zeichenfolge und den
    * dafür einzusetzenden Wert.
    * 
-   * @param markerString
-   *          Der im DBUnit-xml auftauchende String
+   * @param markerString Der im DBUnit-xml auftauchende String
    * 
-   * @param replaceValue
-   *          Der Wert durch den der String ersetzt werden soll.
+   * @param replaceValue Der Wert durch den der String ersetzt werden
+   *        soll.
    */
   public Replacer(String markerString, Object replaceValue)
   {
@@ -52,8 +51,7 @@ public class Replacer implements IDataSetReplacer
   /**
    * Setter
    * 
-   * @param markerString
-   *          fMarkerString
+   * @param markerString fMarkerString
    */
   public void setMarkerString(String markerString)
   {
@@ -63,8 +61,7 @@ public class Replacer implements IDataSetReplacer
   /**
    * Setter
    * 
-   * @param replaceValue
-   *          fReplaceValue
+   * @param replaceValue fReplaceValue
    */
   public void setReplaceValue(Object replaceValue)
   {

@@ -29,14 +29,15 @@ public class ValueDateEquals extends ReplacerTimeStampUnsharpCompare
   {
     super(markerString, datum);
   }
-  
+
   /**
    * Shifts the 'now' for a specific amount of ms
    * @param msFromNow
    * @return
    */
-  public ValueDateEquals shiftDate(int msFromNow) {
-    Date datum=new Date(new Date().getTime() + msFromNow);
+  public ValueDateEquals shiftDate(int msFromNow)
+  {
+    Date datum = new Date(new Date().getTime() + msFromNow);
     setReplaceDate(datum);
     return this;
   }
@@ -54,8 +55,7 @@ public class ValueDateEquals extends ReplacerTimeStampUnsharpCompare
    * Compares now againste a Database Timestamp with a delta of
    * +{plusMilliseconds} Miliseconds and -{minusMilliseconds} ms.
    */
-  public ValueDateEquals(String markerString, int minusMilliseconds,
-      int plusMilliseconds)
+  public ValueDateEquals(String markerString, int minusMilliseconds, int plusMilliseconds)
   {
     super(markerString, minusMilliseconds, plusMilliseconds);
   }
@@ -64,8 +64,7 @@ public class ValueDateEquals extends ReplacerTimeStampUnsharpCompare
    * Compares the given Date against a Database Timestamp with a delta
    * of +-{plusMinusMilliseconds} Miliseconds
    */
-  public ValueDateEquals(String markerString, Date now,
-      int plusMinusMilliseconds)
+  public ValueDateEquals(String markerString, Date now, int plusMinusMilliseconds)
   {
     super(markerString, now, plusMinusMilliseconds);
   }

@@ -44,15 +44,14 @@ public final class TorqueTestUtils
       {
         torquePropertyFile = DEFAULT_TORQUE_PROPERTY_FILE;
       }
-      
+
       // (Bad) linux patch
-      if (!new File(torquePropertyFile).exists()
-          && new File(torquePropertyFile.toLowerCase()).exists())
+      if (!new File(torquePropertyFile).exists() && new File(torquePropertyFile.toLowerCase()).exists())
       {
         torquePropertyFile = torquePropertyFile.toLowerCase();
       }
-      
-      // invoke Torque dynamic 
+
+      // invoke Torque dynamic
       // TODO: the torque init class should be removed at all
       Class<?> torqueClass = TorqueTestUtils.class.getClassLoader().loadClass("org.apache.torque.Torque");
       Method initMethod = torqueClass.getMethod("init", String.class);

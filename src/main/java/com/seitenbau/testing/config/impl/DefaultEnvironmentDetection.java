@@ -76,7 +76,7 @@ public class DefaultEnvironmentDetection implements EnvironmentDetector
     }
     return false;
   }
-  
+
   protected boolean detectInfinitest()
   {
     StackTraceElement[] trace = Thread.currentThread().getStackTrace();

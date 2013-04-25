@@ -10,14 +10,13 @@ import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DatabaseSetup {
 
-  final static String NOT_SET =
-      "......... Insert default database xml file ..........";
+  final static String NOT_SET = "......... Insert default database xml file ..........";
 
   /**
    * Specify alternate Dataset.xml file to clean Insert before Test.
    */
   String prepareDS() default NOT_SET;
-  
+
   /**
    * Specify alternate dataset to clean Insert before Test.
    */
@@ -34,5 +33,5 @@ public @interface DatabaseSetup {
    * no modifications. Default:false
    */
   boolean assertNoModification() default false;
-  
+
 }

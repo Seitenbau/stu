@@ -9,8 +9,6 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.TypeCastException;
 
-
-
 public class CompareDateRangeDataType extends DataType
 {
 
@@ -70,6 +68,7 @@ public class CompareDateRangeDataType extends DataType
     }
     return 1;
   }
+
   @Override
   public int getSqlType()
   {
@@ -77,8 +76,7 @@ public class CompareDateRangeDataType extends DataType
   }
 
   @Override
-  public Object getSqlValue(int column, ResultSet resultSet)
-      throws SQLException, TypeCastException
+  public Object getSqlValue(int column, ResultSet resultSet) throws SQLException, TypeCastException
   {
     return null;
   }
@@ -102,8 +100,7 @@ public class CompareDateRangeDataType extends DataType
   }
 
   @Override
-  public void setSqlValue(Object value, int column, PreparedStatement statement)
-      throws SQLException, TypeCastException
+  public void setSqlValue(Object value, int column, PreparedStatement statement) throws SQLException, TypeCastException
   {
   }
 

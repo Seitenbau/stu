@@ -31,9 +31,8 @@ public class RemoveRowFromTable implements IDataSetFilter
     return filterOutTableRows(current, fTableName, fColumn, fColumnValue);
   }
 
-  public static IDataSet filterOutTableRows(IDataSet theDataSet,
-      String tableName, final String column, final Object columnValue)
-      throws Exception
+  public static IDataSet filterOutTableRows(IDataSet theDataSet, String tableName, final String column,
+      final Object columnValue) throws Exception
   {
     if (tableName == null)
     {
@@ -53,8 +52,7 @@ public class RemoveRowFromTable implements IDataSetFilter
           {
             try
             {
-              return !rowValueProvider.getColumnValue(column).equals(
-                  columnValue);
+              return !rowValueProvider.getColumnValue(column).equals(columnValue);
             }
             catch (DataSetException e)
             {

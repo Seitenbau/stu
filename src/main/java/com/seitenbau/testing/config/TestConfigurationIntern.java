@@ -39,7 +39,7 @@ public class TestConfigurationIntern
   {
     return new BeanConfigInjector(_fastFail);
   }
-  
+
   protected ValueProvider getConfig(String environemtType, boolean allowAutoload)
   {
     if (config == null)
@@ -61,15 +61,15 @@ public class TestConfigurationIntern
         }
         environment = el.toArray(new String[] {});
       }
-      cfg.initValuesFor(environment,getProcessor());
+      cfg.initValuesFor(environment, getProcessor());
       config = cfg;
     }
     return config;
   }
-  
+
   protected ValueProcessor getProcessor()
   {
-    if(processor == null) 
+    if (processor == null)
     {
       processor = createDefaultProcessor();
     }
@@ -99,12 +99,12 @@ public class TestConfigurationIntern
   {
     return new VariableDslProcessor();
   }
-  
+
   protected void loadProperties(Properties props)
   {
     String[] environments = getEnvironmentProvider().getEnvironmentIds();
     PersistentConfiguration state = createValueProvider(createDslProcessor());
-    state.initValuesFor(environments,getProcessor());
+    state.initValuesFor(environments, getProcessor());
     Properties mine = state.getProperties();
     for (Object nameObj : mine.keySet())
     {
@@ -143,12 +143,12 @@ public class TestConfigurationIntern
 
   protected void setValueProvider(PersistentConfiguration provider)
   {
-    defaultValueProvider=provider;
+    defaultValueProvider = provider;
   }
 
   public void setValueProcessor(ValueProcessor processor)
   {
-    this.processor=processor;
+    this.processor = processor;
   }
 
 }

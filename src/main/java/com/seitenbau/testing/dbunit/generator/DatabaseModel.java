@@ -39,7 +39,7 @@ public abstract class DatabaseModel
 
   public void generatedSourceFolder(String folder)
   {
-    if(generator == null)
+    if (generator == null)
     {
       this.targetPath = folder;
     }
@@ -67,7 +67,7 @@ public abstract class DatabaseModel
   public void generate() throws Exception
   {
     DataSetGenerator gen = getDataSetGenInstance();
-    if(__forceCaller!=null) 
+    if (__forceCaller != null)
     {
       gen.setCaller(__forceCaller);
     }
@@ -77,7 +77,7 @@ public abstract class DatabaseModel
   public void generateInto(String folder) throws Exception
   {
     DataSetGenerator gen = getDataSetGenInstance();
-    if(__forceCaller!=null) 
+    if (__forceCaller != null)
     {
       gen.setCaller(__forceCaller);
     }

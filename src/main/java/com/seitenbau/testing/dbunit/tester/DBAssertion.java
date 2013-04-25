@@ -28,18 +28,18 @@ public class DBAssertion
   /**
    * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
    * XML Datei spezifziert wurden.
-   *
+   * 
    * @param tableName Der Tabellennamen. Darf nicht Null sein und
    *        nicht leer.
-   *
+   * 
    * @param expectedDataSetFile Die XML Datei mit dem vergleichs
    *        DataSet, darf nicht null oder leer sein.
-   *
+   * 
    * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
    *         aufgtetten ist.
    */
-  static public void assertTable(IDatabaseConnection databaseConnection, DateComparator comparator,
-      String tableName, String expectedDataSetFile) throws Exception
+  static public void assertTable(IDatabaseConnection databaseConnection, DateComparator comparator, String tableName,
+      String expectedDataSetFile) throws Exception
   {
     IDataSet databaseDataSet;
     databaseDataSet = databaseConnection.createDataSet();
@@ -64,8 +64,8 @@ public class DBAssertion
     Assertion.assertEquals(expectedTable, actualTable);
   }
 
-  private static ITable createExpectedTable(String tableName, String expectedDataSetFile)
-      throws DataSetException, FileNotFoundException
+  private static ITable createExpectedTable(String tableName, String expectedDataSetFile) throws DataSetException,
+      FileNotFoundException
   {
     IDataSet expectedDataSet = new XmlDataSet(new FileInputStream(expectedDataSetFile));
     return expectedDataSet.getTable(tableName);
@@ -74,18 +74,18 @@ public class DBAssertion
   /**
    * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
    * XML Datei spezifziert wurden.
-   *
+   * 
    * @param tableName Der Tabellennamen. Darf nicht Null sein und
    *        nicht leer.
-   *
+   * 
    * @param expectedDataSetFile Die XML Datei mit dem vergleichs
    *        DataSet, darf nicht null oder leer sein.
-   *
+   * 
    * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
    *         aufgtetten ist.
    */
-  static public void assertTable(IDatabaseConnection databaseConnection, String tableName,
-      String expectedDataSetFile) throws Exception
+  static public void assertTable(IDatabaseConnection databaseConnection, String tableName, String expectedDataSetFile)
+      throws Exception
   {
     IDataSet databaseDataSet;
     databaseDataSet = databaseConnection.createDataSet();
@@ -102,7 +102,7 @@ public class DBAssertion
    * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
    * XML Datei spezifziert wurden. Weiter wird durch Kommas getrennt
    * die felder die für den Verglaich relevant sind angegeben.
-   *
+   * 
    * @param tableName Der Tabellen Name. Darf nicht Null oder leer
    *        sein.
    * @param expectedDataSetFile Die Datei die das XML DataSet für den
@@ -112,8 +112,8 @@ public class DBAssertion
    * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
    *         aufgetretten ist.
    */
-  static public void assertTable(IDatabaseConnection databaseConnection, String tableName,
-      String expectedDataSetFile, String... fields) throws Exception
+  static public void assertTable(IDatabaseConnection databaseConnection, String tableName, String expectedDataSetFile,
+      String... fields) throws Exception
   {
     // Load expected data from an XML dataset
     IDataSet expectedDataSet = new XmlDataSet(new FileInputStream(expectedDataSetFile));
@@ -124,7 +124,7 @@ public class DBAssertion
    * Methode erstellt aus einem Array von Strings Einen Komma
    * getrennten String aus createSQLFields("NAME", "Title") wird =>
    * "Name, Title"
-   *
+   * 
    * @param fields Die einzelenen String Felder
    * @return Als Rückgabe wird ein Komma getrennter String zurück
    *         geben der die übergeben Felder beinhaltet.
@@ -148,7 +148,7 @@ public class DBAssertion
   /**
    * Assert vergleicht eine Tabelle mit Test Daten aus einem DataSet.
    * Wird genutzt wenn nicht alle Felder genutzt werden sollen.
-   *
+   * 
    * @param tableName Name der zuvergleichenden Tabelle
    * @param expectedDataSet Die Testdaten auf die Tabelle geprüft
    *        wird.
@@ -156,10 +156,10 @@ public class DBAssertion
    * @throws Exception Wird geworfen wenn beim Vergleich ein Fehler
    *         aufgtretten ist oder die Tabelle nicht die Testdaten
    *         beinhaltet.
-   *
+   * 
    */
-  static public void assertTable(IDatabaseConnection databaseConnection, String tableName,
-      IDataSet expectedDataSet, String... fields) throws Exception
+  static public void assertTable(IDatabaseConnection databaseConnection, String tableName, IDataSet expectedDataSet,
+      String... fields) throws Exception
   {
 
     // Fetch database data after executing your code
@@ -172,14 +172,13 @@ public class DBAssertion
     ITable expectedTable = expectedDataSet.getTable(tableName);
 
     // Assert actual database table match expected table
-    Assertion.assertEquals(new TableCompareDecorator(expectedTable), new TableCompareDecorator(
-        actualTable));
+    Assertion.assertEquals(new TableCompareDecorator(expectedTable), new TableCompareDecorator(actualTable));
   }
 
   /**
    * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
    * XML Datei spezifziert wurden.
-   *
+   * 
    * @param tableName Der Tabellennamen. Darf nicht Null sein und
    *        nicht leer.
    * @param expectedDataSetFile Die XML Datei mit dem vergleichs
@@ -187,8 +186,8 @@ public class DBAssertion
    * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
    *         aufgtetten ist.
    */
-  static public void assertTable(IDatabaseConnection databaseConnection, String tableName,
-      IDataSet dataSet) throws Exception
+  static public void assertTable(IDatabaseConnection databaseConnection, String tableName, IDataSet dataSet)
+      throws Exception
   {
     IDataSet databaseDataSet;
     databaseDataSet = databaseConnection.createDataSet();
@@ -198,46 +197,44 @@ public class DBAssertion
     ITable expectedTable = dataSet.getTable(tableName);
 
     // Assert actual database table match expected table
-    Assertion.assertEquals(new TableCompareDecorator(expectedTable), new TableCompareDecorator(
-        actualTable));
+    Assertion.assertEquals(new TableCompareDecorator(expectedTable), new TableCompareDecorator(actualTable));
 
   }
 
   /**
    * Überprüft eine Tabelle in der DB mit dem übergebenen DatenSet. Es
    * werden dabei die Spalten gefilter und nur die im DatSet geprüft.
-   *
+   * 
    * @param tableName Der Name der Tabelle.
    * @param expectedDataSet das Daten mit dem erwartet Zustand der
    *        Tabelle
    * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
    *         auftritt.
    */
-  static public void assertDataSetTable(IDataSet actualDataSet, String tableName,
-      IDataSet expectedDataSet) throws Exception
+  static public void assertDataSetTable(IDataSet actualDataSet, String tableName, IDataSet expectedDataSet)
+      throws Exception
   {
     ITable table = actualDataSet.getTable(tableName);
     ITable expectedTable = expectedDataSet.getTable(tableName);
-    ITable filteredTable = DefaultColumnFilter.includedColumnsTable(table, expectedTable
-        .getTableMetaData().getColumns());
+    ITable filteredTable = DefaultColumnFilter.includedColumnsTable(table, expectedTable.getTableMetaData()
+        .getColumns());
 
-    Assertion.assertEquals(new TableCompareDecorator(expectedTable), new TableCompareDecorator(
-        filteredTable));
+    Assertion.assertEquals(new TableCompareDecorator(expectedTable), new TableCompareDecorator(filteredTable));
   }
 
   /**
    * Überprüft alle Tabellen in der DB gegen das übergebenen DatenSet.
    * Es werden nur die Spalten geprüft welche auch im DatSet vorhanden
    * sind.
-   *
+   * 
    * @param expectedDataSet das Daten mit dem erwartet Zustand der
    *        Tabelle
    * @param replacers
    * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
    *         auftritt.
    */
-  static public void assertDataSet(IDataSet actualDataSet, IDataSet expectedDataSet,
-      IDataSetModifier... modifiers) throws Exception
+  static public void assertDataSet(IDataSet actualDataSet, IDataSet expectedDataSet, IDataSetModifier... modifiers)
+      throws Exception
   {
     assertDataSet(false, actualDataSet, expectedDataSet, modifiers);
   }
@@ -252,8 +249,8 @@ public class DBAssertion
   /**
    * @see AbstractDBUnitTests#assertDataSetTable(String, IDataSet)
    */
-  static public void assertDataSetTable(IDataSet actualDataSet, String tableName,
-      String expectedDataSet) throws DataSetException, Exception
+  static public void assertDataSetTable(IDataSet actualDataSet, String tableName, String expectedDataSet)
+      throws DataSetException, Exception
   {
     FileInputStream stream = null;
     try
@@ -279,8 +276,8 @@ public class DBAssertion
    * @param modifiers Modifikatoren
    * @throws Exception
    */
-  public static void assertDataSet(boolean sorted, IDataSet actualDataSet,
-      IDataSet expectedDataSet, IDataSetModifier[] modifiers) throws Exception
+  public static void assertDataSet(boolean sorted, IDataSet actualDataSet, IDataSet expectedDataSet,
+      IDataSetModifier[] modifiers) throws Exception
   {
     // Ausfiltern nicht konfigurierter Spalten
     DefaultDataSet actualFilteredDataSet = new DefaultDataSet();
@@ -289,8 +286,8 @@ public class DBAssertion
     {
       ITable expectedTable = tableIterator.getTable();
       ITable actualTable = getActualTableForExpectedTable(actualDataSet, expectedTable);
-      ITable filteredTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable
-          .getTableMetaData().getColumns());
+      ITable filteredTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable.getTableMetaData()
+          .getColumns());
 
       actualFilteredDataSet.addTable(new TableCompareDecorator(filteredTable));
       expectedFilteredDataSet.addTable(new TableCompareDecorator(expectedTable));
@@ -304,9 +301,8 @@ public class DBAssertion
     }
     if (sorted)
     {
-      Assertion.assertEquals(
-          createSortedDataSet(expectedFilteredDataSet2),
-          createSortedDataSet(actualFilteredDataSet2));
+      Assertion
+          .assertEquals(createSortedDataSet(expectedFilteredDataSet2), createSortedDataSet(actualFilteredDataSet2));
     }
     else
     {
@@ -315,8 +311,7 @@ public class DBAssertion
 
   }
 
-  private static IDataSet createSortedDataSet(IDataSet originalDataSet)
-      throws DataSetException
+  private static IDataSet createSortedDataSet(IDataSet originalDataSet) throws DataSetException
   {
     // das Flag "useComparable" muss für alle Tabellen gesetzt werden
     DefaultDataSet resultDataSet = new DefaultDataSet();

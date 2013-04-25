@@ -112,13 +112,11 @@ public class TransformDatabase
    * @throws SQLException
    * @throws DatabaseUnitException
    */
-  private IDatabaseConnection getConnection() throws SQLException,
-      DatabaseUnitException
+  private IDatabaseConnection getConnection() throws SQLException, DatabaseUnitException
   {
     if (connection == null)
     {
-      connection = new DatabaseConnection(DriverManager.getConnection(url,
-          user, password), schema);
+      connection = new DatabaseConnection(DriverManager.getConnection(url, user, password), schema);
     }
     return connection;
   }
@@ -130,8 +128,7 @@ public class TransformDatabase
    * @throws IOException
    * @throws Exception
    */
-  private void executeTemplate(String outputFolder) throws IOException,
-      Exception
+  private void executeTemplate(String outputFolder) throws IOException, Exception
   {
     new VelocityGenerator().executeTemplate(this, TEMPLATE, outputFolder + '/');
   }

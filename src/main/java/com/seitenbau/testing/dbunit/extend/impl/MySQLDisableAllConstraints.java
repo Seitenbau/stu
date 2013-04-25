@@ -27,14 +27,12 @@ public class MySQLDisableAllConstraints implements DatabaseTesterCleanAction
 
   final int enable = 1;
 
-  public void doCleanDatabase(DatabaseTesterBase<?> tester, IDataSet dataset)
-      throws Exception
+  public void doCleanDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception
   {
     executeSetForeignKeyChecksStatement(tester, disable);
   }
 
-  public void doPrepareDatabase(DatabaseTesterBase<?> tester, IDataSet dataset)
-      throws Exception
+  public void doPrepareDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception
   {
     executeSetForeignKeyChecksStatement(tester, enable);
   }
@@ -47,9 +45,8 @@ public class MySQLDisableAllConstraints implements DatabaseTesterCleanAction
    * @throws ClassNotFoundException
    * @throws DatabaseUnitException
    */
-  protected void executeSetForeignKeyChecksStatement(DatabaseTesterBase<?> tester,
-      int value) throws SQLException, ClassNotFoundException,
-      DatabaseUnitException
+  protected void executeSetForeignKeyChecksStatement(DatabaseTesterBase<?> tester, int value) throws SQLException,
+      ClassNotFoundException, DatabaseUnitException
   {
     Connection connection = getConnection(tester);
     connection.setAutoCommit(false);
@@ -76,8 +73,8 @@ public class MySQLDisableAllConstraints implements DatabaseTesterCleanAction
     }
   }
 
-  protected Connection getConnection(DatabaseTesterBase<?> tester) throws SQLException,
-      ClassNotFoundException, DatabaseUnitException
+  protected Connection getConnection(DatabaseTesterBase<?> tester) throws SQLException, ClassNotFoundException,
+      DatabaseUnitException
   {
     return tester.getConnection().getConnection();
   }

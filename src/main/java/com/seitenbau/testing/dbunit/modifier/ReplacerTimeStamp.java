@@ -19,8 +19,7 @@ public class ReplacerTimeStamp extends Replacer
    * Initialisiert die Klasse mit dem zu ersetzenden StringLiteral.
    * Das Datum wir auf die Aktuelle Zeit gesetzt.
    * 
-   * @param markerString
-   *          Das zu ersetzende StringLiteral
+   * @param markerString Das zu ersetzende StringLiteral
    */
   public ReplacerTimeStamp(String markerString)
   {
@@ -31,11 +30,9 @@ public class ReplacerTimeStamp extends Replacer
    * Initialisiert die Klasse mit dem zu ersetzenden StringLiteral und
    * manuell gesetztem Datum.
    * 
-   * @param markerString
-   *          Das zu ersetzende StringLiteral
+   * @param markerString Das zu ersetzende StringLiteral
    * 
-   * @param datum
-   *          Das Datum welches eingesetzt wird.
+   * @param datum Das Datum welches eingesetzt wird.
    */
   public ReplacerTimeStamp(String markerString, Date datum)
   {
@@ -75,12 +72,11 @@ public class ReplacerTimeStamp extends Replacer
    * {@link #setReplaceDate(Date)} angewandt!
    * </p>
    * 
-   * @param datePattern
-   *          Setzt das {@link SimpleDateFormat} Muster das genutzt
-   *          wird um das Datum in eine Zeichenfolge zu wandeln. Wenn
-   *          {@code null} übergeben wird, wird das Muster
-   *          zurückgesetzt auf den default Wert
-   *          {@link #DEFAULT_DATE_PATTERN}.
+   * @param datePattern Setzt das {@link SimpleDateFormat} Muster das
+   *        genutzt wird um das Datum in eine Zeichenfolge zu wandeln.
+   *        Wenn {@code null} übergeben wird, wird das Muster
+   *        zurückgesetzt auf den default Wert
+   *        {@link #DEFAULT_DATE_PATTERN}.
    */
   public void setDatePattern(String datePattern)
   {
@@ -90,8 +86,7 @@ public class ReplacerTimeStamp extends Replacer
   /**
    * Setter
    * 
-   * @param datum
-   *          Setzt das Datum welches zum Ersetzen genutzt wird.
+   * @param datum Setzt das Datum welches zum Ersetzen genutzt wird.
    */
   public void setReplaceDate(Date datum)
   {

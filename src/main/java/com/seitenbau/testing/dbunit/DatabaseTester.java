@@ -61,10 +61,10 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
    * 
    * @param password Datenbank Benutzer Passwort
    */
-  public DatabaseTester(String driverName, String url, String username,
-      String password, IDataSetModifier... defaultModifiers)
+  public DatabaseTester(String driverName, String url, String username, String password,
+      IDataSetModifier... defaultModifiers)
   {
-    super(driverName,url,username,password,defaultModifiers);
+    super(driverName, url, username, password, defaultModifiers);
   }
 
   /**
@@ -93,8 +93,8 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
    * 
    * @param password Datenbank Benutzer Passwort
    */
-  public DatabaseTester(String driverName, String url, String username,
-      String password, Class<?> clazz, IDataSetModifier... defaultModifiers)
+  public DatabaseTester(String driverName, String url, String username, String password, Class<?> clazz,
+      IDataSetModifier... defaultModifiers)
   {
     super(driverName, url, username, password, clazz, defaultModifiers);
   }
@@ -123,8 +123,8 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
    * 
    * @param fSchema Datenbank Schema
    */
-  public DatabaseTester(String driverName, String url, String username,
-      String password, String schema, IDataSetModifier... defaultModifiers)
+  public DatabaseTester(String driverName, String url, String username, String password, String schema,
+      IDataSetModifier... defaultModifiers)
   {
     super(driverName, url, username, password, schema, defaultModifiers);
   }
@@ -139,17 +139,14 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
     super(lazySource, defaultModifiers);
   }
 
-  public DatabaseTester(BasicDataSource dataSource,
-      IDataSetModifier... defaultModifiers)
+  public DatabaseTester(BasicDataSource dataSource, IDataSetModifier... defaultModifiers)
   {
     super(dataSource, defaultModifiers);
   }
-  
-  public DatabaseTester(Class<? extends TestConfigDatabase> configClass,
-      IDataSetModifier... defaultModifiers) 
+
+  public DatabaseTester(Class<? extends TestConfigDatabase> configClass, IDataSetModifier... defaultModifiers)
   {
-    super(configClass,defaultModifiers);
+    super(configClass, defaultModifiers);
   }
 
-  
 }

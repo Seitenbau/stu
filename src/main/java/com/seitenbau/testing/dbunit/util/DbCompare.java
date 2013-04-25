@@ -11,7 +11,7 @@ import com.seitenbau.testing.util.date.Datum;
 
 public class DbCompare
 {
-  
+
   /**
    * Prueft DB Feld auf ungefaehr jetzt (+-15s)
    */
@@ -29,18 +29,18 @@ public class DbCompare
   }
 
   /**
-   * Prueft DB Feld auf ungefaehr jetzt (+-15s). 
-   * Der Milisekunden Anteil ist 0.
+   * Prueft DB Feld auf ungefaehr jetzt (+-15s). Der Milisekunden
+   * Anteil ist 0.
    */
   public static Date jetztOhneMS()
   {
     Date jetzt = new Date((System.currentTimeMillis() / 1000) * 1000);
     return new ReplaceDate(jetzt, new DateCompareImpl());
   }
-  
+
   /**
-   * Prueft DB Feld auf ungefaehr jetzt (+-15s). 
-   * Der Zeitaneilt ist "00:00:00.000".
+   * Prueft DB Feld auf ungefaehr jetzt (+-15s). Der Zeitaneilt ist
+   * "00:00:00.000".
    */
   public static Date jetztNurDatum()
   {
@@ -60,13 +60,12 @@ public class DbCompare
     Date expect = sdf.parse(datum);
     return new ReplaceDate(expect, new DateCompareImpl());
   }
-  
+
   public static Date datum(long offsetInSeconds, int minSecOffSet, int maxSecOffSet)
   {
     Date expect = new Date(new Date().getTime() + (offsetInSeconds * 1000));
-    return new ReplaceDate(expect, new DateCompareImpl(minSecOffSet * 1000 ,maxSecOffSet * 1000));
+    return new ReplaceDate(expect, new DateCompareImpl(minSecOffSet * 1000, maxSecOffSet * 1000));
   }
-
 
   /**
    * Prueft DB Feld auf datum (+-15s)
@@ -126,10 +125,8 @@ public class DbCompare
 
         if (diff > fMinusMilliseconds)
         {
-          throw new AssertionError("Zeitstempel - Range Vergleich : erwartete "
-              + actualValue + " nicht mehr als " + fMinusMilliseconds
-              + " ms vor " + new Date(ticksExpect) + ", aber war " + diff
-              + " ms früher");
+          throw new AssertionError("Zeitstempel - Range Vergleich : erwartete " + actualValue + " nicht mehr als "
+              + fMinusMilliseconds + " ms vor " + new Date(ticksExpect) + ", aber war " + diff + " ms früher");
         }
       }
       if (fPlusMilliseconds != null)
@@ -138,10 +135,8 @@ public class DbCompare
 
         if (diff > fPlusMilliseconds)
         {
-          throw new AssertionError("Zeitstempel - Range Vergleich : erwartete "
-              + actualValue + " nicht mehr als " + fPlusMilliseconds
-              + " ms nach " + new Date(ticksExpect) + ", aber war " + diff
-              + " ms später");
+          throw new AssertionError("Zeitstempel - Range Vergleich : erwartete " + actualValue + " nicht mehr als "
+              + fPlusMilliseconds + " ms nach " + new Date(ticksExpect) + ", aber war " + diff + " ms später");
         }
       }
       return true;
@@ -153,8 +148,7 @@ public class DbCompare
     }
   }
 
-  public static class ReplaceDate extends Date implements
-      IDataSetOverwriteCompare
+  public static class ReplaceDate extends Date implements IDataSetOverwriteCompare
   {
     private static final long serialVersionUID = 1L;
 

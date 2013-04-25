@@ -21,8 +21,7 @@ public class CamelCase
         sb.append(" ");
       }
       // insert space before numbers
-      else if (!Character.isDigit(cur) && next != null
-          && Character.isDigit(next))
+      else if (!Character.isDigit(cur) && next != null && Character.isDigit(next))
       {
         sb.append(cur);
         if (!Character.isUpperCase(cur))
@@ -33,8 +32,7 @@ public class CamelCase
       else if (!Character.isUpperCase(cur)) // !uppercase to match
                                             // space
       {
-        if (last != null && Character.isUpperCase(last)
-            && !Character.isDigit(cur))
+        if (last != null && Character.isUpperCase(last) && !Character.isDigit(cur))
         {
           sb.append(" ");
         }
@@ -43,11 +41,9 @@ public class CamelCase
       else if (Character.isUpperCase(cur))
       {
         // last or next is uppercase
-        if ((last != null && Character.isUpperCase(last))
-            || (next != null && Character.isUpperCase(next)))
+        if ((last != null && Character.isUpperCase(last)) || (next != null && Character.isUpperCase(next)))
         {
-          if (last != null && !Character.isUpperCase(last)
-              && !(last.equals("_") || last.charValue() == 95))
+          if (last != null && !Character.isUpperCase(last) && !(last.equals("_") || last.charValue() == 95))
           {
             sb.append(" ");
           }
@@ -55,8 +51,7 @@ public class CamelCase
         }
         else
         {
-          if (last != null
-              && !(cur.equals("_") || last.charValue() == 95))
+          if (last != null && !(cur.equals("_") || last.charValue() == 95))
           {
             if (!(last.equals("_") || last.charValue() == 95))
             {
@@ -161,14 +156,15 @@ public class CamelCase
   }
 
   /**
-   * Explodes the given Text and recreates amerged one.
-   * VERSION_ID ist then VersionId
+   * Explodes the given Text and recreates amerged one. VERSION_ID ist
+   * then VersionId
    * @param name
    * @return
    */
   public static String makeFirstOfBlockUppercase(String name)
   {
-    if(name==null) {
+    if (name == null)
+    {
       return "";
     }
     String tmp = explode(name);

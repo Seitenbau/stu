@@ -12,22 +12,12 @@ import com.seitenbau.testing.util.date.Datum;
  */
 abstract public class DateUtil
 {
-  
-  static final String[] formats = {
-      "dd.MM.yyyy HH:mm:ss.SSS",
-      "dd.MM.yyyy HH:mm:ss",
-      "dd.MM.yyyy HH:mm",
-      "dd.MM.yyyy",
-      "yyyy-MM-dd HH:mm:ss.SSS",
-      "yyyy-MM-dd HH:mm:ss",
-      "yyyy-MM-dd HH:mm",
-      "yyyy-MM-dd",
-      "HH:mm:ss.SSS",
-      "HH:mm:ss",
+
+  static final String[] formats = {"dd.MM.yyyy HH:mm:ss.SSS", "dd.MM.yyyy HH:mm:ss", "dd.MM.yyyy HH:mm", "dd.MM.yyyy",
+      "yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd", "HH:mm:ss.SSS", "HH:mm:ss",
       "HH:mm",
       // Some common formats
-      "yyyy-MM-dd'T'HH:mm:ss.SSS",
-  };
+      "yyyy-MM-dd'T'HH:mm:ss.SSS",};
 
   /**
    * Supports Dates: {@link #formats} "dd.MM.yyyy HH:mm:ss.SSS" and
@@ -75,7 +65,7 @@ abstract public class DateUtil
     }
     throw new RuntimeException("Date not parseable : " + dateString);
   }
-  
+
   /**
    * Supports Dates: {@link #formats} "dd.MM.yyyy HH:mm:ss.SSS" and
    * "yyyy-MM-dd HH:mm:ss.SSS" or only date or only time.
@@ -87,7 +77,6 @@ abstract public class DateUtil
   {
     return new Datum(asCalendar(dateString));
   }
-
 
   /**
    * Tries to parse the given date-string with the given format. Does

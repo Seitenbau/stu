@@ -17,8 +17,7 @@ import com.seitenbau.testing.dbunit.util.DbCompare.DateCompareImpl;
  */
 @Deprecated
 // Renaming zu ValueDateEquals
-public class ReplacerTimeStampUnsharpCompare extends ReplacerTimeStamp
-    implements IDataSetOverwriteCompare
+public class ReplacerTimeStampUnsharpCompare extends ReplacerTimeStamp implements IDataSetOverwriteCompare
 {
   private static final int ONE_SECOND = 1000;
 
@@ -36,23 +35,19 @@ public class ReplacerTimeStampUnsharpCompare extends ReplacerTimeStamp
     _compare = new DbCompare.DateCompareImpl(10 * ONE_SECOND);
   }
 
-  public ReplacerTimeStampUnsharpCompare(String markerString,
-      int plusMinusMilliseconds)
+  public ReplacerTimeStampUnsharpCompare(String markerString, int plusMinusMilliseconds)
   {
     this(markerString, plusMinusMilliseconds, plusMinusMilliseconds);
     _compare = new DbCompare.DateCompareImpl();
   }
 
-  public ReplacerTimeStampUnsharpCompare(String markerString,
-      int minusMilliseconds, int plusMilliseconds)
+  public ReplacerTimeStampUnsharpCompare(String markerString, int minusMilliseconds, int plusMilliseconds)
   {
     super(markerString);
-    _compare = new DbCompare.DateCompareImpl(minusMilliseconds,
-        plusMilliseconds);
+    _compare = new DbCompare.DateCompareImpl(minusMilliseconds, plusMilliseconds);
   }
 
-  public ReplacerTimeStampUnsharpCompare(String markerString, Date now,
-      int plusMinusMilliseconds)
+  public ReplacerTimeStampUnsharpCompare(String markerString, Date now, int plusMinusMilliseconds)
   {
     super(markerString, now);
     _compare = new DbCompare.DateCompareImpl(plusMinusMilliseconds);

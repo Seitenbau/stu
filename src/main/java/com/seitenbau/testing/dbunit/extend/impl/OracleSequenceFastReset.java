@@ -3,44 +3,44 @@ package com.seitenbau.testing.dbunit.extend.impl;
 import com.seitenbau.testing.dbunit.tester.DatabaseTesterBase;
 
 /**
- * Based on an idea by CB: Instead of dropping and recreating the sequence, the
- * 'reset' is achived by a negativ increment. <b>The sequence MUST exist!</b>
- * <br/> 
+ * Based on an idea by CB: Instead of dropping and recreating the
+ * sequence, the 'reset' is achived by a negativ increment. <b>The
+ * sequence MUST exist!</b> <br/>
  * (Not sure if this is really any faster at all ... guess not)
  */
 public class OracleSequenceFastReset extends DatabaseSequenceReset<OracleSequenceFastReset>
 {
-  protected void clearSequence(DatabaseTesterBase<?> tester, String sequenceName)
-      throws Exception
+  protected void clearSequence(DatabaseTesterBase<?> tester, String sequenceName) throws Exception
   {
     boolean modified = false;
     try
     {
       int count = tester.executeSQLandReturnInt("Select " + sequenceName + ".nextval from dual");
-      int diff = _startIndex - count ;
-      if( diff != 0 ) 
+      int diff = _startIndex - count;
+      if (diff != 0)
       {
-          modified = true;
-          tester.executeSQL("Alter sequence  " + sequenceName + " increment by " + diff);
-          tester.executeSQLandReturnInt("Select " + sequenceName + ".nextval from dual");
-          tester.executeSQL("Alter sequence  " + sequenceName + " increment by 1");
-          logAction("Did reset sequence : '" + sequenceName + "' to " + _startIndex);
+        modified = true;
+        tester.executeSQL("Alter sequence  " + sequenceName + " increment by " + diff);
+        tester.executeSQLandReturnInt("Select " + sequenceName + ".nextval from dual");
+        tester.executeSQL("Alter sequence  " + sequenceName + " increment by 1");
+        logAction("Did reset sequence : '" + sequenceName + "' to " + _startIndex);
       }
-    } 
+    }
     catch (Exception e)
     {
-      try 
+      try
       {
-        if(modified) 
+        if (modified)
         { // try a reset
-            tester.executeSQL("Alter sequence  " + sequenceName + " increment by 1");
+          tester.executeSQL("Alter sequence  " + sequenceName + " increment by 1");
         }
       }
-      catch(Exception ups) 
+      catch (Exception ups)
       {
-        // supress 
+        // supress
       }
-      throw new RuntimeException("While modifying Sequence : " + sequenceName + " an error occured : "+ e.toString(), e);
+      throw new RuntimeException("While modifying Sequence : " + sequenceName + " an error occured : " + e.toString(),
+          e);
     }
   }
 

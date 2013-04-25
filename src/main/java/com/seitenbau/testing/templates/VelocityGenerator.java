@@ -23,21 +23,20 @@ public class VelocityGenerator
   Logger logger = TestLoggerFactory.get(VelocityGenerator.class);
 
   /**
-   * Merge the given model with a velocity template from the classpath into an
-   * output file.
-   *  
-   * @param model
-   *  Model objekt injected into the velocity context with var-name "model".
-   * @param templateInClassPath
-   *  Path to the actual templare resource in the classpath
-   * @param into
-   *  Target prefix, e.g. "target/". for an actual filename and subfolder the 
-   *  templare needs so set the variabels "package" and "filename"
-   *  
+   * Merge the given model with a velocity template from the classpath
+   * into an output file.
+   * 
+   * @param model Model objekt injected into the velocity context with
+   *        var-name "model".
+   * @param templateInClassPath Path to the actual templare resource
+   *        in the classpath
+   * @param into Target prefix, e.g. "target/". for an actual filename
+   *        and subfolder the templare needs so set the variabels
+   *        "package" and "filename"
+   * 
    * @throws Exception
    */
-  public void executeTemplate(Object model, String templateInClassPath,
-      String into) throws Exception
+  public void executeTemplate(Object model, String templateInClassPath, String into) throws Exception
   {
     int last = into.lastIndexOf("/");
     if (last != -1)
@@ -46,8 +45,7 @@ public class VelocityGenerator
     }
     VelocityContext context = new VelocityContext();
     context.put("model", model);
-    Template template = createNewVelocityEngine().getTemplate(
-        templateInClassPath);
+    Template template = createNewVelocityEngine().getTemplate(templateInClassPath);
     executeTemplate(context, template, into);
   }
 
@@ -57,13 +55,11 @@ public class VelocityGenerator
 
     // Template liegt im Classpath
     ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "class");
-    ve.setProperty("class.resource.loader.class",
-        ClasspathResourceLoader.class.getCanonicalName());
+    ve.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getCanonicalName());
     return ve;
   }
 
-  protected void executeTemplate(VelocityContext context, Template template,
-      String into) throws IOException
+  protected void executeTemplate(VelocityContext context, Template template, String into) throws IOException
   {
     StringWriter sw = new StringWriter();
     executeMerge(context, template, sw);
@@ -80,7 +76,7 @@ public class VelocityGenerator
       new File(path).mkdirs();
     }
     String fn = path + filename;
-    if(!filename.contains(".")) 
+    if (!filename.contains("."))
     {
       fn += ".java";
     }

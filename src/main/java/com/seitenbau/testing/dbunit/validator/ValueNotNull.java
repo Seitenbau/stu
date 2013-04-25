@@ -16,7 +16,7 @@ public class ValueNotNull extends AbstractValueValidator
   {
     super("not-set");
   }
-  
+
   /**
    * DBUnit Value Validator if a given <value/> ist NOT equal to the
    * given Object.

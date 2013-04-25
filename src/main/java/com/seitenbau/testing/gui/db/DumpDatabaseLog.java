@@ -16,16 +16,15 @@ public class DumpDatabaseLog extends JDialog
   private static final long serialVersionUID = 1L;
 
   private JTextArea textArea;
-  
+
   private JButton okButton;
 
-  public DumpDatabaseLog() {
+  public DumpDatabaseLog()
+  {
     getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
     textArea = new JTextArea(30, 80);
     textArea.setEditable(false);
-    JScrollPane scrollPane = new JScrollPane(
-        textArea,
-        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+    JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     getContentPane().add(scrollPane, BorderLayout.CENTER);
     okButton = new JButton();
@@ -42,7 +41,7 @@ public class DumpDatabaseLog extends JDialog
   {
     textArea.append(text);
   }
-  
+
   public void finish()
   {
     okButton.addActionListener(new ActionListener()

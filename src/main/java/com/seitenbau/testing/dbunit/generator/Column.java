@@ -20,10 +20,11 @@ public class Column
   EnumSet<Flags> _flags = EnumSet.noneOf(Flags.class);
 
   List<Column> _references = new ArrayList<Column>();
-  
+
   Table _table;
 
-  public Column(Table table, String name, String javaName, String type, String javaType, Column[] references, Flags[] flags)
+  public Column(Table table, String name, String javaName, String type, String javaType, Column[] references,
+      Flags[] flags)
   {
     _table = table;
     _name = name;
@@ -80,17 +81,15 @@ public class Column
   {
     return _flags.contains(Flags.AutoIncrement);
   }
-  
-  public boolean isIdGenerationAutoInvokeOnInsert() 
+
+  public boolean isIdGenerationAutoInvokeOnInsert()
   {
     return _flags.contains(Flags.AutoInvokeNextIdMethod);
   }
 
   public boolean isIdGeneration()
   {
-    return isAutoIncrement() 
-           || isIdGenerationAutoInvokeOnInsert()
-           || _flags.contains(Flags.AddNextIdMethod);
+    return isAutoIncrement() || isIdGenerationAutoInvokeOnInsert() || _flags.contains(Flags.AddNextIdMethod);
   }
 
   public String getJavaName()

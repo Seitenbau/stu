@@ -19,8 +19,7 @@ public class DatabaseMeta
   {
     DatabaseMetaData meta = conn.getMetaData();
 
-    ResultSet rs = meta.getTables(conn.getCatalog(), schema, null,
-        new String[] {"TABLE"});
+    ResultSet rs = meta.getTables(conn.getCatalog(), schema, null, new String[] {"TABLE"});
 
     while (rs.next())
     {
@@ -33,8 +32,7 @@ public class DatabaseMeta
 
     for (DbTable table : metaData)
     {
-      ResultSet data = meta.getExportedKeys(conn.getCatalog(), table
-          .getSchema(), table.getName());
+      ResultSet data = meta.getExportedKeys(conn.getCatalog(), table.getSchema(), table.getName());
 
       while (data.next())
       {

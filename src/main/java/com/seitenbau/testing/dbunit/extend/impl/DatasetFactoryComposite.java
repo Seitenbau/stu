@@ -11,13 +11,14 @@ import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
 
 public abstract class DatasetFactoryComposite
 {
-  public static DbUnitDatasetFactory of(final DbUnitDatasetFactory ...factories) 
+  public static DbUnitDatasetFactory of(final DbUnitDatasetFactory... factories)
   {
-    return new DbUnitDatasetFactory() {
+    return new DbUnitDatasetFactory()
+    {
       public IDataSet createDBUnitDataSet()
       {
         List<IDataSet> datasets = new ArrayList<IDataSet>();
-        for(DbUnitDatasetFactory factory : factories) 
+        for (DbUnitDatasetFactory factory : factories)
         {
           IDataSet ds = factory.createDBUnitDataSet();
           datasets.add(ds);

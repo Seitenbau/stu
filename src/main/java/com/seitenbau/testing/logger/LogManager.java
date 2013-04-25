@@ -14,13 +14,16 @@ public abstract class LogManager
 
   protected static String cleanup(String name)
   {
-    if(name==null) {
+    if (name == null)
+    {
       return "";
     }
-    if(name.startsWith("com.seitenbau.testing.")) {
+    if (name.startsWith("com.seitenbau.testing."))
+    {
       return "c.s.t." + name.substring(22);
     }
-    if(name.startsWith("com.seitenbau.")) {
+    if (name.startsWith("com.seitenbau."))
+    {
       return "c.s." + name.substring(14);
     }
     return name;
@@ -52,8 +55,8 @@ public abstract class LogManager
   }
 
   /**
-   * Changes the log level temporarily in case it was never changed before.
-   * to reset to old state call reset() on the returned object
+   * Changes the log level temporarily in case it was never changed
+   * before. to reset to old state call reset() on the returned object
    */
   public static LogBlock setTemporarily(Levels newLevel)
   {
@@ -68,7 +71,10 @@ public abstract class LogManager
   {
     Levels oldLevel;
 
-    public LogBlock() {}
+    public LogBlock()
+    {
+    }
+
     public LogBlock(Levels newLevel)
     {
       if (newLevel != null)

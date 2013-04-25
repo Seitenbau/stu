@@ -42,13 +42,14 @@ import com.seitenbau.testing.dbunit.tester.DBAssertion;
 /**
  * Rule für das Einspielen der Testdaten in Solr.
  * 
- * Die <b>solrUrl</b> muss gesetzt sein, und falls nicht alle Felder in Solr
- * für einen Vergleich herangezogen werden sollen, ebenfalls das Attribut
- * <b>tableMetadata</b>.
+ * Die <b>solrUrl</b> muss gesetzt sein, und falls nicht alle Felder
+ * in Solr für einen Vergleich herangezogen werden sollen, ebenfalls
+ * das Attribut <b>tableMetadata</b>.
  * 
  * @author rnoerenberg
- * @version $Id: SolrTesterRule.java 97363 2012-12-04 12:03:58Z rnoerenberg $
- *
+ * @version $Id: SolrTesterRule.java 97363 2012-12-04 12:03:58Z
+ *          rnoerenberg $
+ * 
  */
 public class SolrTesterRule implements MethodRule
 {
@@ -67,14 +68,13 @@ public class SolrTesterRule implements MethodRule
    * Das Objekt der Testklasse, in die Objekte injected werden.
    */
   private Object _target;
-  
+
   /** Der SolrServer für die Verbindung zu Solr. */
   private SolrServer solrServer;
-  
+
   private String fUrl;
 
-  private List<IDataSetModifier> fDefaultModifierList = 
-      new ArrayList<IDataSetModifier>();
+  private List<IDataSetModifier> fDefaultModifierList = new ArrayList<IDataSetModifier>();
 
   private IDataSet defaultDataset;
 
@@ -83,7 +83,7 @@ public class SolrTesterRule implements MethodRule
   private IDataSet fLastInsertedDataSet;
 
   protected SortConfig[] _defaultSortConfig;
-  
+
   private String dataSetTableName;
 
   /**
@@ -92,7 +92,8 @@ public class SolrTesterRule implements MethodRule
   private DefaultTableMetaData dataSetTableMetadata;
 
   /**
-   * Erzeugt eine Instanz von {@link SolrTesterRule} und gibt diese zurück.
+   * Erzeugt eine Instanz von {@link SolrTesterRule} und gibt diese
+   * zurück.
    * 
    * @return die erzeugte Instanz.
    */
@@ -100,13 +101,15 @@ public class SolrTesterRule implements MethodRule
   {
     return new SolrTesterRule();
   }
-  
+
   /**
-   * Setzt den Namen der Tabelle, die für das Erstellen des DataSets beim
-   * Auslesen der Daten aus Solr genutzt wird.
+   * Setzt den Namen der Tabelle, die für das Erstellen des DataSets
+   * beim Auslesen der Daten aus Solr genutzt wird.
    * 
-   * <p>Achtung: Ist der Parameter <b>tableMetadata</b> gesetzt, wird dieser
-   * Parameter ignoriert.</p>
+   * <p>
+   * Achtung: Ist der Parameter <b>tableMetadata</b> gesetzt, wird
+   * dieser Parameter ignoriert.
+   * </p>
    * 
    * @param tableName der Name der Tabelle.
    * @return
@@ -116,10 +119,10 @@ public class SolrTesterRule implements MethodRule
     this.dataSetTableName = tableName;
     return this;
   }
-  
+
   /**
-   * Erstellt aus dem Tabellennamen und den Spalten die zu verwendenden
-   * Tabellen-Metadaten.
+   * Erstellt aus dem Tabellennamen und den Spalten die zu
+   * verwendenden Tabellen-Metadaten.
    * 
    * @param tableName der Tabellenname.
    * @param columns die Spalten der Tabelle.
@@ -130,9 +133,10 @@ public class SolrTesterRule implements MethodRule
     this.dataSetTableMetadata = new DefaultTableMetaData(tableName, columns);
     return this;
   }
-  
+
   /**
-   * Setzt die URL, die für den Aufbau der Verbindung zu Solr genutzt wird.
+   * Setzt die URL, die für den Aufbau der Verbindung zu Solr genutzt
+   * wird.
    * 
    * @param solrUrl die URL zur Solr-Instanz.
    * @return die aktuelle Instanz.
@@ -141,16 +145,16 @@ public class SolrTesterRule implements MethodRule
   {
     if (StringUtils.isBlank(solrUrl))
     {
-      throw new IllegalArgumentException("Parameter solrUrl muss " 
-          + "gesetzt und darf nicht leer sein!");
+      throw new IllegalArgumentException("Parameter solrUrl muss " + "gesetzt und darf nicht leer sein!");
     }
     this.fUrl = solrUrl;
     init(null);
     return this;
   }
-  
+
   /**
-   * Fügt die übergebenen Modifier der Liste an Default-Modifiern hinzu.
+   * Fügt die übergebenen Modifier der Liste an Default-Modifiern
+   * hinzu.
    * 
    * @param defaultModifiers Die hinzuzufügenden Modifier.
    * @return die aktuelle Instanz.
@@ -160,7 +164,7 @@ public class SolrTesterRule implements MethodRule
     addDefaultModifier(defaultModifiers);
     return this;
   }
-  
+
   private void init(Class<?> clazz)
   {
     if (clazz != null)
@@ -173,81 +177,78 @@ public class SolrTesterRule implements MethodRule
     }
   }
 
-  public Statement apply(
-      final Statement base, final FrameworkMethod method, Object target)
+  public Statement apply(final Statement base, final FrameworkMethod method, Object target)
   {
     _target = target;
     return new Statement()
     {
-        @Override
-        public void evaluate() throws Throwable
+      @Override
+      public void evaluate() throws Throwable
+      {
+        before(method);
+        try
         {
-            before(method);
-            try
-            {
-                base.evaluate();
-                after(method);
-            }
-            finally
-            {
-                close();
-            }
+          base.evaluate();
+          after(method);
         }
+        finally
+        {
+          close();
+        }
+      }
     };
   }
 
   protected void before(FrameworkMethod method) throws Exception
   {
-      SolrSetup annotation = method.getAnnotation(SolrSetup.class);
-      if (annotation == null)
+    SolrSetup annotation = method.getAnnotation(SolrSetup.class);
+    if (annotation == null)
+    {
+      SolrSetup classAnnotation = getClazz().getAnnotation(SolrSetup.class);
+      if (classAnnotation == null)
       {
-        SolrSetup classAnnotation = getClazz().getAnnotation(SolrSetup.class);
-        if (classAnnotation == null)
-        {
-            tryDefaultCleanInsert();
-            return;
-        }
-        annotation = classAnnotation;
+        tryDefaultCleanInsert();
+        return;
       }
-      if (annotation.suppressInsert())
-      {
-          return;
-      }
-      else if (annotation.prepare() != null
-              && !annotation.prepare().equals(DbUnitDatasetFactory.class))
-      {
-          doCleanInsert(annotation.prepare());
-      }
-      else
-      {
-          tryDefaultCleanInsert();
-      }
+      annotation = classAnnotation;
+    }
+    if (annotation.suppressInsert())
+    {
+      return;
+    }
+    else if (annotation.prepare() != null && !annotation.prepare().equals(DbUnitDatasetFactory.class))
+    {
+      doCleanInsert(annotation.prepare());
+    }
+    else
+    {
+      tryDefaultCleanInsert();
+    }
   }
 
   protected void after(FrameworkMethod method) throws Exception
   {
-      SolrSetup annotation = method.getAnnotation(SolrSetup.class);
-      if (annotation == null)
+    SolrSetup annotation = method.getAnnotation(SolrSetup.class);
+    if (annotation == null)
+    {
+      SolrSetup classAnnotation = getClazz().getAnnotation(SolrSetup.class);
+      if (classAnnotation == null)
       {
-        SolrSetup classAnnotation = getClazz().getAnnotation(SolrSetup.class);
-        if (classAnnotation == null)
-        {
-            return;
-        }
-        annotation = classAnnotation;
+        return;
       }
-      if (annotation.assertNoModification())
+      annotation = classAnnotation;
+    }
+    if (annotation.assertNoModification())
+    {
+      try
       {
-          try
-          {
-              assertDataBaseStillTheSame(getSortConfig());
-          }
-          catch (AssertionError error)
-          {
-              throw new AssertionError("DatabasetTesterRule @after failed : "
-                      + error.toString());
-          }
+        assertDataBaseStillTheSame(getSortConfig());
       }
+      catch (AssertionError error)
+      {
+        throw new AssertionError("DatabasetTesterRule @after failed : " + error.toString());
+      }
+    }
   }
 
   /**
@@ -285,8 +286,7 @@ public class SolrTesterRule implements MethodRule
     setClazz(clazz);
   }
 
-  protected static boolean isSubclassFrom(Class<?> thisClazz,
-      Class<?> isOfSubclass)
+  protected static boolean isSubclassFrom(Class<?> thisClazz, Class<?> isOfSubclass)
   {
     try
     {
@@ -314,7 +314,7 @@ public class SolrTesterRule implements MethodRule
   {
     final String method = "getCallerClassViaMagic() : ";
     LOG.trace(method + "Start");
-    
+
     Class<?> potentialClazz = null;
     try
     {
@@ -351,33 +351,32 @@ public class SolrTesterRule implements MethodRule
     return potentialClazz;
   }
 
-  protected void doCleanInsert(Class<? extends DbUnitDatasetFactory> prepare)
-          throws Exception
+  protected void doCleanInsert(Class<? extends DbUnitDatasetFactory> prepare) throws Exception
   {
-      DbUnitDatasetFactory factory = newInstance(prepare);
-      IDataSet dataset = factory.createDBUnitDataSet();
-      cleanInsert(dataset);
-      trySetAnnotatedField(factory);
+    DbUnitDatasetFactory factory = newInstance(prepare);
+    IDataSet dataset = factory.createDBUnitDataSet();
+    cleanInsert(dataset);
+    trySetAnnotatedField(factory);
   }
 
   protected void doCleanInsert(IDataSet dataset) throws Exception
   {
-      cleanInsert(dataset);
+    cleanInsert(dataset);
   }
 
   protected void tryDefaultCleanInsert() throws Exception
   {
-      if (defaultDataset != null)
-      {
-          doCleanInsert(defaultDataset);
-          return;
-      }
-      if (_defaultDatasetFactory instanceof DbUnitDatasetFactory)
-      {
-          doCleanInsert(_defaultDatasetFactory.createDBUnitDataSet());
-          trySetAnnotatedField(_defaultDatasetFactory);
-          return;
-      }
+    if (defaultDataset != null)
+    {
+      doCleanInsert(defaultDataset);
+      return;
+    }
+    if (_defaultDatasetFactory instanceof DbUnitDatasetFactory)
+    {
+      doCleanInsert(_defaultDatasetFactory.createDBUnitDataSet());
+      trySetAnnotatedField(_defaultDatasetFactory);
+      return;
+    }
   }
 
   /**
@@ -389,20 +388,19 @@ public class SolrTesterRule implements MethodRule
    * @param modifiers Zusätzlich werden die Default-modifier zu
    * @throws Exception
    */
-  public void cleanInsert(IDataSet dataset, IDataSetModifier... modifiers)
-      throws Exception
+  public void cleanInsert(IDataSet dataset, IDataSetModifier... modifiers) throws Exception
   {
     final String method = "cleanInsert() : ";
     LOG.trace(method + "Start");
 
     trySetAnnotatedField(dataset);
-    
+
     // connect to solr server
     this.solrServer = getConnection();
-    
+
     // clean solr index
     cleanSolrIndex();
-    
+
     // prepare test data
     LOG.debug(method + "Start to prepare test data for solr");
     List<SolrInputDocument> docList = new ArrayList<SolrInputDocument>();
@@ -434,44 +432,43 @@ public class SolrTesterRule implements MethodRule
       this.solrServer.add(docList);
       this.solrServer.commit();
     }
-    
+
     LOG.debug(method + "Set current dataset as last inserted dataset.");
     setLastInsertedDataSet(dataset);
   }
 
   protected void trySetAnnotatedField(Object set) throws Exception
   {
-      Class<?> clazz = _target.getClass();
-      trySetAnnotatedField(_target, clazz, set);
+    Class<?> clazz = _target.getClass();
+    trySetAnnotatedField(_target, clazz, set);
   }
 
-  protected void trySetAnnotatedField(Object target, Class<?> clazz,
-          Object loadedDS) throws Exception
+  protected void trySetAnnotatedField(Object target, Class<?> clazz, Object loadedDS) throws Exception
   {
-      for (Field field : clazz.getDeclaredFields())
+    for (Field field : clazz.getDeclaredFields())
+    {
+      InjectSolrDataSet anno = field.getAnnotation(InjectSolrDataSet.class);
+      if (anno != null)
       {
-          InjectSolrDataSet anno = field.getAnnotation(InjectSolrDataSet.class);
-          if (anno != null)
-          {
-            field.setAccessible(true);
-            if(loadedDS == null) 
-            {
-                field.set(target, null);
-                return;
-            }
-            else if (field.getType().isAssignableFrom(loadedDS.getClass()))
-            {
-                field.set(target, loadedDS);
-                return;
-            }
-          }
+        field.setAccessible(true);
+        if (loadedDS == null)
+        {
+          field.set(target, null);
+          return;
+        }
+        else if (field.getType().isAssignableFrom(loadedDS.getClass()))
+        {
+          field.set(target, loadedDS);
+          return;
+        }
       }
-      if (!clazz.getSuperclass().equals(Object.class))
-      {
-          trySetAnnotatedField(target, clazz.getSuperclass(), loadedDS);
-      }
+    }
+    if (!clazz.getSuperclass().equals(Object.class))
+    {
+      trySetAnnotatedField(target, clazz.getSuperclass(), loadedDS);
+    }
   }
-  
+
   /**
    * Löscht alle Inhalte aus dem Solr-Index.
    * 
@@ -481,13 +478,13 @@ public class SolrTesterRule implements MethodRule
   {
     final String method = "truncate() : ";
     LOG.trace(method + "Start");
-    
+
     // connect to solr server
     this.solrServer = getConnection();
-    
+
     // clean solr index
     cleanSolrIndex();
-    
+
     LOG.trace(method + "End");
   }
 
@@ -501,9 +498,7 @@ public class SolrTesterRule implements MethodRule
    * @param modifiers Zusätzlich werden die Default-modifier zu
    * @throws Exception
    */
-  public void cleanInsert(
-      DbUnitDatasetFactory datasetFactory,
-      IDataSetModifier... modifiers) throws Exception
+  public void cleanInsert(DbUnitDatasetFactory datasetFactory, IDataSetModifier... modifiers) throws Exception
   {
     cleanInsert(datasetFactory.createDBUnitDataSet(), modifiers);
     trySetAnnotatedField(datasetFactory);
@@ -511,18 +506,18 @@ public class SolrTesterRule implements MethodRule
 
   protected <X> X newInstance(Class<X> prepare)
   {
-      try
-      {
-          return prepare.newInstance();
-      }
-      catch (InstantiationException e)
-      {
-          throw new RuntimeException(e);
-      }
-      catch (IllegalAccessException e)
-      {
-          throw new RuntimeException(e);
-      }
+    try
+    {
+      return prepare.newInstance();
+    }
+    catch (InstantiationException e)
+    {
+      throw new RuntimeException(e);
+    }
+    catch (IllegalAccessException e)
+    {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -531,20 +526,20 @@ public class SolrTesterRule implements MethodRule
    * @param datasetFactory das Default-Datenset.
    * @return
    */
-  public SolrTesterRule setDefaultDataSet(
-          DbUnitDatasetFactory datasetFactory)
+  public SolrTesterRule setDefaultDataSet(DbUnitDatasetFactory datasetFactory)
   {
-      _defaultDatasetFactory = datasetFactory;
-      defaultDataset = datasetFactory.createDBUnitDataSet();
-      return this;
+    _defaultDatasetFactory = datasetFactory;
+    defaultDataset = datasetFactory.createDBUnitDataSet();
+    return this;
   }
 
   /**
    * Setzt das übergebene Datenset als zuletzt eingespieltes Datenset.
    * 
-   * @param loadedDS die DataSet Instanz des als letzten eingespielten DataSets.
+   * @param loadedDS die DataSet Instanz des als letzten eingespielten
+   *        DataSets.
    */
-  protected void setLastInsertedDataSet(IDataSet loadedDS)  throws Exception
+  protected void setLastInsertedDataSet(IDataSet loadedDS) throws Exception
   {
     fLastInsertedDataSet = loadedDS;
   }
@@ -615,28 +610,29 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Set the default sorting used when Comparing via the Solr Tester rule.
-   * Not used in 'normal' compares.
+   * Set the default sorting used when Comparing via the Solr Tester
+   * rule. Not used in 'normal' compares.
    * 
    * @param defaultSortConfig the new SortConfig
    * @return this
    */
   public SolrTesterRule setDefaultSortConfig(SortConfig... defaultSortConfig)
   {
-      _defaultSortConfig = defaultSortConfig;
-      return this;
+    _defaultSortConfig = defaultSortConfig;
+    return this;
   }
 
   /**
    * Override method or set default sort config with
-   * {@link #setDefaultSortConfig(SortConfig...)} to specify sorting format.
+   * {@link #setDefaultSortConfig(SortConfig...)} to specify sorting
+   * format.
    * 
    * @return sorting configuration
    * @throws DataSetException
    */
   protected SortConfig[] getSortConfig() throws DataSetException
   {
-      return _defaultSortConfig;
+    return _defaultSortConfig;
   }
 
   /**
@@ -660,8 +656,7 @@ public class SolrTesterRule implements MethodRule
    * 
    * @throws Exception Fehler im Vergleich
    */
-  public void assertDataBaseStillTheSame(SortConfig[] sortConfig)
-      throws Exception
+  public void assertDataBaseStillTheSame(SortConfig[] sortConfig) throws Exception
   {
     // Leeres DefaultDataSet erstellen.
     IDataSet expectedDataset = new DefaultDataSet();
@@ -679,16 +674,11 @@ public class SolrTesterRule implements MethodRule
     }
     if (sortConfig != null)
     {
-      assertDataBaseSorted(
-          expectedDataset,
-          sortConfig,
-          getModifiers());
+      assertDataBaseSorted(expectedDataset, sortConfig, getModifiers());
     }
     else
     {
-      assertDataBaseSorted(
-          expectedDataset,
-          getModifiers());
+      assertDataBaseSorted(expectedDataset, getModifiers());
     }
   }
 
@@ -696,72 +686,58 @@ public class SolrTesterRule implements MethodRule
    * Methode zum vergleichen eines Datasets mit der aktuellen
    * Datenbank
    * 
-   * @param expectedDataSet das Datenset mit den in Solr erwarteten Daten.
+   * @param expectedDataSet das Datenset mit den in Solr erwarteten
+   *        Daten.
    * @param modifiers Die hinzuzufügenden Modifier.
    * @throws Exception
    */
-  public void assertDataBase(
-      IDataSet expectedDataSet,
-      IDataSetModifier... modifiers) throws Exception
+  public void assertDataBase(IDataSet expectedDataSet, IDataSetModifier... modifiers) throws Exception
   {
-    DBAssertion.assertDataSet(createDatabaseSnapshot(), expectedDataSet,
-        getModifiers(modifiers));
+    DBAssertion.assertDataSet(createDatabaseSnapshot(), expectedDataSet, getModifiers(modifiers));
   }
 
   /**
    * Methode zum vergleichen eines Datasets mit der aktuellen
    * Datenbank.
    * 
-   * @param factory die DatasetFactory, die das Datenset mit den in Solr
-   *        erwarteten Daten enthält.
+   * @param factory die DatasetFactory, die das Datenset mit den in
+   *        Solr erwarteten Daten enthält.
    * @param modifiers Die hinzuzufügenden Modifier.
    * @throws Exception
    */
-  public void assertDataBase(
-      DbUnitDatasetFactory factory,
-      IDataSetModifier... modifiers) throws Exception
+  public void assertDataBase(DbUnitDatasetFactory factory, IDataSetModifier... modifiers) throws Exception
   {
     assertDataBase(factory.createDBUnitDataSet(), getModifiers(modifiers));
   }
 
   /**
-   * Vergleicht das übergebene Dataset mit den in der Datenbank vorhandenen
-   * Daten. Zuvor werden die Daten entsprechend der übergebenen Sortierung
-   * sortiert.
+   * Vergleicht das übergebene Dataset mit den in der Datenbank
+   * vorhandenen Daten. Zuvor werden die Daten entsprechend der
+   * übergebenen Sortierung sortiert.
    * 
    * @param expectedDataSet das Datenset mit den zu erwartenden Daten.
    * @param config die Sortierung.
    * @param modifiers Die hinzuzufügenden Modifier.
    * @throws Exception
    */
-  public void assertDataBaseSorted(
-      IDataSet expectedDataSet,
-      SortConfig[] config,
-      IDataSetModifier... modifiers) throws Exception
+  public void assertDataBaseSorted(IDataSet expectedDataSet, SortConfig[] config, IDataSetModifier... modifiers)
+      throws Exception
   {
-    DBAssertion.assertDataSet(
-        sortTables(createDatabaseSnapshot(), config),
-        sortTables(expectedDataSet, config),
+    DBAssertion.assertDataSet(sortTables(createDatabaseSnapshot(), config), sortTables(expectedDataSet, config),
         getModifiers(modifiers));
   }
 
   /**
-   * Vergleicht das übergebene Dataset mit den in der Datenbank vorhandenen
-   * Daten. Zuvor werden die Daten entsprechend sortiert.
+   * Vergleicht das übergebene Dataset mit den in der Datenbank
+   * vorhandenen Daten. Zuvor werden die Daten entsprechend sortiert.
    * 
    * @param expectedDataSet das Datenset mit den zu erwartenden Daten.
    * @param modifiers Die hinzuzufügenden Modifier.
    * @throws Exception
    */
-  public void assertDataBaseSorted(
-      IDataSet expectedDataSet,
-      IDataSetModifier... modifiers) throws Exception
+  public void assertDataBaseSorted(IDataSet expectedDataSet, IDataSetModifier... modifiers) throws Exception
   {
-    DBAssertion.assertDataSet(
-        true,
-        createDatabaseSnapshot(),
-        expectedDataSet,
-        getModifiers(modifiers));
+    DBAssertion.assertDataSet(true, createDatabaseSnapshot(), expectedDataSet, getModifiers(modifiers));
   }
 
   /**
@@ -769,7 +745,8 @@ public class SolrTesterRule implements MethodRule
    * 
    * @param ds das DataSet.
    * @param config die Sortierung.
-   * @return das sortierte DataSet, das Tabellen vom Typ SortTable enthält.
+   * @return das sortierte DataSet, das Tabellen vom Typ SortTable
+   *         enthält.
    */
   public IDataSet sortTables(IDataSet ds, SortConfig[] config)
   {
@@ -811,8 +788,7 @@ public class SolrTesterRule implements MethodRule
     return dataSet;
   }
 
-  protected ITable createSortTable(ITable table, String[] columnSortOrder)
-      throws DataSetException
+  protected ITable createSortTable(ITable table, String[] columnSortOrder) throws DataSetException
   {
     SortedTable table2;
     if (columnSortOrder == null)
@@ -827,7 +803,6 @@ public class SolrTesterRule implements MethodRule
     return table2;
   }
 
-  
   /**
    * Erzeugt ein DataSet mit einem live Abzug der Kompletten Datenbank
    * 
@@ -839,18 +814,17 @@ public class SolrTesterRule implements MethodRule
     LOG.trace(method + "Start");
     // connect to solr server
     this.solrServer = getConnection();
-    
+
     LOG.debug(method + "Lese vorhandene Daten aus Solr.");
-    SolrDocumentList docListInSolr = 
-        this.solrServer.query(new SolrQuery(SOLR_DEFAULT_QUERY)).getResults();
-    
+    SolrDocumentList docListInSolr = this.solrServer.query(new SolrQuery(SOLR_DEFAULT_QUERY)).getResults();
+
     LOG.debug(method + "Erzeuge DataSet.");
     DefaultDataSet dataset = new DefaultDataSet();
     DefaultTable solrDocumentTable = getDefaultTable(docListInSolr);
     insertRowsInTable(solrDocumentTable, docListInSolr);
     dataset.addTable(solrDocumentTable);
     LOG.debug(method + "DataSet erzeugt.");
-    
+
     LOG.trace(method + "End");
     return dataset;
   }
@@ -859,7 +833,7 @@ public class SolrTesterRule implements MethodRule
   {
     final String method = "getDefaultTable() : ";
     LOG.trace(method + "Start");
-    
+
     DefaultTable solrDocumentTable;
     if (dataSetTableMetadata != null)
     {
@@ -867,15 +841,13 @@ public class SolrTesterRule implements MethodRule
     }
     else if (dataSetTableName != null)
     {
-      solrDocumentTable = 
-          new DefaultTable(dataSetTableName, retrieveColumns(docListInSolr));
+      solrDocumentTable = new DefaultTable(dataSetTableName, retrieveColumns(docListInSolr));
     }
     else
     {
-      throw new IllegalStateException(method + "Entweder tableMetadata oder "
-          + "tableName muss gesetzt sein.");
+      throw new IllegalStateException(method + "Entweder tableMetadata oder " + "tableName muss gesetzt sein.");
     }
-    
+
     LOG.trace(method + "End");
     return solrDocumentTable;
   }
@@ -884,7 +856,7 @@ public class SolrTesterRule implements MethodRule
   {
     final String method = "getColumnsInSolr() : ";
     LOG.trace(method + "Start");
-    
+
     Column[] columns = null;
     if (docListInSolr != null && !docListInSolr.isEmpty())
     {
@@ -898,18 +870,17 @@ public class SolrTesterRule implements MethodRule
         i++;
       }
     }
-    
+
     LOG.trace(method + "End");
     return columns;
   }
 
-  private void insertRowsInTable(
-      final DefaultTable table,
-      final SolrDocumentList docListInSolr) throws DataSetException
+  private void insertRowsInTable(final DefaultTable table, final SolrDocumentList docListInSolr)
+      throws DataSetException
   {
     final String method = "insertRowsInTable() : ";
     LOG.trace(method + "Start");
-    
+
     if (docListInSolr != null)
     {
       int i = 0;
@@ -918,9 +889,7 @@ public class SolrTesterRule implements MethodRule
         table.addRow();
         for (Map.Entry<String, Object> entry : doc.entrySet())
         {
-          if (containsColumn(
-              table.getTableMetaData().getColumns(),
-              entry.getKey()))
+          if (containsColumn(table.getTableMetaData().getColumns(), entry.getKey()))
           {
             table.setValue(i, entry.getKey(), entry.getValue());
           }
@@ -928,7 +897,7 @@ public class SolrTesterRule implements MethodRule
         i++;
       }
     }
-    
+
     LOG.trace(method + "End");
   }
 
@@ -936,7 +905,7 @@ public class SolrTesterRule implements MethodRule
   {
     final String method = "containsColumn() : ";
     LOG.trace(method + "Start");
-    
+
     boolean found = false;
     for (Column column : columns)
     {
@@ -951,7 +920,7 @@ public class SolrTesterRule implements MethodRule
     {
       LOG.debug(method + "Spalte " + columnName + " NICHT gefunden.");
     }
-    
+
     LOG.trace(method + "End");
     return found;
   }
@@ -965,20 +934,19 @@ public class SolrTesterRule implements MethodRule
     this.solrServer.deleteByQuery(SOLR_DEFAULT_QUERY);
     this.solrServer.commit();
     verifyThatIndexIsEmpty();
-    
+
     LOG.trace(method + "End");
   }
 
   private void verifyThatIndexIsEmpty() throws Exception
   {
-    QueryResponse searchResult = 
-        this.solrServer.query(new SolrQuery(SOLR_DEFAULT_QUERY));
+    QueryResponse searchResult = this.solrServer.query(new SolrQuery(SOLR_DEFAULT_QUERY));
     assertThat(searchResult.getResults()).hasSize(0);
   }
 
   /**
-   * Erstellt eine Verbindung zu einer Solr-Instanz unter der hinterlegten
-   * URL.
+   * Erstellt eine Verbindung zu einer Solr-Instanz unter der
+   * hinterlegten URL.
    * 
    * @return die erstellte Connection zum SolrServer.
    */
@@ -986,11 +954,11 @@ public class SolrTesterRule implements MethodRule
   {
     final String method = "getConnection() : ";
     LOG.trace(method + "Start");
-    
+
     LOG.debug(method + "Connecting to solr server with URL " + this.fUrl);
     SolrServer solrServer = new HttpSolrServer(this.fUrl);
     LOG.debug(method + "Connection established.");
-    
+
     LOG.trace(method + "End");
     return solrServer;
   }

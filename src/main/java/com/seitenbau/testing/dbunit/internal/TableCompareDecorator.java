@@ -13,7 +13,7 @@ import org.dbunit.dataset.datatype.UnknownDataType;
  */
 public class TableCompareDecorator extends TableDecorator
 {
-  
+
   public TableCompareDecorator(ITable delegateTo)
   {
     super(delegateTo);
@@ -30,16 +30,16 @@ public class TableCompareDecorator extends TableDecorator
       for (int i = 0; i < columns.length; i++)
       {
         Column column = columns[i];
-        if(column.getDataType() instanceof UnknownDataType){
+        if (column.getDataType() instanceof UnknownDataType)
+        {
           newColumns[i] = columns[i];
         }
-        else{
-          newColumns[i] = new Column(column.getColumnName(),
-            new DataTypeCompareDecorator(column.getDataType()));
+        else
+        {
+          newColumns[i] = new Column(column.getColumnName(), new DataTypeCompareDecorator(column.getDataType()));
         }
       }
-      defaultTableMetaData = new DefaultTableMetaData(tableMetaData
-          .getTableName(), newColumns);
+      defaultTableMetaData = new DefaultTableMetaData(tableMetaData.getTableName(), newColumns);
     }
     catch (DataSetException e)
     {

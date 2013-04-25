@@ -26,8 +26,7 @@ public class DataSetGenerator
   private final VelocityGenerator templates = new VelocityGenerator()
   {
     @Override
-    protected void executeTemplate(VelocityContext context, Template template,
-        String into)
+    protected void executeTemplate(VelocityContext context, Template template, String into)
     {
       StringWriter sw = new StringWriter();
       template.merge(context, sw);
@@ -193,8 +192,7 @@ public class DataSetGenerator
       String tableJavaName = table.getJavaName();
       if (!JavaNameValidator.isValidIdentifier(tableJavaName))
       {
-        throw new Exception("Table Name \"" + tableJavaName
-            + "\" ist nicht gültig.");
+        throw new Exception("Table Name \"" + tableJavaName + "\" ist nicht gültig.");
       }
 
       for (Column column : table.getColumns())
@@ -202,8 +200,8 @@ public class DataSetGenerator
         String columnJavaName = column.getJavaName();
         if (!JavaNameValidator.isValidIdentifier(columnJavaName))
         {
-          throw new Exception("Column Name \"" + columnJavaName
-              + "\" of table \"" + tableJavaName + "\" ist nicht gültig.");
+          throw new Exception("Column Name \"" + columnJavaName + "\" of table \"" + tableJavaName
+              + "\" ist nicht gültig.");
         }
       }
     }
@@ -215,8 +213,7 @@ public class DataSetGenerator
 
     if (packageName == null)
     {
-      throw new Exception("Package name ist NULL oder leer. "
-          + "Der Package Name muss gesetzt werden. "
+      throw new Exception("Package name ist NULL oder leer. " + "Der Package Name muss gesetzt werden. "
           + "Dazu die Methode \"packageName\" aufrufen.");
     }
 
@@ -229,8 +226,7 @@ public class DataSetGenerator
 
     if (databaseName == null || databaseName.trim().length() == 0)
     {
-      throw new RuntimeException("Database Name ist NULL oder leer. "
-          + "Der Database Name muss gesetzt werden. "
+      throw new RuntimeException("Database Name ist NULL oder leer. " + "Der Database Name muss gesetzt werden. "
           + "Dazu die Methode \"database\" aufrufen.");
     }
 

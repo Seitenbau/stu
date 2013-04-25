@@ -78,8 +78,7 @@ public class MySQLAutoIncrementReset implements DatabaseTesterCleanAction
     return _startIndex;
   }
 
-  public void doCleanDatabase(DatabaseTesterBase<?> tester, IDataSet dataset)
-      throws Exception
+  public void doCleanDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception
   {
     for (ITableIterator i = dataset.iterator(); i.next();)
     {
@@ -92,15 +91,12 @@ public class MySQLAutoIncrementReset implements DatabaseTesterCleanAction
     }
   }
 
-  protected void resetTable(DatabaseTesterBase<?> tester, String table)
-      throws Exception
+  protected void resetTable(DatabaseTesterBase<?> tester, String table) throws Exception
   {
-    tester.executeSQL("ALTER TABLE `" + table + "` AUTO_INCREMENT = "
-        + _startIndex);
+    tester.executeSQL("ALTER TABLE `" + table + "` AUTO_INCREMENT = " + _startIndex);
   }
 
-  public void doPrepareDatabase(DatabaseTesterBase<?> tester, IDataSet dataset)
-      throws Exception
+  public void doPrepareDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception
   {
   }
 }

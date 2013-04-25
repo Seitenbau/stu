@@ -1,7 +1,5 @@
 package com.seitenbau.testing.dbunit.extend.impl;
 
-
-
 /**
  * Helper Action to reset Apache Derby Database Sequences.
  * 
@@ -23,5 +21,5 @@ public class ApacheDerbySequenceReset extends SimpleDatabaseSequenceReset<Apache
   {
     return "DROP SEQUENCE " + sequenceName + " RESTRICT";
   }
- 
+
 }

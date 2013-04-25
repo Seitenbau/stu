@@ -15,8 +15,9 @@ public @interface DatabaseBefore {
   String NOT_SET = "-not-set- com.seitenbau.testing.dbunit.rule.DatabaseBefore";
 
   /**
-   * defines an id for the before method, when set this method will only be called when 
-   * the id was specified in an {@link DatabasePrepare} at the test. 
+   * defines an id for the before method, when set this method will
+   * only be called when the id was specified in an
+   * {@link DatabasePrepare} at the test.
    */
   String id() default NOT_SET;
 

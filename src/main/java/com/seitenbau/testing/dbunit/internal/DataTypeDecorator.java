@@ -31,11 +31,11 @@ public class DataTypeDecorator extends DataType
   {
     return fDelegate.compare(o1, o2);
   }
-  
+
   @Override
-  public boolean equals(Object obj) 
+  public boolean equals(Object obj)
   {
-    if(obj instanceof DataTypeDecorator) 
+    if (obj instanceof DataTypeDecorator)
     {
       return fDelegate.equals(((DataTypeDecorator) obj).fDelegate);
     }
@@ -55,8 +55,7 @@ public class DataTypeDecorator extends DataType
   }
 
   @Override
-  public Object getSqlValue(int column, ResultSet resultSet)
-      throws SQLException, TypeCastException
+  public Object getSqlValue(int column, ResultSet resultSet) throws SQLException, TypeCastException
   {
     return fDelegate.getSqlValue(column, resultSet);
   }
@@ -80,8 +79,7 @@ public class DataTypeDecorator extends DataType
   }
 
   @Override
-  public void setSqlValue(Object value, int column, PreparedStatement statement)
-      throws SQLException, TypeCastException
+  public void setSqlValue(Object value, int column, PreparedStatement statement) throws SQLException, TypeCastException
   {
     fDelegate.setSqlValue(value, column, statement);
   }

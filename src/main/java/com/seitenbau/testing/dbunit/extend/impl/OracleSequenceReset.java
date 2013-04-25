@@ -1,6 +1,5 @@
 package com.seitenbau.testing.dbunit.extend.impl;
 
-
 /**
  * Helper Action to reset Oralce Database Sequences.
  * 

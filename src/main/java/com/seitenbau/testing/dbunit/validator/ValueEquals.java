@@ -15,11 +15,12 @@ import com.seitenbau.testing.dbunit.modifier.Replacer;
 public class ValueEquals extends AbstractValueValidator
 {
   protected Object _Equals;
+
   /**
-   * Ensures the Value from the Database equals the given Value.
-   * This is just a convenient Wrapper around the {@link Replacer}
-   * class. ( This class therefore can also be used to Replace a Value
-   * in a Dataset )
+   * Ensures the Value from the Database equals the given Value. This
+   * is just a convenient Wrapper around the {@link Replacer} class. (
+   * This class therefore can also be used to Replace a Value in a
+   * Dataset )
    * 
    * @param expectedValueToEqual The value the real Database Value
    *        must be equal to.
@@ -27,9 +28,9 @@ public class ValueEquals extends AbstractValueValidator
   public ValueEquals(Object expectedValueToEqual)
   {
     super("not-in-use");
-    _Equals=expectedValueToEqual;
+    _Equals = expectedValueToEqual;
   }
-  
+
   /**
    * * Ensures the Value from the Database equals the given Value.
    * This is just a convenient Wrapper around the {@link Replacer}
@@ -45,7 +46,7 @@ public class ValueEquals extends AbstractValueValidator
   public ValueEquals(String markerString, Object expectedValueToEqual)
   {
     super(markerString);
-    _Equals=expectedValueToEqual;
+    _Equals = expectedValueToEqual;
   }
 
   /**
@@ -56,7 +57,7 @@ public class ValueEquals extends AbstractValueValidator
     Assert.assertEquals(_Equals, objectToCompareTo);
     return IS_EQUAL;
   }
-  
+
   /**
    * Overwrites the compare Method. Use This only if you know the
    * Dataset will not be inserted anywhere, bcause this will then

@@ -35,5 +35,4 @@ public interface ValueProvider
 
   Map<String, String> getMap(String key);
 
-
 }

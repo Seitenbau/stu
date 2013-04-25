@@ -16,20 +16,20 @@ public final class JavaNameValidator
    */
   public static boolean isValidIdentifier(String name)
   {
-    if(name == null || name.trim().length()==0)
+    if (name == null || name.trim().length() == 0)
     {
       return false;
     }
 
     char[] chars = name.toCharArray();
-    if(!isJavaIdentifierStart(chars[0]))
+    if (!isJavaIdentifierStart(chars[0]))
     {
       return false;
     }
 
-    for(int i = 1; i < chars.length; i++)
+    for (int i = 1; i < chars.length; i++)
     {
-      if(!isJavaIdentifierPart(chars[i]))
+      if (!isJavaIdentifierPart(chars[i]))
       {
         return false;
       }
@@ -45,12 +45,12 @@ public final class JavaNameValidator
    */
   public static boolean isValidPackageName(String pkg)
   {
-    if(pkg == null)
+    if (pkg == null)
     {
       return false;
     }
 
-    if(pkg.trim().length()==0)
+    if (pkg.trim().length() == 0)
     {
       return true;
     }
@@ -59,10 +59,10 @@ public final class JavaNameValidator
     int start = 0;
     int end = pkg.indexOf('.');
 
-    while(start < end)
+    while (start < end)
     {
       String subPackage = pkg.substring(start, end);
-      if(!isValidIdentifier(subPackage))
+      if (!isValidIdentifier(subPackage))
       {
         return false;
       }

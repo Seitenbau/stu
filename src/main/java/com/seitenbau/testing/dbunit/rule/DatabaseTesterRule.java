@@ -60,12 +60,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    * @param defaultDataSetName
    * @param defaultModifiers
    */
-  public DatabaseTesterRule(
-      String driverName,
-      String url,
-      String username,
-      String password,
-      String defaultDataSetName,
+  public DatabaseTesterRule(String driverName, String url, String username, String password, String defaultDataSetName,
       IDataSetModifier... defaultModifiers)
   {
     super(driverName, url, username, password, defaultModifiers);
@@ -88,36 +83,31 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    * @param configClass
    * @param defaultModifiers
    */
-  public DatabaseTesterRule(Class<? extends TestConfigDatabase> configClass,
-      IDataSetModifier... defaultModifiers)
+  public DatabaseTesterRule(Class<? extends TestConfigDatabase> configClass, IDataSetModifier... defaultModifiers)
   {
     super(configClass, defaultModifiers);
   }
 
-  public DatabaseTesterRule(String driverName, String url, String username,
-      String password,
+  public DatabaseTesterRule(String driverName, String url, String username, String password,
       IDataSetModifier... defaultModifiers)
   {
     super(driverName, url, username, password, defaultModifiers);
   }
 
-  public DatabaseTesterRule(String driverName, String url, String username,
-      String password,
-      Class<?> clazz, IDataSetModifier... defaultModifiers)
+  public DatabaseTesterRule(String driverName, String url, String username, String password, Class<?> clazz,
+      IDataSetModifier... defaultModifiers)
   {
     super(driverName, url, username, password, clazz, defaultModifiers);
   }
 
-  public DatabaseTesterRule(IDataSet defaultDataSet, String dbDriver,
-      String dbUrl, String dbUser,
-      String dbPwd, IDataSetModifier[] defaultModifiers)
+  public DatabaseTesterRule(IDataSet defaultDataSet, String dbDriver, String dbUrl, String dbUser, String dbPwd,
+      IDataSetModifier[] defaultModifiers)
   {
     super(dbDriver, dbUrl, dbUser, dbPwd, defaultModifiers);
     setDefaultDataSet(defaultDataSet);
   }
 
-  public DatabaseTesterRule(Future<DataSource> lazyDataSource,
-      IDataSetModifier... defaultModifiers)
+  public DatabaseTesterRule(Future<DataSource> lazyDataSource, IDataSetModifier... defaultModifiers)
   {
     super(lazyDataSource, defaultModifiers);
   }
@@ -147,13 +137,11 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
     {
       return;
     }
-    if (setting.prepareDS != null
-        && !setting.prepareDS.equals(DatabaseSetup.NOT_SET))
+    if (setting.prepareDS != null && !setting.prepareDS.equals(DatabaseSetup.NOT_SET))
     {
       doCleanInsert(setting.prepareDS);
     }
-    else if (setting.prepare != null
-        && setting.prepare != null
+    else if (setting.prepare != null && setting.prepare != null
         && !setting.prepare[0].equals(DbUnitDatasetFactory.class))
     {
       doCleanInsert(descriptor, setting.prepare);
@@ -229,8 +217,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
     }
     if (_defaultDatasetFactory instanceof DbUnitDatasetFactory)
     {
-      doCleanInsert(_defaultDatasetFactory
-          .createDBUnitDataSet());
+      doCleanInsert(_defaultDatasetFactory.createDBUnitDataSet());
       return;
     }
   }
@@ -240,8 +227,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
     DatabaseSetup annotation = descriptor.getAnnotation(DatabaseSetup.class, false);
     if (annotation == null)
     {
-      DatabaseSetup classAnnotation = getClazz().getAnnotation(
-          DatabaseSetup.class);
+      DatabaseSetup classAnnotation = getClazz().getAnnotation(DatabaseSetup.class);
       if (classAnnotation == null)
       {
         return;
@@ -256,8 +242,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
       }
       catch (AssertionError error)
       {
-        throw new AssertionError("DatabasetTesterRule @after failed : "
-            + error.toString());
+        throw new AssertionError("DatabasetTesterRule @after failed : " + error.toString());
       }
     }
   }
@@ -337,8 +322,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    * @param factory the default dataset factory as Future
    * @return this
    */
-  public DatabaseTesterRule setDefaultDataSetFactory(
-      Future<DbUnitDatasetFactory> factory)
+  public DatabaseTesterRule setDefaultDataSetFactory(Future<DbUnitDatasetFactory> factory)
   {
     _future = factory;
     return this;
@@ -356,8 +340,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
     return _defaultSortConfig;
   }
 
-  public Statement apply(final Statement base, final FrameworkMethod method,
-      final Object target)
+  public Statement apply(final Statement base, final FrameworkMethod method, final Object target)
   {
     _target = target;
     return new Statement()
@@ -413,8 +396,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   }
 
   @Override
-  public DatabaseTesterRule setTypeFactoryToRegister(
-      IDataTypeFactory registerTypeFactory)
+  public DatabaseTesterRule setTypeFactoryToRegister(IDataTypeFactory registerTypeFactory)
   {
     super.setTypeFactoryToRegister(registerTypeFactory);
     return this;
@@ -428,8 +410,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   }
 
   @Override
-  public DatabaseTesterRule setUseCaseSensitiveNames(
-      boolean useCaseSensitiveNames)
+  public DatabaseTesterRule setUseCaseSensitiveNames(boolean useCaseSensitiveNames)
   {
     super.setUseCaseSensitiveNames(useCaseSensitiveNames);
     return this;
@@ -454,8 +435,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   }
 
   protected void doCleanInsert(ITestMethodDescriptor descriptor,
-      Class<? extends DbUnitDatasetFactory>... datasetfactories)
-      throws Exception
+      Class<? extends DbUnitDatasetFactory>... datasetfactories) throws Exception
   {
     if (datasetfactories == null)
     {
@@ -482,9 +462,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
     trySetAnnotatedField(factoryInstance);
   }
 
-  protected void invokePrepareDatasetMethods(
-      ITestMethodDescriptor descriptor,
-      DbUnitDatasetFactory factoryInstance)
+  protected void invokePrepareDatasetMethods(ITestMethodDescriptor descriptor, DbUnitDatasetFactory factoryInstance)
   {
     DatabasePrepare anno = descriptor.getAnnotation(DatabasePrepare.class, false);
     String explicit = null;
@@ -493,8 +471,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
       explicit = anno.value();
     }
     Class<? extends Object> clazz = descriptor.getTarget().getClass();
-    List<Method> potentialMethods = ReflectionUtils
-        .findMethodByAnnotation(clazz, DatabaseBefore.class, true);
+    List<Method> potentialMethods = ReflectionUtils.findMethodByAnnotation(clazz, DatabaseBefore.class, true);
     boolean invokedOnce = false;
     for (Method m : potentialMethods)
     {
@@ -546,7 +523,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
       {
         continue;
       }
-      if(!ReflectionUtils.canCast(exp,act) ) 
+      if (!ReflectionUtils.canCast(exp, act))
       {
         return false;
       }
@@ -583,8 +560,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
     trySetAnnotatedField(_target, clazz, loadedDS);
   }
 
-  protected void trySetAnnotatedField(Object target, Class<?> clazz,
-      Object loadedDS) throws Exception
+  protected void trySetAnnotatedField(Object target, Class<?> clazz, Object loadedDS) throws Exception
   {
     for (Field field : clazz.getDeclaredFields())
     {

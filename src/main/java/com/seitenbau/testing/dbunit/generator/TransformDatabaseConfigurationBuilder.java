@@ -7,8 +7,7 @@
 
 package com.seitenbau.testing.dbunit.generator;
 
-public class TransformDatabaseConfigurationBuilder
-    extends
+public class TransformDatabaseConfigurationBuilder extends
     TransformDatabaseConfigurationBuilderBase<TransformDatabaseConfigurationBuilder>
 {
   public static TransformDatabaseConfigurationBuilder transformDatabaseConfiguration()
@@ -31,8 +30,7 @@ class TransformDatabaseConfigurationBuilderBase<GeneratorT extends TransformData
 {
   private TransformDatabaseConfiguration instance;
 
-  protected TransformDatabaseConfigurationBuilderBase(
-      TransformDatabaseConfiguration aInstance)
+  protected TransformDatabaseConfigurationBuilderBase(TransformDatabaseConfiguration aInstance)
   {
     instance = aInstance;
   }

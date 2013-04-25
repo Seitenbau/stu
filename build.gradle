@@ -18,30 +18,28 @@ ext.sourceEncoding    = "ISO-8859-1"
 ext.gradleScriptDir   = "${rootProject.projectDir}/gradle"
 
 compileJava {
-	options.encoding = project.sourceEncoding
+  options.encoding = project.sourceEncoding
 }
 
 apply from: "$gradleScriptDir/publish-maven.gradle"
 apply from: "$gradleScriptDir/eclipse.gradle"
 
 dependencies {
-	compile("junit:junit:$junitVersion", optional)
-	compile("commons-dbcp:commons-dbcp:1.4", optional)
-	compile("org.dbunit:dbunit:2.3.0"){
-	  exclude module: 'slf4j-api'
-	  exclude module: 'slf4j-nop'
-	}
-	compile("org.easytesting:fest-assert:${festAssertVersion}")
-	compile("org.apache.solr:solr-solrj:4.0.0", optional)
-	compile("org.apache.velocity:velocity:$velocityVersion")
-	compile("commons-lang:commons-lang:$commonLangVersion")
-	compile("org.slf4j:slf4j-api:$slf4jVersion")
-	
-	groovy("org.codehaus.groovy:groovy-all:$groovyVersion")
-	testCompile("org.spockframework:spock-core:0.7-groovy-2.0")
-	testCompile("org.slf4j:slf4j-log4j12:$slf4jVersion")
+  compile("junit:junit:$junitVersion", optional)
+  compile("commons-dbcp:commons-dbcp:1.4", optional)
+  compile("org.dbunit:dbunit:2.3.0"){
+    exclude module: 'slf4j-api'
+    exclude module: 'slf4j-nop'
+  }
+  compile("org.easytesting:fest-assert:${festAssertVersion}")
+  compile("org.apache.solr:solr-solrj:4.0.0", optional)
+  compile("org.apache.velocity:velocity:$velocityVersion")
+  compile("commons-lang:commons-lang:$commonLangVersion")
+  compile("org.slf4j:slf4j-api:$slf4jVersion")
+  
+  groovy("org.codehaus.groovy:groovy-all:$groovyVersion")
+  testCompile("org.spockframework:spock-core:0.7-groovy-2.0")
+  testCompile("org.slf4j:slf4j-log4j12:$slf4jVersion")
 }
 
-task wrapper(type: Wrapper) { 
-	gradleVersion = "1.5" 
-}
+task wrapper(type: Wrapper) {  gradleVersion = "1.5"  }

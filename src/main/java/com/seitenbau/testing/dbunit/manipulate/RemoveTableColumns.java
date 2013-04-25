@@ -130,8 +130,7 @@ public class RemoveTableColumns implements IDataSetFilter
           return !filterOut;
         }
       };
-      ds.addTable(new CompositeTable(new FilteredTableMetaData(oldtable
-          .getTableMetaData(), rowFilter), oldtable));
+      ds.addTable(new CompositeTable(new FilteredTableMetaData(oldtable.getTableMetaData(), rowFilter), oldtable));
     }
     return ds;
   }

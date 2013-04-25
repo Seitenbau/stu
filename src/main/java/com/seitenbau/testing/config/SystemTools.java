@@ -4,7 +4,10 @@ public class SystemTools
 {
   protected static SystemTools _instance;
 
-  protected SystemTools(){}
+  protected SystemTools()
+  {
+  }
+
   /**
    * Reads the current username from the environment
    * @return The current Username or null if non detected

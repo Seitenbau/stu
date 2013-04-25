@@ -23,7 +23,7 @@ public class ValueNotEquals extends AbstractValueValidator
     super("not-set");
     fNotEquals = notEquals;
   }
-  
+
   /**
    * DBUnit Value Validator if a given <value/> ist NOT equal to the
    * given Object.

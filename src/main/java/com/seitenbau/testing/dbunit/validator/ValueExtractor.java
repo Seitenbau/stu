@@ -7,8 +7,7 @@ import com.seitenbau.testing.dbunit.modifier.IDataSetOverwriteCompare;
 /**
  * Extracts the first occurants of the Value into the lastValue field
  */
-public class ValueExtractor extends AbstractValueValidator
-    implements IDataSetOverwriteCompare
+public class ValueExtractor extends AbstractValueValidator implements IDataSetOverwriteCompare
 {
   protected Object lastValue;
 
@@ -32,8 +31,7 @@ public class ValueExtractor extends AbstractValueValidator
    */
   public int compareDataSetElementTo(Object objectToCompareTo)
   {
-    Assert.assertNull(
-        "Multiple Values. Cannot decied which should be extracted ", lastValue);
+    Assert.assertNull("Multiple Values. Cannot decied which should be extracted ", lastValue);
     lastValue = objectToCompareTo;
     return IS_EQUAL;
   }

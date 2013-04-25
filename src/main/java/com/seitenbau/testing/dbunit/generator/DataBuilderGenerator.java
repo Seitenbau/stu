@@ -50,8 +50,8 @@ public class DataBuilderGenerator
    * @param placeholders place-holders found in the data
    * @throws DataSetException
    */
-  public DataBuilderGenerator(DatabaseModel model, IDataSet data, String pkg,
-      String name, Map<String, String> placeholders) throws DataSetException
+  public DataBuilderGenerator(DatabaseModel model, IDataSet data, String pkg, String name,
+      Map<String, String> placeholders) throws DataSetException
   {
     this(model, data, pkg, name, placeholders, new HashMap<String, String>());
   }
@@ -67,9 +67,8 @@ public class DataBuilderGenerator
    *        replacements
    * @throws DataSetException
    */
-  public DataBuilderGenerator(DatabaseModel model, IDataSet data, String pkg,
-      String name, Map<String, String> placeholders, Map<String, String> replace)
-      throws DataSetException
+  public DataBuilderGenerator(DatabaseModel model, IDataSet data, String pkg, String name,
+      Map<String, String> placeholders, Map<String, String> replace) throws DataSetException
   {
     this.dataSet = model.getDataSetGenInstance().getDataSet();
     this.data = data;
@@ -150,8 +149,7 @@ public class DataBuilderGenerator
   {
     try
     {
-      Object valueObj = data.getTable(table.getName()).getValue(row,
-          column.getName());
+      Object valueObj = data.getTable(table.getName()).getValue(row, column.getName());
       if (valueObj != null)
       {
         String value = valueObj.toString();
@@ -217,16 +215,13 @@ public class DataBuilderGenerator
     {
       return byteArrayToJava((byte[]) value);
     }
-    if (Date.class.getCanonicalName().equals(type)
-        || Time.class.getCanonicalName().equals(type)
+    if (Date.class.getCanonicalName().equals(type) || Time.class.getCanonicalName().equals(type)
         || Timestamp.class.getCanonicalName().equals(type))
     {
       return dateToJava((java.util.Date) value, type);
     }
-    if (Integer.class.getCanonicalName().equals(type)
-        || Long.class.getCanonicalName().equals(type)
-        || Float.class.getCanonicalName().equals(type)
-        || Double.class.getCanonicalName().equals(type))
+    if (Integer.class.getCanonicalName().equals(type) || Long.class.getCanonicalName().equals(type)
+        || Float.class.getCanonicalName().equals(type) || Double.class.getCanonicalName().equals(type))
     {
       return value.toString();
     }
@@ -262,8 +257,7 @@ public class DataBuilderGenerator
    */
   public static String dateToJava(java.util.Date value, String type)
   {
-    return "new " + type + "(" + value.getTime() + ") /* " + value.toString()
-        + " */";
+    return "new " + type + "(" + value.getTime() + ") /* " + value.toString() + " */";
   }
 
   /**
@@ -330,4 +324,3 @@ public class DataBuilderGenerator
     return '"' + value + '"'; // should not happen
   }
 }
-

@@ -30,7 +30,7 @@ public class HostAndIpInjector implements ValueInjector
     try
     {
       doSetDnsNames(prop);
-      
+
       String ip = InetAddress.getLocalHost().getHostAddress();
       if (ip.matches("192\\.168\\.\\d{1,3}\\.\\d+"))
       {
@@ -179,7 +179,7 @@ public class HostAndIpInjector implements ValueInjector
     prop.put("_host.name", hostName);
     prop.put("_host.dns", hostDns);
   }
-  
+
   protected void oldStyleIpDetection(Properties prop) throws UnknownHostException
   {
     InetAddress host = InetAddress.getLocalHost();
