@@ -8,6 +8,8 @@ sourceCompatibility   = 1.6
 targetCompatibility   = 1.6
 
 ext.junitVersion      = "4.10"
+ext.easymockVersion   = "3.0"
+ext.festAssertVersion = "1.4"
 ext.velocityVersion   = "1.7"
 ext.commonLangVersion = "2.6"
 ext.slf4jVersion      = "1.6.1"
@@ -30,7 +32,8 @@ dependencies {
 	  exclude module: 'slf4j-api'
 	  exclude module: 'slf4j-nop'
 	}
-	compile("org.easymock:easymock:3.0")
+	compile("org.easymock:easymock:${easymockVersion}", optional)
+	compile("org.easytesting:fest-assert:${festAssertVersion}")
 	compile("org.apache.solr:solr-solrj:4.0.0", optional)
 	compile("org.apache.velocity:velocity:$velocityVersion")
 	compile("commons-lang:commons-lang:$commonLangVersion")
