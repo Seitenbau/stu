@@ -42,6 +42,8 @@ dependencies {
   groovy("org.codehaus.groovy:groovy-all:$groovyVersion")
   testCompile("org.spockframework:spock-core:0.7-groovy-2.0")
   testCompile("org.slf4j:slf4j-log4j12:$slf4jVersion")
+  
+  runtime("mysql:mysql-connector-java:5.0.5")
 }
 
 task wrapper(type: Wrapper) {  gradleVersion = "1.5"  }
