@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database_3_3.dtd">
+<database
+  name="sbTesting"
+  defaultIdMethod="none">
+
+  <table idMethod="native" name="Personen" description="Personen Tabelle">
+    <column
+      name="ID"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="Name"
+      required="true"
+      type="VARCHAR"
+      size="100"
+    />
+    <column name="CREATED" 
+        required="false" 
+        type="DATE"
+            description="" 
+    />
+  </table>
+  
+  <table idMethod="native"  name="Details" description="Personen Tabelle">
+    <column name="ID" primaryKey="true" type="INTEGER" description="" />
+    <column name="PERSON_ID" required="true" 
+            type="INTEGER"
+            description="" />
+    <column name="Details"
+            type="VARCHAR"
+            size="100"
+    />
+    <foreign-key foreignTable="Personen">
+        <reference local="PERSON_ID" foreign="ID" />
+    </foreign-key>
+  </table>
+
+</database>
