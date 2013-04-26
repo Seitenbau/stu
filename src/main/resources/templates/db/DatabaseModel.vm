@@ -1,0 +1,40 @@
+#set( $filename = ${model.outputClass} )
+#set( $package  = ${model.outputPackage} )
+#if( $package && $package.length() != 0 )
+package ${package};
+#end
+
+import com.seitenbau.testing.dbunit.generator.DataType;
+import com.seitenbau.testing.dbunit.generator.DatabaseModel;
+
+public class ${model.outputClass} extends DatabaseModel
+{
+  {
+    packageName("${model.dataSetPackage}");
+    database("${model.dataSetName}");
+#if( ${model.dataSetSourceFolder} && ${model.dataSetSourceFolder.length()} != 0 )
+    generatedSourceFolder("${model.dataSetSourceFolder}");
+#end
+
+#foreach( $table in $model.tables )
+    addTable("${table.tableName}")
+#foreach( $col in $table.columns )
+      .addColumn("${col.columnName}", DataType.${col.dataType.toString()})
+#end
+;
+
+#end
+  }
+
+  public static void main(String[] args)
+  {
+    try
+    {
+      new ${model.outputClass}().getDataSetGenInstance().generateInto("test");
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+}

@@ -1,0 +1,600 @@
+#set($filename = ${model.javaName} + ${model.suffix} )
+#set($package  = ${model.package} )
+#set($rowbuilder   = "RowBuilder_" + ${model.javaName} )
+#set($rowsetters   = "RowSetters_" + ${model.javaName} )
+#set($rowsgetters  = "RowGetters_" + ${model.javaName} )
+#set($whereClass   = ${model.javaName} + "Where" ) 
+#set($rowmodify    = "RowModify_" + ${model.javaName} )
+#set($rowcollection= "RowCollection_" + ${model.javaName} )
+#set($tableClass   = ${model.javaName} + ${model.suffix} )
+#set($dataSetClass = ${model.dataSet.name} + ${model.dataSet.suffix} )
+#if( $package && $package.length() != 0 )
+package ${package};
+#end
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Iterator;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.Column;
+import org.dbunit.dataset.ITableMetaData;
+import org.dbunit.dataset.DefaultTableMetaData;
+import org.dbunit.dataset.RowOutOfBoundsException;
+import org.dbunit.dataset.NoSuchColumnException;
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.datatype.DataType;
+
+import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.testing.dbunit.generator.Flags;
+import com.seitenbau.testing.util.date.Datum;
+
+#foreach( $otab in $model.dataSet.tables )
+#set($otherGetter  = "RowGetters_" + ${otab.javaName} )
+#set($otherTable  = ${otab.javaName} + ${otab.suffix} )
+import ${model.package}.${otherTable}.${otherGetter};
+#end
+
+import static com.seitenbau.testing.util.DateString.*;
+
+/* *******************************************************
+  Generated via : codegeneration.GenerateDatabaseClasses
+**********************************************************/
+public class ${tableClass} implements ITable
+{
+  public final static String NAME = "${model.name}";
+
+  public static class Columns
+  {
+#foreach( $column in $model.columns )
+    public static final String ${column.javaName} = "${column.name}";
+#end
+  }
+
+  // @formatter:off
+  public final static Column[] COLUMNS = new Column[] {
+#foreach( $column in $model.columns )
+    // idx = ${foreach.index}
+#if( ${column.autoIncrement} )
+    new Column(Columns.${column.javaName}, ${column.type}, ${column.type}.toString(), Column.NULLABLE_UNKNOWN, null, null, Column.AutoIncrement.YES)#else
+    new Column(Columns.${column.javaName}, ${column.type})#end#if(!$foreach.isLast()),#end
+
+#end
+  };
+
+  static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
+  static {
+    GENERATOR_METADATA = new HashMap<String, EnumSet<Flags>>();
+#foreach( $column in $model.columns )
+#if( ${column.flags.size()} > 0 )
+    GENERATOR_METADATA.put(Columns.${column.javaName},EnumSet.of(#foreach( $flag in $column.flags )
+ Flags.${flag}#if(!$foreach.isLast()),#end
+#end
+));
+#else
+    GENERATOR_METADATA.put(Columns.${column.javaName},EnumSet.noneOf( Flags.class ));
+#end
+#end
+  }
+  // @formatter:on
+
+  ITableMetaData _metaData;
+  
+  ${dataSetClass} _dataSet;
+  
+  Iterator<${rowbuilder}> _iterator;
+  
+  public ${tableClass}()
+  {
+    _metaData=new DefaultTableMetaData(NAME, COLUMNS);
+  }
+
+  public void setDataset(${dataSetClass} dataSet)
+  {
+    _dataSet=dataSet;
+  }
+  
+  public ${dataSetClass} getDataset()
+  {
+    return _dataSet;
+  }
+
+  public List<${rowbuilder}> rows = new ArrayList<${rowbuilder}>();
+  
+  public interface ${rowsetters}<T extends ${rowsetters}>
+  {
+#foreach( $column in $model.columns )
+#if( $column.javaType.contains("Date") )
+    T set${column.javaName}(String dateString);
+    T set${column.javaName}(Datum datum);
+#end
+#if( $column.javaType.contains("Long") )
+    T set${column.javaName}(Integer intValue);
+#end
+    T set${column.javaName}(${column.javaType} value);
+    T set${column.javaName}Raw(Object value);
+#if( $column.isIdGeneration() )
+    T next${column.javaName}();
+#end
+#end 
+     
+  }
+  
+  public interface ${rowsgetters}<T extends ${rowsgetters}>
+  {
+#foreach( $column in $model.columns )
+    ${column.javaType} get${column.javaName}();
+#end 
+     
+  }
+
+  public static class ${rowbuilder} implements ${rowsetters}<${rowbuilder}>, ${rowsgetters}<${rowbuilder}>
+  {
+
+    Object[] data;
+    
+    ${tableClass} table;
+    
+    ${rowbuilder}(${tableClass} tableDelegate) {
+      data=new Object[COLUMNS.length];
+      table = tableDelegate;
+    }
+    
+#foreach( $column in $model.columns )
+
+#if( $column.javaType.contains("Date") )
+    public ${rowbuilder} set${column.javaName}(String dateString)
+    {
+      data[ $foreach.index ] = toDate(dateString);
+      return this;
+    }
+    public ${rowbuilder} set${column.javaName}(Datum datum)
+    {
+      data[ $foreach.index ] = toDate(datum);
+      return this;
+    }
+#end
+#if( $column.javaType.contains("Long") )
+    public ${rowbuilder} set${column.javaName}(Integer intValue)
+    {
+      data[ $foreach.index ] = (intValue==null?null:Long.valueOf(intValue));
+      return this;
+    }
+#end
+    public ${rowbuilder} set${column.javaName}(${column.javaType} value)
+    {
+      data[ $foreach.index ] = value;
+      return this;
+    }
+    public ${rowbuilder} set${column.javaName}Raw(Object value)
+    {
+      data[ $foreach.index ] = value;
+      return this;
+    }
+#if( $column.isIdGeneration() )
+    public ${rowbuilder} next${column.javaName}()
+    {
+      DatasetIdGenerator generator = table.getDataset().getIdGenerator();
+      Long nextId = generator.nextId(${tableClass}.NAME,"$column.name");
+      set${column.javaName}(nextId);
+      return this;
+    }
+#end
+
+    public ${column.javaType} get${column.javaName}()
+    {
+      return (${column.javaType}) data[$foreach.index];
+    }
+#end 
+    /**
+    * Insert a new Row at the end of the Table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow()
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
+    public ${rowbuilder} insertRow()
+    {
+      return table.insertRow();
+    }
+    
+    /**
+    * Insert a new Row at the end of the Table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow()
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
+    public ${rowbuilder} insertRow(${model.javaName}Model row)
+    {
+      return table.insertRow(row);
+    }
+    
+    /**
+    * Insert a new Row at the given position
+    * <code><pre>
+    * ds.table_${model.javaName}.this.insertRowAt(2)
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
+    public ${rowbuilder} insertRowAt(int index)
+    {
+      return table.insertRowAt(index);
+    }
+
+    /**
+    * Insert a row at the end of the table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow(baseUser);
+    * </pre></code>
+    */
+    public ${rowbuilder} insertRow(${rowbuilder} theRow)
+    {
+      return table.insertRow(theRow);
+    }
+    
+    public Object getValue(String column) throws RuntimeException {
+#foreach( $column in $model.columns )
+      if(column.equalsIgnoreCase(Columns.${column.javaName}) ) {
+        return data[$foreach.index];
+      }
+#end
+      throw new RuntimeException(NAME + " col = " + column);
+    }
+    
+#foreach( $column in $model.columns )
+#foreach( $ref in $column.references )
+#set($otherGetter  = "RowGetters_" + ${ref.table.javaName} )
+
+    public ${rowbuilder} ref${column.javaName}($otherGetter reference)
+    {
+      set${column.javaName}(reference.get${ref.javaName}());
+      return this;
+    }
+#end
+#end
+    
+    @Override
+    public ${rowbuilder} clone() {
+      ${rowbuilder} clone = new ${rowbuilder}(table);
+#foreach( $column in $model.columns )
+      clone.set${column.javaName}(get${column.javaName}());
+#end
+      return clone;
+    }
+  }
+  
+  public $whereClass findWhere = new $whereClass(this);
+
+  public static class $whereClass
+  {
+    public List<${rowbuilder}> rows;
+    ${tableClass} table;
+    
+    public $whereClass(${tableClass} theTable) {
+       rows = theTable.rows;
+       table = theTable;
+    }
+    
+    public ${rowcollection} rowComparesTo(Comparable<${rowbuilder}> toSearch) {
+      ${rowcollection} modifiers = new ${rowcollection}(table);
+      for (${rowbuilder} row : rows) 
+      {
+        if (toSearch.compareTo( row ) == 0) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with ${column.name} = " + toSearch );
+      }
+      return modifiers;
+    }
+#foreach( $column in $model.columns )  
+    public ${rowcollection} ${column.javaNameFirstLower}(${column.javaType} toSearch) {
+      ${rowcollection} modifiers = new ${rowcollection}(table);
+      for (${rowbuilder} row : rows) 
+      {
+        if (row.get${column.javaName}().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with ${column.name} = " + toSearch );
+      }
+      return modifiers;
+    }
+#if( $column.javaType.contains("Long") )
+    public ${rowcollection} ${column.javaNameFirstLower}(Integer toSearch) 
+    {
+      return ${column.javaNameFirstLower}( Long.valueOf(toSearch) );
+    }
+#end
+#end
+  }
+  
+  /** Inner class! Use ${rowcollection} in your code ! */
+  public static class ${rowmodify} extends ${rowbuilder} 
+  {
+      List<${rowbuilder}> _rows;
+
+      public ${rowmodify}(${tableClass} theTable) {
+        super(theTable);
+        _rows = new ArrayList<${rowbuilder}>();
+      }
+      
+      public void add(${rowbuilder} row) {
+          _rows.add(row);
+      }
+      
+      public boolean isEmpty() {
+          return _rows.isEmpty();
+      }
+
+      public ${rowmodify} delete() {
+          for(${rowbuilder} row : _rows) {
+            table.rows.remove(row);
+          }
+          return this;
+      }
+        
+#foreach( $column in $model.columns )
+
+#if( $column.javaType.contains("Date") )
+      public ${rowmodify} set${column.javaName}(String dateString)
+      {
+        for(${rowbuilder} row : _rows) {
+          row.set${column.javaName}(dateString);
+        }
+        return this;
+      }
+      public ${rowmodify} set${column.javaName}(Datum datum)
+      {
+        for(${rowbuilder} row : _rows) {
+          row.set${column.javaName}(datum);
+        }
+        return this;
+      }
+#end
+#if( $column.javaType.contains("Long") )
+      public ${rowmodify} set${column.javaName}(Integer intValue)
+      {
+        for(${rowbuilder} row : _rows) {
+          row.set${column.javaName}(intValue);
+        }
+        return this;
+      }
+
+#end
+      public ${rowmodify} set${column.javaName}(${column.javaType} value)
+      {
+        for(${rowbuilder} row : _rows) {
+          row.set${column.javaName}(value);
+        }
+        return this;
+      }
+      public ${rowmodify} set${column.javaName}Raw(Object value)
+      {
+        for(${rowbuilder} row : _rows) {
+          row.set${column.javaName}Raw(value);
+        }
+        return this;
+      }
+      public ${column.javaType} get${column.javaName}()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).get${column.javaName}();
+      }
+#end 
+      public Object getValue(String column)
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getValue(column);
+      }
+      
+      /** 
+       * Return the count of rows contained in this collection
+       */
+      public int getRowCount()
+      {
+        return _rows.size();
+      }
+      
+      @Override
+      public ${rowmodify} clone() {
+        ${rowmodify} clone = new ${rowmodify}(table);
+        for(${rowbuilder} row:_rows) {
+          clone._rows.add(row.clone());
+        }
+        return clone;
+      }
+
+  }
+  
+  public static class ${rowcollection} extends ${rowmodify} {
+    public $whereClass where = new $whereClass(table);
+    
+    public ${rowcollection}(${tableClass} theTable)
+    {
+      super(theTable);
+    }
+    
+  }
+
+  /**
+  * Insert a new empty Row.
+  * <code><pre>
+  * ds.table_${model.javaName}.insertRow()
+#foreach( $column in $model.columns )
+  *   .set${column.javaName}( null )
+#end
+  *   ;
+  * </pre></code>
+  */
+  public ${rowbuilder} insertRow()
+  {
+    ${rowbuilder} row = new ${rowbuilder}(this);
+#foreach( $column in $model.columns )
+#if( $column.isIdGenerationAutoInvokeOnInsert() )
+    row.next${column.javaName}();
+#end
+#end
+    rows.add(row);
+    return row;
+  }
+  
+  /**
+  * <code><pre>
+  * ds.table_${model.javaName}.insertRow()
+  * </pre></code>
+  */
+  public ${rowbuilder} insertRow(${model.javaName}Model rowToAdd)
+  {
+    ${rowbuilder} row = new ${rowbuilder}(this);
+#foreach( $column in $model.columns )
+    row.set${column.javaName}Raw( rowToAdd.get${column.javaName}Raw() );
+#end
+    rows.add(row);
+    return row;
+  }
+
+  /**
+  * <code><pre>
+  * ds.table_${model.javaName}.insertRow(data);
+  * </pre></code>
+  */
+  public ${rowbuilder} insertRow(${rowbuilder} theRow)
+  {
+    rows.add(theRow);
+    return theRow;
+  }
+  
+  /**
+  * <code><pre>
+  * ds.table_${model.javaName}.insertRows(data);
+  * </pre></code>
+  */
+  public void insertRows(${rowbuilder}...theRows)
+  {
+    rows.addAll(Arrays.asList(theRows));
+  }
+  
+  /**
+  * Insert new row at the given index
+  * <code><pre>
+  * ds.table_${model.javaName}.insertRowAt(3)
+  *   ;
+  * </pre></code>
+  */
+  public ${rowbuilder} insertRowAt(int index)
+  {
+    ${rowbuilder} row = new ${rowbuilder}(this);
+    rows.add(index, row);
+    return row;
+  }
+  
+  /**
+  * Insert new row Object at the given index
+  * <code><pre>
+  * ds.table_${model.javaName}.insertRowAt(3)
+  * </pre></code>
+  */
+  public ${rowbuilder} insertRowAt(int index,${rowbuilder} theRow)
+  {
+    rows.add(index, theRow);
+    return theRow;
+  }
+  
+  /**
+   * Remove a row from the builder by the given index.
+   *
+   * @return the deleted row
+   */ 
+  public ${rowbuilder} deleteRow(int index)
+  {
+    ${rowbuilder} rowBuilder = rows.get(index);
+    rows.remove(rowBuilder);
+    return rowBuilder;
+  }
+  
+  /**
+   * Remove a row from the builder
+   */ 
+  public ${rowbuilder} deleteRow(${rowbuilder} rowToDelete)
+  {
+    rows.remove(rowToDelete);
+    return rowToDelete;
+  }
+
+  /**
+  * Creates a new row but does not add it to the table
+  */
+  public ${rowbuilder} newRow()
+  {
+    ${rowbuilder} row = new ${rowbuilder}(this);
+    return row;
+  }
+  
+  /**
+  * Returns the next Object. The internal iterator is started at 
+  * the first call.
+  */
+  public ${rowbuilder} next()
+  {
+    if(_iterator == null) {
+      _iterator = rows.iterator();
+    }
+    return _iterator.next();
+  }
+  
+  public void resetIterator() {
+    _iterator = null;
+  }
+
+  public ITableMetaData getTableMetaData() {
+      return _metaData;
+  }
+  
+  public int getRowCount() {
+      return rows.size();
+  }
+   
+  public Object getValue(int row, String column) throws DataSetException {
+      if (row >= rows.size() || row < 0) {
+        throw new RowOutOfBoundsException();
+      }
+      return rows.get(row).getValue(column);
+  }
+
+  static Date toDate(String dateString)
+  {
+    return asDate(dateString);
+  }
+  
+  static Date toDate(Datum datum)
+  {
+    return datum.asDate();
+  }
+ 
+}

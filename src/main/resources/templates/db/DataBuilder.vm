@@ -1,0 +1,33 @@
+#set( $filename = ${model.className} )
+#set( $package  = ${model.package} )
+#if( $package && $package.length() != 0 )
+package ${package};
+#end
+
+#if( ${model.hasPlaceholders()} )
+import com.seitenbau.testing.dbunit.util.DbCompare;
+#end
+import ${model.dataSetClass};
+
+public class ${model.className} extends ${model.dataSetClassName}
+{
+  @Override
+  protected void initDataSet()
+  {
+#foreach( $table in ${model.tables} )
+#if( $model.hasRows($table) )
+    // Table $table.name
+#foreach( $row in [0..${model.getLastRowIndex($table)}] )
+    // row $row
+    table_${table.javaName}.insertRow()
+#foreach( $column in ${table.columns} )
+#if( ${model.getColumnValue($table, $column, $row)} )
+      .set${column.javaName}#if( $model.isPlaceholder($table, $column, $row) )
+Raw#end( ${model.getColumnValue($table, $column, $row)} )
+#end
+#end;
+#end
+#end
+#end
+  }
+}
