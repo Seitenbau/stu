@@ -1,5 +1,6 @@
 apply plugin: "java"
 apply plugin: "groovy"
+apply plugin: "idea"
 
 group = "com.seitenbau.testing"
 version = "1.0.0-SNAPSHOT"
