@@ -7,11 +7,9 @@ import org.dbunit.dataset.DefaultTableMetaData;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.datatype.DataType;
-import org.fest.assertions.Assertions;
 import org.junit.Test;
 import static org.fest.assertions.Assertions.*;
 import com.seitenbau.testing.dbunit.modifier.IDataSetFilter;
-import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 
 public class RemoveTableColumnsTest
 {
