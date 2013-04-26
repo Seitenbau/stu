@@ -2,7 +2,7 @@ package com.seitenbau.testing.asserts.fest.impl;
 
 /*
  * June 2012 copy of FileAssert to patch compare methods ... why
- * because they used private classes ... fun
+ * because they used private classes.
  * 
  * Created on Dec 23, 2007
  * 

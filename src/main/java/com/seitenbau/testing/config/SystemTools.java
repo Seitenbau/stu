@@ -10,7 +10,7 @@ public class SystemTools
 
   /**
    * Reads the current username from the environment
-   * @return The current Username or null if non detected
+   * @return The current username or null if non detected
    */
   public String getUsername()
   {
@@ -53,25 +53,5 @@ public class SystemTools
       _instance = new SystemTools();
     }
     return _instance;
-  }
-
-  @Deprecated
-  /** 
-   * Do only use this if you know you are doing!
-   * <br/>
-   * Call reset() to cleanup this internal manipulation!
-   */
-  public static void setInternal(SystemTools instance)
-  {
-    _instance = instance;
-  }
-
-  @Deprecated
-  /**
-   * Do only use this if you know you are doing! 
-   */
-  public static void reset()
-  {
-    _instance = null;
   }
 }

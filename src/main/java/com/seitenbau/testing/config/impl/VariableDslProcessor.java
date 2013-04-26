@@ -48,11 +48,7 @@ public class VariableDslProcessor
     while (matcher.find())
     {
       String all = matcher.group(1);
-      if (all.startsWith("\\"))
-      {
-        // matcher.appendReplacement(sb, all);
-      }
-      else
+      if (!all.startsWith("\\"))
       {
         String var = matcher.group(2);
         String replacement = get(prop, var, defaultvalue);

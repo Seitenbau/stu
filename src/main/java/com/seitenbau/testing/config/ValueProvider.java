@@ -3,7 +3,7 @@ package com.seitenbau.testing.config;
 import java.util.Map;
 
 /**
- * Provider für Key Values pairs
+ * Provider for Key-Value pairs
  */
 public interface ValueProvider
 {

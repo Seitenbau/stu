@@ -53,7 +53,7 @@ public class VelocityGenerator
   {
     VelocityEngine ve = new VelocityEngine();
 
-    // Template liegt im Classpath
+    // Template must be available in the classpath
     ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "class");
     ve.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getCanonicalName());
     return ve;

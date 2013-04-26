@@ -1,7 +1,7 @@
 package com.seitenbau.testing.asserts.fest.impl;
 
 /*
- * Copied June 2012, because original code was private !!! 
+ * Copied June 2012, because original code was private.
  * changes:
  *   - made class public
  *   - made private metods protected

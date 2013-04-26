@@ -46,7 +46,7 @@ public class TestConfigurationIntern
     {
       if (!allowAutoload)
       {
-        throw new RuntimeException("No configuration is laoded");
+        throw new RuntimeException("No configuration has been loaded.");
       }
       ValueProvider cfg = getValueProvider();
       String[] environment = getEnvironmentProvider().getEnvironmentIds();
