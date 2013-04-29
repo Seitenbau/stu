@@ -1,4 +1,4 @@
-# Testing Utils
+# stu - Simple Test utils
 
 TODO project description.
 
