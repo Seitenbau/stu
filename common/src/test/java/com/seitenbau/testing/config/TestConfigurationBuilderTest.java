@@ -1,11 +1,13 @@
 package com.seitenbau.testing.config;
 
 import org.fest.assertions.Fail;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.fest.assertions.Assertions.*;
 
 public class TestConfigurationBuilderTest
 {
+  @Ignore
   @Test
   public void loadInto_Default()
   {
