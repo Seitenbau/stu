@@ -1,0 +1,5 @@
+#set( $filename = ${model.filename} )
+#set( $package  = ${model.folder} )
+content ...
+ filename = ${model.filename}
+ package  = ${model.folder}

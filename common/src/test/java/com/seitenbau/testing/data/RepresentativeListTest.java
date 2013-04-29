@@ -1,0 +1,57 @@
+package com.seitenbau.testing.data;
+
+import org.junit.Test;
+
+import com.seitenbau.testing.data.detail.Representant;
+import com.seitenbau.testing.data.detail.Representant.RepresentantType;
+import com.seitenbau.testing.data.impl.RepresentativeList;
+import com.seitenbau.testing.data.specs.OfTypeTestBase;
+
+import java.util.List;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+
+public class RepresentativeListTest extends OfTypeTestBase
+{
+  @Test
+  public void emptyList() throws Exception
+  {
+    RepresentativeList<String> sut = new RepresentativeList<String>(null);
+    List<Representant<String>> all = sut.getList();
+    assertEquals(0, all.size());
+  }
+  
+  @Test
+  public void noFilter() throws Exception
+  {
+    RepresentativeList<String> sut = new RepresentativeList<String>(null);
+    sut.valid("valid");
+    sut.inValid("invalid");
+    List<Representant<String>> all = sut.getList();
+    assertEquals(2, all.size());
+    assertThat(all, hasItem(valid("valid")));
+    assertThat(all, hasItem(invalid("invalid")));
+  }
+  
+  @Test
+  public void validFilter() throws Exception
+  {
+    RepresentativeList<String> sut = new RepresentativeList<String>(RepresentantType.VALID);
+    sut.valid("valid");
+    sut.inValid("invalid");
+    List<Representant<String>> all = sut.getList();
+    assertEquals(1, all.size());
+    assertThat(all, hasItem(valid("valid")));
+  }
+  
+  @Test
+  public void inValidFilter() throws Exception
+  {
+    RepresentativeList<String> sut = new RepresentativeList<String>(RepresentantType.INVALID);
+    sut.valid("valid");
+    sut.inValid("invalid");
+    List<Representant<String>> all = sut.getList();
+    assertEquals(1, all.size());
+    assertThat(all, hasItem(invalid("invalid")));
+  }
+}
