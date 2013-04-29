@@ -84,6 +84,12 @@ project("database") {
   }
 }
 
+project("examples") {
+  dependencies {
+    compile project(':database')
+  }
+}
+
 configure(rootProject) {
   task wrapper(type: Wrapper) {  gradleVersion = "1.5"  }
 }
