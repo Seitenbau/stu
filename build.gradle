@@ -10,22 +10,23 @@ configure(allprojects) {
   sourceCompatibility   = 1.6
   targetCompatibility   = 1.6
 
-  ext.junitVersion      	= "4.10"
-  ext.hamcrestVersion	  	= "1.3"
-  ext.mockitoVersion    	= "1.9.5"
-  ext.easymockVersion   	= "3.0"
-  ext.festAssertVersion 	= "1.4"
-  ext.velocityVersion   	= "1.7"
-  ext.commonLangVersion 	= "2.6"
-  ext.slf4jVersion      	= "1.6.1"
-  ext.groovyVersion     	= "2.0.5"
-  ext.springVersion     	= "3.0.5.RELEASE"
-  ext.logbackVersion	  	= "1.0.6"
-  ext.commonsdbcpVersion 	= "1.4"
-  ext.dbunitVersion		= "2.3.0"
-  ext.solrjVersion		= "4.0.0"
-  ext.mysqlConnVersion	= "5.0.5"
-  ext.spockVersion		= "0.7-groovy-2.0"
+  ext.commonLangVersion   = "2.6"
+  ext.commonsdbcpVersion  = "1.4"
+  ext.dbunitVersion       = "2.3.0"
+  ext.easymockVersion     = "3.0"
+  ext.festAssertVersion   = "1.4"
+  ext.groovyVersion       = "2.0.5"
+  ext.h2Version           = "1.3.148"
+  ext.hamcrestVersion	    = "1.3"
+  ext.junitVersion        = "4.10"
+  ext.logbackVersion      = "1.0.6"
+  ext.mockitoVersion      = "1.9.5"
+  ext.mysqlConnVersion    = "5.0.5"
+  ext.slf4jVersion        = "1.6.1"
+  ext.solrjVersion        = "4.0.0"
+  ext.spockVersion        = "0.7-groovy-2.0"
+  ext.springVersion       = "3.0.5.RELEASE"
+  ext.velocityVersion     = "1.7"
 
   ext.sourceEncoding    = "ISO-8859-1"
   ext.gradleScriptDir   = "${rootProject.projectDir}/gradle"
@@ -87,6 +88,7 @@ project("database") {
 project("examples") {
   dependencies {
     compile project(':database')
+    compile("com.h2database:h2:$h2Version")
   }
 }
 
