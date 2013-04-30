@@ -13,6 +13,7 @@ configure(allprojects) {
   ext.commonLangVersion   = "2.6"
   ext.commonsdbcpVersion  = "1.4"
   ext.dbunitVersion       = "2.3.0"
+  ext.derbyVersion        = "10.9.1.0"
   ext.easymockVersion     = "3.0"
   ext.festAssertVersion   = "1.4"
   ext.groovyVersion       = "2.0.5"
@@ -89,6 +90,7 @@ project("examples") {
   dependencies {
     compile project(':database')
     compile("com.h2database:h2:$h2Version")
+    compile("org.apache.derby:derby:$derbyVersion")
   }
 }
 
