@@ -2,11 +2,14 @@ package com.seitenbau.testing.dbunit.services.intern;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.seitenbau.testing.dbunit.services.CRUDService;
 
 import dao.Professor;
 import dao.Repo;
 
+@Service
 public class CRUDServiceImpl implements CRUDService
 {
   @Override

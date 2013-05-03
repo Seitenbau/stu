@@ -231,14 +231,14 @@ public abstract class STUExampleDBDataSet
   /* ************************************************************ */
   
   /** 
-   * Adds the given row into the Table 'professor'
+   * Adds the given row into the Table 'PROFESSOR'
    */
   public RowBuilder_Professor add(RowBuilder_Professor row) 
   {
     return table_Professor.insertRow(row);
   }
   /** 
-   * Adds the given row into the Table 'professor'
+   * Adds the given row into the Table 'PROFESSOR'
    */
   public RowBuilder_Professor add(ProfessorModel row) 
   {
@@ -259,14 +259,14 @@ public abstract class STUExampleDBDataSet
   }
   */
   /** 
-   * Adds the given row into the Table 'lecture'
+   * Adds the given row into the Table 'LECTURE'
    */
   public RowBuilder_Lecture add(RowBuilder_Lecture row) 
   {
     return table_Lecture.insertRow(row);
   }
   /** 
-   * Adds the given row into the Table 'lecture'
+   * Adds the given row into the Table 'LECTURE'
    */
   public RowBuilder_Lecture add(LectureModel row) 
   {
@@ -287,14 +287,14 @@ public abstract class STUExampleDBDataSet
   }
   */
   /** 
-   * Adds the given row into the Table 'exam'
+   * Adds the given row into the Table 'EXAM'
    */
   public RowBuilder_Exam add(RowBuilder_Exam row) 
   {
     return table_Exam.insertRow(row);
   }
   /** 
-   * Adds the given row into the Table 'exam'
+   * Adds the given row into the Table 'EXAM'
    */
   public RowBuilder_Exam add(ExamModel row) 
   {
@@ -315,14 +315,14 @@ public abstract class STUExampleDBDataSet
   }
   */
   /** 
-   * Adds the given row into the Table 'student'
+   * Adds the given row into the Table 'STUDENT'
    */
   public RowBuilder_Student add(RowBuilder_Student row) 
   {
     return table_Student.insertRow(row);
   }
   /** 
-   * Adds the given row into the Table 'student'
+   * Adds the given row into the Table 'STUDENT'
    */
   public RowBuilder_Student add(StudentModel row) 
   {
@@ -343,14 +343,14 @@ public abstract class STUExampleDBDataSet
   }
   */
   /** 
-   * Adds the given row into the Table 'give_lecture'
+   * Adds the given row into the Table 'GIVE_LECTURE'
    */
   public RowBuilder_GiveLecture add(RowBuilder_GiveLecture row) 
   {
     return table_GiveLecture.insertRow(row);
   }
   /** 
-   * Adds the given row into the Table 'give_lecture'
+   * Adds the given row into the Table 'GIVE_LECTURE'
    */
   public RowBuilder_GiveLecture add(GiveLectureModel row) 
   {
@@ -370,14 +370,14 @@ public abstract class STUExampleDBDataSet
   }
   */
   /** 
-   * Adds the given row into the Table 'participate'
+   * Adds the given row into the Table 'PARTICIPATE'
    */
   public RowBuilder_Participate add(RowBuilder_Participate row) 
   {
     return table_Participate.insertRow(row);
   }
   /** 
-   * Adds the given row into the Table 'participate'
+   * Adds the given row into the Table 'PARTICIPATE'
    */
   public RowBuilder_Participate add(ParticipateModel row) 
   {
@@ -397,14 +397,14 @@ public abstract class STUExampleDBDataSet
   }
   */
   /** 
-   * Adds the given row into the Table 'is_tutor'
+   * Adds the given row into the Table 'IS_TUTOR'
    */
   public RowBuilder_IsTutor add(RowBuilder_IsTutor row) 
   {
     return table_IsTutor.insertRow(row);
   }
   /** 
-   * Adds the given row into the Table 'is_tutor'
+   * Adds the given row into the Table 'IS_TUTOR'
    */
   public RowBuilder_IsTutor add(IsTutorModel row) 
   {
@@ -424,14 +424,14 @@ public abstract class STUExampleDBDataSet
   }
   */
   /** 
-   * Adds the given row into the Table 'attend'
+   * Adds the given row into the Table 'ATTEND'
    */
   public RowBuilder_Attend add(RowBuilder_Attend row) 
   {
     return table_Attend.insertRow(row);
   }
   /** 
-   * Adds the given row into the Table 'attend'
+   * Adds the given row into the Table 'ATTEND'
    */
   public RowBuilder_Attend add(AttendModel row) 
   {

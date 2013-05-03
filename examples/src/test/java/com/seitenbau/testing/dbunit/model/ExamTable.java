@@ -40,7 +40,7 @@ import static com.seitenbau.testing.util.DateUtil.*;
 **********************************************************/
 public class ExamTable implements ITable
 {
-  public final static String NAME = "exam";
+  public final static String NAME = "EXAM";
 
   public static class Columns
   {

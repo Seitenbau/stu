@@ -40,7 +40,7 @@ import static com.seitenbau.testing.util.DateUtil.*;
 **********************************************************/
 public class ParticipateTable implements ITable
 {
-  public final static String NAME = "participate";
+  public final static String NAME = "PARTICIPATE";
 
   public static class Columns
   {

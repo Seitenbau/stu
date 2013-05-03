@@ -5,10 +5,10 @@
 -- --------------------------------------------------------
 
 --
--- Table structure for table `give_lecture`
+-- Table structure for table `GIVE_LECTURE`
 --
 
-CREATE TABLE IF NOT EXISTS `give_lecture` (
+CREATE TABLE IF NOT EXISTS `GIVE_LECTURE` (
   `professor_id` int(11) NOT NULL,
   `exam_id` int(11) NOT NULL,
   PRIMARY KEY (`professor_id`,`exam_id`),
@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS `give_lecture` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `attend`
+-- Table structure for table `ATTEND`
 --
 
-CREATE TABLE IF NOT EXISTS `attend` (
+CREATE TABLE IF NOT EXISTS `ATTEND` (
   `student_id` int(11) NOT NULL,
   `lecture_id` int(11) NOT NULL,
   PRIMARY KEY (`student_id`,`lecture_id`),
@@ -33,10 +33,10 @@ CREATE TABLE IF NOT EXISTS `attend` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `is_tutor`
+-- Table structure for table `IS_TUTOR`
 --
 
-CREATE TABLE IF NOT EXISTS `is_tutor` (
+CREATE TABLE IF NOT EXISTS `IS_TUTOR` (
   `student_id` int(11) NOT NULL,
   `lecture_id` int(11) NOT NULL,
   PRIMARY KEY (`student_id`,`lecture_id`),
@@ -47,10 +47,10 @@ CREATE TABLE IF NOT EXISTS `is_tutor` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `lecture`
+-- Table structure for table `LECTURE`
 --
 
-CREATE TABLE IF NOT EXISTS `lecture` (
+CREATE TABLE IF NOT EXISTS `LECTURE` (
   `id` int(11) NOT NULL,
   `professor_id` int(11) NOT NULL,
   `name` varchar(80) NOT NULL,
@@ -64,10 +64,10 @@ CREATE TABLE IF NOT EXISTS `lecture` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `professor`
+-- Table structure for table `PROFESSOR`
 --
 
-CREATE TABLE IF NOT EXISTS `professor` (
+CREATE TABLE IF NOT EXISTS `PROFESSOR` (
   `id` int(11) NOT NULL,
   `name` varchar(80) NOT NULL,
   `first_name` varchar(80) NOT NULL,
@@ -80,10 +80,10 @@ CREATE TABLE IF NOT EXISTS `professor` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `exam`
+-- Table structure for table `EXAM`
 --
 
-CREATE TABLE IF NOT EXISTS `exam` (
+CREATE TABLE IF NOT EXISTS `EXAM` (
   `id` int(11) NOT NULL,
   `lecture_id` int(11) NOT NULL,
   `lecture_type` varchar(20) NOT NULL,
@@ -96,10 +96,10 @@ CREATE TABLE IF NOT EXISTS `exam` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `participate`
+-- Table structure for table `PARTICIPATE`
 --
 
-CREATE TABLE IF NOT EXISTS `participate` (
+CREATE TABLE IF NOT EXISTS `PARTICIPATE` (
   `student_id` int(11) NOT NULL,
   `exam_id` int(11) NOT NULL,
   PRIMARY KEY (`student_id`,`exam_id`),
@@ -110,10 +110,10 @@ CREATE TABLE IF NOT EXISTS `participate` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `student`
+-- Table structure for table `STUDENT`
 --
 
-CREATE TABLE IF NOT EXISTS `student` (
+CREATE TABLE IF NOT EXISTS `STUDENT` (
   `student_number` int(11) NOT NULL,
   `name` varchar(80) NOT NULL,
   `first_name` varchar(80) NOT NULL,
@@ -128,35 +128,35 @@ CREATE TABLE IF NOT EXISTS `student` (
 --
 
 --
--- Constraints for table `give_lecture`
+-- Constraints for table `GIVE_LECTURE`
 --
-ALTER TABLE `give_lecture`
-  ADD CONSTRAINT `give_lecture_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `professor` (`id`),
-  ADD CONSTRAINT `give_lecture_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`);
+ALTER TABLE `GIVE_LECTURE`
+  ADD CONSTRAINT `give_lecture_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `PROFESSOR` (`id`),
+  ADD CONSTRAINT `give_lecture_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `EXAM` (`id`);
 
 --
--- Constraints for table `attend`
+-- Constraints for table `ATTEND`
 --
-ALTER TABLE `attend`
-  ADD CONSTRAINT `attend_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_number`),
-  ADD CONSTRAINT `attend_ibfk_2` FOREIGN KEY (`lecture_id`) REFERENCES `lecture` (`id`);
+ALTER TABLE `ATTEND`
+  ADD CONSTRAINT `attend_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `STUDENT` (`student_number`),
+  ADD CONSTRAINT `attend_ibfk_2` FOREIGN KEY (`lecture_id`) REFERENCES `LECTURE` (`id`);
 
 --
--- Constraints for table `is_tutor`
+-- Constraints for table `IS_TUTOR`
 --
-ALTER TABLE `is_tutor`
-  ADD CONSTRAINT `is_tutor_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_number`),
-  ADD CONSTRAINT `is_tutor_ibfk_2` FOREIGN KEY (`lecture_id`) REFERENCES `lecture` (`id`);
+ALTER TABLE `IS_TUTOR`
+  ADD CONSTRAINT `is_tutor_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `STUDENT` (`student_number`),
+  ADD CONSTRAINT `is_tutor_ibfk_2` FOREIGN KEY (`lecture_id`) REFERENCES `LECTURE` (`id`);
 
 --
--- Constraints for table `lecture`
+-- Constraints for table `LECTURE`
 --
-ALTER TABLE `lecture`
-  ADD CONSTRAINT `lecture_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `professor` (`id`);
+ALTER TABLE `LECTURE`
+  ADD CONSTRAINT `lecture_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `PROFESSOR` (`id`);
 
 --
--- Constraints for table `participate`
+-- Constraints for table `PARTICIPATE`
 --
-ALTER TABLE `participate`
-  ADD CONSTRAINT `participate_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_number`),
-  ADD CONSTRAINT `participate_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`);
+ALTER TABLE `PARTICIPATE`
+  ADD CONSTRAINT `participate_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `STUDENT` (`student_number`),
+  ADD CONSTRAINT `participate_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `EXAM` (`id`);

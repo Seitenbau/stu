@@ -40,7 +40,7 @@ import static com.seitenbau.testing.util.DateUtil.*;
 **********************************************************/
 public class AttendTable implements ITable
 {
-  public final static String NAME = "attend";
+  public final static String NAME = "ATTEND";
 
   public static class Columns
   {

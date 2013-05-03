@@ -50,7 +50,7 @@ public class ExamModel
   }
   public ExamModel nextId()
   {
-    Long nextId = _generator.nextId("exam","id");
+    Long nextId = _generator.nextId("EXAM","id");
     setId(nextId);
     return this;
   }

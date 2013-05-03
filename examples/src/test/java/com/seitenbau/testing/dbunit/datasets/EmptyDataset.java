@@ -1,7 +1,10 @@
 package com.seitenbau.testing.dbunit.datasets;
 
-public class EmptyDataset
+import com.seitenbau.testing.dbunit.model.STUExampleDBDataSet;
+
+public class EmptyDataset extends STUExampleDBDataSet
 {
+  @Override
   protected void initDataSet()
   {
 

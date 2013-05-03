@@ -52,7 +52,7 @@ public class LectureModel
   }
   public LectureModel nextId()
   {
-    Long nextId = _generator.nextId("lecture","id");
+    Long nextId = _generator.nextId("LECTURE","id");
     setId(nextId);
     return this;
   }

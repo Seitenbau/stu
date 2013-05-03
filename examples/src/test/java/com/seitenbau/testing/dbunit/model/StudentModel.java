@@ -54,7 +54,7 @@ public class StudentModel
   }
   public StudentModel nextStudentNumber()
   {
-    Long nextId = _generator.nextId("student","student_number");
+    Long nextId = _generator.nextId("STUDENT","student_number");
     setStudentNumber(nextId);
     return this;
   }

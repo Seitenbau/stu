@@ -91,6 +91,7 @@ project("examples") {
     compile("org.apache.derby:derby:$derbyVersion")
     compile("org.springframework:spring-context:$springVersion")
     compile("org.springframework:spring-orm:$springVersion")
+    compile("org.springframework:spring-test:$springVersion")
   }
 }
 
