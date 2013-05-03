@@ -41,4 +41,21 @@ public class ManualDatabaseTester
     // verify
     Assertions.assertThat(result).isEqualTo(expected);
   }
+
+  @Test
+  public void oneEntryInDataset() throws Exception
+  {
+    // prepare
+    EmptyDataset emptyDataset = new EmptyDataset();
+    emptyDataset.table_Professor.insertRow().setFirstName("Hansi").setName("Krankl").setTitle("Dipl.-Med.-Sys.-Wiss.")
+        .setFaculty("Media");
+
+    dbTesterRule.cleanInsert(emptyDataset);
+
+    // execute
+    List<Professor> result = sut.findProfessors();
+    // verify
+    // TODO impl must be updated to db access
+    Assertions.assertThat(result).hasSize(0);
+  }
 }
