@@ -111,7 +111,7 @@ public class DateBuilder
    * Calculate the timespan between this an another  
    * 
    * @param datum the other date
-   * @return a Zeitspanne
+   * @return a Timespan
    */
   public Timespan calcDifferencTo(DateBuilder datum) 
   {
@@ -125,7 +125,7 @@ public class DateBuilder
    * Calculate the timespan between this an another  
    * 
    * @param datum the other date
-   * @return a Zeitspanne
+   * @return a Timespan
    */
   public Timespan calcDifferencTo(String datum) 
   {

@@ -34,7 +34,7 @@ import org.dbunit.dataset.datatype.DataType;
 
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.util.date.Datum;
+import com.seitenbau.testing.util.date.DateBuilder;
 
 #foreach( $otab in $model.dataSet.tables )
 #set($otherGetter  = "RowGetters_" + ${otab.javaName} )
@@ -42,7 +42,7 @@ import com.seitenbau.testing.util.date.Datum;
 import ${model.package}.${otherTable}.${otherGetter};
 #end
 
-import static com.seitenbau.testing.util.DateString.*;
+import static com.seitenbau.testing.util.DateUtil.*;
 
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
@@ -113,7 +113,7 @@ public class ${tableClass} implements ITable
 #foreach( $column in $model.columns )
 #if( $column.javaType.contains("Date") )
     T set${column.javaName}(String dateString);
-    T set${column.javaName}(Datum datum);
+    T set${column.javaName}(DateBuilder datum);
 #end
 #if( $column.javaType.contains("Long") )
     T set${column.javaName}(Integer intValue);
@@ -155,7 +155,7 @@ public class ${tableClass} implements ITable
       data[ $foreach.index ] = toDate(dateString);
       return this;
     }
-    public ${rowbuilder} set${column.javaName}(Datum datum)
+    public ${rowbuilder} set${column.javaName}(DateBuilder datum)
     {
       data[ $foreach.index ] = toDate(datum);
       return this;
@@ -365,7 +365,7 @@ public class ${tableClass} implements ITable
         }
         return this;
       }
-      public ${rowmodify} set${column.javaName}(Datum datum)
+      public ${rowmodify} set${column.javaName}(DateBuilder datum)
       {
         for(${rowbuilder} row : _rows) {
           row.set${column.javaName}(datum);
@@ -592,7 +592,7 @@ public class ${tableClass} implements ITable
     return asDate(dateString);
   }
   
-  static Date toDate(Datum datum)
+  static Date toDate(DateBuilder datum)
   {
     return datum.asDate();
   }

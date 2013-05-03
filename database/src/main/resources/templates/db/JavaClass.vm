@@ -7,7 +7,7 @@ package ${package};
 
 import java.util.Date;
 import com.seitenbau.testing.util.DateUtil;
-import com.seitenbau.testing.util.date.Datum;
+import com.seitenbau.testing.util.date.DateBuilder;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 
 /* *******************************************************
@@ -33,7 +33,7 @@ public class $tableClass
     ${column.getJavaNameFirstLower()} = DateUtil.asDate(dateString);
     return this;
   }
-  public $tableClass set${column.javaName}(Datum datum)
+  public $tableClass set${column.javaName}(DateBuilder datum)
   {
     ${column.getJavaNameFirstLower()} = datum.asDate();
     return this;
