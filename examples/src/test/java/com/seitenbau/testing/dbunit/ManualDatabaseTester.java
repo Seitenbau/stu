@@ -1,14 +1,12 @@
 package com.seitenbau.testing.dbunit;
 
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.Assert;
 
-import org.apache.zookeeper.KeeperException.DataInconsistencyException;
-import org.fest.assertions.Assertions;
-import org.fest.assertions.Fail;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
