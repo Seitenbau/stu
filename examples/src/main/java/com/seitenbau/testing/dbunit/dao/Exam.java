@@ -4,20 +4,20 @@ import java.util.Date;
 
 public class Exam
 {
-  Lecture correspondingLecture;
+  int correspondingLectureId;
 
   String type;
 
   Date startsAt;
 
-  public Lecture getCorrespondingLecture()
+  public int getCorrespondingLectureId()
   {
-    return correspondingLecture;
+    return correspondingLectureId;
   }
 
-  public void setCorrespondingLecture(Lecture correspondingLecture)
+  public void setCorrespondingLectureId(int correspondingLectureId)
   {
-    this.correspondingLecture = correspondingLecture;
+    this.correspondingLectureId = correspondingLectureId;
   }
 
   public String getType()
