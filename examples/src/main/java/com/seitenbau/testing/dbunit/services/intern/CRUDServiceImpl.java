@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.seitenbau.testing.dbunit.dao.Lecture;
 import com.seitenbau.testing.dbunit.dao.Professor;
 import com.seitenbau.testing.dbunit.dao.Repo;
 import com.seitenbau.testing.dbunit.services.CRUDService;
@@ -21,7 +22,7 @@ public class CRUDServiceImpl implements CRUDService
   @Override
   public List<Professor> findProfessors()
   {
-    return Repo.getAll();
+    return Repo.getAllProfessors();
   }
 
   @Override
@@ -35,5 +36,24 @@ public class CRUDServiceImpl implements CRUDService
   public int removeProfessor(Professor professor)
   {
     return Repo.remove(professor);
+  }
+
+  @Override
+  public boolean addLecture(Lecture lecture)
+  {
+    return Repo.add(lecture);
+  }
+
+  @Override
+  public List<Lecture> findLectures()
+  {
+    return Repo.getAllLectures();
+  }
+
+
+  @Override
+  public int removeLecture(Lecture lecture)
+  {
+    return Repo.remove(lecture);
   }
 }

@@ -2,7 +2,9 @@ package com.seitenbau.testing.dbunit.dao;
 
 public class Lecture
 {
-  Professor givenBy;
+  int id;
+  
+  int givenBy;
 
   String title;
 
@@ -10,14 +12,14 @@ public class Lecture
 
   int semesterCredits;
 
-  public Professor getHoldBy()
+  public int getGivenBy()
   {
     return givenBy;
   }
 
-  public void setHoldBy(Professor holdBy)
+  public void setGivenBy(int givenBy)
   {
-    this.givenBy = holdBy;
+    this.givenBy = givenBy;
   }
 
   public String getTitle()
@@ -50,4 +52,13 @@ public class Lecture
     this.semesterCredits = semesterCredits;
   }
 
+  public int getId()
+  {
+    return id;
+  }
+
+  public void setId(int id)
+  {
+    this.id = id;
+  }
 }

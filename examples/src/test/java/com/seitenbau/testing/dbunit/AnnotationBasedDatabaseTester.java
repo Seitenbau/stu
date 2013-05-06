@@ -12,14 +12,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.dao.Professor;
-import com.seitenbau.testing.dbunit.datasets.DefaultProfessorDataSet;
+import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.services.CRUDService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
-@DatabaseSetup(prepare = DefaultProfessorDataSet.class, assertNoModification = false)
+@DatabaseSetup(prepare = DefaultDataSet.class, assertNoModification = false)
 public class AnnotationBasedDatabaseTester
 {
   @Rule

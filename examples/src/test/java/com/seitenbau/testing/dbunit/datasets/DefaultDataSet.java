@@ -1,11 +1,13 @@
 package com.seitenbau.testing.dbunit.datasets;
 
-public class DefaultProfessorDataSet extends EmptyDataset
+import com.seitenbau.testing.dbunit.model.ProfessorTable.RowBuilder_Professor;
+
+public class DefaultDataSet extends EmptyDataSet
 {
   @Override
   protected void initDataSet()
   {
-    table_Professor.insertRow() //
+    RowBuilder_Professor hansi = table_Professor.insertRow() //
         .setFirstName("Hansi") //
         .setName("Krankl") //
         .setFaculty("Media") //
@@ -22,5 +24,17 @@ public class DefaultProfessorDataSet extends EmptyDataset
         .setName("Polo") //
         .setFaculty("Business Management") //
         .setTitle("Dr. Dr.");
+
+    table_Lecture.insertRow() //
+        .setName("Semiotik Today") //
+        .setSws(2) //
+        .setEcts(10) //
+        .refProfessorId(hansi);
+
+    table_Lecture.insertRow() //
+        .setName("Information Retrieval") //
+        .setSws(5) //
+        .setEcts(12) //
+        .refProfessorId(hansi);
   }
 }
