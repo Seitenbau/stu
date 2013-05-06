@@ -13,11 +13,11 @@ public class Repo
   protected static final String DB_PROFESSORS_TABLE_NAME = "professor";
 
   private static final String ALL_PROFESSOR_COLUMNS = //
-  "id" + ", " + //
-      "name" + ", " + //
-      "first_name" + ", " + //
-      "title" + ", " + //
-      "faculty";
+      ProfessorColumnNames.ID.getColumnName() + ", " + //
+      ProfessorColumnNames.NAME.getColumnName() + ", " + //
+      ProfessorColumnNames.FIRST_NAME.getColumnName() + ", " + //
+      ProfessorColumnNames.TITLE.getColumnName() + ", " + //
+      ProfessorColumnNames.FACULTY.getColumnName();
 
   private static final String SQL_SELECT_ALL_PROFESSORS = "SELECT * FROM " + DB_PROFESSORS_TABLE_NAME;
 
@@ -27,7 +27,7 @@ public class Repo
       " VALUES (?, ?, ?, ?, ?)";
 
   private static final String SQL_DELETE_PROFESSORS_BY_ID = "DELETE FROM " + DB_PROFESSORS_TABLE_NAME + //
-      " WHERE " + "id" + " = (?)";
+      " WHERE " + ProfessorColumnNames.ID.getColumnName() + " = (?)";
 
   private static DataSource dataSource;
 
@@ -64,7 +64,8 @@ public class Repo
 
     return selectedProfessors;
   }
-
+  
+  @Transactional(readOnly = false)
   public static boolean update(Professor professor)
   {
     JdbcTemplate update = new JdbcTemplate(dataSource);

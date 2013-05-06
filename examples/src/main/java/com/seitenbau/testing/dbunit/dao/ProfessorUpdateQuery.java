@@ -12,21 +12,21 @@ public class ProfessorUpdateQuery extends SqlUpdate
   private static final String PROFESSOR_UPDATE_QUERY = "UPDATE " + //
       Repo.DB_PROFESSORS_TABLE_NAME + //
       " SET " + //
-      "name" + " = ?, " + //
-      "first_name" + " = ?, " + //
-      "title" + " = ?, " + //
-      "faculty" + " = ?" + //
+      ProfessorColumnNames.NAME.getColumnName() + " = ?, " + //
+      ProfessorColumnNames.FIRST_NAME.getColumnName() + " = ?, " + //
+      ProfessorColumnNames.TITLE.getColumnName() + " = ?, " + //
+      ProfessorColumnNames.FACULTY.getColumnName() + " = ?" + //
       " WHERE " + //
-      "id" + " = ?";
+      ProfessorColumnNames.ID.getColumnName() + " = ?";
 
   public ProfessorUpdateQuery(JdbcTemplate template)
   {
     super(template.getDataSource(), PROFESSOR_UPDATE_QUERY);
 
-    declareParameter(new SqlParameter("name", Types.VARCHAR));
-    declareParameter(new SqlParameter("first_name", Types.VARCHAR));
-    declareParameter(new SqlParameter("title", Types.VARCHAR));
-    declareParameter(new SqlParameter("faculty", Types.VARCHAR));
+    declareParameter(new SqlParameter(ProfessorColumnNames.NAME.getColumnName(), Types.VARCHAR));
+    declareParameter(new SqlParameter(ProfessorColumnNames.FIRST_NAME.getColumnName(), Types.VARCHAR));
+    declareParameter(new SqlParameter(ProfessorColumnNames.TITLE.getColumnName(), Types.VARCHAR));
+    declareParameter(new SqlParameter(ProfessorColumnNames.FACULTY.getColumnName(), Types.VARCHAR));
     compile();
   }
 

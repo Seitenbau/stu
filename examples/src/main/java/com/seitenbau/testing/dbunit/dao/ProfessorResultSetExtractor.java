@@ -13,11 +13,11 @@ public class ProfessorResultSetExtractor implements ResultSetExtractor<Professor
   public Professor extractData(ResultSet rs) throws SQLException, DataAccessException
   {
     Professor professor = new Professor();
-    professor.setId(rs.getInt("id"));
-    professor.setName(rs.getString("name"));
-    professor.setFirstName(rs.getString("first_name"));
-    professor.setTitle(rs.getString("title"));
-    professor.setFaculty(rs.getString("faculty"));
+    professor.setId(rs.getInt(ProfessorColumnNames.ID.getColumnName()));
+    professor.setName(rs.getString(ProfessorColumnNames.NAME.getColumnName()));
+    professor.setFirstName(rs.getString(ProfessorColumnNames.FIRST_NAME.getColumnName()));
+    professor.setTitle(rs.getString(ProfessorColumnNames.TITLE.getColumnName()));
+    professor.setFaculty(rs.getString(ProfessorColumnNames.FACULTY.getColumnName()));
     return professor;
   }
 
