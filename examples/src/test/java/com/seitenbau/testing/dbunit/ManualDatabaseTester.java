@@ -13,10 +13,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.dao.Professor;
+import com.seitenbau.testing.dbunit.datasets.DefaultProfessorDataSet;
 import com.seitenbau.testing.dbunit.datasets.EmptyDataset;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.services.CRUDService;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
@@ -29,7 +29,7 @@ public class ManualDatabaseTester
   CRUDService sut;
 
   @Test
-  public void emptyDataset() throws Exception
+  public void findAllProfessorsOnEmptyDataset() throws Exception
   {
     // prepare
     List<Professor> expected = new LinkedList<Professor>();
@@ -43,7 +43,7 @@ public class ManualDatabaseTester
   }
 
   @Test
-  public void oneEntryInDataset() throws Exception
+  public void findAllProfessorsWithOneEntryInDataset() throws Exception
   {
     // prepare
     EmptyDataset emptyDataset = new EmptyDataset();
@@ -58,5 +58,93 @@ public class ManualDatabaseTester
     Assertions.assertThat(result).hasSize(1);
     Professor professor = result.get(0);
     Assertions.assertThat(professor.getFirstName()).isEqualTo("Hansi");
+  }
+
+  @Test
+  public void findAllProfessorsWithDefaultProfessorDataset() throws Exception
+  {
+    // prepare
+    DefaultProfessorDataSet defaultDataSet = new DefaultProfessorDataSet();
+    dbTesterRule.cleanInsert(defaultDataSet);
+
+    // execute
+    List<Professor> result = sut.findProfessors();
+    // verify
+    Assertions.assertThat(result).hasSize(3);
+  }
+
+  @Test
+  public void addProfessorsToEmptyDataset() throws Exception
+  {
+    // prepare
+    EmptyDataset emptyDataset = new EmptyDataset();
+    dbTesterRule.cleanInsert(emptyDataset);
+
+    Professor professor = new Professor();
+    professor.setFirstName("Hansi");
+    professor.setName("Krankl");
+    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
+    professor.setFaculty("Media");
+
+    // execute
+    boolean insertWasSuccessful = sut.addProfessor(professor);
+    // verify
+    Assertions.assertThat(insertWasSuccessful).isTrue();
+  }
+
+  @Test
+  public void removeProfessorsFromDefaultDataset() throws Exception
+  {
+    // prepare
+    DefaultProfessorDataSet defaultDataSet = new DefaultProfessorDataSet();
+    dbTesterRule.cleanInsert(defaultDataSet);
+
+    Professor professor = new Professor();
+    professor.setFirstName("Hansi");
+    professor.setName("Krankl");
+    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
+    professor.setFaculty("Media");
+
+    for (Professor currentProfessor : sut.findProfessors())
+    {
+      if (currentProfessor.getName().equals("Krankl"))
+      {
+        professor.setId(currentProfessor.getId());
+        break;
+      }
+    }
+
+    // execute
+    int deletedRows = sut.removeProfessor(professor);
+    // verify
+    Assertions.assertThat(deletedRows).isEqualTo(1);
+  }
+  
+  @Test
+  public void updateProfessorsFromDefaultDataset() throws Exception
+  {
+    // prepare
+    DefaultProfessorDataSet defaultDataSet = new DefaultProfessorDataSet();
+    dbTesterRule.cleanInsert(defaultDataSet);
+
+    Professor professor = new Professor();
+    professor.setFirstName("Hansi");
+    professor.setName("Schmidt");
+    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
+    professor.setFaculty("Media");
+
+    for (Professor currentProfessor : sut.findProfessors())
+    {
+      if (currentProfessor.getName().equals("Krankl"))
+      {
+        professor.setId(currentProfessor.getId());
+        break;
+      }
+    }
+
+    // execute
+    boolean updateWasSuccessful = sut.updateProfessor(professor);
+    // verify
+    Assertions.assertThat(updateWasSuccessful).isTrue();
   }
 }

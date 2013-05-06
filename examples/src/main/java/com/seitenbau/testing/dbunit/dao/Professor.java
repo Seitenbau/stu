@@ -57,7 +57,7 @@ public class Professor
     return id;
   }
 
-  protected void setId(int id)
+  public void setId(int id)
   {
     this.id = id;
   }

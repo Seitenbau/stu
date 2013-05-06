@@ -27,6 +27,7 @@ public class ProfessorUpdateQuery extends SqlUpdate
     declareParameter(new SqlParameter(ProfessorColumnNames.FIRST_NAME.getColumnName(), Types.VARCHAR));
     declareParameter(new SqlParameter(ProfessorColumnNames.TITLE.getColumnName(), Types.VARCHAR));
     declareParameter(new SqlParameter(ProfessorColumnNames.FACULTY.getColumnName(), Types.VARCHAR));
+    declareParameter(new SqlParameter(ProfessorColumnNames.ID.getColumnName(), Types.INTEGER));
     compile();
   }
 
@@ -36,7 +37,9 @@ public class ProfessorUpdateQuery extends SqlUpdate
         toUpdate.getName(), //
         toUpdate.getFirstName(), //
         toUpdate.getTitle(), //
-        toUpdate.getFaculty());
+        toUpdate.getFaculty(), //
+        toUpdate.getId() //
+        );
 
     return affectedRows;
   }
