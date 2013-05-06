@@ -2,15 +2,16 @@ package com.seitenbau.testing.dbunit.services;
 
 import java.util.List;
 
-import dao.Professor;
+import com.seitenbau.testing.dbunit.dao.Professor;
+
 
 public interface CRUDService
 {
-  public Professor addProfessor(Professor professor);
+  public boolean addProfessor(Professor professor);
 
   public List<Professor> findProfessors();
 
-  public Professor updateProfessor(Professor professor);
+  public boolean updateProfessor(Professor professor);
 
-  public void removeProfessor(Professor professor);
+  public int removeProfessor(Professor professor);
 }

@@ -5,11 +5,10 @@ import java.sql.DriverManager;
 import java.util.List;
 import java.util.Properties;
 
+import com.seitenbau.testing.dbunit.dao.Professor;
 import com.seitenbau.testing.dbunit.services.CRUDService;
 import com.seitenbau.testing.dbunit.services.intern.CRUDServiceImpl;
 
-import dao.Professor;
-import dao.Repo;
 
 public class Application
 {
@@ -20,8 +19,7 @@ public class Application
     properties.put("user", "sampleuser");
     properties.put("password", "sampleuser");
     Connection connection = DriverManager.getConnection("jdbc:derby:memory:stuDB;create=true;characterEncoding=utf-8", properties);
-    Repo.setConnection(connection);
-    
+
     Professor mrSmith = new Professor();
     mrSmith.setFirstName("John");
     mrSmith.setName("Smith");
@@ -31,18 +29,19 @@ public class Application
     System.out.println("Before:" + mrSmith);
 
     CRUDService sampleService = new CRUDServiceImpl();
-    mrSmith = sampleService.addProfessor(mrSmith);
-    System.out.println("After insert:" + mrSmith);
+    boolean success = sampleService.addProfessor(mrSmith);
+    System.out.println("After insert success state:" + success);
 
     List<Professor> professors = sampleService.findProfessors();
     System.out.println("All profs:" + professors);
 
     mrSmith.setName("Doe");
-    mrSmith = sampleService.updateProfessor(mrSmith);
+    success = sampleService.updateProfessor(mrSmith);
     professors = sampleService.findProfessors();
-    System.out.println("All profs after update:" + professors);
+    System.out.println("After update success state:" + success);
 
-    sampleService.removeProfessor(mrSmith);
+    int rowsAffected = sampleService.removeProfessor(mrSmith);
+    System.out.println("After remove rows affected:" + rowsAffected);
     professors = sampleService.findProfessors();
     System.out.println("All profs after remove:" + professors);
 

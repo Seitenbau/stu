@@ -1,4 +1,4 @@
-package dao;
+package com.seitenbau.testing.dbunit.dao;
 
 public class Lecture
 {

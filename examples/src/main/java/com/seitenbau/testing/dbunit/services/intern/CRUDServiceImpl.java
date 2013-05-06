@@ -4,16 +4,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.seitenbau.testing.dbunit.dao.Professor;
+import com.seitenbau.testing.dbunit.dao.Repo;
 import com.seitenbau.testing.dbunit.services.CRUDService;
 
-import dao.Professor;
-import dao.Repo;
 
 @Service
 public class CRUDServiceImpl implements CRUDService
 {
   @Override
-  public Professor addProfessor(Professor professor)
+  public boolean addProfessor(Professor professor)
   {
     return Repo.add(professor);
   }
@@ -25,15 +25,15 @@ public class CRUDServiceImpl implements CRUDService
   }
 
   @Override
-  public Professor updateProfessor(Professor professor)
+  public boolean updateProfessor(Professor professor)
   {
     return Repo.update(professor);
 
   }
 
   @Override
-  public void removeProfessor(Professor professor)
+  public int removeProfessor(Professor professor)
   {
-    Repo.remove(professor);
+    return Repo.remove(professor);
   }
 }

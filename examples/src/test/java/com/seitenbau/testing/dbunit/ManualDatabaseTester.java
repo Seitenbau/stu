@@ -12,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.seitenbau.testing.dbunit.config.TestConfig;
+import com.seitenbau.testing.dbunit.dao.Professor;
 import com.seitenbau.testing.dbunit.datasets.EmptyDataset;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.services.CRUDService;
 
-import dao.Professor;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
@@ -55,7 +55,8 @@ public class ManualDatabaseTester
     // execute
     List<Professor> result = sut.findProfessors();
     // verify
-    // TODO impl must be updated to db access
-    Assertions.assertThat(result).hasSize(0);
+    Assertions.assertThat(result).hasSize(1);
+    Professor professor = result.get(0);
+    Assertions.assertThat(professor.getFirstName()).isEqualTo("Hansi");
   }
 }
