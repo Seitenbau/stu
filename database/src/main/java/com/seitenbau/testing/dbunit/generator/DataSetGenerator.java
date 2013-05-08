@@ -99,6 +99,9 @@ public class DataSetGenerator
       check();
       _dataSet.setCaller(_caller);
       generateDataSet(targetPath + "/");
+      generateTableParser(targetPath + "/");
+      logger.debug("RIEN NE VAS PLUS");
+
       generateTables(targetPath + "/");
       generateJavaClasses(targetPath + "/");
     }
@@ -132,6 +135,12 @@ public class DataSetGenerator
     logger.info("created " + _dataSet.getTables().size() + " Tables");
   }
 
+  protected void generateTableParser(String into) throws Exception
+  {
+    templates.executeTemplate(_dataSet, getTemplatePathTableParser(), into);
+    logger.info("created 1 TableParser");
+  }
+
   protected void generateJavaClasses(String into) throws Exception
   {
     for (Table table : _dataSet.getTables())
@@ -147,6 +156,11 @@ public class DataSetGenerator
     return "/templates/db/Table.vm";
   }
 
+  protected String getTemplatePathTableParser()
+  {
+    return "/templates/db/TableParser.vm";
+  }
+  
   protected String getTemplatePathDataSets()
   {
     return "/templates/db/DataSet.vm";

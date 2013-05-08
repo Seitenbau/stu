@@ -16,6 +16,8 @@ public class Column
   String _name;
 
   String _javaName;
+  
+  String _testModelType;
 
   EnumSet<Flags> _flags = EnumSet.noneOf(Flags.class);
 
@@ -26,11 +28,16 @@ public class Column
   public Column(Table table, String name, String javaName, String type, String javaType, Column[] references,
       Flags[] flags)
   {
+    if (isReference() && table.getReferenceColumn() != null) {
+      throw new IllegalArgumentException("Cannot set multiple reference columns in a single table");
+    }
+    
     _table = table;
     _name = name;
     _javaName = javaName;
     _type = type;
     _javaType = javaType;
+    _testModelType = javaType;
     if (flags != null)
     {
       for (Flags flag : flags)
@@ -43,6 +50,7 @@ public class Column
       for (Column ref : references)
       {
         _references.add(ref);
+        _testModelType = ref.getTable().getJavaName() + "Id";
       }
     }
   }
@@ -57,6 +65,11 @@ public class Column
     return _javaType;
   }
 
+  public String getTestModelType()
+  {
+    return _testModelType;
+  }
+
   public String getType()
   {
     return _type;
@@ -67,6 +80,32 @@ public class Column
     return _name;
   }
 
+  public String getNameWithoutId()
+  {
+    if (_name.endsWith("_id")) {
+      return _name.substring(0, _name.length() - 3);
+    } else {
+      return _name;
+    }
+  }
+  
+  public boolean isIdTruncable()
+  {
+    if (_references.size() == 0 || !_name.endsWith("_id")) {
+      return false;
+    }
+    
+    final String shortName = getNameWithoutId();
+    for (Column column : _table.getColumns()) {
+      if (shortName.equals(column.getName())) {
+        System.out.println(shortName + " matches: " + column.getName());
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
   public EnumSet<Flags> getFlags()
   {
     return _flags;
@@ -90,6 +129,11 @@ public class Column
   public boolean isIdGeneration()
   {
     return isAutoIncrement() || isIdGenerationAutoInvokeOnInsert() || _flags.contains(Flags.AddNextIdMethod);
+  }
+
+  public boolean isReference()
+  {
+    return _flags.contains(Flags.ReferenceColumn);
   }
 
   public String getJavaName()

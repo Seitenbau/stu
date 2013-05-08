@@ -38,7 +38,7 @@ public class Table
   {
     return _name;
   }
-
+  
   public Table addColumn(String dbColName, String type, String javaType)
   {
     _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {}, new Flags[] {}));
@@ -66,6 +66,19 @@ public class Table
   public Table addColumn(String dbColName, DataType type, Column reference, Flags... flags)
   {
     _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference},
+        flags));
+    return this;
+  }
+
+  public Table addColumn(String dbColName, String type, String javaType, Table reference, Flags... flags)
+  {
+    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {reference.getReferenceColumn()}, flags));
+    return this;
+  }
+
+  public Table addColumn(String dbColName, DataType type, Table reference, Flags... flags)
+  {
+    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference.getReferenceColumn()},
         flags));
     return this;
   }
@@ -132,6 +145,18 @@ public class Table
   public String getSuffix()
   {
     return NAME_SUFFIX;
+  }
+  
+  public Column getReferenceColumn()
+  {
+    for (Column col : getColumns())
+    {
+      if (col.isReference())
+      {
+        return col;
+      }
+    }
+    return null;
   }
 
   public Column ref(String colName)

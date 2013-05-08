@@ -1,0 +1,271 @@
+#set($filename = "GroovyTableParser.groovy" )
+#if( $model.package && $model.package.length() != 0 )
+#set($package  = ${model.package} + ".groovy" )
+#else
+#set($package  = "groovy" )
+#end
+package ${package};
+
+#if( $model.package && $model.package.length() != 0 )
+import ${model.package}.${model.name}DataSet
+#end
+import groovy.transform.ToString
+
+//-----------------------------------
+// This is a common part
+
+@ToString
+class Row {
+
+  List values = []
+
+  def or(arg) {
+    values.add(arg)
+    this
+  }
+}
+
+class ColumnHeader {
+  
+  String name
+
+  Class type
+
+}
+//-----------------------------------
+
+
+#foreach( $table in $model.tables )
+#if ( ${table.referenceColumn} )
+#set( $col = ${table.referenceColumn} )
+class ${table.javaName}Id {
+
+#if ( ${col.isAutoIncrement()} || ${col.isIdGenerationAutoInvokeOnInsert()} )  
+  // TODO NM replace with IdGenerator
+  static ${col.javaType} nextId = 1
+
+#end
+  private ${col.javaType} id
+  
+#if ( ${col.isAutoIncrement()} || ${col.isIdGenerationAutoInvokeOnInsert()} )  
+  def ${table.javaName}Id() {
+  }
+  
+#end
+##if ( !${col.isIdGenerationAutoInvokeOnInsert()} )  
+  def ${table.javaName}Id(${col.javaType} id) {
+    this.id = id
+  }
+##end
+
+  ${col.javaType} getId() {
+    if (id == null) {
+#if ( ${col.isAutoIncrement()} || ${col.isIdGenerationAutoInvokeOnInsert()} )
+      id = nextId++
+#else
+      throw new IllegalStateException("No id set");      
+#end
+    }
+    return id
+  }
+
+  void setId(${col.javaType} id) {
+    if (isDefined() && this.id != id) {
+      throw new IllegalStateException("Id already set " + id + " vs " + this.id + " [Table: ${table.name}]");
+    }
+    this.id = id
+  }
+
+  boolean isDefined() {
+    return this.id != null
+  }
+  
+  String toString() {
+    return id
+  }
+
+}
+#end
+#end
+
+class AbstractTableParser {
+  
+  static context = new ThreadLocal<List>()
+  
+  static or(self, arg) {
+    appendRow(self, arg)
+  }
+
+  static or(Integer self, Integer arg) {
+    appendRow(self, arg)
+  }
+
+  static or(Boolean self, Boolean arg) {
+    appendRow(self, arg)
+  }
+
+  static appendRow(value, nextValue) {
+    def row = new Row(values: [value])
+    context.get().add(row)
+    row.or(nextValue)
+  }
+  
+  def parseTable(Closure rows) {
+    context.set([])
+    use(AbstractTableParser) {
+      rows.delegate = this
+      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows()
+    }
+    context.get()
+  }
+  
+  boolean isHeadRow(Row row) {
+    null == row.values.find { value ->
+      !(value instanceof ColumnHeader)
+    }
+  }
+
+  def rows(Closure rows) {
+    def tableData = parseTable(rows)
+    def head = null
+    int columns = 0
+    
+    tableData.each { row ->
+      if (isHeadRow(row)) {
+        head = row
+        columns = row.values.size()
+      } else {
+        def resultRow = createRow()
+        for (columnIndex in 0..(columns-1)) {
+          def column = head.values[columnIndex]
+          def method = column.name
+          def value = row.values[columnIndex]
+          resultRow."$method"(value)
+        }
+       
+        this.rows.add(resultRow)
+      }
+    }
+  }
+}
+
+#foreach( $table in $model.tables )
+@Mixin(AbstractTableParser)
+class ${table.javaName}Table {
+
+#if ( $table.referenceColumn )
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: ${table.javaName}Id.class)
+
+#end
+#foreach( $col in $table.columns )
+  ColumnHeader ${col.name} = new ColumnHeader(name: "${col.name}", type: ${col.testModelType})
+
+## check if column is a reference
+#if ( ${col.isIdTruncable()} )
+#set( $shortname  = $col.getNameWithoutId() )
+  ColumnHeader ${shortname} = new ColumnHeader(name: "${shortname}", type: ${col.testModelType})
+
+#end
+#end
+  
+  @ToString
+  class ${table.javaName}TableRow {
+    
+#if ( $table.referenceColumn )
+    ${table.javaName}Id REF
+    
+    def REF(${table.javaName}Id REF){
+      this.REF = REF
+    }
+    
+    def REF() {
+      this.REF
+    }
+    
+#end
+#foreach( $col in $table.columns )
+    ${col.testModelType} ${col.name}
+    
+    def ${col.name}(${col.testModelType} ${col.name}){
+      this.${col.name} = ${col.name}
+    }
+    
+    def ${col.name}() {
+      this.${col.name}
+    }
+
+#if ( ${col.isIdTruncable()} )
+#set( $shortname  = $col.getNameWithoutId() )
+    def ${shortname}(${col.testModelType} ${col.name}){
+      this.${col.name} = ${col.name}
+    }
+    
+    def ${shortname}() {
+      this.${col.name}
+    }
+
+#end
+#end
+  }
+  
+  List<${table.javaName}TableRow> rows = []
+  
+  def createRow() {
+    new ${table.javaName}TableRow()
+  }
+}
+
+#end
+
+class ${model.name}Table {
+
+#foreach( $table in $model.tables )
+  ${table.javaName}Table ${table.javaName.substring(0,1).toLowerCase()}${table.javaName.substring(1)}Table = new ${table.javaName}Table()
+  
+#end
+  
+  def tables(Closure table) {
+    table.delegate = this
+    table.resolveStrategy = Closure.DELEGATE_FIRST
+    table()
+  }
+  
+  def createDataSet() {
+    ${model.name}DataSet dataset = new ${model.name}DataSet() {
+      void initDataSet() { 
+#foreach( $table in $model.tables )
+        add${table.javaName}Table()
+#end
+      }
+      
+#foreach( $table in $model.tables )
+      void add${table.javaName}Table() {
+        ${table.javaName.substring(0,1).toLowerCase()}${table.javaName.substring(1)}Table.rows.each { tableRow ->
+          def row = table_${table.javaName}.insertRow()
+#foreach( $col in $table.columns )
+#if( $col == $table.referenceColumn ) 
+          // if primary key column has a value set REF to that value else use REFs value
+          if (tableRow.${col.name} != null) {
+            row.set${col.javaName}(tableRow.${col.name})
+            tableRow.REF.id = tableRow.${col.name}
+          } else {
+            if (tableRow.REF != null) {
+              row.set${col.javaName}(tableRow.REF.id)
+              tableRow.${col.name} = tableRow.REF.id
+            }
+          }
+#elseif( $col.references && $col.references.size() != 0 )
+          if (tableRow.${col.name}) row.set${col.javaName}(tableRow.${col.name}.id)
+#else
+          if (tableRow.${col.name}) row.set${col.javaName}(tableRow.${col.name})
+#end
+#end
+        }
+      }
+
+#end
+    }
+    dataset.createDBUnitDataSet()
+  }
+}

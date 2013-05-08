@@ -24,5 +24,9 @@ public enum Flags
   /**
    * 
    */
-  AutoInvokeNextIdMethod;
+  AutoInvokeNextIdMethod,
+  /**
+   * 
+   */
+  ReferenceColumn;
 }

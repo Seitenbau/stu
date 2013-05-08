@@ -19,8 +19,12 @@ public class DefaultJavaSourceWriter implements JavaSourceWriter
       path = path + pkg.replace(".", "/") + "/";
       new File(path).mkdirs();
     }
-    String fn = path + filename + ".java";
-
+    String fn = path + filename;
+    
+    if (!(filename.endsWith(".java") || filename.endsWith(".groovy"))) {
+      fn += ".java";
+    }
+    
     try
     {
       FileWriter out = new FileWriter(fn);
