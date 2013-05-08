@@ -11,11 +11,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.seitenbau.testing.dbunit.config.TestConfig;
-import com.seitenbau.testing.dbunit.dao.Professor;
+import com.seitenbau.testing.dbunit.dao.Person;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
-import com.seitenbau.testing.dbunit.services.CRUDService;
+import com.seitenbau.testing.dbunit.services.PersonService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
@@ -26,14 +26,14 @@ public class AnnotationBasedDatabaseTester
   public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);
 
   @Autowired
-  CRUDService sut;
+  PersonService sut;
 
   @Test
-  public void allProfessorsFromDefaultDataset() throws Exception
+  public void allPersonsFromDefaultDataset() throws Exception
   {
     // prepare
     // execute
-    List<Professor> result = sut.findProfessors();
+    List<Person> result = sut.findPersons();
     // verify
     Assertions.assertThat(result).hasSize(3);
   }

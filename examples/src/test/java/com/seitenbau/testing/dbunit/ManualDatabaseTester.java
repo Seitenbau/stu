@@ -5,24 +5,23 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.LinkedList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.seitenbau.testing.dbunit.config.TestConfig;
-import com.seitenbau.testing.dbunit.dao.Lecture;
-import com.seitenbau.testing.dbunit.dao.Professor;
+import com.seitenbau.testing.dbunit.dao.Job;
+import com.seitenbau.testing.dbunit.dao.Person;
+import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.EmptyDataSet;
-import com.seitenbau.testing.dbunit.model.ProfessorTable.RowBuilder_Professor;
+import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
+import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
-import com.seitenbau.testing.dbunit.services.CRUDService;
+import com.seitenbau.testing.dbunit.services.PersonService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
@@ -32,279 +31,310 @@ public class ManualDatabaseTester
   public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);
 
   @Autowired
-  CRUDService sut;
+  PersonService sut;
 
   @Test
-  public void findAllProfessorsOnEmptyDataset() throws Exception
+  public void findAllPersonsOnEmptyDataset() throws Exception
   {
     // prepare
-    List<Professor> expected = new LinkedList<Professor>();
+    List<Person> expected = new LinkedList<Person>();
     EmptyDataSet emptyDataset = new EmptyDataSet();
     dbTesterRule.cleanInsert(emptyDataset);
 
     // execute
-    List<Professor> result = sut.findProfessors();
+    List<Person> result = sut.findPersons();
     // verify
     assertThat(result).isEqualTo(expected);
   }
 
   @Test
-  public void findAllProfessorsWithOneEntryInDataset() throws Exception
+  public void findAllPersonsWithOneEntryInDataset() throws Exception
   {
     // prepare
     EmptyDataSet emptyDataset = new EmptyDataSet();
-    emptyDataset.table_Professor.insertRow().setFirstName("Hansi").setName("Krankl").setTitle("Dipl.-Med.-Sys.-Wiss.")
-        .setFaculty("Media");
+    RowBuilder_Jobs job = emptyDataset.table_Jobs.insertRow().setTitle("Software Developer")
+        .setDescription("Developing Software");
+    RowBuilder_Teams team = emptyDataset.table_Teams.insertRow().setTitle("Quality Assurance")
+        .setDescription("Just hanging around").setMembersize(1);
+    emptyDataset.table_Persons.insertRow().setFirstName("Dennis").setName("Kaulbersch").setJobId(job.getId())
+        .setTeamId(team.getId());
 
     dbTesterRule.cleanInsert(emptyDataset);
 
     // execute
-    List<Professor> result = sut.findProfessors();
+    List<Person> result = sut.findPersons();
     // verify
     assertThat(result).hasSize(1);
-    Professor professor = result.get(0);
-    assertThat(professor.getFirstName()).isEqualTo("Hansi");
+    Person person = result.get(0);
+    assertThat(person.getFirstName()).isEqualTo("Dennis");
   }
 
   @Test
-  public void findAllProfessorsWithDefaultProfessorDataset() throws Exception
+  public void findAllPersonsWithDefaultProfessorDataset() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
     dbTesterRule.cleanInsert(defaultDataSet);
 
     // execute
-    List<Professor> result = sut.findProfessors();
+    List<Person> result = sut.findPersons();
     // verify
     assertThat(result).hasSize(3);
   }
 
   @Test
-  public void addProfessorsToEmptyDataset() throws Exception
+  public void addPersonToEmptyDataset() throws Exception
   {
     // prepare
     EmptyDataSet emptyDataset = new EmptyDataSet();
+
+    RowBuilder_Jobs job = emptyDataset.table_Jobs.insertRow().setTitle("Software Developer")
+        .setDescription("Developing Software");
+    RowBuilder_Teams team = emptyDataset.table_Teams.insertRow().setTitle("Quality Assurance")
+        .setDescription("Verifies that requirments for a product is fulfilled").setMembersize(0);
+
     dbTesterRule.cleanInsert(emptyDataset);
 
-    Professor professor = new Professor();
-    professor.setFirstName("Hansi");
-    professor.setName("Krankl");
-    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
-    professor.setFaculty("Media");
+    Person person = new Person();
+    person.setFirstName("Dennis");
+    person.setName("Kaulbersch");
+    person.setJob(job.getId().intValue());
+    person.setTeam(team.getId().intValue());
+
+    int initialId = person.getId();
 
     // execute
-    boolean insertWasSuccessful = sut.addProfessor(professor);
+    Person result = sut.addPerson(person);
     // verify
-    assertThat(insertWasSuccessful).isTrue();
+    assertThat(result.getFirstName()).isEqualTo(person.getFirstName());
+    assertThat(result.getId()).isNotEqualTo(initialId);
   }
 
-  @Test(expected = DataIntegrityViolationException.class)
-  public void removeProfessorsFromDefaultDatasetWithExistingLecture() throws Exception
-  {
-    // prepare
-    DefaultDataSet defaultDataSet = new DefaultDataSet();
-    dbTesterRule.cleanInsert(defaultDataSet);
+  // @Test(expected = DataIntegrityViolationException.class)
+  // public void removePersonFromDefaultDatasetWithExistingLecture()
+  // throws Exception
+  // {
+  // // prepare
+  // DefaultDataSet defaultDataSet = new DefaultDataSet();
+  // dbTesterRule.cleanInsert(defaultDataSet);
+  //
+  // Professor professor = new Professor();
+  // professor.setFirstName("Hansi");
+  // professor.setName("Krankl");
+  // professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
+  // professor.setFaculty("Media");
+  //
+  // for (Professor currentProfessor : sut.findProfessors())
+  // {
+  // if (currentProfessor.getName().equals("Krankl"))
+  // {
+  // professor.setId(currentProfessor.getId());
+  // break;
+  // }
+  // }
+  //
+  // // execute
+  // sut.removeProfessor(professor);
+  // // verify
+  // Assert.fail();
+  // }
+  //
+  // @Test
+  // public void
+  // removeProfessorsFromDefaultDatasetWithoutExistingLecture() throws
+  // Exception
+  // {
+  // // prepare
+  // DefaultDataSet defaultDataSet = new DefaultDataSet();
+  // dbTesterRule.cleanInsert(defaultDataSet);
+  //
+  // Professor professor = new Professor();
+  // professor.setFirstName("Paul");
+  // professor.setName("Breitner");
+  // professor.setTitle("Dr.");
+  // professor.setFaculty("Architecture");
+  //
+  // for (Professor currentProfessor : sut.findProfessors())
+  // {
+  // if (currentProfessor.getName().equals("Breitner"))
+  // {
+  // professor.setId(currentProfessor.getId());
+  // break;
+  // }
+  // }
+  //
+  // // execute
+  // int deletedRows = sut.removeProfessor(professor);
+  // // verify
+  // assertThat(deletedRows).isEqualTo(1);
+  // }
 
-    Professor professor = new Professor();
-    professor.setFirstName("Hansi");
-    professor.setName("Krankl");
-    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
-    professor.setFaculty("Media");
-
-    for (Professor currentProfessor : sut.findProfessors())
-    {
-      if (currentProfessor.getName().equals("Krankl"))
-      {
-        professor.setId(currentProfessor.getId());
-        break;
-      }
-    }
-
-    // execute
-    sut.removeProfessor(professor);
-    // verify
-    Assert.fail();
-  }
-  
-  @Test
-  public void removeProfessorsFromDefaultDatasetWithoutExistingLecture() throws Exception
-  {
-    // prepare
-    DefaultDataSet defaultDataSet = new DefaultDataSet();
-    dbTesterRule.cleanInsert(defaultDataSet);
-
-    Professor professor = new Professor();
-    professor.setFirstName("Paul");
-    professor.setName("Breitner");
-    professor.setTitle("Dr.");
-    professor.setFaculty("Architecture");
-
-    for (Professor currentProfessor : sut.findProfessors())
-    {
-      if (currentProfessor.getName().equals("Breitner"))
-      {
-        professor.setId(currentProfessor.getId());
-        break;
-      }
-    }
-
-    // execute
-    int deletedRows = sut.removeProfessor(professor);
-    // verify
-    assertThat(deletedRows).isEqualTo(1);
-  }
-
-  @Test
-  public void updateProfessorsFromDefaultDataset() throws Exception
-  {
-    // prepare
-    DefaultDataSet defaultDataSet = new DefaultDataSet();
-    dbTesterRule.cleanInsert(defaultDataSet);
-
-    Professor professor = new Professor();
-    professor.setFirstName("Hansi");
-    professor.setName("Schmidt");
-    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
-    professor.setFaculty("Media");
-
-    for (Professor currentProfessor : sut.findProfessors())
-    {
-      if (currentProfessor.getName().equals("Krankl"))
-      {
-        professor.setId(currentProfessor.getId());
-        break;
-      }
-    }
-
-    // execute
-    boolean updateWasSuccessful = sut.updateProfessor(professor);
-    // verify
-    assertThat(updateWasSuccessful).isTrue();
-  }
-
-  // Lectures
+  // Jobs
 
   @Test
-  public void findAllLecturesOnEmptyDataset() throws Exception
+  public void findAllJobsOnEmptyDataset() throws Exception
   {
     // prepare
-    List<Professor> expected = new LinkedList<Professor>();
+    List<Job> expected = new LinkedList<Job>();
     EmptyDataSet emptyDataset = new EmptyDataSet();
     dbTesterRule.cleanInsert(emptyDataset);
 
     // execute
-    List<Lecture> result = sut.findLectures();
+    List<Job> result = sut.findJobs();
     // verify
     assertThat(result).isEqualTo(expected);
   }
 
   @Test
-  public void findAllLecturesWithOneEntryInDataset() throws Exception
+  public void findAllJobsWithOneEntryInDataset() throws Exception
   {
     // prepare
     EmptyDataSet emptyDataset = new EmptyDataSet();
-    RowBuilder_Professor hansi = emptyDataset.table_Professor.insertRow().setFirstName("Hansi").setName("Krankl")
-        .setTitle("Dipl.-Med.-Sys.-Wiss.").setFaculty("Media");
-
-    emptyDataset.table_Lecture.insertRow().setName("Semiotik Today").setSws(2).setEcts(10).refProfessorId(hansi);
-
+    emptyDataset.table_Jobs.insertRow().setTitle("Software Developer").setDescription("Creating software");
     dbTesterRule.cleanInsert(emptyDataset);
 
     // execute
-    List<Lecture> result = sut.findLectures();
+    List<Job> result = sut.findJobs();
     // verify
     assertThat(result).hasSize(1);
-    Lecture lecture = result.get(0);
-    assertThat(lecture.getTitle()).isEqualTo("Semiotik Today");
-    assertThat(lecture.getGivenBy()).isEqualTo(hansi.getId().intValue());
+    Job job = result.get(0);
+    assertThat(job.getTitle()).isEqualTo("Software Developer");
   }
 
   @Test
-  public void findAllLecturesWithDefaultProfessorDataset() throws Exception
+  public void findAllJobsWithDefaultDataset() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
     dbTesterRule.cleanInsert(defaultDataSet);
 
     // execute
-    List<Lecture> result = sut.findLectures();
+    List<Job> result = sut.findJobs();
     // verify
-    assertThat(result).hasSize(2);
+    assertThat(result).hasSize(3);
   }
 
   @Test
-  public void addLectureToDefaultDataSet() throws Exception
+  public void addJobToDefaultDataSet() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
     dbTesterRule.cleanInsert(defaultDataSet);
 
-    Professor professor = new Professor();
-    professor.setFirstName("Hansi");
-    professor.setName("Schmidt");
-    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
-    professor.setFaculty("Media");
-
-    for (Professor currentProfessor : sut.findProfessors())
-    {
-      if (currentProfessor.getName().equals("Krankl"))
-      {
-        professor.setId(currentProfessor.getId());
-        break;
-      }
-    }
-
-    Lecture lecture = new Lecture();
-    lecture.setGivenBy(professor.getId());
-    lecture.setTitle("Operating Systems");
-    lecture.setSemesterCredits(2);
-    lecture.setWeeklyHours(2);
+    Job job = new Job();
+    job.setTitle("Software Architect");
+    job.setDescription("Developing software architecture");
+    int expectedId = job.getId();
     // execute
-    boolean result = sut.addLecture(lecture);
+    Job result = sut.addJob(job);
     // verify
-    assertThat(result).isTrue();
+    assertThat(result.getTitle()).isEqualTo(job.getTitle());
+    assertThat(result.getId()).isNotEqualTo(expectedId);
+  }
+
+//  @Test
+//  public void removeLectureFromDefaultDataset() throws Exception
+//  {
+//    // prepare
+//    DefaultDataSet defaultDataSet = new DefaultDataSet();
+//    dbTesterRule.cleanInsert(defaultDataSet);
+//
+//    Professor professor = new Professor();
+//    professor.setFirstName("Hansi");
+//    professor.setName("Krankl");
+//    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
+//    professor.setFaculty("Media");
+//
+//    for (Professor currentProfessor : sut.findProfessors())
+//    {
+//      if (currentProfessor.getName().equals("Krankl"))
+//      {
+//        professor.setId(currentProfessor.getId());
+//        break;
+//      }
+//    }
+//
+//    Lecture lecture = new Lecture();
+//    lecture.setTitle("Semiotik Today");
+//    lecture.setWeeklyHours(2);
+//    lecture.setSemesterCredits(10);
+//    lecture.setGivenBy(professor.getId());
+//
+//    for (Lecture currentLecture : sut.findLectures())
+//    {
+//      if (currentLecture.getTitle().equals("Semiotik Today"))
+//      {
+//        lecture.setId(currentLecture.getId());
+//        break;
+//      }
+//    }
+//
+//    // execute
+//    int deletedRows = sut.removeLecture(lecture);
+//    // verify
+//    assertThat(deletedRows).isEqualTo(1);
+//  }
+  
+  @Test
+  public void findAllTeamsOnEmptyDataset() throws Exception
+  {
+    // prepare
+    List<Team> expected = new LinkedList<Team>();
+    EmptyDataSet emptyDataset = new EmptyDataSet();
+    dbTesterRule.cleanInsert(emptyDataset);
+
+    // execute
+    List<Team> result = sut.findTeams();
+    // verify
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
-  public void removeLectureFromDefaultDataset() throws Exception
+  public void findAllTeamsWithOneEntryInDataset() throws Exception
+  {
+    // prepare
+    EmptyDataSet emptyDataset = new EmptyDataSet();
+    emptyDataset.table_Teams.insertRow().setTitle("Quality Assurance")
+        .setDescription("Verifies that requirments for a product is fulfilled").setMembersize(0);
+    dbTesterRule.cleanInsert(emptyDataset);
+
+    // execute
+    List<Team> result = sut.findTeams();
+    // verify
+    assertThat(result).hasSize(1);
+    Team team = result.get(0);
+    assertThat(team.getTitle()).isEqualTo("Quality Assurance");
+  }
+
+  @Test
+  public void findAllTeamsWithDefaultDataset() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
     dbTesterRule.cleanInsert(defaultDataSet);
 
-    Professor professor = new Professor();
-    professor.setFirstName("Hansi");
-    professor.setName("Krankl");
-    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
-    professor.setFaculty("Media");
-
-    for (Professor currentProfessor : sut.findProfessors())
-    {
-      if (currentProfessor.getName().equals("Krankl"))
-      {
-        professor.setId(currentProfessor.getId());
-        break;
-      }
-    }
-
-    Lecture lecture = new Lecture();
-    lecture.setTitle("Semiotik Today");
-    lecture.setWeeklyHours(2);
-    lecture.setSemesterCredits(10);
-    lecture.setGivenBy(professor.getId());
-
-    for (Lecture currentLecture : sut.findLectures())
-    {
-      if (currentLecture.getTitle().equals("Semiotik Today"))
-      {
-        lecture.setId(currentLecture.getId());
-        break;
-      }
-    }
-
     // execute
-    int deletedRows = sut.removeLecture(lecture);
+    List<Job> result = sut.findJobs();
     // verify
-    assertThat(deletedRows).isEqualTo(1);
+    assertThat(result).hasSize(3);
+  }
+
+  @Test
+  public void addTeamsToDefaultDataSet() throws Exception
+  {
+    // prepare
+    DefaultDataSet defaultDataSet = new DefaultDataSet();
+    dbTesterRule.cleanInsert(defaultDataSet);
+
+    Team team = new Team();
+    team.setTitle("Quality Assurance");
+    team.setDescription("Verifies that requirments for a product is fulfilled");
+    team.setMembersize(0);
+    int expectedId = team.getId();
+    // execute
+    Team result = sut.addTeam(team);
+    // verify
+    assertThat(result.getTitle()).isEqualTo(team.getTitle());
+    assertThat(result.getId()).isNotEqualTo(expectedId);
   }
 }

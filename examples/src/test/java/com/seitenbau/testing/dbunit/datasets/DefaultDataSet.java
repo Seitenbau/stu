@@ -1,40 +1,50 @@
 package com.seitenbau.testing.dbunit.datasets;
 
-import com.seitenbau.testing.dbunit.model.ProfessorTable.RowBuilder_Professor;
+import com.seitenbau.testing.dbunit.model.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.model.TeamsTable.RowGetters_Teams;
 
 public class DefaultDataSet extends EmptyDataSet
 {
   @Override
   protected void initDataSet()
   {
-    RowBuilder_Professor hansi = table_Professor.insertRow() //
-        .setFirstName("Hansi") //
-        .setName("Krankl") //
-        .setFaculty("Media") //
-        .setTitle("Dipl.-Med.-Sys.-Wiss.");
+    RowGetters_Jobs softwareDeveloper = //
+    table_Jobs.insertRow() //
+        .setTitle("Software Developer") //
+        .setDescription("Creating software");
 
-    table_Professor.insertRow() //
-        .setFirstName("Paul") //
-        .setName("Breitner") //
-        .setFaculty("Architecture") //
-        .setTitle("Dr.");
+    RowGetters_Jobs softwareTester = //
+    table_Jobs.insertRow() //
+        .setTitle("Software Tester") //
+        .setDescription("Testing software");
 
-    table_Professor.insertRow() //
-        .setFirstName("Marco") //
-        .setName("Polo") //
-        .setFaculty("Business Management") //
-        .setTitle("Dr. Dr.");
+    RowGetters_Jobs teamManager = //
+    table_Jobs.insertRow() //
+        .setTitle("Team Manager") //
+        .setDescription("Nobody knows");
 
-    table_Lecture.insertRow() //
-        .setName("Semiotik Today") //
-        .setSws(2) //
-        .setEcts(10) //
-        .refProfessorId(hansi);
+    RowGetters_Teams qualityAssurance = //
+    table_Teams.insertRow() //
+        .setTitle("Quality Assurance") //
+        .setDescription("Verifies that requirments for a product is fulfilled").setMembersize(3);
 
-    table_Lecture.insertRow() //
-        .setName("Information Retrieval") //
-        .setSws(5) //
-        .setEcts(12) //
-        .refProfessorId(hansi);
+    table_Persons.insertRow() //
+        .setFirstName("Dennis") //
+        .setName("Kaulbersch") //
+        .refJobId(softwareDeveloper) //
+        .refTeamId(qualityAssurance);
+
+    table_Persons.insertRow() //
+        .setFirstName("Julien") //
+        .setName("Guitton") //
+        .refJobId(softwareTester) //
+        .refTeamId(qualityAssurance);
+
+    table_Persons.insertRow() //
+        .setFirstName("Christian") //
+        .setName("Kaulbersch") //
+        .refJobId(teamManager) //
+        .refTeamId(qualityAssurance);
+
   }
 }

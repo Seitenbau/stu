@@ -25,103 +25,76 @@ public class JavaDataSetProvider implements DataSetProvider
     try
     {
 
-      DefaultTable professor = new DefaultTable("PROFESSOR", new Column[] { //
+      DefaultTable persons = new DefaultTable("persons", new Column[] { //
           new Column("id", DataType.BIGINT), //
-          new Column("first_name", DataType.VARCHAR), //
-              new Column("name", DataType.VARCHAR), //
-              new Column("faculty", DataType.VARCHAR), //
-              new Column("title", DataType.VARCHAR), //
-          });
-      professor.addRow(new Object[] { //
-          Parameters.Professor.HANSI_ID, //
-          "Hansi", //
-              "Krankl", //
-              "Media", //
-              "Dipl.-Med.-Sys.-Wiss.", //
-          });
-      professor.addRow(new Object[] { //
-          Parameters.Professor.PAUL_ID, //
-          "Paul", //
-              "Breitner", //
-              "Architecture", //
-              "Dr.", //
-          });
-      professor.addRow(new Object[] { //
-          Parameters.Professor.MARCO_ID, //
-          "Marco", //
-              "Polo", //
-              "Dr. Dr.", //
-              "Business Management", //
-          });
-
-      DefaultTable lecture = new DefaultTable("LECTURE", new Column[] { //
-          new Column("id", DataType.BIGINT), //
-              new Column("name", DataType.VARCHAR), //
-              new Column("sws", DataType.BIGINT), //
-              new Column("ects", DataType.BIGINT), //
-              new Column("professor_id", DataType.BIGINT), //
-          });
-
-      lecture.addRow(new Object[] { //
-          Parameters.Lecture.SEMIOTIK_ID, //
-          "Semiotik Today", //
-              2, //
-              10, //
-              Parameters.Professor.HANSI_ID, //
-          });
-
-      lecture.addRow(new Object[] { //
-          Parameters.Lecture.INFORMATION_RETRIEVAL_ID, //
-          "Information Retrieval", //
-              5, //
-              12, //
-              Parameters.Professor.HANSI_ID, //
-          });
-
-      DefaultTable exam = new DefaultTable("EXAM", new Column[] { //
-          new Column("id", DataType.BIGINT), //
-              new Column("lecture_id", DataType.BIGINT), //
-              new Column("lecture_type", DataType.VARCHAR), //
-              new Column("point_in_time", DataType.DATE), //
-          });
-
-      DefaultTable student = new DefaultTable("STUDENT", new Column[] { //
-          new Column("student_number", DataType.BIGINT), //
-              new Column("name", DataType.VARCHAR), //
               new Column("first_name", DataType.VARCHAR), //
-              new Column("degree_course", DataType.VARCHAR), //
-              new Column("semester", DataType.BIGINT), //
-              new Column("enrolled_since", DataType.DATE), //
+              new Column("name", DataType.VARCHAR), //
+              new Column("job_id", DataType.BIGINT), //
+              new Column("team_id", DataType.BIGINT), //
+          });
+      persons.addRow(new Object[] { //
+          Parameters.Persons.DENNIS, //
+              "Dennis", //
+              "Kaulbersch", //
+              Parameters.Jobs.SOFTWARE_DEVELOPER, //
+              Parameters.Teams.QUALITY_ASSURANCE, //
+          });
+      persons.addRow(new Object[] { //
+          Parameters.Persons.JULIEN, //
+              "Julien", //
+              "Guitton", //
+              Parameters.Jobs.SOFTWARE_TESTER, //
+              Parameters.Teams.QUALITY_ASSURANCE, //
+          });
+      persons.addRow(new Object[] { //
+          Parameters.Persons.CHRISTIAN, //
+              "Christian", //
+              "Baranowski", //
+              Parameters.Jobs.TEAM_MANAGER, //
+              Parameters.Teams.QUALITY_ASSURANCE, //
           });
 
-      DefaultTable give_lecture = new DefaultTable("GIVE_LECTURE", new Column[] { //
-          new Column("professor_id", DataType.BIGINT), //
-              new Column("exam_id", DataType.BIGINT), //
+      DefaultTable jobs = new DefaultTable("jobs", new Column[] { //
+          new Column("id", DataType.BIGINT), //
+              new Column("title", DataType.VARCHAR), //
+              new Column("description", DataType.VARCHAR), //
           });
 
-      DefaultTable participate = new DefaultTable("PARTICIPATE", new Column[] { //
-          new Column("student_id", DataType.BIGINT), //
-              new Column("exam_id", DataType.BIGINT), //
+      jobs.addRow(new Object[] { //
+      Parameters.Jobs.SOFTWARE_DEVELOPER, //
+          "Software Developer", //
+          "Creating software", //
+      });
+
+      jobs.addRow(new Object[] { //
+      Parameters.Jobs.SOFTWARE_TESTER, //
+          "Software Tester", //
+          "Testing software", //
+      });
+
+      jobs.addRow(new Object[] { //
+      Parameters.Jobs.TEAM_MANAGER, //
+          "Team Manager", //
+          "Nobody knows", //
+      });
+
+      DefaultTable teams = new DefaultTable("teams", new Column[] { //
+          new Column("id", DataType.BIGINT), //
+              new Column("title", DataType.VARCHAR), //
+              new Column("description", DataType.VARCHAR), //
+              new Column("membersize", DataType.BIGINT), //
           });
 
-      DefaultTable is_tutor = new DefaultTable("IS_TUTOR", new Column[] { //
-          new Column("student_id", DataType.BIGINT), //
-              new Column("lecture_id", DataType.BIGINT), //
+      teams.addRow(new Object[] { //
+          Parameters.Teams.QUALITY_ASSURANCE, //
+              "Quality Assurance", //
+              "Verifies that requirments for a product is fulfilled", //
+              3, //
           });
 
-      DefaultTable attend = new DefaultTable("ATTEND", new Column[] { //
-          new Column("student_id", DataType.BIGINT), //
-              new Column("lecture_id", DataType.BIGINT), //
-          });
-
-      dataSet.addTable(professor);
-      dataSet.addTable(lecture);
-      dataSet.addTable(exam);
-      dataSet.addTable(student);
-      dataSet.addTable(give_lecture);
-      dataSet.addTable(participate);
-      dataSet.addTable(is_tutor);
-      dataSet.addTable(attend);
+      dataSet.addTable(jobs);
+      dataSet.addTable(teams);
+      dataSet.addTable(persons);
     }
     catch (Exception e)
     {

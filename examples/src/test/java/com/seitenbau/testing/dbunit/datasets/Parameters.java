@@ -2,21 +2,28 @@ package com.seitenbau.testing.dbunit.datasets;
 
 public interface Parameters
 {
-  interface Professor
+  interface Persons
+  {
+    int DENNIS = 1;
+
+    int JULIEN = 2;
+
+    int CHRISTIAN = 3;
+  }
+
+  interface Jobs
   {
 
-    int HANSI_ID = 1;
+    int SOFTWARE_DEVELOPER = 1;
 
-    int PAUL_ID = 2;
+    int SOFTWARE_TESTER = 2;
 
-    int MARCO_ID = 3;
+    int TEAM_MANAGER = 3;
 
   }
 
-  interface Lecture
+  interface Teams
   {
-    int SEMIOTIK_ID = 1;
-
-    int INFORMATION_RETRIEVAL_ID = 2;
+    int QUALITY_ASSURANCE = 1;
   }
 }

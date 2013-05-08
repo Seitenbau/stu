@@ -38,7 +38,15 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
     
-    <bean id="repo" class="com.seitenbau.testing.dbunit.dao.Repo">
+    <bean id="personRepo" class="com.seitenbau.testing.dbunit.dao.PersonRepo">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+    <bean id="jobRepo" class="com.seitenbau.testing.dbunit.dao.JobRepo">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+       <bean id="teamRepo" class="com.seitenbau.testing.dbunit.dao.TeamRepo">
         <property name="dataSource" ref="dataSource" />
     </bean>
 

@@ -22,14 +22,9 @@ import org.dbunit.dataset.datatype.DataType;
 
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.dbunit.model.AttendTable.RowGetters_Attend;
-import com.seitenbau.testing.dbunit.model.ExamTable.RowGetters_Exam;
-import com.seitenbau.testing.dbunit.model.GiveLectureTable.RowGetters_GiveLecture;
-import com.seitenbau.testing.dbunit.model.IsTutorTable.RowGetters_IsTutor;
-import com.seitenbau.testing.dbunit.model.LectureTable.RowGetters_Lecture;
-import com.seitenbau.testing.dbunit.model.ParticipateTable.RowGetters_Participate;
-import com.seitenbau.testing.dbunit.model.ProfessorTable.RowGetters_Professor;
-import com.seitenbau.testing.dbunit.model.StudentTable.RowGetters_Student;
+import com.seitenbau.testing.dbunit.model.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.model.PersonsTable.RowGetters_Persons;
+import com.seitenbau.testing.dbunit.model.TeamsTable.RowGetters_Teams;
 import com.seitenbau.testing.util.date.DateBuilder;
 
 
@@ -38,17 +33,17 @@ import static com.seitenbau.testing.util.DateUtil.*;
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
 **********************************************************/
-public class LectureTable implements ITable
+public class PersonsTable implements ITable
 {
-  public final static String NAME = "LECTURE";
+  public final static String NAME = "persons";
 
   public static class Columns
   {
     public static final String Id = "id";
-    public static final String ProfessorId = "professor_id";
+    public static final String FirstName = "first_name";
     public static final String Name = "name";
-    public static final String Sws = "sws";
-    public static final String Ects = "ects";
+    public static final String JobId = "job_id";
+    public static final String TeamId = "team_id";
   }
 
   // @formatter:off
@@ -56,109 +51,110 @@ public class LectureTable implements ITable
     // idx = 0
     new Column(Columns.Id, DataType.BIGINT),
     // idx = 1
-    new Column(Columns.ProfessorId, DataType.BIGINT),
+    new Column(Columns.FirstName, DataType.VARCHAR),
     // idx = 2
     new Column(Columns.Name, DataType.VARCHAR),
     // idx = 3
-    new Column(Columns.Sws, DataType.INTEGER),
+    new Column(Columns.JobId, DataType.BIGINT),
     // idx = 4
-    new Column(Columns.Ects, DataType.INTEGER)
+    new Column(Columns.TeamId, DataType.BIGINT)
   };
 
   static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
   static {
     GENERATOR_METADATA = new HashMap<String, EnumSet<Flags>>();
     GENERATOR_METADATA.put(Columns.Id,EnumSet.of( Flags.AutoInvokeNextIdMethod));
-    GENERATOR_METADATA.put(Columns.ProfessorId,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.FirstName,EnumSet.noneOf( Flags.class ));
     GENERATOR_METADATA.put(Columns.Name,EnumSet.noneOf( Flags.class ));
-    GENERATOR_METADATA.put(Columns.Sws,EnumSet.noneOf( Flags.class ));
-    GENERATOR_METADATA.put(Columns.Ects,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.JobId,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.TeamId,EnumSet.noneOf( Flags.class ));
   }
   // @formatter:on
 
   ITableMetaData _metaData;
   
-  STUExampleDBDataSet _dataSet;
+  STUDataSet _dataSet;
   
-  Iterator<RowBuilder_Lecture> _iterator;
+  Iterator<RowBuilder_Persons> _iterator;
   
-  public LectureTable()
+  public PersonsTable()
   {
     _metaData=new DefaultTableMetaData(NAME, COLUMNS);
   }
 
-  public void setDataset(STUExampleDBDataSet dataSet)
+  public void setDataset(STUDataSet dataSet)
   {
     _dataSet=dataSet;
   }
   
-  public STUExampleDBDataSet getDataset()
+  public STUDataSet getDataset()
   {
     return _dataSet;
   }
 
-  public List<RowBuilder_Lecture> rows = new ArrayList<RowBuilder_Lecture>();
+  public List<RowBuilder_Persons> rows = new ArrayList<RowBuilder_Persons>();
   
-  public interface RowSetters_Lecture<T extends RowSetters_Lecture>
+  public interface RowSetters_Persons<T extends RowSetters_Persons>
   {
     T setId(Integer intValue);
     T setId(java.lang.Long value);
     T setIdRaw(Object value);
     T nextId();
-    T setProfessorId(Integer intValue);
-    T setProfessorId(java.lang.Long value);
-    T setProfessorIdRaw(Object value);
+    T setFirstName(java.lang.String value);
+    T setFirstNameRaw(Object value);
     T setName(java.lang.String value);
     T setNameRaw(Object value);
-    T setSws(java.lang.Integer value);
-    T setSwsRaw(Object value);
-    T setEcts(java.lang.Integer value);
-    T setEctsRaw(Object value);
+    T setJobId(Integer intValue);
+    T setJobId(java.lang.Long value);
+    T setJobIdRaw(Object value);
+    T setTeamId(Integer intValue);
+    T setTeamId(java.lang.Long value);
+    T setTeamIdRaw(Object value);
      
   }
   
-  public interface RowGetters_Lecture<T extends RowGetters_Lecture>
+  public interface RowGetters_Persons<T extends RowGetters_Persons>
   {
     java.lang.Long getId();
-    java.lang.Long getProfessorId();
+    java.lang.String getFirstName();
     java.lang.String getName();
-    java.lang.Integer getSws();
-    java.lang.Integer getEcts();
+    java.lang.Long getJobId();
+    java.lang.Long getTeamId();
      
   }
 
-  public static class RowBuilder_Lecture implements RowSetters_Lecture<RowBuilder_Lecture>, RowGetters_Lecture<RowBuilder_Lecture>
+  public static class RowBuilder_Persons implements RowSetters_Persons<RowBuilder_Persons>, RowGetters_Persons<RowBuilder_Persons>
   {
 
     Object[] data;
     
-    LectureTable table;
+    PersonsTable table;
     
-    RowBuilder_Lecture(LectureTable tableDelegate) {
+    RowBuilder_Persons(PersonsTable tableDelegate) {
       data=new Object[COLUMNS.length];
       table = tableDelegate;
     }
     
 
-    public RowBuilder_Lecture setId(Integer intValue)
+    public RowBuilder_Persons setId(Integer intValue)
     {
       data[ 0 ] = (intValue==null?null:Long.valueOf(intValue));
       return this;
     }
-    public RowBuilder_Lecture setId(java.lang.Long value)
+    public RowBuilder_Persons setId(java.lang.Long value)
     {
       data[ 0 ] = value;
       return this;
     }
-    public RowBuilder_Lecture setIdRaw(Object value)
+    public RowBuilder_Persons setIdRaw(Object value)
     {
       data[ 0 ] = value;
       return this;
     }
-    public RowBuilder_Lecture nextId()
+    public RowBuilder_Persons nextId()
     {
       DatasetIdGenerator generator = table.getDataset().getIdGenerator();
-      Long nextId = generator.nextId(LectureTable.NAME,"id");
+      Long nextId = generator.nextId(PersonsTable.NAME,"id");
       setId(nextId);
       return this;
     }
@@ -168,33 +164,28 @@ public class LectureTable implements ITable
       return (java.lang.Long) data[0];
     }
 
-    public RowBuilder_Lecture setProfessorId(Integer intValue)
-    {
-      data[ 1 ] = (intValue==null?null:Long.valueOf(intValue));
-      return this;
-    }
-    public RowBuilder_Lecture setProfessorId(java.lang.Long value)
+    public RowBuilder_Persons setFirstName(java.lang.String value)
     {
       data[ 1 ] = value;
       return this;
     }
-    public RowBuilder_Lecture setProfessorIdRaw(Object value)
+    public RowBuilder_Persons setFirstNameRaw(Object value)
     {
       data[ 1 ] = value;
       return this;
     }
 
-    public java.lang.Long getProfessorId()
+    public java.lang.String getFirstName()
     {
-      return (java.lang.Long) data[1];
+      return (java.lang.String) data[1];
     }
 
-    public RowBuilder_Lecture setName(java.lang.String value)
+    public RowBuilder_Persons setName(java.lang.String value)
     {
       data[ 2 ] = value;
       return this;
     }
-    public RowBuilder_Lecture setNameRaw(Object value)
+    public RowBuilder_Persons setNameRaw(Object value)
     {
       data[ 2 ] = value;
       return this;
@@ -205,50 +196,60 @@ public class LectureTable implements ITable
       return (java.lang.String) data[2];
     }
 
-    public RowBuilder_Lecture setSws(java.lang.Integer value)
+    public RowBuilder_Persons setJobId(Integer intValue)
+    {
+      data[ 3 ] = (intValue==null?null:Long.valueOf(intValue));
+      return this;
+    }
+    public RowBuilder_Persons setJobId(java.lang.Long value)
     {
       data[ 3 ] = value;
       return this;
     }
-    public RowBuilder_Lecture setSwsRaw(Object value)
+    public RowBuilder_Persons setJobIdRaw(Object value)
     {
       data[ 3 ] = value;
       return this;
     }
 
-    public java.lang.Integer getSws()
+    public java.lang.Long getJobId()
     {
-      return (java.lang.Integer) data[3];
+      return (java.lang.Long) data[3];
     }
 
-    public RowBuilder_Lecture setEcts(java.lang.Integer value)
+    public RowBuilder_Persons setTeamId(Integer intValue)
+    {
+      data[ 4 ] = (intValue==null?null:Long.valueOf(intValue));
+      return this;
+    }
+    public RowBuilder_Persons setTeamId(java.lang.Long value)
     {
       data[ 4 ] = value;
       return this;
     }
-    public RowBuilder_Lecture setEctsRaw(Object value)
+    public RowBuilder_Persons setTeamIdRaw(Object value)
     {
       data[ 4 ] = value;
       return this;
     }
 
-    public java.lang.Integer getEcts()
+    public java.lang.Long getTeamId()
     {
-      return (java.lang.Integer) data[4];
+      return (java.lang.Long) data[4];
     }
     /**
     * Insert a new Row at the end of the Table
     * <code><pre>
-    * ds.table_Lecture.insertRow()
+    * ds.table_Persons.insertRow()
     *   .setId( null )
-    *   .setProfessorId( null )
+    *   .setFirstName( null )
     *   .setName( null )
-    *   .setSws( null )
-    *   .setEcts( null )
+    *   .setJobId( null )
+    *   .setTeamId( null )
     *   ;
     * </pre></code>
     */
-    public RowBuilder_Lecture insertRow()
+    public RowBuilder_Persons insertRow()
     {
       return table.insertRow();
     }
@@ -256,16 +257,16 @@ public class LectureTable implements ITable
     /**
     * Insert a new Row at the end of the Table
     * <code><pre>
-    * ds.table_Lecture.insertRow()
+    * ds.table_Persons.insertRow()
     *   .setId( null )
-    *   .setProfessorId( null )
+    *   .setFirstName( null )
     *   .setName( null )
-    *   .setSws( null )
-    *   .setEcts( null )
+    *   .setJobId( null )
+    *   .setTeamId( null )
     *   ;
     * </pre></code>
     */
-    public RowBuilder_Lecture insertRow(LectureModel row)
+    public RowBuilder_Persons insertRow(PersonsModel row)
     {
       return table.insertRow(row);
     }
@@ -273,16 +274,16 @@ public class LectureTable implements ITable
     /**
     * Insert a new Row at the given position
     * <code><pre>
-    * ds.table_Lecture.this.insertRowAt(2)
+    * ds.table_Persons.this.insertRowAt(2)
     *   .setId( null )
-    *   .setProfessorId( null )
+    *   .setFirstName( null )
     *   .setName( null )
-    *   .setSws( null )
-    *   .setEcts( null )
+    *   .setJobId( null )
+    *   .setTeamId( null )
     *   ;
     * </pre></code>
     */
-    public RowBuilder_Lecture insertRowAt(int index)
+    public RowBuilder_Persons insertRowAt(int index)
     {
       return table.insertRowAt(index);
     }
@@ -290,10 +291,10 @@ public class LectureTable implements ITable
     /**
     * Insert a row at the end of the table
     * <code><pre>
-    * ds.table_Lecture.insertRow(baseUser);
+    * ds.table_Persons.insertRow(baseUser);
     * </pre></code>
     */
-    public RowBuilder_Lecture insertRow(RowBuilder_Lecture theRow)
+    public RowBuilder_Persons insertRow(RowBuilder_Persons theRow)
     {
       return table.insertRow(theRow);
     }
@@ -302,55 +303,61 @@ public class LectureTable implements ITable
       if(column.equalsIgnoreCase(Columns.Id) ) {
         return data[0];
       }
-      if(column.equalsIgnoreCase(Columns.ProfessorId) ) {
+      if(column.equalsIgnoreCase(Columns.FirstName) ) {
         return data[1];
       }
       if(column.equalsIgnoreCase(Columns.Name) ) {
         return data[2];
       }
-      if(column.equalsIgnoreCase(Columns.Sws) ) {
+      if(column.equalsIgnoreCase(Columns.JobId) ) {
         return data[3];
       }
-      if(column.equalsIgnoreCase(Columns.Ects) ) {
+      if(column.equalsIgnoreCase(Columns.TeamId) ) {
         return data[4];
       }
       throw new RuntimeException(NAME + " col = " + column);
     }
     
 
-    public RowBuilder_Lecture refProfessorId(RowGetters_Professor reference)
+    public RowBuilder_Persons refJobId(RowGetters_Jobs reference)
     {
-      setProfessorId(reference.getId());
+      setJobId(reference.getId());
+      return this;
+    }
+
+    public RowBuilder_Persons refTeamId(RowGetters_Teams reference)
+    {
+      setTeamId(reference.getId());
       return this;
     }
     
     @Override
-    public RowBuilder_Lecture clone() {
-      RowBuilder_Lecture clone = new RowBuilder_Lecture(table);
+    public RowBuilder_Persons clone() {
+      RowBuilder_Persons clone = new RowBuilder_Persons(table);
       clone.setId(getId());
-      clone.setProfessorId(getProfessorId());
+      clone.setFirstName(getFirstName());
       clone.setName(getName());
-      clone.setSws(getSws());
-      clone.setEcts(getEcts());
+      clone.setJobId(getJobId());
+      clone.setTeamId(getTeamId());
       return clone;
     }
   }
   
-  public LectureWhere findWhere = new LectureWhere(this);
+  public PersonsWhere findWhere = new PersonsWhere(this);
 
-  public static class LectureWhere
+  public static class PersonsWhere
   {
-    public List<RowBuilder_Lecture> rows;
-    LectureTable table;
+    public List<RowBuilder_Persons> rows;
+    PersonsTable table;
     
-    public LectureWhere(LectureTable theTable) {
+    public PersonsWhere(PersonsTable theTable) {
        rows = theTable.rows;
        table = theTable;
     }
     
-    public RowCollection_Lecture rowComparesTo(Comparable<RowBuilder_Lecture> toSearch) {
-      RowCollection_Lecture modifiers = new RowCollection_Lecture(table);
-      for (RowBuilder_Lecture row : rows) 
+    public RowCollection_Persons rowComparesTo(Comparable<RowBuilder_Persons> toSearch) {
+      RowCollection_Persons modifiers = new RowCollection_Persons(table);
+      for (RowBuilder_Persons row : rows) 
       {
         if (toSearch.compareTo( row ) == 0) 
         {
@@ -362,9 +369,9 @@ public class LectureTable implements ITable
       }
       return modifiers;
     }
-    public RowCollection_Lecture id(java.lang.Long toSearch) {
-      RowCollection_Lecture modifiers = new RowCollection_Lecture(table);
-      for (RowBuilder_Lecture row : rows) 
+    public RowCollection_Persons id(java.lang.Long toSearch) {
+      RowCollection_Persons modifiers = new RowCollection_Persons(table);
+      for (RowBuilder_Persons row : rows) 
       {
         if (row.getId().equals(toSearch)) 
         {
@@ -376,31 +383,27 @@ public class LectureTable implements ITable
       }
       return modifiers;
     }
-    public RowCollection_Lecture id(Integer toSearch) 
+    public RowCollection_Persons id(Integer toSearch) 
     {
       return id( Long.valueOf(toSearch) );
     }
-    public RowCollection_Lecture professorId(java.lang.Long toSearch) {
-      RowCollection_Lecture modifiers = new RowCollection_Lecture(table);
-      for (RowBuilder_Lecture row : rows) 
+    public RowCollection_Persons firstName(java.lang.String toSearch) {
+      RowCollection_Persons modifiers = new RowCollection_Persons(table);
+      for (RowBuilder_Persons row : rows) 
       {
-        if (row.getProfessorId().equals(toSearch)) 
+        if (row.getFirstName().equals(toSearch)) 
         {
           modifiers.add(row);
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with professor_id = " + toSearch );
+        throw new RuntimeException("No Row with first_name = " + toSearch );
       }
       return modifiers;
     }
-    public RowCollection_Lecture professorId(Integer toSearch) 
-    {
-      return professorId( Long.valueOf(toSearch) );
-    }
-    public RowCollection_Lecture name(java.lang.String toSearch) {
-      RowCollection_Lecture modifiers = new RowCollection_Lecture(table);
-      for (RowBuilder_Lecture row : rows) 
+    public RowCollection_Persons name(java.lang.String toSearch) {
+      RowCollection_Persons modifiers = new RowCollection_Persons(table);
+      for (RowBuilder_Persons row : rows) 
       {
         if (row.getName().equals(toSearch)) 
         {
@@ -412,47 +415,55 @@ public class LectureTable implements ITable
       }
       return modifiers;
     }
-    public RowCollection_Lecture sws(java.lang.Integer toSearch) {
-      RowCollection_Lecture modifiers = new RowCollection_Lecture(table);
-      for (RowBuilder_Lecture row : rows) 
+    public RowCollection_Persons jobId(java.lang.Long toSearch) {
+      RowCollection_Persons modifiers = new RowCollection_Persons(table);
+      for (RowBuilder_Persons row : rows) 
       {
-        if (row.getSws().equals(toSearch)) 
+        if (row.getJobId().equals(toSearch)) 
         {
           modifiers.add(row);
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with sws = " + toSearch );
+        throw new RuntimeException("No Row with job_id = " + toSearch );
       }
       return modifiers;
     }
-    public RowCollection_Lecture ects(java.lang.Integer toSearch) {
-      RowCollection_Lecture modifiers = new RowCollection_Lecture(table);
-      for (RowBuilder_Lecture row : rows) 
+    public RowCollection_Persons jobId(Integer toSearch) 
+    {
+      return jobId( Long.valueOf(toSearch) );
+    }
+    public RowCollection_Persons teamId(java.lang.Long toSearch) {
+      RowCollection_Persons modifiers = new RowCollection_Persons(table);
+      for (RowBuilder_Persons row : rows) 
       {
-        if (row.getEcts().equals(toSearch)) 
+        if (row.getTeamId().equals(toSearch)) 
         {
           modifiers.add(row);
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with ects = " + toSearch );
+        throw new RuntimeException("No Row with team_id = " + toSearch );
       }
       return modifiers;
+    }
+    public RowCollection_Persons teamId(Integer toSearch) 
+    {
+      return teamId( Long.valueOf(toSearch) );
     }
   }
   
-  /** Inner class! Use RowCollection_Lecture in your code ! */
-  public static class RowModify_Lecture extends RowBuilder_Lecture 
+  /** Inner class! Use RowCollection_Persons in your code ! */
+  public static class RowModify_Persons extends RowBuilder_Persons 
   {
-      List<RowBuilder_Lecture> _rows;
+      List<RowBuilder_Persons> _rows;
 
-      public RowModify_Lecture(LectureTable theTable) {
+      public RowModify_Persons(PersonsTable theTable) {
         super(theTable);
-        _rows = new ArrayList<RowBuilder_Lecture>();
+        _rows = new ArrayList<RowBuilder_Persons>();
       }
       
-      public void add(RowBuilder_Lecture row) {
+      public void add(RowBuilder_Persons row) {
           _rows.add(row);
       }
       
@@ -460,32 +471,32 @@ public class LectureTable implements ITable
           return _rows.isEmpty();
       }
 
-      public RowModify_Lecture delete() {
-          for(RowBuilder_Lecture row : _rows) {
+      public RowModify_Persons delete() {
+          for(RowBuilder_Persons row : _rows) {
             table.rows.remove(row);
           }
           return this;
       }
         
 
-      public RowModify_Lecture setId(Integer intValue)
+      public RowModify_Persons setId(Integer intValue)
       {
-        for(RowBuilder_Lecture row : _rows) {
+        for(RowBuilder_Persons row : _rows) {
           row.setId(intValue);
         }
         return this;
       }
 
-      public RowModify_Lecture setId(java.lang.Long value)
+      public RowModify_Persons setId(java.lang.Long value)
       {
-        for(RowBuilder_Lecture row : _rows) {
+        for(RowBuilder_Persons row : _rows) {
           row.setId(value);
         }
         return this;
       }
-      public RowModify_Lecture setIdRaw(Object value)
+      public RowModify_Persons setIdRaw(Object value)
       {
-        for(RowBuilder_Lecture row : _rows) {
+        for(RowBuilder_Persons row : _rows) {
           row.setIdRaw(value);
         }
         return this;
@@ -498,46 +509,38 @@ public class LectureTable implements ITable
         return _rows.get(0).getId();
       }
 
-      public RowModify_Lecture setProfessorId(Integer intValue)
+      public RowModify_Persons setFirstName(java.lang.String value)
       {
-        for(RowBuilder_Lecture row : _rows) {
-          row.setProfessorId(intValue);
+        for(RowBuilder_Persons row : _rows) {
+          row.setFirstName(value);
         }
         return this;
       }
-
-      public RowModify_Lecture setProfessorId(java.lang.Long value)
+      public RowModify_Persons setFirstNameRaw(Object value)
       {
-        for(RowBuilder_Lecture row : _rows) {
-          row.setProfessorId(value);
+        for(RowBuilder_Persons row : _rows) {
+          row.setFirstNameRaw(value);
         }
         return this;
       }
-      public RowModify_Lecture setProfessorIdRaw(Object value)
-      {
-        for(RowBuilder_Lecture row : _rows) {
-          row.setProfessorIdRaw(value);
-        }
-        return this;
-      }
-      public java.lang.Long getProfessorId()
+      public java.lang.String getFirstName()
       {
         if(_rows.size()!=1) {
           throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
         }
-        return _rows.get(0).getProfessorId();
+        return _rows.get(0).getFirstName();
       }
 
-      public RowModify_Lecture setName(java.lang.String value)
+      public RowModify_Persons setName(java.lang.String value)
       {
-        for(RowBuilder_Lecture row : _rows) {
+        for(RowBuilder_Persons row : _rows) {
           row.setName(value);
         }
         return this;
       }
-      public RowModify_Lecture setNameRaw(Object value)
+      public RowModify_Persons setNameRaw(Object value)
       {
-        for(RowBuilder_Lecture row : _rows) {
+        for(RowBuilder_Persons row : _rows) {
           row.setNameRaw(value);
         }
         return this;
@@ -550,48 +553,64 @@ public class LectureTable implements ITable
         return _rows.get(0).getName();
       }
 
-      public RowModify_Lecture setSws(java.lang.Integer value)
+      public RowModify_Persons setJobId(Integer intValue)
       {
-        for(RowBuilder_Lecture row : _rows) {
-          row.setSws(value);
+        for(RowBuilder_Persons row : _rows) {
+          row.setJobId(intValue);
         }
         return this;
-      }
-      public RowModify_Lecture setSwsRaw(Object value)
-      {
-        for(RowBuilder_Lecture row : _rows) {
-          row.setSwsRaw(value);
-        }
-        return this;
-      }
-      public java.lang.Integer getSws()
-      {
-        if(_rows.size()!=1) {
-          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
-        }
-        return _rows.get(0).getSws();
       }
 
-      public RowModify_Lecture setEcts(java.lang.Integer value)
+      public RowModify_Persons setJobId(java.lang.Long value)
       {
-        for(RowBuilder_Lecture row : _rows) {
-          row.setEcts(value);
+        for(RowBuilder_Persons row : _rows) {
+          row.setJobId(value);
         }
         return this;
       }
-      public RowModify_Lecture setEctsRaw(Object value)
+      public RowModify_Persons setJobIdRaw(Object value)
       {
-        for(RowBuilder_Lecture row : _rows) {
-          row.setEctsRaw(value);
+        for(RowBuilder_Persons row : _rows) {
+          row.setJobIdRaw(value);
         }
         return this;
       }
-      public java.lang.Integer getEcts()
+      public java.lang.Long getJobId()
       {
         if(_rows.size()!=1) {
           throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
         }
-        return _rows.get(0).getEcts();
+        return _rows.get(0).getJobId();
+      }
+
+      public RowModify_Persons setTeamId(Integer intValue)
+      {
+        for(RowBuilder_Persons row : _rows) {
+          row.setTeamId(intValue);
+        }
+        return this;
+      }
+
+      public RowModify_Persons setTeamId(java.lang.Long value)
+      {
+        for(RowBuilder_Persons row : _rows) {
+          row.setTeamId(value);
+        }
+        return this;
+      }
+      public RowModify_Persons setTeamIdRaw(Object value)
+      {
+        for(RowBuilder_Persons row : _rows) {
+          row.setTeamIdRaw(value);
+        }
+        return this;
+      }
+      public java.lang.Long getTeamId()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getTeamId();
       }
       public Object getValue(String column)
       {
@@ -610,9 +629,9 @@ public class LectureTable implements ITable
       }
       
       @Override
-      public RowModify_Lecture clone() {
-        RowModify_Lecture clone = new RowModify_Lecture(table);
-        for(RowBuilder_Lecture row:_rows) {
+      public RowModify_Persons clone() {
+        RowModify_Persons clone = new RowModify_Persons(table);
+        for(RowBuilder_Persons row:_rows) {
           clone._rows.add(row.clone());
         }
         return clone;
@@ -620,10 +639,10 @@ public class LectureTable implements ITable
 
   }
   
-  public static class RowCollection_Lecture extends RowModify_Lecture {
-    public LectureWhere where = new LectureWhere(table);
+  public static class RowCollection_Persons extends RowModify_Persons {
+    public PersonsWhere where = new PersonsWhere(table);
     
-    public RowCollection_Lecture(LectureTable theTable)
+    public RowCollection_Persons(PersonsTable theTable)
     {
       super(theTable);
     }
@@ -633,18 +652,18 @@ public class LectureTable implements ITable
   /**
   * Insert a new empty Row.
   * <code><pre>
-  * ds.table_Lecture.insertRow()
+  * ds.table_Persons.insertRow()
   *   .setId( null )
-  *   .setProfessorId( null )
+  *   .setFirstName( null )
   *   .setName( null )
-  *   .setSws( null )
-  *   .setEcts( null )
+  *   .setJobId( null )
+  *   .setTeamId( null )
   *   ;
   * </pre></code>
   */
-  public RowBuilder_Lecture insertRow()
+  public RowBuilder_Persons insertRow()
   {
-    RowBuilder_Lecture row = new RowBuilder_Lecture(this);
+    RowBuilder_Persons row = new RowBuilder_Persons(this);
     row.nextId();
     rows.add(row);
     return row;
@@ -652,27 +671,27 @@ public class LectureTable implements ITable
   
   /**
   * <code><pre>
-  * ds.table_Lecture.insertRow()
+  * ds.table_Persons.insertRow()
   * </pre></code>
   */
-  public RowBuilder_Lecture insertRow(LectureModel rowToAdd)
+  public RowBuilder_Persons insertRow(PersonsModel rowToAdd)
   {
-    RowBuilder_Lecture row = new RowBuilder_Lecture(this);
+    RowBuilder_Persons row = new RowBuilder_Persons(this);
     row.setIdRaw( rowToAdd.getIdRaw() );
-    row.setProfessorIdRaw( rowToAdd.getProfessorIdRaw() );
+    row.setFirstNameRaw( rowToAdd.getFirstNameRaw() );
     row.setNameRaw( rowToAdd.getNameRaw() );
-    row.setSwsRaw( rowToAdd.getSwsRaw() );
-    row.setEctsRaw( rowToAdd.getEctsRaw() );
+    row.setJobIdRaw( rowToAdd.getJobIdRaw() );
+    row.setTeamIdRaw( rowToAdd.getTeamIdRaw() );
     rows.add(row);
     return row;
   }
 
   /**
   * <code><pre>
-  * ds.table_Lecture.insertRow(data);
+  * ds.table_Persons.insertRow(data);
   * </pre></code>
   */
-  public RowBuilder_Lecture insertRow(RowBuilder_Lecture theRow)
+  public RowBuilder_Persons insertRow(RowBuilder_Persons theRow)
   {
     rows.add(theRow);
     return theRow;
@@ -680,10 +699,10 @@ public class LectureTable implements ITable
   
   /**
   * <code><pre>
-  * ds.table_Lecture.insertRows(data);
+  * ds.table_Persons.insertRows(data);
   * </pre></code>
   */
-  public void insertRows(RowBuilder_Lecture...theRows)
+  public void insertRows(RowBuilder_Persons...theRows)
   {
     rows.addAll(Arrays.asList(theRows));
   }
@@ -691,13 +710,13 @@ public class LectureTable implements ITable
   /**
   * Insert new row at the given index
   * <code><pre>
-  * ds.table_Lecture.insertRowAt(3)
+  * ds.table_Persons.insertRowAt(3)
   *   ;
   * </pre></code>
   */
-  public RowBuilder_Lecture insertRowAt(int index)
+  public RowBuilder_Persons insertRowAt(int index)
   {
-    RowBuilder_Lecture row = new RowBuilder_Lecture(this);
+    RowBuilder_Persons row = new RowBuilder_Persons(this);
     rows.add(index, row);
     return row;
   }
@@ -705,10 +724,10 @@ public class LectureTable implements ITable
   /**
   * Insert new row Object at the given index
   * <code><pre>
-  * ds.table_Lecture.insertRowAt(3)
+  * ds.table_Persons.insertRowAt(3)
   * </pre></code>
   */
-  public RowBuilder_Lecture insertRowAt(int index,RowBuilder_Lecture theRow)
+  public RowBuilder_Persons insertRowAt(int index,RowBuilder_Persons theRow)
   {
     rows.add(index, theRow);
     return theRow;
@@ -719,9 +738,9 @@ public class LectureTable implements ITable
    *
    * @return the deleted row
    */ 
-  public RowBuilder_Lecture deleteRow(int index)
+  public RowBuilder_Persons deleteRow(int index)
   {
-    RowBuilder_Lecture rowBuilder = rows.get(index);
+    RowBuilder_Persons rowBuilder = rows.get(index);
     rows.remove(rowBuilder);
     return rowBuilder;
   }
@@ -729,7 +748,7 @@ public class LectureTable implements ITable
   /**
    * Remove a row from the builder
    */ 
-  public RowBuilder_Lecture deleteRow(RowBuilder_Lecture rowToDelete)
+  public RowBuilder_Persons deleteRow(RowBuilder_Persons rowToDelete)
   {
     rows.remove(rowToDelete);
     return rowToDelete;
@@ -738,9 +757,9 @@ public class LectureTable implements ITable
   /**
   * Creates a new row but does not add it to the table
   */
-  public RowBuilder_Lecture newRow()
+  public RowBuilder_Persons newRow()
   {
-    RowBuilder_Lecture row = new RowBuilder_Lecture(this);
+    RowBuilder_Persons row = new RowBuilder_Persons(this);
     return row;
   }
   
@@ -748,7 +767,7 @@ public class LectureTable implements ITable
   * Returns the next Object. The internal iterator is started at 
   * the first call.
   */
-  public RowBuilder_Lecture next()
+  public RowBuilder_Persons next()
   {
     if(_iterator == null) {
       _iterator = rows.iterator();
