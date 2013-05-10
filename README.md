@@ -1,5 +1,7 @@
 # stu - Simple Test Utils
 
+The project contains simple utils for JUnit and Co.
+
 TODO project description.
 
 # Eclipse 
