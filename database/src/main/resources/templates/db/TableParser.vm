@@ -9,6 +9,9 @@ package ${package};
 #if( $model.package && $model.package.length() != 0 )
 import ${model.package}.${model.name}DataSet
 #end
+#foreach( $table in $model.tables )
+import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName}
+#end
 import groovy.transform.ToString
 
 //-----------------------------------
@@ -36,9 +39,9 @@ class ColumnHeader {
 
 
 #foreach( $table in $model.tables )
-#if ( ${table.referenceColumn} )
-#set( $col = ${table.referenceColumn} )
 class ${table.javaName}Id {
+#if ( ${table.identifierColumn} )
+#set( $col = ${table.identifierColumn} )
 
 #if ( ${col.isAutoIncrement()} || ${col.isIdGenerationAutoInvokeOnInsert()} )  
   // TODO NM replace with IdGenerator
@@ -54,13 +57,14 @@ class ${table.javaName}Id {
 #end
 ##if ( !${col.isIdGenerationAutoInvokeOnInsert()} )  
   def ${table.javaName}Id(${col.javaType} id) {
-    this.id = id
+    setId(id)
   }
 ##end
 
   ${col.javaType} getId() {
     if (id == null) {
 #if ( ${col.isAutoIncrement()} || ${col.isIdGenerationAutoInvokeOnInsert()} )
+      // TODO NM replace with IdGenerator
       id = nextId++
 #else
       throw new IllegalStateException("No id set");      
@@ -73,6 +77,7 @@ class ${table.javaName}Id {
     if (isDefined() && this.id != id) {
       throw new IllegalStateException("Id already set " + id + " vs " + this.id + " [Table: ${table.name}]");
     }
+    // TODO NM notify id generator that id is not available anymore
     this.id = id
   }
 
@@ -84,10 +89,10 @@ class ${table.javaName}Id {
     return id
   }
 
+#end
 }
-#end
-#end
 
+#end
 class AbstractTableParser {
   
   static context = new ThreadLocal<List>()
@@ -136,6 +141,7 @@ class AbstractTableParser {
         head = row
         columns = row.values.size()
       } else {
+        // TODO NM check if there is a row with that id already
         def resultRow = createRow()
         for (columnIndex in 0..(columns-1)) {
           def column = head.values[columnIndex]
@@ -148,31 +154,29 @@ class AbstractTableParser {
       }
     }
   }
+  
 }
 
 #foreach( $table in $model.tables )
 @Mixin(AbstractTableParser)
 class ${table.javaName}Table {
 
-#if ( $table.referenceColumn )
   ColumnHeader REF = new ColumnHeader(name: "REF", type: ${table.javaName}Id.class)
 
-#end
 #foreach( $col in $table.columns )
   ColumnHeader ${col.name} = new ColumnHeader(name: "${col.name}", type: ${col.testModelType})
 
-## check if column is a reference
+## check if column is an identifier
 #if ( ${col.isIdTruncable()} )
 #set( $shortname  = $col.getNameWithoutId() )
   ColumnHeader ${shortname} = new ColumnHeader(name: "${shortname}", type: ${col.testModelType})
 
 #end
 #end
-  
   @ToString
   class ${table.javaName}TableRow {
     
-#if ( $table.referenceColumn )
+#if ( $table.identifierColumn )
     ${table.javaName}Id REF
     
     def REF(${table.javaName}Id REF){
@@ -217,14 +221,12 @@ class ${table.javaName}Table {
 }
 
 #end
-
 class ${model.name}Table {
 
 #foreach( $table in $model.tables )
-  ${table.javaName}Table ${table.javaName.substring(0,1).toLowerCase()}${table.javaName.substring(1)}Table = new ${table.javaName}Table()
+  ${table.javaName}Table ${table.javaVariableName}Table = new ${table.javaName}Table()
   
 #end
-  
   def tables(Closure table) {
     table.delegate = this
     table.resolveStrategy = Closure.DELEGATE_FIRST
@@ -241,19 +243,19 @@ class ${model.name}Table {
       
 #foreach( $table in $model.tables )
       void add${table.javaName}Table() {
-        ${table.javaName.substring(0,1).toLowerCase()}${table.javaName.substring(1)}Table.rows.each { tableRow ->
-          def row = table_${table.javaName}.insertRow()
+## Improve this line :-)      
+        ${table.javaVariableName}Table.rows.each { ${table.javaName}Table.${table.javaName}TableRow tableRow ->
+          RowBuilder_${table.javaName} row = table_${table.javaName}.insertRow()
 #foreach( $col in $table.columns )
-#if( $col == $table.referenceColumn ) 
+#if( $col == $table.identifierColumn ) 
           // if primary key column has a value set REF to that value else use REFs value
           if (tableRow.${col.name} != null) {
             row.set${col.javaName}(tableRow.${col.name})
             tableRow.REF.id = tableRow.${col.name}
-          } else {
-            if (tableRow.REF != null) {
-              row.set${col.javaName}(tableRow.REF.id)
-              tableRow.${col.name} = tableRow.REF.id
-            }
+          } 
+          else if (tableRow.REF != null) {
+            row.set${col.javaName}(tableRow.REF.id)
+            tableRow.${col.name} = tableRow.REF.id
           }
 #elseif( $col.references && $col.references.size() != 0 )
           if (tableRow.${col.name}) row.set${col.javaName}(tableRow.${col.name}.id)

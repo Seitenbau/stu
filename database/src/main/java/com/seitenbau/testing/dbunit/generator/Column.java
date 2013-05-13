@@ -28,8 +28,8 @@ public class Column
   public Column(Table table, String name, String javaName, String type, String javaType, Column[] references,
       Flags[] flags)
   {
-    if (isReference() && table.getReferenceColumn() != null) {
-      throw new IllegalArgumentException("Cannot set multiple reference columns in a single table");
+    if (isIdentifier() && table.getIdentifierColumn() != null) {
+      throw new IllegalArgumentException("Cannot set multiple identifier columns in a single table");
     }
     
     _table = table;
@@ -131,9 +131,9 @@ public class Column
     return isAutoIncrement() || isIdGenerationAutoInvokeOnInsert() || _flags.contains(Flags.AddNextIdMethod);
   }
 
-  public boolean isReference()
+  public boolean isIdentifier()
   {
-    return _flags.contains(Flags.ReferenceColumn);
+    return _flags.contains(Flags.IdentifierColumn);
   }
 
   public String getJavaName()
@@ -144,6 +144,16 @@ public class Column
     }
     String name = CamelCase.makeFirstOfBlockUppercase(_name);
     return CamelCase.makeFirstUpperCase(name); // old
+  }
+
+  public String getJavaVariableName()
+  {
+    if (_javaName != null)
+    {
+      return CamelCase.makeFirstUpperCase(_javaName);
+    }
+    String name = CamelCase.makeFirstOfBlockUppercase(_name);
+    return CamelCase.makeFirstLowerCase(name); // old
   }
 
   public String getJavaNameFirstLower()

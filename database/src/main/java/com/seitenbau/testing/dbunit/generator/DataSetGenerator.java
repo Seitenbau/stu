@@ -100,8 +100,6 @@ public class DataSetGenerator
       _dataSet.setCaller(_caller);
       generateDataSet(targetPath + "/");
       generateTableParser(targetPath + "/");
-      logger.debug("RIEN NE VAS PLUS");
-
       generateTables(targetPath + "/");
       generateJavaClasses(targetPath + "/");
     }

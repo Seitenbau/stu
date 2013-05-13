@@ -28,5 +28,5 @@ public enum Flags
   /**
    * 
    */
-  ReferenceColumn;
+  IdentifierColumn;
 }

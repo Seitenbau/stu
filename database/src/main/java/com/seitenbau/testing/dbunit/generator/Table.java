@@ -72,13 +72,13 @@ public class Table
 
   public Table addColumn(String dbColName, String type, String javaType, Table reference, Flags... flags)
   {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {reference.getReferenceColumn()}, flags));
+    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {reference.getIdentifierColumn()}, flags));
     return this;
   }
 
   public Table addColumn(String dbColName, DataType type, Table reference, Flags... flags)
   {
-    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference.getReferenceColumn()},
+    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference.getIdentifierColumn()},
         flags));
     return this;
   }
@@ -132,6 +132,15 @@ public class Table
     return DataSet.makeNiceJavaName(_name);
   }
 
+  public String getJavaVariableName()
+  {
+    if (_javaName != null)
+    {
+      return CamelCase.makeFirstLowerCase(_javaName);
+    }
+    return CamelCase.makeFirstLowerCase(DataSet.makeNiceJavaName(_name));
+  }
+
   public DataSet getDataSet()
   {
     return _dataSet;
@@ -147,11 +156,11 @@ public class Table
     return NAME_SUFFIX;
   }
   
-  public Column getReferenceColumn()
+  public Column getIdentifierColumn()
   {
     for (Column col : getColumns())
     {
-      if (col.isReference())
+      if (col.isIdentifier())
       {
         return col;
       }
