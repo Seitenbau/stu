@@ -1,7 +1,7 @@
 package com.seitenbau.testing.dbunit.generator;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.seitenbau.testing.util.CamelCase;
@@ -20,12 +20,12 @@ public class Column
   String _testModelType;
 
   EnumSet<Flags> _flags = EnumSet.noneOf(Flags.class);
-
-  List<Column> _references = new ArrayList<Column>();
+  
+  RelationDescription _relation;
 
   Table _table;
 
-  public Column(Table table, String name, String javaName, String type, String javaType, Column[] references,
+  public Column(Table table, String name, String javaName, String type, String javaType, RelationDescription relation,
       Flags[] flags)
   {
     if (isIdentifier() && table.getIdentifierColumn() != null) {
@@ -38,6 +38,7 @@ public class Column
     _type = type;
     _javaType = javaType;
     _testModelType = javaType;
+    _relation = relation;
     if (flags != null)
     {
       for (Flags flag : flags)
@@ -45,12 +46,11 @@ public class Column
         _flags.add(flag);
       }
     }
-    if (references != null)
+    if (_relation != null)
     {
-      for (Column ref : references)
+      for (Column ref : _relation.getReferences())
       {
-        _references.add(ref);
-        _testModelType = ref.getTable().getJavaName() + "Id";
+        _testModelType = ref.getTable().getJavaName() + "Ref";
       }
     }
   }
@@ -91,7 +91,7 @@ public class Column
   
   public boolean isIdTruncable()
   {
-    if (_references.size() == 0 || !_name.endsWith("_id")) {
+    if (_relation == null || !_name.endsWith("_id")) {
       return false;
     }
     
@@ -110,10 +110,18 @@ public class Column
   {
     return _flags;
   }
+  
+  public RelationDescription getRelation()
+  {
+    return _relation;
+  }
 
   public List<Column> getReferences()
   {
-    return _references;
+    if (_relation == null) {
+      return new LinkedList<Column>();
+    }
+    return _relation.getReferences();
   }
 
   public boolean isAutoIncrement()
@@ -159,6 +167,29 @@ public class Column
   public String getJavaNameFirstLower()
   {
     return CamelCase.makeFirstLowerCase(getJavaName());
+  }
+  
+  public String getReferencedIdType() 
+  {
+    if (_relation == null) {
+      throw new IllegalArgumentException("No references...");
+    }
+    
+    return _relation.getReferences().get(0).getTable().getJavaName();    
+  }
+  
+  public boolean isReferencingTable(Table table)
+  {
+    if (_relation == null) {
+      return false;
+    }
+    for (Column column : table.getColumns()) {
+      if (_relation.getReferences().contains(column)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
 }

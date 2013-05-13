@@ -38,48 +38,34 @@ public class Table
   {
     return _name;
   }
-  
+
   public Table addColumn(String dbColName, String type, String javaType)
   {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {}, new Flags[] {}));
+    _columns.add(new Column(this, dbColName, null, type, javaType, null, new Flags[] {}));
     return this;
   }
 
   public Table addColumn(String dbColName, String javaName, String type, String javaType)
   {
-    _columns.add(new Column(this, dbColName, javaName, type, javaType, new Column[] {}, new Flags[] {}));
+    _columns.add(new Column(this, dbColName, javaName, type, javaType, null, new Flags[] {}));
     return this;
   }
 
   public Table addColumn(String dbColName, String type, String javaType, Flags... flags)
   {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {}, flags));
+    _columns.add(new Column(this, dbColName, null, type, javaType, null, flags));
     return this;
   }
 
-  public Table addColumn(String dbColName, String type, String javaType, Column reference, Flags... flags)
+  public Table addColumn(String dbColName, String type, String javaType, RelationDescription relation, Flags... flags)
   {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {reference}, flags));
+    _columns.add(new Column(this, dbColName, null, type, javaType, relation, flags));
     return this;
   }
 
-  public Table addColumn(String dbColName, DataType type, Column reference, Flags... flags)
+  public Table addColumn(String dbColName, DataType type, RelationDescription relation, Flags... flags)
   {
-    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference},
-        flags));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, String type, String javaType, Table reference, Flags... flags)
-  {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {reference.getIdentifierColumn()}, flags));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, DataType type, Table reference, Flags... flags)
-  {
-    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference.getIdentifierColumn()},
-        flags));
+    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), relation, flags));
     return this;
   }
 
@@ -155,7 +141,7 @@ public class Table
   {
     return NAME_SUFFIX;
   }
-  
+
   public Column getIdentifierColumn()
   {
     for (Column col : getColumns())
@@ -179,4 +165,58 @@ public class Table
     }
     throw new RuntimeException("No column " + colName);
   }
+
+  public boolean isAssociativeTable()
+  {
+    if (getColumns().size() != 2)
+    {
+      return false;
+    }
+    for (Column col : getColumns())
+    {
+      if (col.getReferences().size() == 0)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public boolean isAssociatingTable(Table table)
+  {
+    if (!isAssociativeTable())
+    {
+      return false;
+    }
+    final Column identifier = table.getIdentifierColumn();
+    for (Column col : getColumns())
+    {
+      if (col.getReferences().contains(identifier))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public String getAssociatedType(Table table)
+  {
+    if (!isAssociatingTable(table))
+    {
+      return "<No Assoc>";
+    }
+    final Column identifier = table.getIdentifierColumn();
+    for (Column col : getColumns())
+    {
+      if (col.getReferences().contains(identifier))
+      {
+        continue;
+      }
+      return col.getReferences().get(0).getTable().getJavaName();
+    }
+    return "<None found>";
+  }
+
 }
