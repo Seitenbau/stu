@@ -99,9 +99,13 @@ public class DataSetGenerator
       check();
       _dataSet.setCaller(_caller);
       generateDataSet(targetPath + "/");
-      generateTableParser(targetPath + "/");
       generateTables(targetPath + "/");
       generateJavaClasses(targetPath + "/");
+
+      generateDSL(targetPath + "/");
+      generateDSLTableModel(targetPath + "/");
+      generateDSLTableReferences(targetPath + "/");
+
     }
     finally
     {
@@ -133,12 +137,31 @@ public class DataSetGenerator
     logger.info("created " + _dataSet.getTables().size() + " Tables");
   }
 
-  protected void generateTableParser(String into) throws Exception
+  protected void generateDSLTableModel(String into) throws Exception
   {
-    templates.executeTemplate(_dataSet, getTemplatePathTableParser(), into);
+    for (Table table : _dataSet.getTables())
+    {
+      templates.executeTemplate(table, getTemplatePathDSLTableModel(), into);
+    }
+    logger.info("created " + _dataSet.getTables().size()  + " DSL Table Model");
     logger.info("created 1 TableParser");
   }
 
+  protected void generateDSLTableReferences(String into) throws Exception
+  {
+    for (Table table : _dataSet.getTables())
+    {
+      templates.executeTemplate(table, getTemplatePathTableReferences(), into);
+    }
+    logger.info("created " + _dataSet.getTables().size()  + " DSL Table References");
+  }
+  
+  protected void generateDSL(String into) throws Exception
+  {
+    templates.executeTemplate(_dataSet, getTemplatePathDSL(), into);
+    logger.info("created 1 DSL class");
+  }
+  
   protected void generateJavaClasses(String into) throws Exception
   {
     for (Table table : _dataSet.getTables())
@@ -154,9 +177,19 @@ public class DataSetGenerator
     return "/templates/db/Table.vm";
   }
 
-  protected String getTemplatePathTableParser()
+  protected String getTemplatePathDSLTableModel()
   {
-    return "/templates/db/TableParser.vm";
+    return "/templates/db/DSLTableModel.vm";
+  }
+
+  protected String getTemplatePathTableReferences()
+  {
+    return "/templates/db/DSLTableRef.vm";
+  }
+  
+  protected String getTemplatePathDSL()
+  {
+    return "/templates/db/DSL.vm";
   }
   
   protected String getTemplatePathDataSets()

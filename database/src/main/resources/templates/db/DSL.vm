@@ -1,0 +1,96 @@
+#set($filename = ${model.name} + "DSL.groovy" )
+#if( $model.package && $model.package.length() != 0 )
+#set($package  = ${model.package} + ".groovy" )
+#else
+#set($package  = "groovy" )
+#end
+package ${package};
+
+#if( $model.package && $model.package.length() != 0 )
+import ${model.package}.${model.name}DataSet
+#end
+#foreach( $table in $model.tables )
+import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName}
+import ${model.package}.${table.javaName}Table.RowCollection_${table.javaName}
+#end
+import com.seitenbau.testdatadsl.stu.ColumnBinding
+import com.seitenbau.testdatadsl.stu.TableRowModel
+import com.seitenbau.testdatadsl.stu.DatabaseReference
+
+import groovy.transform.ToString
+
+class ${model.name}DSL {
+
+  ${model.name}DataSet dataset = new ${model.name}DataSet() {
+      void initDataSet() { }
+    }
+
+#foreach( $table in $model.tables )
+  ${table.javaName}Table ${table.javaVariableName}Table = new ${table.javaName}Table(dataset.table_${table.javaName})
+  
+#end
+  def tables(Closure table) {
+    table.delegate = this
+    table.resolveStrategy = Closure.DELEGATE_FIRST
+    table()
+  }
+  
+  def relations(Closure relations) {
+    relations()
+    
+#foreach( $table in $model.tables )
+#if ( !${table.isAssociativeTable()} )
+    updateRelations${table.javaName}Ref()
+#end
+#end
+  }
+ 
+#foreach( $table in $model.tables )
+#if ( !${table.isAssociativeTable()} )
+  def updateRelations${table.javaName}Ref() {
+#foreach( $col in $table.columns )
+#if( $col.references && $col.references.size() != 0 )
+    
+#set( $outerRef = ${col.referencedTable.javaName} + "Ref" ) 
+#set( $outerRefVar = ${col.referencedTable.javaVariableName} + "Ref" ) 
+#set( $innerRef = ${table.javaName} + "Ref" ) 
+#set( $innerRefVar = ${table.javaVariableName} + "Ref" ) 
+    ${col.referencedTable.javaVariableName}Table.usedRefs.keySet().each { $outerRef $outerRefVar ->
+      $outerRefVar.${col.relation.referencesRelationName}List.each { $innerRef $innerRefVar ->
+        println "Relation: " + $outerRefVar + " ${col.relation.referencesRelationName} " + $innerRefVar
+      }
+    } 
+
+#end
+#end
+#foreach( $referencingTable in $model.tables )
+#foreach( $col in $referencingTable.columns )
+#if( ${col.isReferencingTable($table)} )
+#if ( ${referencingTable.isAssociativeTable()} )
+#set( $reftype = ${referencingTable.getAssociatedType($table)} )
+    //-----------
+    // TODO NM Use List<${reftype}Ref> ${col.relation.referencesRelationName}List
+    // ${referencingTable.javaName} insertRow
+    //   fk: ${table.javaName}
+    //   fk: ${reftype}
+    //-----------
+#else
+#set( $reftype = ${col.table.javaName} )
+    //-----------
+    // TODO NM Use List<${reftype}Ref> ${col.relation.referencesRelationName}List
+    // ${referencingTable.javaName} updateRow
+    //   fk: ${table.javaName}
+    //-----------
+#end
+#end
+#end
+#end
+  }
+
+#end
+#end
+
+  def createDataSet() {
+    dataset.createDBUnitDataSet()
+  }
+}

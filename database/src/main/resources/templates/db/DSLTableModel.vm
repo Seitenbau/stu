@@ -1,0 +1,188 @@
+#set($filename = ${model.javaName} + "Table.groovy" )
+#if( $model.package && $model.package.length() != 0 )
+#set($package  = ${model.package} + ".groovy" )
+#else
+#set($package  = "groovy" )
+#end
+package ${package};
+
+#if( $model.package && $model.package.length() != 0 )
+import ${model.package}.${model.dataSet.name}DataSet
+#end
+#foreach( $table in $model.dataSet.tables )
+import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName}
+import ${model.package}.${table.javaName}Table.RowCollection_${table.javaName}
+#end
+import com.seitenbau.testdatadsl.stu.ColumnBinding
+import com.seitenbau.testdatadsl.stu.TableRowModel
+import com.seitenbau.testdatadsl.stu.DatabaseReference
+import com.seitenbau.testdatadsl.stu.TableParser
+
+import groovy.transform.ToString
+
+#set($table = $model)
+
+class ${model.javaName}Table {
+
+  ColumnBinding<RowBuilder_${model.javaName}> REF = new ColumnBinding<RowBuilder_${model.javaName}>() {
+    @Override
+    public void set(RowBuilder_${model.javaName} row, Object value)
+    {
+      // TODO NM think about it :-)
+    }
+  }  
+
+#foreach( $col in $model.columns )
+  ColumnBinding<RowBuilder_${model.javaName}> ${col.name} = new ColumnBinding<RowBuilder_${model.javaName}>() {
+    @Override
+    public void set(RowBuilder_${model.javaName} row, Object value)
+    {
+      // TODO NM think about it :-)
+    }
+  }  
+  
+
+## check if column is an identifier
+#if ( ${col.isIdTruncable()} )
+#set( $shortname  = $col.getNameWithoutId() )
+  ColumnBinding<RowBuilder_${model.javaName}> ${shortname} = new ColumnBinding<RowBuilder_${model.javaName}>() {
+    @Override
+    public void set(RowBuilder_${model.javaName} row, Object value)
+    {
+      // TODO NM think about it :-)
+    }
+  }  
+
+#end
+#end
+  ${model.package}.${model.javaName}Table table
+
+  Map<${model.javaName}Ref, RowBuilder_${model.javaName}> usedRefs = [:]
+
+  def ${model.javaName}Table(${model.package}.${model.javaName}Table table) {
+    this.table = table
+  }
+  
+  void rows(Closure rows) {
+    List<TableRowModel> tableData = TableParser.parseTable(rows)
+    def head = null
+    int columns = 0
+    int lineNr = 0
+    
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { TableRowModel row ->
+      lineNr++    
+      if (row.isHeadRow()) {
+        head = row
+        colRef = head.getRefColumn()
+        colId = head.getIdColumn()
+        columns = head.getColumnCount()
+      }
+      else {
+        if (row.getColumnCount() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_${model.javaName}.insertRow()
+		
+        RowBuilder_${model.javaName} rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
+        }
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnBinding column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnBinding column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding ${model.javaName} with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new ${model.javaName}TableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnBinding column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
+
+        if (colRef != -1 && row.values[colRef] && !usedRefs.keySet().contains(row.values[colRef])) {
+          usedRefs[row.values[colRef]] = rowbuilder
+          println "Used ref in ${model.javaName}: " + row.values[colRef]
+        }
+      }
+    }
+  }
+  
+  def throwColumnsDoNotMatchException(int lineNr, TableRowModel row) {
+    throwException("column count does not match", lineNr, row)
+  }
+
+  def throwRedefinedIdException(int lineNr, TableRowModel row) {
+    throwException("Id redefined", lineNr, row)
+  }
+  
+  def throwException(String message, int lineNr, TableRowModel row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in ${model.javaName}, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [TableRowModel: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
+  }
+}
+

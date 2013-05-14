@@ -169,13 +169,13 @@ public class Column
     return CamelCase.makeFirstLowerCase(getJavaName());
   }
   
-  public String getReferencedIdType() 
+  public Table getReferencedTable() 
   {
     if (_relation == null) {
       throw new IllegalArgumentException("No references...");
     }
     
-    return _relation.getReferences().get(0).getTable().getJavaName();    
+    return _relation.getReferences().get(0).getTable();    
   }
   
   public boolean isReferencingTable(Table table)
