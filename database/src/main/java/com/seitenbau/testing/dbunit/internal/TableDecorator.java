@@ -5,7 +5,7 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableMetaData;
 
 /**
- * Helper class to Decoarate a Table. This Class just deleates all
+ * Helper class to decorate a Table. This Class just delegates all
  * {@link ITable} Methods to the delegate Target.
  */
 public class TableDecorator implements ITable
