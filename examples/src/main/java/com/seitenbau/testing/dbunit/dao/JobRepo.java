@@ -13,9 +13,9 @@ public class JobRepo
   protected static final String DB_JOBS_TABLE_NAME = "jobs";
 
   private static final String ALL_JOBS_COLUMNS = //
-  "id" + ", " + //
-      "title" + ", " + //
-      "description";
+  JobColumns.ID.getColumnName() + ", " + //
+      JobColumns.TITLE.getColumnName() + ", " + //
+      JobColumns.DESCRIPTION.getColumnName();
 
   private static final String SQL_SELECT_ALL_JOBS = "SELECT * FROM " + DB_JOBS_TABLE_NAME;
 
@@ -23,9 +23,9 @@ public class JobRepo
   "INSERT INTO " + DB_JOBS_TABLE_NAME + //
       " (" + ALL_JOBS_COLUMNS + ")" + //
       " VALUES (?, ?, ?)";
-  
+
   private static final String SQL_DELETE_JOB_BY_ID = "DELETE FROM " + DB_JOBS_TABLE_NAME + //
-      " WHERE " + "id" + " = (?)";
+      " WHERE " + JobColumns.ID.getColumnName() + " = (?)";
 
   private static DataSource dataSource;
   

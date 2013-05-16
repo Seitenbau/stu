@@ -14,10 +14,10 @@ public class TeamRepo
   protected static final String DB_TEAM_TABLE_NAME = "teams";
 
   private static final String ALL_TEAM_COLUMNS = //
-  "id" + ", " + //
-      "title" + ", " + //
-      "description" + ", " + //
-      "membersize";
+  TeamColumns.ID.getColumnName() + ", " + //
+      TeamColumns.TITLE.getColumnName() + ", " + //
+      TeamColumns.DESCRIPTION.getColumnName() + ", " + //
+      TeamColumns.MEMBERSIZE.getColumnName();
 
   private static final String SQL_SELECT_ALL_TEAMS = "SELECT * FROM " + DB_TEAM_TABLE_NAME;
 
@@ -25,9 +25,9 @@ public class TeamRepo
   "INSERT INTO " + DB_TEAM_TABLE_NAME + //
       " (" + ALL_TEAM_COLUMNS + ")" + //
       " VALUES (?, ?, ?, ?)";
-  
+
   private static final String SQL_DELETE_TEAM_BY_ID = "DELETE FROM " + DB_TEAM_TABLE_NAME + //
-      " WHERE " + "id" + " = (?)";
+      " WHERE " + TeamColumns.ID.getColumnName() + " = (?)";
 
   private static DataSource dataSource;
 

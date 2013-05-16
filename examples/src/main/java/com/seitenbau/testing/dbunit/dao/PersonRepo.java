@@ -13,11 +13,11 @@ public class PersonRepo
   protected static final String DB_PERSONS_TABLE_NAME = "persons";
 
   private static final String ALL_PERSONS_COLUMNS = //
-  "id" + ", " + // 
-      "first_name" + ", " + //
-      "name" + ", " + //
-      "job_id" + ", " + //
-      "team_id";
+  PersonColumns.ID.getColumnName() + ", " + //
+      PersonColumns.FIRST_NAME.getColumnName() + ", " + //
+      PersonColumns.NAME.getColumnName() + ", " + //
+      PersonColumns.JOB_ID.getColumnName() + ", " + //
+      PersonColumns.TEAM_ID.getColumnName();
 
   private static final String SQL_SELECT_ALL_PERSONS = "SELECT * FROM " + DB_PERSONS_TABLE_NAME;
 
@@ -27,7 +27,7 @@ public class PersonRepo
       " VALUES (?, ?, ?, ?, ?)";
 
   private static final String SQL_DELETE_PERSON_BY_ID = "DELETE FROM " + DB_PERSONS_TABLE_NAME + //
-      " WHERE " + "id" + " = (?)";
+      " WHERE " + PersonColumns.ID.getColumnName() + " = (?)";
 
   private static DataSource dataSource;
 
