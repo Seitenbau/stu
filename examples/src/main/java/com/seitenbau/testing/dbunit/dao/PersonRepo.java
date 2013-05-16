@@ -26,6 +26,9 @@ public class PersonRepo
       " (" + ALL_PERSONS_COLUMNS + ")" + //
       " VALUES (?, ?, ?, ?, ?)";
 
+  private static final String SQL_DELETE_PERSON_BY_ID = "DELETE FROM " + DB_PERSONS_TABLE_NAME + //
+      " WHERE " + "id" + " = (?)";
+
   private static DataSource dataSource;
 
   @Transactional(readOnly = true)
@@ -58,6 +61,18 @@ public class PersonRepo
     }
 
     return null;
+  }
+  
+  @Transactional(readOnly = false)
+  public int remove(Person person)
+  {
+    JdbcTemplate delete = new JdbcTemplate(dataSource);
+    
+    int amountOfDeletedItems = delete.update(//
+        SQL_DELETE_PERSON_BY_ID, //
+        new Object[] {person.getId()});
+
+    return amountOfDeletedItems;
   }
 
   public void setDataSource(DataSource dataSource)

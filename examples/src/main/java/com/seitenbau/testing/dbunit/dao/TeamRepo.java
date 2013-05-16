@@ -25,6 +25,9 @@ public class TeamRepo
   "INSERT INTO " + DB_TEAM_TABLE_NAME + //
       " (" + ALL_TEAM_COLUMNS + ")" + //
       " VALUES (?, ?, ?, ?)";
+  
+  private static final String SQL_DELETE_TEAM_BY_ID = "DELETE FROM " + DB_TEAM_TABLE_NAME + //
+      " WHERE " + "id" + " = (?)";
 
   private static DataSource dataSource;
 
@@ -57,6 +60,18 @@ public class TeamRepo
     }
 
     return null;
+  }
+  
+  @Transactional(readOnly = false)
+  public int remove(Team team)
+  {
+    JdbcTemplate delete = new JdbcTemplate(dataSource);
+
+    int amountOfDeletedItems = delete.update(//
+        SQL_DELETE_TEAM_BY_ID, //
+        new Object[] {team.getId()});
+
+    return amountOfDeletedItems;
   }
 
   public void setDataSource(DataSource dataSource)

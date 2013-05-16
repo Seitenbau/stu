@@ -5,10 +5,13 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.LinkedList;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,6 +22,7 @@ import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.EmptyDataSet;
 import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
+import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.services.PersonService;
@@ -34,7 +38,7 @@ public class ManualDatabaseTester
   PersonService sut;
 
   @Test
-  public void findAllPersonsOnEmptyDataset() throws Exception
+  public void findAllPersonsInEmptyDataset() throws Exception
   {
     // prepare
     List<Person> expected = new LinkedList<Person>();
@@ -70,7 +74,7 @@ public class ManualDatabaseTester
   }
 
   @Test
-  public void findAllPersonsWithDefaultProfessorDataset() throws Exception
+  public void findAllPersonsInDefaultDataset() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
@@ -80,6 +84,36 @@ public class ManualDatabaseTester
     List<Person> result = sut.findPersons();
     // verify
     assertThat(result).hasSize(3);
+  }
+
+  @Test
+  public void findAllPersonsByTeamInDefaultDataset() throws Exception
+  {
+    // prepare
+    DefaultDataSet defaultDataSet = new DefaultDataSet();
+    dbTesterRule.cleanInsert(defaultDataSet);
+    
+    List<Team> teams = sut.findTeams();
+    Team team = teams.get(0);
+    // execute
+    List<Person> result = sut.findPersons(team);
+    // verify
+    assertThat(result).hasSize(3);
+  }
+  
+  @Test
+  public void findAllPersonsByTeamInEmptyDataset() throws Exception
+  {
+    // prepare
+    EmptyDataSet emptyDataset = new EmptyDataSet();
+    dbTesterRule.cleanInsert(emptyDataset);
+    
+    Team team = new Team();
+    team.setId(1);
+    // execute
+    List<Person> result = sut.findPersons(team);
+    // verify
+    assertThat(result).isEmpty();
   }
 
   @Test
@@ -109,70 +143,61 @@ public class ManualDatabaseTester
     assertThat(result.getFirstName()).isEqualTo(person.getFirstName());
     assertThat(result.getId()).isNotEqualTo(initialId);
   }
+  
+  @Test
+  public void removePersonFromDataset() throws Exception
+  {
+    // prepare
+    EmptyDataSet emptyDataset = new EmptyDataSet();
+    RowBuilder_Jobs job = emptyDataset.table_Jobs.insertRow().setTitle("Software Developer")
+        .setDescription("Developing Software");
+    RowBuilder_Teams team = emptyDataset.table_Teams.insertRow().setTitle("Quality Assurance")
+        .setDescription("Just hanging around").setMembersize(1);
+    RowBuilder_Persons personRow = emptyDataset.table_Persons.insertRow().setFirstName("Dennis").setName("Kaulbersch")
+        .setJobId(job.getId()).setTeamId(team.getId());
 
-  // @Test(expected = DataIntegrityViolationException.class)
-  // public void removePersonFromDefaultDatasetWithExistingLecture()
-  // throws Exception
-  // {
-  // // prepare
-  // DefaultDataSet defaultDataSet = new DefaultDataSet();
-  // dbTesterRule.cleanInsert(defaultDataSet);
-  //
-  // Professor professor = new Professor();
-  // professor.setFirstName("Hansi");
-  // professor.setName("Krankl");
-  // professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
-  // professor.setFaculty("Media");
-  //
-  // for (Professor currentProfessor : sut.findProfessors())
-  // {
-  // if (currentProfessor.getName().equals("Krankl"))
-  // {
-  // professor.setId(currentProfessor.getId());
-  // break;
-  // }
-  // }
-  //
-  // // execute
-  // sut.removeProfessor(professor);
-  // // verify
-  // Assert.fail();
-  // }
-  //
-  // @Test
-  // public void
-  // removeProfessorsFromDefaultDatasetWithoutExistingLecture() throws
-  // Exception
-  // {
-  // // prepare
-  // DefaultDataSet defaultDataSet = new DefaultDataSet();
-  // dbTesterRule.cleanInsert(defaultDataSet);
-  //
-  // Professor professor = new Professor();
-  // professor.setFirstName("Paul");
-  // professor.setName("Breitner");
-  // professor.setTitle("Dr.");
-  // professor.setFaculty("Architecture");
-  //
-  // for (Professor currentProfessor : sut.findProfessors())
-  // {
-  // if (currentProfessor.getName().equals("Breitner"))
-  // {
-  // professor.setId(currentProfessor.getId());
-  // break;
-  // }
-  // }
-  //
-  // // execute
-  // int deletedRows = sut.removeProfessor(professor);
-  // // verify
-  // assertThat(deletedRows).isEqualTo(1);
-  // }
+    dbTesterRule.cleanInsert(emptyDataset);
+
+    Person person = new Person();
+    person.setFirstName(personRow.getFirstName());
+    person.setId(personRow.getId().intValue());
+    person.setJob(personRow.getJobId().intValue());
+    person.setName(personRow.getName());
+    person.setTeam(personRow.getTeamId().intValue());
+
+    // execute
+
+    boolean result = sut.removePerson(person);
+    // verify
+    assertThat(result).isTrue();
+  }
+  
+  @Test
+  public void removePersonFromEmptyDataset() throws Exception
+  {
+    // prepare
+    EmptyDataSet emptyDataset = new EmptyDataSet();
+
+    dbTesterRule.cleanInsert(emptyDataset);
+
+    Person person = new Person();
+    person.setFirstName("John");
+    person.setId(23);
+    person.setJob(0);
+    person.setName("Doe");
+    person.setTeam(1899);
+
+    // execute
+    boolean result = sut.removePerson(person);
+
+    // verify
+    assertThat(result).isFalse();
+  }
 
   // Jobs
 
   @Test
-  public void findAllJobsOnEmptyDataset() throws Exception
+  public void findAllJobsInEmptyDataset() throws Exception
   {
     // prepare
     List<Job> expected = new LinkedList<Job>();
@@ -202,7 +227,7 @@ public class ManualDatabaseTester
   }
 
   @Test
-  public void findAllJobsWithDefaultDataset() throws Exception
+  public void findAllJobsInDefaultDataset() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
@@ -231,52 +256,56 @@ public class ManualDatabaseTester
     assertThat(result.getTitle()).isEqualTo(job.getTitle());
     assertThat(result.getId()).isNotEqualTo(expectedId);
   }
-
-//  @Test
-//  public void removeLectureFromDefaultDataset() throws Exception
-//  {
-//    // prepare
-//    DefaultDataSet defaultDataSet = new DefaultDataSet();
-//    dbTesterRule.cleanInsert(defaultDataSet);
-//
-//    Professor professor = new Professor();
-//    professor.setFirstName("Hansi");
-//    professor.setName("Krankl");
-//    professor.setTitle("Dipl.-Med.-Sys.-Wiss.");
-//    professor.setFaculty("Media");
-//
-//    for (Professor currentProfessor : sut.findProfessors())
-//    {
-//      if (currentProfessor.getName().equals("Krankl"))
-//      {
-//        professor.setId(currentProfessor.getId());
-//        break;
-//      }
-//    }
-//
-//    Lecture lecture = new Lecture();
-//    lecture.setTitle("Semiotik Today");
-//    lecture.setWeeklyHours(2);
-//    lecture.setSemesterCredits(10);
-//    lecture.setGivenBy(professor.getId());
-//
-//    for (Lecture currentLecture : sut.findLectures())
-//    {
-//      if (currentLecture.getTitle().equals("Semiotik Today"))
-//      {
-//        lecture.setId(currentLecture.getId());
-//        break;
-//      }
-//    }
-//
-//    // execute
-//    int deletedRows = sut.removeLecture(lecture);
-//    // verify
-//    assertThat(deletedRows).isEqualTo(1);
-//  }
   
   @Test
-  public void findAllTeamsOnEmptyDataset() throws Exception
+  public void removeTeamFromDefaultDatasetWithoutExistingReference() throws Exception
+  {
+    // prepare
+    DefaultDataSet defaultDataSet = new DefaultDataSet();
+    RowBuilder_Teams newTeam = defaultDataSet.table_Teams.insertRow().setTitle("Empty Team").setDescription("No members").setMembersize(0);
+    dbTesterRule.cleanInsert(defaultDataSet);
+
+    Team team = new Team();
+    team.setId(newTeam.getId().intValue());
+    // execute
+    boolean result = sut.removeTeam(team);
+    // verify
+    assertThat(result).isTrue();
+  }
+  
+  @Test
+  public void removeTeamFromEmptyDataset() throws Exception
+  {
+    // prepare
+    EmptyDataSet emptyDataSet = new EmptyDataSet();
+    dbTesterRule.cleanInsert(emptyDataSet);
+
+    Team team = new Team();
+    team.setId(1);
+    // execute
+    boolean result = sut.removeTeam(team);
+    // verify
+    assertThat(result).isFalse();
+  }
+  
+  @Test(expected=DataIntegrityViolationException.class)
+  public void removeTeamFromDefaultDatasetWithExistingReference() throws Exception
+  {
+    // prepare
+    DefaultDataSet defaultDataSet = new DefaultDataSet();
+    dbTesterRule.cleanInsert(defaultDataSet);
+
+    List<Team> teams = sut.findTeams();
+    Team team = teams.get(0);
+    // execute
+    sut.removeTeam(team);
+    // verify
+    Assert.fail();
+  }
+
+  // Teams 
+  @Test
+  public void findAllTeamsInEmptyDataset() throws Exception
   {
     // prepare
     List<Team> expected = new LinkedList<Team>();
@@ -307,7 +336,7 @@ public class ManualDatabaseTester
   }
 
   @Test
-  public void findAllTeamsWithDefaultDataset() throws Exception
+  public void findAllTeamsInDefaultDataset() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
@@ -336,5 +365,52 @@ public class ManualDatabaseTester
     // verify
     assertThat(result.getTitle()).isEqualTo(team.getTitle());
     assertThat(result.getId()).isNotEqualTo(expectedId);
+  }
+  
+  @Test
+  public void removeJobFromDefaultDatasetWithoutExistingReference() throws Exception
+  {
+    // prepare
+    DefaultDataSet defaultDataSet = new DefaultDataSet();
+    RowBuilder_Jobs newJob = defaultDataSet.table_Jobs.insertRow().setTitle("Software Architect").setDescription("Make high-level design.");
+    dbTesterRule.cleanInsert(defaultDataSet);
+    dbTesterRule.cleanInsert(defaultDataSet);
+
+    Job job = new Job();
+    job.setId(newJob.getId().intValue());
+    // execute
+    boolean result = sut.removeJob(job);
+    // verify
+    assertThat(result).isTrue();
+  }
+  
+  @Test
+  public void removeJobFromEmptyDataset() throws Exception
+  {
+    // prepare
+    EmptyDataSet emptyDataSet = new EmptyDataSet();
+    dbTesterRule.cleanInsert(emptyDataSet);
+
+    Job job = new Job();
+    job.setId(1);
+    // execute
+    boolean result = sut.removeJob(job);
+    // verify
+    assertThat(result).isFalse();
+  }
+  
+  @Test(expected=DataIntegrityViolationException.class)
+  public void removeJobFromDefaultDatasetWithExistingReference() throws Exception
+  {
+    // prepare
+    DefaultDataSet defaultDataSet = new DefaultDataSet();
+    dbTesterRule.cleanInsert(defaultDataSet);
+
+    List<Job> jobs = sut.findJobs();
+    Job job = jobs.get(0);
+    // execute
+    sut.removeJob(job);
+    // verify
+    Assert.fail();
   }
 }

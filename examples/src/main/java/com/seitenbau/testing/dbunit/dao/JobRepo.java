@@ -23,6 +23,9 @@ public class JobRepo
   "INSERT INTO " + DB_JOBS_TABLE_NAME + //
       " (" + ALL_JOBS_COLUMNS + ")" + //
       " VALUES (?, ?, ?)";
+  
+  private static final String SQL_DELETE_JOB_BY_ID = "DELETE FROM " + DB_JOBS_TABLE_NAME + //
+      " WHERE " + "id" + " = (?)";
 
   private static DataSource dataSource;
   
@@ -54,6 +57,18 @@ public class JobRepo
     }
 
     return null;
+  }
+  
+  @Transactional(readOnly = false)
+  public int remove(Job job)
+  {
+    JdbcTemplate delete = new JdbcTemplate(dataSource);
+
+    int amountOfDeletedItems = delete.update(//
+        SQL_DELETE_JOB_BY_ID, //
+        new Object[] {job.getId()});
+
+    return amountOfDeletedItems;
   }
 
   public void setDataSource(DataSource dataSource)

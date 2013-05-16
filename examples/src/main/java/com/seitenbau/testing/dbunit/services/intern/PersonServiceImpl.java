@@ -1,5 +1,6 @@
 package com.seitenbau.testing.dbunit.services.intern;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -30,8 +31,15 @@ public class PersonServiceImpl implements PersonService
   @Override
   public List<Person> findPersons(Team team)
   {
-    // TODO Auto-generated method stub
-    return null;
+    List<Person> persons = new LinkedList<Person>();
+    for (Person person : personRepo.getAll())
+    {
+      if (person.getTeam() == team.getId())
+      {
+        persons.add(person);
+      }
+    }
+    return persons;
   }
 
   @Override
@@ -43,8 +51,11 @@ public class PersonServiceImpl implements PersonService
   @Override
   public boolean removePerson(Person person)
   {
-    // TODO Auto-generated method stub
-    return false;
+    boolean result = false;
+    if(personRepo.remove(person) > 0) {
+      result = true;
+    }
+    return result;
   }
 
   @Override
@@ -62,8 +73,11 @@ public class PersonServiceImpl implements PersonService
   @Override
   public boolean removeJob(Job job)
   {
-    // TODO Auto-generated method stub
-    return false;
+    boolean result = false;
+    if(jobRepo.remove(job) > 0) {
+      result = true;
+    }
+    return result;
   }
 
   @Override
@@ -81,8 +95,11 @@ public class PersonServiceImpl implements PersonService
   @Override
   public boolean removeTeam(Team team)
   {
-    // TODO Auto-generated method stub
-    return false;
+    boolean result = false;
+    if(teamRepo.remove(team) > 0) {
+      result = true;
+    }
+    return result;
   }
 
 }
