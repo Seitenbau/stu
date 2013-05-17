@@ -26,7 +26,7 @@ public class DefaultDataSet extends EmptyDataSet
     RowGetters_Teams qualityAssurance = //
     table_Teams.insertRow() //
         .setTitle("Quality Assurance") //
-        .setDescription("Verifies that requirments for a product is fulfilled").setMembersize(3);
+        .setDescription("Verifies that requirements for a product are fulfilled").setMembersize(3);
 
     table_Persons.insertRow() //
         .setFirstName("Dennis") //
@@ -42,7 +42,7 @@ public class DefaultDataSet extends EmptyDataSet
 
     table_Persons.insertRow() //
         .setFirstName("Christian") //
-        .setName("Kaulbersch") //
+        .setName("Baranowski") //
         .refJobId(teamManager) //
         .refTeamId(qualityAssurance);
 
