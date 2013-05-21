@@ -63,6 +63,11 @@ public abstract class DatabaseModel
   {
     return getDataSetGenInstance().addTable(name);
   }
+  
+  public void addTable(Table table) 
+  {
+    getDataSetGenInstance().addTable(table);
+  }
 
   public void generate() throws Exception
   {

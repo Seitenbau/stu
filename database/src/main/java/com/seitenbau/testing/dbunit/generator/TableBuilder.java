@@ -1,6 +1,6 @@
-package com.seitenbau.testing.dbunit.generator.builder;
+package com.seitenbau.testing.dbunit.generator;
 
-import com.seitenbau.testing.dbunit.generator.DataType;
+import com.seitenbau.testing.dbunit.generator.Table;
 
 public class TableBuilder
 {
@@ -14,19 +14,18 @@ public class TableBuilder
     this.table = new Table(name);
   }
 
-  public ColumnBuilder column(String name, DataType dataType)
-  {
-    return new ColumnBuilder(this, name, dataType);
-  }
-
   public Table build()
   {
     return table;
   }
 
+  public ColumnBuilder column(String name, DataType dataType)
+  {
+    return new ColumnBuilder(this, name, dataType);
+  }
+  
   public void addColumn(Column column)
   {
     table.addColumn(column);
   }
-
 }

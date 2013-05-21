@@ -1,10 +1,5 @@
 package com.seitenbau.testing.dbunit.generator;
 
-import com.seitenbau.testing.dbunit.generator.DataType;
-import com.seitenbau.testing.dbunit.generator.DatabaseModel;
-import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.dbunit.generator.Table;
-
 public class Generator
 {
   public static void main(String[] args) throws Exception
@@ -16,7 +11,7 @@ public class Generator
         packageName("com.seitenbau.testing.dbunit");
       }
     };
-
+    
     Table jobs = db.addTable("jobs") //
         .addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod) //
         .addColumn("title", DataType.VARCHAR) //
@@ -36,6 +31,20 @@ public class Generator
         .addColumn("job_id", DataType.BIGINT, jobs.ref("id")) //
         .addColumn("team_id", DataType.BIGINT, teams.ref("id"));
 
+    
+    TableBuilder tableBuilder = new TableBuilder("sample");
+
+    Table sample = tableBuilder //
+        .column("id", DataType.BIGINT) //
+          .identifierColumn() //
+          .autoIdHandling() //
+        .column("title", DataType.VARCHAR) //
+        .column("foreign_id", DataType.BIGINT) //
+          .references(teams.ref("id")) //
+    .build();
+
+    db.addTable(sample);
+   
     db.generate();
   }
 }

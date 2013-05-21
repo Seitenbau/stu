@@ -79,6 +79,12 @@ public class DataSetGenerator
     _dataSet.addTable(table);
     return table;
   }
+  
+  public Table addTable(Table table)
+  {
+    _dataSet.addTable(table);
+    return table;
+  }
 
   public String getTargetPath()
   {

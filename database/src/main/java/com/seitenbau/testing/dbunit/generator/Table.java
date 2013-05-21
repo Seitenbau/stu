@@ -39,6 +39,11 @@ public class Table
     return _name;
   }
 
+  public void addColumn(Column column)
+  {
+    _columns.add(column);
+  }
+  
   public Table addColumn(String dbColName, String type, String javaType)
   {
     _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {}, new Flags[] {}));
