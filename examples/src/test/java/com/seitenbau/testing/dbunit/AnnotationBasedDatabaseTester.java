@@ -13,7 +13,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.dao.Person;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
-import com.seitenbau.testing.dbunit.datasets.EmptyDataSet;
 import com.seitenbau.testing.dbunit.datasets.SampleDataSet;
 import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
@@ -21,8 +20,7 @@ import com.seitenbau.testing.dbunit.rule.DatabaseBefore;
 import com.seitenbau.testing.dbunit.rule.DatabasePrepare;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
-import com.seitenbau.testing.dbunit.rule.InjectDataSet;
-import com.seitenbau.testing.dbunit.services.PersonService;
+import com.seitenbau.testing.dbunit.services.PersonServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
@@ -33,7 +31,7 @@ public class AnnotationBasedDatabaseTester
   public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);
 
   @Autowired
-  PersonService sut;
+  PersonServiceImpl sut;
 
   @Test
   public void allPersonsFromDefaultDataset() throws Exception

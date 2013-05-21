@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.services.intern;
+package com.seitenbau.testing.dbunit.services;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,10 +11,9 @@ import com.seitenbau.testing.dbunit.dao.Person;
 import com.seitenbau.testing.dbunit.dao.PersonRepo;
 import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.dao.TeamRepo;
-import com.seitenbau.testing.dbunit.services.PersonService;
 
 @Service
-public class PersonServiceImpl implements PersonService
+public class PersonServiceImpl
 {
   PersonRepo personRepo = new PersonRepo();
   
@@ -22,13 +21,11 @@ public class PersonServiceImpl implements PersonService
   
   TeamRepo teamRepo = new TeamRepo();
 
-  @Override
   public List<Person> findPersons()
   {
     return personRepo.getAll();
   }
 
-  @Override
   public List<Person> findPersons(Team team)
   {
     List<Person> persons = new LinkedList<Person>();
@@ -42,13 +39,11 @@ public class PersonServiceImpl implements PersonService
     return persons;
   }
 
-  @Override
   public Person addPerson(Person person)
   {
     return personRepo.add(person);
   }
 
-  @Override
   public boolean removePerson(Person person)
   {
     boolean result = false;
@@ -58,19 +53,16 @@ public class PersonServiceImpl implements PersonService
     return result;
   }
 
-  @Override
   public List<Job> findJobs()
   {
     return jobRepo.getAll();
   }
 
-  @Override
   public Job addJob(Job job)
   {
     return jobRepo.add(job);
   }
 
-  @Override
   public boolean removeJob(Job job)
   {
     boolean result = false;
@@ -80,19 +72,16 @@ public class PersonServiceImpl implements PersonService
     return result;
   }
 
-  @Override
   public List<Team> findTeams()
   {
     return teamRepo.getAll();
   }
 
-  @Override
   public Team addTeam(Team team)
   {
     return teamRepo.add(team);
   }
 
-  @Override
   public boolean removeTeam(Team team)
   {
     boolean result = false;

@@ -25,7 +25,7 @@ import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
-import com.seitenbau.testing.dbunit.services.PersonService;
+import com.seitenbau.testing.dbunit.services.PersonServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
@@ -35,7 +35,7 @@ public class ManualDatabaseTester
   public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);
 
   @Autowired
-  PersonService sut;
+  PersonServiceImpl sut;
 
   @Test
   public void findAllPersonsInEmptyDataset() throws Exception
