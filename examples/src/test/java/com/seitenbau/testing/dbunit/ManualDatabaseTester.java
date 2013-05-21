@@ -172,7 +172,7 @@ public class ManualDatabaseTester
     // verify
   }
 
-  @Test(expected=HibernateJdbcException.class)
+  @Test(expected=DataIntegrityViolationException.class)
   public void removePersonFromEmptyDataset() throws Exception
   {
     // prepare
@@ -272,7 +272,7 @@ public class ManualDatabaseTester
     // verify
   }
 
-  @Test(expected=HibernateJdbcException.class)
+  @Test(expected=DataIntegrityViolationException.class)
   public void removeTeamFromEmptyDataset() throws Exception
   {
     // prepare
@@ -383,7 +383,7 @@ public class ManualDatabaseTester
     // verify
   }
 
-  @Test(expected=HibernateJdbcException.class)
+  @Test(expected=DataIntegrityViolationException.class)
   public void removeJobFromEmptyDataset() throws Exception
   {
     // prepare
