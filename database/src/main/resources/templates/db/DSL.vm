@@ -1,25 +1,25 @@
 #set($filename = ${model.name} + "DSL.groovy" )
 #if( $model.package && $model.package.length() != 0 )
-#set($package  = ${model.package} + ".groovy" )
+#set($package  = ${model.package} + ".dsl" )
 #else
-#set($package  = "groovy" )
+#set($package  = "dsl" )
 #end
 package ${package};
 
 #if( $model.package && $model.package.length() != 0 )
-import ${model.package}.${model.name}DataSet
+import ${model.package}.${model.name}DataSet;
 #end
 #foreach( $table in $model.tables )
-import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName}
-import ${model.package}.${table.javaName}Table.RowCollection_${table.javaName}
+import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
+import ${model.package}.${table.javaName}Table.RowCollection_${table.javaName};
 #end
-import com.seitenbau.testdatadsl.stu.ColumnBinding
-import com.seitenbau.testdatadsl.stu.TableRowModel
-import com.seitenbau.testdatadsl.stu.DatabaseReference
+import com.seitenbau.testdatadsl.stu.ColumnBinding;
+import com.seitenbau.testdatadsl.stu.TableRowModel;
+import com.seitenbau.testdatadsl.stu.DatabaseReference;
 
 import groovy.transform.ToString
 
-class ${model.name}DSL {
+public class ${model.name}DSL {
 
   ${model.name}DataSet dataset = new ${model.name}DataSet() {
       void initDataSet() { }
