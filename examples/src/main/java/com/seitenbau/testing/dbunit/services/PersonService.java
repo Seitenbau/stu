@@ -13,7 +13,7 @@ import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.dao.TeamRepo;
 
 @Service
-public class PersonServiceImpl
+public class PersonService
 {
   PersonRepo personRepo = new PersonRepo();
   

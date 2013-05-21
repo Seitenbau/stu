@@ -20,7 +20,7 @@ import com.seitenbau.testing.dbunit.rule.DatabaseBefore;
 import com.seitenbau.testing.dbunit.rule.DatabasePrepare;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
-import com.seitenbau.testing.dbunit.services.PersonServiceImpl;
+import com.seitenbau.testing.dbunit.services.PersonService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
@@ -31,7 +31,7 @@ public class AnnotationBasedDatabaseTester
   public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);
 
   @Autowired
-  PersonServiceImpl sut;
+  PersonService sut;
 
   @Test
   public void allPersonsFromDefaultDataset() throws Exception
