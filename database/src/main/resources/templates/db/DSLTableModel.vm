@@ -53,8 +53,8 @@ public class ${model.javaName}Table {
     public void set(RowBuilder_${model.javaName} row, Object value)
     {
 #if ( ${col.isIdentifier()} )
-      if (alreadySet && NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
-        throw new IllegalStateException("Cannot reset column id");
+      if (alreadySet && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
+        throw new IllegalStateException("Cannot reset column id [" + row.get${col.javaName}() + " vs " + value + "]");
       }
       alreadySet = true;
 #end
@@ -63,7 +63,7 @@ public class ${model.javaName}Table {
 
     @Override
     public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
-      return findWhere.${col.name}(value);
+      return findWhere.${col.javaNameFirstLower}(value);
     }
 #if ( ${col.isIdentifier()} )
 
@@ -89,7 +89,7 @@ public class ${model.javaName}Table {
 
     @Override
     public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
-      return findWhere.${col.name}(value);
+      return findWhere.${col.javaNameFirstLower}(value);
     }
   }  
 
