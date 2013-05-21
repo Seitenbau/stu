@@ -68,6 +68,12 @@ public abstract class DatabaseModel
   {
     getDataSetGenInstance().addTable(table);
   }
+  
+  public TableBuilder table(String name) {
+    final TableBuilder result = new TableBuilder(name);
+    getDataSetGenInstance().addTable(result.build());
+    return result;
+  }
 
   public void generate() throws Exception
   {
