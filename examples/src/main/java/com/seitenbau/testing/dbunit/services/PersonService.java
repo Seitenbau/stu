@@ -3,6 +3,7 @@ package com.seitenbau.testing.dbunit.services;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seitenbau.testing.dbunit.dao.Job;
@@ -15,21 +16,24 @@ import com.seitenbau.testing.dbunit.dao.TeamRepo;
 @Service
 public class PersonService
 {
-  PersonRepo personRepo = new PersonRepo();
-  
-  JobRepo jobRepo = new JobRepo();
-  
-  TeamRepo teamRepo = new TeamRepo();
+  @Autowired
+  PersonRepo personRepo;
+
+  @Autowired
+  JobRepo jobRepo;
+
+  @Autowired
+  TeamRepo teamRepo;
 
   public List<Person> findPersons()
   {
-    return personRepo.getAll();
+    return personRepo.findAll();
   }
 
   public List<Person> findPersons(Team team)
   {
     List<Person> persons = new LinkedList<Person>();
-    for (Person person : personRepo.getAll())
+    for (Person person : personRepo.findAll())
     {
       if (person.getTeam() == team.getId())
       {
@@ -41,54 +45,56 @@ public class PersonService
 
   public Person addPerson(Person person)
   {
-    return personRepo.add(person);
+    return personRepo.saveAndFlush(person);
   }
 
-  public boolean removePerson(Person person)
+  public void removePerson(Person person)
   {
-    boolean result = false;
-    if(personRepo.remove(person) > 0) {
-      result = true;
-    }
-    return result;
+    personRepo.delete(person);
   }
 
   public List<Job> findJobs()
   {
-    return jobRepo.getAll();
+    return jobRepo.findAll();
   }
 
   public Job addJob(Job job)
   {
-    return jobRepo.add(job);
+    return jobRepo.saveAndFlush(job);
   }
 
-  public boolean removeJob(Job job)
+  public void removeJob(Job job)
   {
-    boolean result = false;
-    if(jobRepo.remove(job) > 0) {
-      result = true;
-    }
-    return result;
+    jobRepo.delete(job);
   }
 
   public List<Team> findTeams()
   {
-    return teamRepo.getAll();
+    return teamRepo.findAll();
   }
 
   public Team addTeam(Team team)
   {
-    return teamRepo.add(team);
+    return teamRepo.saveAndFlush(team);
   }
 
-  public boolean removeTeam(Team team)
+  public void removeTeam(Team team)
   {
-    boolean result = false;
-    if(teamRepo.remove(team) > 0) {
-      result = true;
-    }
-    return result;
+    teamRepo.delete(team);
   }
 
+  public void setPersonRepo(PersonRepo personRepo)
+  {
+    this.personRepo = personRepo;
+  }
+
+  public void setJobRepo(JobRepo jobRepo)
+  {
+    this.jobRepo = jobRepo;
+  }
+
+  public void setTeamRepo(TeamRepo teamRepo)
+  {
+    this.teamRepo = teamRepo;
+  }
 }

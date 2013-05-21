@@ -1,13 +1,26 @@
 package com.seitenbau.testing.dbunit.dao;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "teams")
 public class Team
 {
+  @Id
+  @GeneratedValue
   int id;
 
+  @Column
   String title;
 
+  @Column
   String description;
 
+  @Column
   int membersize;
 
   public int getId()
@@ -49,6 +62,5 @@ public class Team
   {
     this.membersize = membersize;
   }
-  
-  
+
 }

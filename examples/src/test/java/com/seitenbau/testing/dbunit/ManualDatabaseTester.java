@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.hibernate3.HibernateJdbcException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -92,7 +93,7 @@ public class ManualDatabaseTester
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
     dbTesterRule.cleanInsert(defaultDataSet);
-    
+
     List<Team> teams = sut.findTeams();
     Team team = teams.get(0);
     // execute
@@ -100,14 +101,14 @@ public class ManualDatabaseTester
     // verify
     assertThat(result).hasSize(3);
   }
-  
+
   @Test
   public void findAllPersonsByTeamInEmptyDataset() throws Exception
   {
     // prepare
     EmptyDataSet emptyDataset = new EmptyDataSet();
     dbTesterRule.cleanInsert(emptyDataset);
-    
+
     Team team = new Team();
     team.setId(1);
     // execute
@@ -143,7 +144,7 @@ public class ManualDatabaseTester
     assertThat(result.getFirstName()).isEqualTo(person.getFirstName());
     assertThat(result.getId()).isNotEqualTo(initialId);
   }
-  
+
   @Test
   public void removePersonFromDataset() throws Exception
   {
@@ -167,12 +168,11 @@ public class ManualDatabaseTester
 
     // execute
 
-    boolean result = sut.removePerson(person);
+    sut.removePerson(person);
     // verify
-    assertThat(result).isTrue();
   }
-  
-  @Test
+
+  @Test(expected=HibernateJdbcException.class)
   public void removePersonFromEmptyDataset() throws Exception
   {
     // prepare
@@ -188,10 +188,9 @@ public class ManualDatabaseTester
     person.setTeam(1899);
 
     // execute
-    boolean result = sut.removePerson(person);
-
+    sut.removePerson(person);
     // verify
-    assertThat(result).isFalse();
+    org.junit.Assert.fail();
   }
 
   // Jobs
@@ -256,24 +255,24 @@ public class ManualDatabaseTester
     assertThat(result.getTitle()).isEqualTo(job.getTitle());
     assertThat(result.getId()).isNotEqualTo(expectedId);
   }
-  
+
   @Test
   public void removeTeamFromDefaultDatasetWithoutExistingReference() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
-    RowBuilder_Teams newTeam = defaultDataSet.table_Teams.insertRow().setTitle("Empty Team").setDescription("No members").setMembersize(0);
+    RowBuilder_Teams newTeam = defaultDataSet.table_Teams.insertRow().setTitle("Empty Team")
+        .setDescription("No members").setMembersize(0);
     dbTesterRule.cleanInsert(defaultDataSet);
 
     Team team = new Team();
     team.setId(newTeam.getId().intValue());
     // execute
-    boolean result = sut.removeTeam(team);
+    sut.removeTeam(team);
     // verify
-    assertThat(result).isTrue();
   }
-  
-  @Test
+
+  @Test(expected=HibernateJdbcException.class)
   public void removeTeamFromEmptyDataset() throws Exception
   {
     // prepare
@@ -283,12 +282,12 @@ public class ManualDatabaseTester
     Team team = new Team();
     team.setId(1);
     // execute
-    boolean result = sut.removeTeam(team);
+    sut.removeTeam(team);
     // verify
-    assertThat(result).isFalse();
+    org.junit.Assert.fail();
   }
-  
-  @Test(expected=DataIntegrityViolationException.class)
+
+  @Test(expected = DataIntegrityViolationException.class)
   public void removeTeamFromDefaultDatasetWithExistingReference() throws Exception
   {
     // prepare
@@ -303,7 +302,7 @@ public class ManualDatabaseTester
     Assert.fail();
   }
 
-  // Teams 
+  // Teams
   @Test
   public void findAllTeamsInEmptyDataset() throws Exception
   {
@@ -366,25 +365,25 @@ public class ManualDatabaseTester
     assertThat(result.getTitle()).isEqualTo(team.getTitle());
     assertThat(result.getId()).isNotEqualTo(expectedId);
   }
-  
+
   @Test
   public void removeJobFromDefaultDatasetWithoutExistingReference() throws Exception
   {
     // prepare
     DefaultDataSet defaultDataSet = new DefaultDataSet();
-    RowBuilder_Jobs newJob = defaultDataSet.table_Jobs.insertRow().setTitle("Software Architect").setDescription("Make high-level design.");
+    RowBuilder_Jobs newJob = defaultDataSet.table_Jobs.insertRow().setTitle("Software Architect")
+        .setDescription("Make high-level design.");
     dbTesterRule.cleanInsert(defaultDataSet);
     dbTesterRule.cleanInsert(defaultDataSet);
 
     Job job = new Job();
     job.setId(newJob.getId().intValue());
     // execute
-    boolean result = sut.removeJob(job);
+    sut.removeJob(job);
     // verify
-    assertThat(result).isTrue();
   }
-  
-  @Test
+
+  @Test(expected=HibernateJdbcException.class)
   public void removeJobFromEmptyDataset() throws Exception
   {
     // prepare
@@ -394,12 +393,12 @@ public class ManualDatabaseTester
     Job job = new Job();
     job.setId(1);
     // execute
-    boolean result = sut.removeJob(job);
+    sut.removeJob(job);
     // verify
-    assertThat(result).isFalse();
+    org.junit.Assert.fail();
   }
-  
-  @Test(expected=DataIntegrityViolationException.class)
+
+  @Test(expected = DataIntegrityViolationException.class)
   public void removeJobFromDefaultDatasetWithExistingReference() throws Exception
   {
     // prepare

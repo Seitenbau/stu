@@ -1,13 +1,25 @@
 package com.seitenbau.testing.dbunit.dao;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "jobs")
 public class Job
 {
+  @Id
+  @GeneratedValue
   int id;
 
+  @Column
   String title;
 
+  @Column
   String description;
-
+  
   public int getId()
   {
     return id;
