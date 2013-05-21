@@ -1,8 +1,10 @@
 package com.seitenbau.testing.dbunit;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
-import org.fest.assertions.Assertions;
+import org.dbunit.dataset.ITable;
 import org.junit.Test;
 
 import com.seitenbau.testing.dbunit.datasets.provider.impl.JavaDataSetProvider;
@@ -11,8 +13,9 @@ import com.seitenbau.testing.dbunit.datasets.provider.impl.STUDataSetProvider;
 public class DataSetCompareTester
 {
   JavaDataSetProvider javaDataSetProvider = new JavaDataSetProvider();
+
   STUDataSetProvider stuDataSetProvider = new STUDataSetProvider();
-  
+
   @Test
   public void compareJavaDataSetWithSTUDataSet() throws DataSetException
   {
@@ -20,6 +23,14 @@ public class DataSetCompareTester
     IDataSet javaDataSet = javaDataSetProvider.getDataSet();
     IDataSet stuDataSet = stuDataSetProvider.getDataSet();
     // verify
-    Assertions.assertThat(javaDataSet).isEqualTo(stuDataSet);
+    assertThat(javaDataSet.getTableNames()).isEqualTo(stuDataSet.getTableNames());
+
+    for (String tableName : javaDataSet.getTableNames())
+    {
+      ITable javaTable = javaDataSet.getTable(tableName);
+      ITable stuTable = stuDataSet.getTable(tableName);
+      assertThat(javaTable.getRowCount()).isEqualTo(stuTable.getRowCount());
+      // TODO verify content
+    }
   }
 }
