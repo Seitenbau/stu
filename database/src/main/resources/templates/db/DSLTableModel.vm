@@ -14,12 +14,14 @@ import ${model.package}.${table.javaName}Table.${table.javaName}Where;
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 import ${model.package}.${table.javaName}Table.RowCollection_${table.javaName};
 #end
-import com.seitenbau.testing.dbunit.generator.ColumnBinding;
-import com.seitenbau.testing.dbunit.generator.IParsedTableRowCallback
-import com.seitenbau.testing.dbunit.generator.TableRowModel;
-import com.seitenbau.testing.dbunit.generator.DatabaseReference;
-import com.seitenbau.testing.dbunit.generator.TableParser;
+import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
+import com.seitenbau.testing.dbunit.dsl.IParsedTableRowCallback;
+import com.seitenbau.testing.dbunit.dsl.TableRowModel;
+import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
+import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
+import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback
+import com.seitenbau.testing.dbunit.dsl.ITableAccessor
 
 import groovy.transform.ToString;
 
@@ -27,71 +29,15 @@ import groovy.transform.ToString;
 
 public class ${model.javaName}Table {
 
-  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = new ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where>() {
-    @Override
-    public void set(RowBuilder_${model.javaName} row, Object value)
-    {
-      // TODO NM think about it :-)
-      // Setting reference does not make sense on rowbuilder...
-    }
-    
-    @Override
-    public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
-      // TODO NM think about it :-)
-      return null;
-    }
-    
-    @Override
-    public boolean isRefColumn() {
-      return true;
-    }
-  }  
+  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = ${model.javaName}TableBinding.REF;
 
 #foreach( $col in $model.columns )
-  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${col.name} = new ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where>() {
-    @Override
-    public void set(RowBuilder_${model.javaName} row, Object value)
-    {
-#if ( ${col.isIdentifier()} )
-      if (alreadySet && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
-        throw new IllegalStateException("Cannot reset column id [" + row.get${col.javaName}() + " vs " + value + "]");
-      }
-      alreadySet = true;
-#end
-      row.set${col.javaName}Raw(value);
-    }
-
-    @Override
-    public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
-      return findWhere.${col.javaNameFirstLower}(value);
-    }
-#if ( ${col.isIdentifier()} )
-
-    @Override
-    public boolean isIdColumn() {
-      return true;
-    }
-    
-    private boolean alreadySet = false; 
-#end
-  }  
-  
+  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${col.name} = ${model.javaName}TableBinding.${col.name};
 
 ## check if column is an identifier
 #if ( ${col.isIdTruncable()} )
 #set( $shortname  = $col.getNameWithoutId() )
-  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${shortname} = new ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where>() {
-    @Override
-    public void set(RowBuilder_${model.javaName} row, Object value)
-    {
-      row.set${col.javaName}Raw(value);
-    }
-
-    @Override
-    public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
-      return findWhere.${col.javaNameFirstLower}(value);
-    }
-  }  
+  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${shortname} = ${model.javaName}TableBinding.${col.name};
 
 #end
 #end
@@ -99,122 +45,22 @@ public class ${model.javaName}Table {
 
   Map<${model.javaName}Ref, RowBuilder_${model.javaName}> usedRefs = [:];
 
+  ITableAccessor<RowBuilder_${model.javaName}, ${model.javaName}Where> accessor = new ITableAccessor<RowBuilder_${model.javaName}, ${model.javaName}Where>() {
+	RowBuilder_${model.javaName} insertRow() {
+	  return table.insertRow;
+	}
+	  
+    ${model.javaName}Where getFindWhere() {
+      return table.findWhere;
+	}
+  }
+    
   def ${model.javaName}Table(${model.package}.${model.javaName}Table table) {
     this.table = table;
   }
   
-  IParsedTableRowCallback callback = new TableRowCallback();
-  
-  class TableRowCallback implements IParsedTableRowCallback {
-    TableRowModel head = null
-    int columns = 0
-    int lineNr = 0
-    
-    int colRef = -1
-    int colId = -1
-    
-    RowBuilder_${model.javaName} getRowBuilder(TableRowModel row) {
-      RowBuilder_${model.javaName} result = null;
-      RowBuilder_${model.javaName} builderById = null;
-      RowBuilder_${model.javaName} builderByRef = null;
-      
-      if (colId != -1) {
-        ColumnBinding column = head.values[colId];
-        try {
-          builderById = column.query(table.findWhere, row.values[colId])
-        }
-        catch (Exception e) {
-        }
-      }
-
-      if (colRef != -1) {
-        builderByRef = usedRefs[row.values[colRef]]
-      }
-      
-      if (builderByRef != null || builderById != null) {
-        if (builderByRef == builderById) {
-          result = builderByRef;
-        }
-        else if (builderByRef == null) {
-          result = builderById;
-        }
-        else if (builderById == null) {
-          result = builderByRef;
-        }
-        else {
-          println "ERROR ..............................";
-          result = builderByRef;
-        }
-      }
-      else {
-        result = table.insertRow()
-      }
-       
-      if (colId != -1) {
-        ColumnBinding column = head.values[colId];
-        column.set(result, row.values[colId]);
-          
-        println "Adding ${model.javaName} with " + row.values[colId] 
-      }
-      return result;
-    }
-
-    void parsedRow(TableRowModel row) {
-      lineNr++    
-      if (row.isHeadRow()) {
-        head = row
-        colRef = head.getRefColumn()
-        colId = head.getIdColumn()
-        columns = head.getColumnCount()
-        return;
-      }
-
-      if (row.getColumnCount() != columns) throwColumnsDoNotMatchException(lineNr, row)
-      RowBuilder_${model.javaName} rowbuilder = getRowBuilder(row);
-
-      //def resultRow = new ${model.javaName}TableRow()
-      for (columnIndex in 0..(columns-1)) {
-        if (columnIndex == colRef || columnIndex == colId) {
-          continue;
-        }
-
-        ColumnBinding column = head.values[columnIndex]
-        column.set(rowbuilder, row.values[columnIndex]);
-      }
-
-      if (colRef != -1 && row.values[colRef] && !usedRefs.keySet().contains(row.values[colRef])) {
-        usedRefs[row.values[colRef]] = rowbuilder
-        println "Used ref in ${model.javaName}: " + row.values[colRef]
-      }
-    }
-    
-    void throwColumnsDoNotMatchException(int lineNr, TableRowModel row) {
-      throwException("column count does not match", lineNr, row)
-    }
-
-    void throwRedefinedIdException(int lineNr, TableRowModel row) {
-      throwException("Id redefined", lineNr, row)
-    }
-  
-    void throwException(String message, int lineNr, TableRowModel row) {
-      StringBuilder builder = new StringBuilder()
-      builder.append("Error in ${model.javaName}, line " + lineNr + ": " + message)
-      if (row.values.size() > 0 ) {
-        builder.append(" [TableRowModel: ")
-        row.values.each { value ->
-          builder.append(value)
-          builder.append(" | ")
-        }
-        builder.setLength(builder.length() - 3)
-        builder.append("]")
-      }
-      throw new IllegalArgumentException(builder.toString())
-    }
-
-  }
-    
   void rows(Closure rows) {
-    TableParser.parseTable(rows, this, ${model.javaName}Table.class, callback)
+    TableParser.parseTable(rows, this, ${model.javaName}Table.class, new GeneralTableRowCallback(accessor, usedRefs))
   }
 }
 

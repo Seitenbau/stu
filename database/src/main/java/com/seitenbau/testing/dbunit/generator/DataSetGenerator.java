@@ -111,6 +111,7 @@ public class DataSetGenerator
       // DSL Additions
       generateDSL(targetPath + "/");
       generateDSLTableModel(targetPath + "/");
+      generateDSLTableBinding(targetPath + "/");
       generateDSLTableReferences(targetPath + "/");
     }
     finally
@@ -176,7 +177,15 @@ public class DataSetGenerator
       templates.executeTemplate(table, getTemplatePathDSLTableModel(), into);
     }
     logger.info("created " + _dataSet.getTables().size()  + " DSL Table Model");
-    logger.info("created 1 TableParser");
+  }
+
+  protected void generateDSLTableBinding(String into) throws Exception
+  {
+    for (Table table : _dataSet.getTables())
+    {
+      templates.executeTemplate(table, getTemplatePathDSLTableBinding(), into);
+    }
+    logger.info("created " + _dataSet.getTables().size()  + " DSL Table Bindings");
   }
 
   protected void generateDSLTableReferences(String into) throws Exception
@@ -197,6 +206,11 @@ public class DataSetGenerator
   protected String getTemplatePathDSLTableModel()
   {
     return "/templates/db/DSLTableModel.vm";
+  }
+
+  protected String getTemplatePathDSLTableBinding()
+  {
+    return "/templates/db/DSLTableBinding.vm";
   }
 
   protected String getTemplatePathTableReferences()

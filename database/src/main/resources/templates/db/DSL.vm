@@ -13,9 +13,9 @@ import ${model.package}.${model.name}DataSet;
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 import ${model.package}.${table.javaName}Table.RowCollection_${table.javaName};
 #end
-import com.seitenbau.testing.dbunit.generator.ColumnBinding;
-import com.seitenbau.testing.dbunit.generator.TableRowModel;
-import com.seitenbau.testing.dbunit.generator.DatabaseReference;
+import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
+import com.seitenbau.testing.dbunit.dsl.TableRowModel;
+import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 
 import groovy.transform.ToString
 

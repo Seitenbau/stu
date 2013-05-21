@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
 #end
-import com.seitenbau.testing.dbunit.generator.DatabaseReference;
+import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 ###if( $model.package && $model.package.length() != 0 )
 ##//import ${model.package}.${model.dataSet.name}DataSet
 ###end

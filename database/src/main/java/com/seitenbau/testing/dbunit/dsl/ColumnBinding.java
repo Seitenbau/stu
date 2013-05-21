@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.generator;
+package com.seitenbau.testing.dbunit.dsl;
 
 public abstract class ColumnBinding<R, F>
 {
