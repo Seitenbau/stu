@@ -1,0 +1,62 @@
+#set($filename = ${model.javaName} + "Table.groovy" )
+#if( $model.package && $model.package.length() != 0 )
+#set($package  = ${model.package} + ".dsl" )
+#else
+#set($package  = "dsl" )
+#end
+package ${package};
+
+#if( $model.package && $model.package.length() != 0 )
+import ${model.package}.${model.dataSet.name}DataSet;
+#end
+import ${model.package}.${model.javaName}Table.${model.javaName}Where;
+import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
+##import ${model.package}.${model.javaName}Table.RowCollection_${model.javaName};
+import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
+import com.seitenbau.testing.dbunit.dsl.IParsedTableRowCallback;
+import com.seitenbau.testing.dbunit.dsl.TableRowModel;
+import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
+import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
+import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback
+import com.seitenbau.testing.dbunit.dsl.ITableAdapter
+
+#set($table = $model)
+
+public class ${model.javaName}Table {
+
+  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = ${model.javaName}TableBinding.REF;
+
+#foreach( $col in $model.columns )
+  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${col.name} = ${model.javaName}TableBinding.${col.name};
+
+## check if column is an identifier
+#if ( ${col.isIdTruncable()} )
+#set( $shortname  = $col.getNameWithoutId() )
+  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${shortname} = ${model.javaName}TableBinding.${col.name};
+
+#end
+#end
+  ${model.package}.${model.javaName}Table table;
+
+  Map<${model.javaName}Ref, RowBuilder_${model.javaName}> usedRefs = [:];
+
+  private final ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where> adapter = new ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where>() {
+    RowBuilder_${model.javaName} insertRow() {
+      return table.insertRow();
+    }
+	  
+    ${model.javaName}Where getFindWhere() {
+      return table.findWhere;
+    }
+  }
+    
+  def ${model.javaName}Table(${model.package}.${model.javaName}Table table) {
+    this.table = table;
+  }
+  
+  void rows(Closure rows) {
+    TableParser.parseTable(rows, this, new GeneralTableRowCallback(adapter, usedRefs))
+  }
+}
+

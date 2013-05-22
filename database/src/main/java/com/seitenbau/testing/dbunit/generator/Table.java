@@ -46,31 +46,33 @@ public class Table
   
   public Table addColumn(String dbColName, String type, String javaType)
   {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {}, new Flags[] {}));
+    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] {}, new Flags[] {}));
     return this;
   }
 
   public Table addColumn(String dbColName, String javaName, String type, String javaType)
   {
-    _columns.add(new Column(this, dbColName, javaName, type, javaType, new Column[] {}, new Flags[] {}));
+    _columns.add(new Column(this, dbColName, javaName, type, javaType, new Reference[] {}, new Flags[] {}));
     return this;
   }
 
   public Table addColumn(String dbColName, String type, String javaType, Flags... flags)
   {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {}, flags));
+    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] {}, flags));
     return this;
   }
 
   public Table addColumn(String dbColName, String type, String javaType, Column reference, Flags... flags)
   {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Column[] {reference}, flags));
+    final Reference ref = new Reference(reference, null, null, null, null);
+    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] { ref }, flags));
     return this;
   }
 
   public Table addColumn(String dbColName, DataType type, Column reference, Flags... flags)
   {
-    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Column[] {reference},
+    final Reference ref = new Reference(reference, null, null, null, null);
+    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Reference[] { ref },
         flags));
     return this;
   }
@@ -123,6 +125,15 @@ public class Table
     }
     return DataSet.makeNiceJavaName(_name);
   }
+  
+  public String getJavaVariableName()
+  {
+    if (_javaName != null)
+    {
+      return CamelCase.makeFirstLowerCase(_javaName);
+    }
+    return CamelCase.makeFirstLowerCase(DataSet.makeNiceJavaName(_name));
+  }
 
   public DataSet getDataSet()
   {
@@ -150,4 +161,51 @@ public class Table
     }
     throw new RuntimeException("No column " + colName);
   }
+
+  public Column getIdColumn()
+  {
+    for (Column col : getColumns())
+    {
+      if (col.isIdentifier())
+      {
+        return col;
+      }
+    }
+    throw new RuntimeException("No ID column");
+  }
+
+  public boolean isAssociativeTable()
+  {
+    if (getColumns().size() != 2)
+    {
+      return false;
+    }
+    for (Column col : getColumns())
+    {
+      if (col.getReferences().size() == 0)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public Table getAssociatedTable(Table table)
+  {
+    for (Column col : getColumns())
+    {
+      for (Reference reference : col.getReferences()) {
+        if (reference.getColumn().getTable() == table) {
+          continue;
+        }
+        
+        return reference.getColumn().getTable();
+      }
+    }
+    
+    return null;
+    //throw new RuntimeException("No associating column found");
+  }
+  
 }

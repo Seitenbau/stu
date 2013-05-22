@@ -1,0 +1,96 @@
+#set($filename = ${model.javaName} + "TableBinding" )
+#if( $model.package && $model.package.length() != 0 )
+#set($package  = ${model.package} + ".dsl" )
+#else
+#set($package  = "dsl" )
+#end
+package ${package};
+
+#set($hasIdentifier = false )
+#foreach( $col in $model.columns )
+#if ( ${col.isIdentifier()} )
+#set($hasIdentifier = true )
+#end
+#end
+
+#if( $hasIdentifier )
+import java.util.HashSet;
+import java.util.Set;
+#end
+
+###if( $model.package && $model.package.length() != 0 )
+##import ${model.package}.${model.dataSet.name}DataSet;
+###end
+import ${model.package}.${model.javaName}Table.${model.javaName}Where;
+import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
+#if( $hasIdentifier )
+import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
+import com.seitenbau.testing.dbunit.dsl.CastUtil;
+#end
+import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
+import com.seitenbau.testing.dbunit.generator.DataType;
+
+public class ${model.javaName}TableBinding {
+
+  public static final ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = new ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where>() 
+  {
+    @Override
+    public void set(RowBuilder_${model.javaName} row, Object value)
+    {
+      // TODO NM think about it :-)
+      // Setting reference does not make sense on rowbuilder...
+    }
+##    
+##    @Override
+##    public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
+##      // TODO NM think about it :-)
+##     return null;
+##    }
+    
+    @Override
+    public boolean isRefColumn() {
+      return true;
+    }
+
+    public DataType getDataType() {
+      return null;
+    }
+  };
+
+#foreach( $col in $model.columns )
+  public static final ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${col.name} = new ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where>() 
+  {
+    @Override
+    public void set(RowBuilder_${model.javaName} row, Object value)
+    {
+#if ( ${col.isIdentifier()} )
+      if (definedIdsSet.contains(row) && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
+        throw new IllegalStateException("Cannot reset column id [" + row.get${col.javaName}() + " vs " + value + "]");
+      }
+      definedIdsSet.add(row);
+#end
+      row.set${col.javaName}Raw(value);
+    }
+#if ( ${col.isIdentifier()} )
+
+    @Override
+    public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
+      return findWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
+    }
+
+    @Override
+    public boolean isIdColumn() {
+      return true;
+    }
+    
+    private Set<RowBuilder_${model.javaName}> definedIdsSet = new HashSet<RowBuilder_${model.javaName}>();
+#end
+
+    public DataType getDataType() {
+      return ${col.type};
+    }
+  };
+
+#end
+}
+

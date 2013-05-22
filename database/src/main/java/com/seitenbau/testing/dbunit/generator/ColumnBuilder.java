@@ -11,7 +11,7 @@ public class ColumnBuilder
 
   private final DataType dataType;
 
-  private List<Column> references = new ArrayList<Column>();
+  private List<Reference> references = new ArrayList<Reference>();
 
   private boolean enableAutoIdHandling;
 
@@ -50,16 +50,24 @@ public class ColumnBuilder
     return this;
   }
 
-  public ColumnBuilder references(Column reference)
+  public ReferenceBuilder references(Column reference)
   {
-    this.references.add(reference);
-    return this;
+    return new ReferenceBuilder(this, reference);
   }
 
+  public ReferenceBuilder references(Table reference)
+  {
+    return new ReferenceBuilder(this, reference.getIdColumn());
+  }
+  
+  void addReference(Reference reference) {
+    references.add(reference);
+  }
+  
   private void buildColumn()
   {
     Table parentTable = tableBuilder.build();
-    Column[] references = getReferencesAsArray();
+    Reference[] references = getReferencesAsArray();
     Flags[] flags = determineFlags();
     Column column = new Column(parentTable, name, null, dataType.getDataType(), dataType.getJavaType(), references,
         flags);
@@ -67,9 +75,9 @@ public class ColumnBuilder
     tableBuilder.addColumn(column);
   }
 
-  private Column[] getReferencesAsArray()
+  private Reference[] getReferencesAsArray()
   {
-    return references.toArray(new Column[] {});
+    return references.toArray(new Reference[] {});
   }
 
   private Flags[] determineFlags()
@@ -78,7 +86,7 @@ public class ColumnBuilder
 
     if (isIdentifierColumn)
     {
-      flags.add(Flags.AutoIncrement);
+      flags.add(Flags.IdentifierColumn);
     }
 
     if (enableAutoIdHandling)

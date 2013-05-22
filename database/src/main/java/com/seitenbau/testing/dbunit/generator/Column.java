@@ -19,11 +19,11 @@ public class Column
 
   EnumSet<Flags> _flags = EnumSet.noneOf(Flags.class);
 
-  List<Column> _references = new ArrayList<Column>();
+  List<Reference> _references = new ArrayList<Reference>();
 
   Table _table;
 
-  public Column(Table table, String name, String javaName, String type, String javaType, Column[] references,
+  public Column(Table table, String name, String javaName, String type, String javaType, Reference[] references,
       Flags[] flags)
   {
     _table = table;
@@ -40,7 +40,7 @@ public class Column
     }
     if (references != null)
     {
-      for (Column ref : references)
+      for (Reference ref : references)
       {
         _references.add(ref);
       }
@@ -72,7 +72,7 @@ public class Column
     return _flags;
   }
 
-  public List<Column> getReferences()
+  public List<Reference> getReferences()
   {
     return _references;
   }
@@ -107,4 +107,55 @@ public class Column
     return CamelCase.makeFirstLowerCase(getJavaName());
   }
 
+  public boolean isIdentifier()
+  {
+    return _flags.contains(Flags.IdentifierColumn);
+  }
+
+  public Reference getReference() 
+  {
+    if (_references.size() == 0) {
+      throw new IllegalStateException("No references...");
+    }
+    
+    return _references.get(0);
+  }
+  
+  public boolean isReferencingTable(Table table)
+  {
+    for (Reference reference : _references) {
+      for (Column column : table.getColumns()) {
+        if (reference.getColumn() == column) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+  
+  public boolean isIdTruncable()
+  {
+    if (_references.size() == 0 || !_name.endsWith("_id")) {
+      return false;
+    }
+    
+    final String shortName = getNameWithoutId();
+    for (Column column : _table.getColumns()) {
+      if (shortName.equals(column.getName())) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  public String getNameWithoutId()
+  {
+    if (_name.endsWith("_id")) {
+      return _name.substring(0, _name.length() - 3);
+    } else {
+      return _name;
+    }
+  }  
 }

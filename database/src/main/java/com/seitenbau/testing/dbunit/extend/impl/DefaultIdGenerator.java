@@ -20,7 +20,7 @@ public class DefaultIdGenerator implements DatasetIdGenerator
     AtomicLong atomic = tableIds.get(table);
     if (atomic == null)
     {
-      atomic = new AtomicLong(10);
+      atomic = new AtomicLong(1);
       tableIds.put(table, atomic);
     }
     return atomic;
