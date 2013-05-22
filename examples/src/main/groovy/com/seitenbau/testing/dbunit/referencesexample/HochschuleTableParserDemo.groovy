@@ -9,8 +9,7 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.dsl.ProfessorRef;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.dsl.PruefungRef;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.dsl.StudentRef;
 
-
- class DemoRefs {
+class DemoRefs {
   
     public static ProfessorRef WAESCH = new ProfessorRef();
     public static ProfessorRef HAASE = new ProfessorRef();
@@ -23,9 +22,8 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.dsl.StudentRef;
   
     public static StudentRef MOLL = new StudentRef();
     public static StudentRef MUSTERMANN = new StudentRef();
-  }
+}
 
-ExpandoMetaClass.enableGlobally() 
 DBUnitExamplesDSL hochschule = new DBUnitExamplesDSL()
 hochschule.tables {
   
@@ -39,9 +37,6 @@ hochschule.tables {
 
     id | name    
     5  | "Test 2"
-    
-    //REF    | id 
-    //WAESCH | 1  
 
   }
 
@@ -82,7 +77,7 @@ hochschule.relations {
 }
 
 println hochschule.createDataSet()
-println "Vor Änderung: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
+println "Vor Änderung [erwartet: Haase]: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
 
 hochschule.tables {
   professorTable.rows {
@@ -90,15 +85,27 @@ hochschule.tables {
     HAASE  | "Und nochmal"
   }
 }
-println "Nach Änderung: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
+println "Nach Änderung [erwartet: Und nochmal]: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
 hochschule.tables {
   professorTable.rows {
     id | name
     2  | "auch id geht"
   }
 }
-println "Nach Änderung 2: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
-//println "Wäsch: " + hochschule.dataset.table_Professor.findWhere.id(5).getName()
+println "Nach Änderung 2 [erwartet: auch id geht]: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
+println "Wäsch [erwartet: Test 2]: " + hochschule.dataset.table_Professor.findWhere.id(5).getName()
 
+try {
+  hochschule.tables {
+    professorTable.rows {
+      REF    | id
+      WAESCH | 1
+    }
+  }
+  println "Should have thrown exception..."
+}
+catch (Exception) {
+  println "ID redefinition detected"
+}
 
 
