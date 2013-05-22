@@ -1,6 +1,6 @@
 package com.seitenbau.testing.dbunit.dsl;
 
-public interface ITableAccessor<R, F> {
+public interface ITableAdapter<R, F> {
 
 	R insertRow();
 

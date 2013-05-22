@@ -40,7 +40,7 @@ public class TableParser {
 		row.or(nextValue)
 	}
 
-	public static void parseTable(Closure rows, Object owner, Class<?> c, IParsedTableRowCallback callback) {
+	public static void parseTable(Closure rows, Object owner, IParsedTableRowCallback callback) {
 		Context currentContext = new Context();
 		currentContext.callback = callback;
 		context.set(currentContext);

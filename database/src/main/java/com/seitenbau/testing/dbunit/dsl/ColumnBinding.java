@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.dsl;
 
+import com.seitenbau.testing.dbunit.generator.DataType;
+
 public abstract class ColumnBinding<R, F>
 {
   
@@ -13,6 +15,10 @@ public abstract class ColumnBinding<R, F>
     return false;
   }
   
-  public abstract R query(F findWhere, Object value);
+  public R query(F findWhere, Object value) {
+    return null;
+  }
+  
+  public abstract DataType getDataType();
 
 }
