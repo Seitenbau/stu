@@ -26,7 +26,7 @@ class DemoRefs {
 
 DBUnitExamplesDSL hochschule = new DBUnitExamplesDSL()
 hochschule.tables {
-  
+    
   professorTable.rows {
     REF    | name    | vorname  | titel            | fakultaet
     WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
@@ -37,7 +37,6 @@ hochschule.tables {
 
     id | name    
     5  | "Test 2"
-
   }
 
   lehrveranstaltungTable.rows {
@@ -66,14 +65,16 @@ hochschule.tables {
 }
 
 hochschule.relations {
-  HAASE.leitet(DPATTERNS)
-  DPATTERNS.geleitetVon(HAASE)
-  WAESCH.beaufsichtigt(P_VSYS)
-  // HAASE.beaufsichtigt(P_DPATTERNS)
-  MOLL.besucht(VSYS)
-  MOLL.istTutor(VSYS)
-  P_VSYS.geschriebenVon(MOLL) //MOLL.schreibt(P_VSYS)
-  MUSTERMANN.besucht(DPATTERNS)
+  HAASE.leitet(DPATTERNS)  // => Lehrveranstaltung
+  DPATTERNS.geleitetVon(HAASE) // => Lehrveranstaltung
+  WAESCH.beaufsichtigt(P_VSYS) // => Beaufsichtigt
+  MOLL.besucht(VSYS) // => Besucht
+  MOLL.istTutor(VSYS) // => Isttutor
+  P_VSYS.geschriebenVon(MOLL) // => Schreibt
+  MOLL.schreibt(P_VSYS) // =>Schreibt
+  MUSTERMANN.besucht(DPATTERNS) // => Besucht
+
+    // HAASE.beaufsichtigt(P_DPATTERNS)
 }
 
 println hochschule.createDataSet()
@@ -109,3 +110,6 @@ catch (Exception) {
 }
 
 
+hochschule.relations {
+  HAASE.leitet(DPATTERNS)  // => Lehrveranstaltung
+}

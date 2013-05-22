@@ -8,36 +8,36 @@ import groovy.lang.Closure;
 
 public class TableParser {
 	private static class Context {
-		IParsedTableRowCallback callback
-		TableRowModel activeRow
+		IParsedTableRowCallback callback;
+		TableRowModel activeRow;
 	}
 
 	private static ThreadLocal<Context> context = new ThreadLocal<Context>()
 
-	public static or(self, arg) {
-		appendRow(self, arg)
+	public static TableRowModel or(Object self, Object arg) {
+		return appendRow(self, arg);
 	}
 
-	public static or(Integer self, Integer arg) {
-		appendRow(self, arg)
+	public static TableRowModel or(Integer self, Integer arg) {
+		return appendRow(self, arg);
 	}
 
-	public static or(Boolean self, Boolean arg) {
-		appendRow(self, arg)
+	public static TableRowModel or(Boolean self, Boolean arg) {
+		return appendRow(self, arg);
 	}
 
 	/**
 	 * Called when a new row starts
 	 */
-	public static appendRow(value, nextValue) {
-		Context currentContext = context.get()
-		TableRowModel lastRow = currentContext.activeRow
+	public static TableRowModel appendRow(Object value, Object nextValue) {
+		Context currentContext = context.get();
+		TableRowModel lastRow = currentContext.activeRow;
 		if (lastRow != null) {
 			currentContext.callback.parsedRow(lastRow);
 		}
-		TableRowModel row = new TableRowModel(values: [value])
-		currentContext.activeRow = row
-		row.or(nextValue)
+		TableRowModel row = new TableRowModel(value);
+		currentContext.activeRow = row;
+		return row.or(nextValue);
 	}
 
 	public static void parseTable(Closure rows, Object owner, IParsedTableRowCallback callback) {
@@ -45,9 +45,9 @@ public class TableParser {
 		currentContext.callback = callback;
 		context.set(currentContext);
 		use(TableParser) {
-			rows.delegate = owner
+			rows.delegate = owner;
 			//rows.resolveStrategy = Closure.DELEGATE_FIRST
-			rows()
+			rows();
 		}
 
 		if (currentContext.activeRow != null) {

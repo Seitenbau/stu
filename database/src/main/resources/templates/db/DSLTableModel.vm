@@ -1,4 +1,4 @@
-#set($filename = ${model.javaName} + "Table.groovy" )
+#set($filename = ${model.javaName} + "Table" )
 #if( $model.package && $model.package.length() != 0 )
 #set($package  = ${model.package} + ".dsl" )
 #else
@@ -6,26 +6,27 @@
 #end
 package ${package};
 
-#if( $model.package && $model.package.length() != 0 )
-import ${model.package}.${model.dataSet.name}DataSet;
-#end
+import groovy.lang.Closure;
+
+import java.util.HashMap;
+import java.util.Map;
+
+###if( $model.package && $model.package.length() != 0 )
+##import ${model.package}.${model.dataSet.name}DataSet;
+###end
 import ${model.package}.${model.javaName}Table.${model.javaName}Where;
 import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
 ##import ${model.package}.${model.javaName}Table.RowCollection_${model.javaName};
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
-import com.seitenbau.testing.dbunit.dsl.IParsedTableRowCallback;
-import com.seitenbau.testing.dbunit.dsl.TableRowModel;
-import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
-import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
-import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback
-import com.seitenbau.testing.dbunit.dsl.ITableAdapter
+import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
+import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 
 #set($table = $model)
 
 public class ${model.javaName}Table {
 
-  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = ${model.javaName}TableBinding.REF;
+  public ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = ${model.javaName}TableBinding.REF;
 
 #foreach( $col in $model.columns )
   ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${col.name} = ${model.javaName}TableBinding.${col.name};
@@ -33,30 +34,45 @@ public class ${model.javaName}Table {
 ## check if column is an identifier
 #if ( ${col.isIdTruncable()} )
 #set( $shortname  = $col.getNameWithoutId() )
-  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${shortname} = ${model.javaName}TableBinding.${col.name};
+  public ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${shortname} = ${model.javaName}TableBinding.${col.name};
 
 #end
 #end
-  ${model.package}.${model.javaName}Table table;
+  ${model.package}.${model.javaName}Table _table;
 
-  Map<${model.javaName}Ref, RowBuilder_${model.javaName}> usedRefs = [:];
+  private final Map<${model.javaName}Ref, RowBuilder_${model.javaName}> _usedRefs;
 
-  private final ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where> adapter = new ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where>() {
-    RowBuilder_${model.javaName} insertRow() {
-      return table.insertRow();
+  private final ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where> _adapter = new ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where>()
+  {
+    public RowBuilder_${model.javaName} insertRow() {
+      return _table.insertRow();
     }
 	  
-    ${model.javaName}Where getFindWhere() {
-      return table.findWhere;
+    public ${model.javaName}Where getFindWhere() {
+      return _table.findWhere;
     }
-  }
+  };
     
-  def ${model.javaName}Table(${model.package}.${model.javaName}Table table) {
-    this.table = table;
+  ${model.javaName}Table(${model.package}.${model.javaName}Table table)
+  {
+    _table = table;
+    _usedRefs = new HashMap<${model.javaName}Ref, RowBuilder_${model.javaName}>();
   }
   
-  void rows(Closure rows) {
-    TableParser.parseTable(rows, this, new GeneralTableRowCallback(adapter, usedRefs))
+  Map<${model.javaName}Ref, RowBuilder_${model.javaName}> getUsedRefs()
+  {
+    return _usedRefs;
+  }
+  
+  ${model.package}.${model.javaName}Table getTableModel()
+  {
+    return _table;
+  }
+  
+  public void rows(Closure<?> rows) {
+    GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref> callback = 
+        new GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref>(_adapter, _usedRefs);
+    TableParser.parseTable(rows, this, callback);
   }
 }
 
