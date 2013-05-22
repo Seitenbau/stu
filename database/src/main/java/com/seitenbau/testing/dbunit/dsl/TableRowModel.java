@@ -6,6 +6,10 @@ import java.util.List;
 
 public class TableRowModel {
 	private List<Object> values = new ArrayList<Object>();
+	
+	public TableRowModel(Object value) {
+	  values.add(value);
+	}
 
 	public TableRowModel or(Object arg) {
 		values.add(arg);

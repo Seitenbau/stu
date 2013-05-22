@@ -11,18 +11,14 @@ import groovy.lang.Closure;
 import java.util.HashMap;
 import java.util.Map;
 
-#if( $model.package && $model.package.length() != 0 )
-import ${model.package}.${model.dataSet.name}DataSet;
-#end
+###if( $model.package && $model.package.length() != 0 )
+##import ${model.package}.${model.dataSet.name}DataSet;
+###end
 import ${model.package}.${model.javaName}Table.${model.javaName}Where;
 import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
 ##import ${model.package}.${model.javaName}Table.RowCollection_${model.javaName};
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
-import com.seitenbau.testing.dbunit.dsl.IParsedTableRowCallback;
-import com.seitenbau.testing.dbunit.dsl.TableRowModel;
-import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
-import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 
@@ -30,7 +26,7 @@ import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 
 public class ${model.javaName}Table {
 
-  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = ${model.javaName}TableBinding.REF;
+  public ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = ${model.javaName}TableBinding.REF;
 
 #foreach( $col in $model.columns )
   ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${col.name} = ${model.javaName}TableBinding.${col.name};
@@ -38,7 +34,7 @@ public class ${model.javaName}Table {
 ## check if column is an identifier
 #if ( ${col.isIdTruncable()} )
 #set( $shortname  = $col.getNameWithoutId() )
-  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${shortname} = ${model.javaName}TableBinding.${col.name};
+  public ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${shortname} = ${model.javaName}TableBinding.${col.name};
 
 #end
 #end
@@ -57,24 +53,23 @@ public class ${model.javaName}Table {
     }
   };
     
-  public ${model.javaName}Table(${model.package}.${model.javaName}Table table)
+  ${model.javaName}Table(${model.package}.${model.javaName}Table table)
   {
     _table = table;
     _usedRefs = new HashMap<${model.javaName}Ref, RowBuilder_${model.javaName}>();
   }
   
-  public Map<${model.javaName}Ref, RowBuilder_${model.javaName}> getUsedRefs()
+  Map<${model.javaName}Ref, RowBuilder_${model.javaName}> getUsedRefs()
   {
     return _usedRefs;
   }
   
-  public ${model.package}.${model.javaName}Table getTableModel()
+  ${model.package}.${model.javaName}Table getTableModel()
   {
     return _table;
   }
   
-  
-  void rows(Closure<?> rows) {
+  public void rows(Closure<?> rows) {
     GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref> callback = 
         new GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref>(_adapter, _usedRefs);
     TableParser.parseTable(rows, this, callback);

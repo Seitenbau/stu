@@ -26,7 +26,7 @@ class DemoRefs {
 
 DBUnitExamplesDSL hochschule = new DBUnitExamplesDSL()
 hochschule.tables {
-  
+    
   professorTable.rows {
     REF    | name    | vorname  | titel            | fakultaet
     WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
@@ -37,7 +37,6 @@ hochschule.tables {
 
     id | name    
     5  | "Test 2"
-
   }
 
   lehrveranstaltungTable.rows {
@@ -111,3 +110,6 @@ catch (Exception) {
 }
 
 
+hochschule.relations {
+  HAASE.leitet(DPATTERNS)  // => Lehrveranstaltung
+}

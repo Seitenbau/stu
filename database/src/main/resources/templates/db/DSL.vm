@@ -15,11 +15,7 @@ import ${model.package}.${model.name}DataSet;
 #end
 #foreach( $table in $model.tables )
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
-import ${model.package}.${table.javaName}Table.RowCollection_${table.javaName};
 #end
-import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
-import com.seitenbau.testing.dbunit.dsl.TableRowModel;
-import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 
 import groovy.lang.Closure;
 
@@ -55,7 +51,6 @@ public class ${model.name}DSL {
   private void updateRelations${table.javaName}Ref() {
 #foreach( $col in $table.columns )
 #if( $col.references && $col.references.size() != 0 )
-    // Handle: List<${col.reference.table.javaName}Ref> ${col.reference.localName}List
     for (Entry<${table.javaName}Ref, RowBuilder_${table.javaName}> entry : ${table.javaVariableName}Table.getUsedRefs().entrySet())
     {
       ${table.javaName}Ref ${table.javaVariableName}Ref = entry.getKey();
@@ -66,14 +61,15 @@ public class ${model.name}DSL {
         RowBuilder_${col.reference.table.javaName} ${col.reference.table.javaVariableName} = ${col.reference.table.javaVariableName}Table.getUsedRefs().get(${col.reference.table.javaVariableName}Ref);
         ${col.javaType} value = ${col.reference.table.javaVariableName}.get${col.reference.column.javaName}();
         ${table.javaVariableName}.set${col.javaName}(value);
-      } 
+      }
+      
+      ${table.javaVariableName}Ref.${col.reference.localName}List.clear();
     } 
 #end
 #end
 #foreach( $referencingTable in $table.dataSet.tables )
 #foreach( $col in $referencingTable.columns )
 #if( ${col.isReferencingTable($table)} )
-    // Handle: List<${reftable.javaName}Ref> ${col.reference.remoteName}List
     for (Entry<${table.javaName}Ref, RowBuilder_${table.javaName}> entry : ${table.javaVariableName}Table.getUsedRefs().entrySet())
     {
       ${table.javaName}Ref ${table.javaVariableName}Ref = entry.getKey(); 
@@ -89,6 +85,8 @@ public class ${model.name}DSL {
         row.set${rcol.javaName}(${rcol.reference.table.javaVariableName}.get${rcol.reference.javaName}());
 #end
       }
+      
+      ${table.javaVariableName}Ref.${col.reference.remoteName}List.clear();
 #else
 #set( $reftable = ${col.table} )
       for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List)
@@ -97,7 +95,9 @@ public class ${model.name}DSL {
         RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Table.getUsedRefs().get(${reftable.javaVariableName}Ref);
         ${col.javaType} value = ${table.javaVariableName}.get${col.reference.column.javaName}();
         ${reftable.javaVariableName}.set${col.javaName}(value);
-      } 
+      }
+      
+      ${table.javaVariableName}Ref.${col.reference.remoteName}List.clear(); 
 #end
     }
 #end

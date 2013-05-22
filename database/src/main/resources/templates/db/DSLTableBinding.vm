@@ -18,9 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 #end
 
-###if( $model.package && $model.package.length() != 0 )
-##import ${model.package}.${model.dataSet.name}DataSet;
-###end
 import ${model.package}.${model.javaName}Table.${model.javaName}Where;
 import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
 #if( $hasIdentifier )
@@ -38,14 +35,9 @@ public class ${model.javaName}TableBinding {
     public void set(RowBuilder_${model.javaName} row, Object value)
     {
       // TODO NM think about it :-)
-      // Setting reference does not make sense on rowbuilder...
+      // Setting reference does not make sense on REF column...
+      throw new RuntimeException("Setting on REF is not allowed");
     }
-##    
-##    @Override
-##    public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
-##      // TODO NM think about it :-)
-##     return null;
-##    }
     
     @Override
     public boolean isRefColumn() {
