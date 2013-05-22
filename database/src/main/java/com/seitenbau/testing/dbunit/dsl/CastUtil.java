@@ -20,7 +20,6 @@ public class CastUtil
       break;
     case BIGINT:
       if (value instanceof Integer) {
-        System.out.println("AUTOMATIC CAST INT => LONG");
         return Long.valueOf((Integer)value);
       }
       break;

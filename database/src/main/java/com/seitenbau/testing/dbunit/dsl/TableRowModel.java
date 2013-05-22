@@ -8,7 +8,6 @@ public class TableRowModel {
 	private List<Object> values = new ArrayList<Object>();
 
 	public TableRowModel or(Object arg) {
-		System.out.println("TableRowModel or(" + arg + ")");
 		values.add(arg);
 		return this;
 	}
