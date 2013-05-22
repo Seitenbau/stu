@@ -2,8 +2,6 @@ package com.seitenbau.testing.dbunit.dsl;
 
 import java.util.Map;
 
-import com.seitenbau.testing.dbunit.generator.DataType;
-
 public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implements IParsedTableRowCallback
 {
   private TableRowModel _head;
