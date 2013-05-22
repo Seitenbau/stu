@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.seitenbau.testing.dbunit.generator.DataType;
 
-class GeneralTableRowCallback<R, F> implements IParsedTableRowCallback
+public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implements IParsedTableRowCallback
 {
   private TableRowModel _head;
 
@@ -16,11 +16,11 @@ class GeneralTableRowCallback<R, F> implements IParsedTableRowCallback
 
   private int _colId;
 
-  private final Map<Object, R> _usedRefs;
+  private final Map<D, R> _usedRefs;
 
   private final ITableAdapter<R, F> _tableAdapter;
 
-  GeneralTableRowCallback(ITableAdapter<R, F> tableAdapter, Map<Object, R> usedRefs)
+  public GeneralTableRowCallback(ITableAdapter<R, F> tableAdapter, Map<D, R> usedRefs)
   {
     _tableAdapter = tableAdapter;
     _usedRefs = usedRefs;
@@ -122,7 +122,9 @@ class GeneralTableRowCallback<R, F> implements IParsedTableRowCallback
 
     if (_colRef != -1 && row.getValue(_colRef) != null && !_usedRefs.keySet().contains(row.getValue(_colRef)))
     {
-      _usedRefs.put(row.getValue(_colRef), rowbuilder);
+      @SuppressWarnings("unchecked")
+      D ref = (D) row.getValue(_colRef);
+      _usedRefs.put(ref, rowbuilder);
       // println "Used ref in Schreibt: " + row.values[colRef]
     }
   }
