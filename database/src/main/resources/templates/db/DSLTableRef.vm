@@ -26,17 +26,36 @@ package ${package};
 import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.HashMap;
 #end
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-###if( $model.package && $model.package.length() != 0 )
-##//import ${model.package}.${model.dataSet.name}DataSet
-###end
-###foreach( $table in $model.dataSet.tables )
-##import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
-##import ${model.package}.${table.javaName}Table.RowCollection_${table.javaName};
-###end
+import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
 
 public class ${model.javaName}Ref extends DatabaseReference {
+
+  private final Map<${model.dataSet.name}DSL, RowBuilder_${model.javaName}> builders;
+  
+  public ${model.javaName}Ref()
+  {
+    builders = new HashMap<${model.dataSet.name}DSL, RowBuilder_${model.javaName}>();
+  }
+  
+  void setBuilder(${model.dataSet.name}DSL scope, RowBuilder_${model.javaName} builder)
+  {
+    RowBuilder_${model.javaName} lastBuilder = builders.put(scope, builder);
+    if (lastBuilder != null && lastBuilder != builder) {
+      throw new RuntimeException("Builder cannot be redefined");
+    }
+    if (lastBuilder != null) {
+      System.out.println("Reference has been associated to scope");
+    }
+  }
+  
+  RowBuilder_${model.javaName} getBuilder(${model.dataSet.name}DSL scope)
+  {
+    return builders.get(scope);
+  }
 
 #if ( !${model.isAssociativeTable()} )
 #foreach( $col in $model.columns )

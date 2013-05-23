@@ -25,9 +25,16 @@ import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 #end
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
+import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 import com.seitenbau.testing.dbunit.generator.DataType;
+import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 
 public class ${model.javaName}TableBinding {
+
+  private static boolean valueMustBeSetRaw(Object value)
+  {
+    return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
+  }
 
   public static final ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = new ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where>() 
   {
@@ -61,17 +68,12 @@ public class ${model.javaName}TableBinding {
       }
       definedIdsSet.add(row);
 #end
-#if( $col.references && $col.references.size() != 0 )
-      // Handle RefType :-)
-      if (value instanceof ${col.reference.table.javaName}Ref) {
-        ${col.reference.table.javaName}Ref reference = (${col.reference.table.javaName}Ref)value;
-        // TODO get Id by Reference
-      } else {
+      if (valueMustBeSetRaw(value)) {
         row.set${col.javaName}Raw(value);
       }
-#else     
-      row.set${col.javaName}Raw(value);
-#end
+      else {
+        row.set${col.javaName}((${col.javaType})CastUtil.cast(value, ${col.type}));
+      }
     }
 #if ( ${col.isIdentifier()} )
 

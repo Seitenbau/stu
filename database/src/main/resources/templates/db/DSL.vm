@@ -6,8 +6,6 @@
 #end
 package ${package};
 
-import java.util.Map.Entry;
-
 import org.dbunit.dataset.IDataSet;
 
 #if( $model.package && $model.package.length() != 0 )
@@ -27,7 +25,7 @@ public class ${model.name}DSL {
     };
 
 #foreach( $table in $model.tables )
-  ${table.javaName}Table ${table.javaVariableName}Table = new ${table.javaName}Table(dataset.table_${table.javaName});
+  ${table.javaName}Table ${table.javaVariableName}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
   
 #end
   public void tables(Closure<?> table) {
@@ -51,14 +49,13 @@ public class ${model.name}DSL {
   private void updateRelations${table.javaName}Ref() {
 #foreach( $col in $table.columns )
 #if( $col.references && $col.references.size() != 0 )
-    for (Entry<${table.javaName}Ref, RowBuilder_${table.javaName}> entry : ${table.javaVariableName}Table.getUsedRefs().entrySet())
+    for (${table.javaName}Ref ${table.javaVariableName}Ref : ${table.javaVariableName}Table.getUsedRefs())
     {
-      ${table.javaName}Ref ${table.javaVariableName}Ref = entry.getKey();
-      RowBuilder_${table.javaName} ${table.javaVariableName} = entry.getValue();
+      RowBuilder_${table.javaName} ${table.javaVariableName} = ${table.javaVariableName}Ref.getBuilder(this);
       for (${col.reference.table.javaName}Ref ${col.reference.table.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.localName}List)
       {
         System.out.println("RELATION: Updated Row in ${table.javaName}");
-        RowBuilder_${col.reference.table.javaName} ${col.reference.table.javaVariableName} = ${col.reference.table.javaVariableName}Table.getUsedRefs().get(${col.reference.table.javaVariableName}Ref);
+        RowBuilder_${col.reference.table.javaName} ${col.reference.table.javaVariableName} = ${col.reference.table.javaVariableName}Ref.getBuilder(this);
         ${col.javaType} value = ${col.reference.table.javaVariableName}.get${col.reference.column.javaName}();
         ${table.javaVariableName}.set${col.javaName}(value);
       }
@@ -70,16 +67,15 @@ public class ${model.name}DSL {
 #foreach( $referencingTable in $table.dataSet.tables )
 #foreach( $col in $referencingTable.columns )
 #if( ${col.isReferencingTable($table)} )
-    for (Entry<${table.javaName}Ref, RowBuilder_${table.javaName}> entry : ${table.javaVariableName}Table.getUsedRefs().entrySet())
+    for (${table.javaName}Ref ${table.javaVariableName}Ref : ${table.javaVariableName}Table.getUsedRefs())
     {
-      ${table.javaName}Ref ${table.javaVariableName}Ref = entry.getKey(); 
-      RowBuilder_${table.javaName} ${table.javaVariableName} = entry.getValue();
+      RowBuilder_${table.javaName} ${table.javaVariableName} = ${table.javaVariableName}Ref.getBuilder(this);
 #if ( ${referencingTable.isAssociativeTable()} )
 #set( $reftable = ${referencingTable.getAssociatedTable($table)} )
       for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List)
       {
         System.out.println("RELATION: Inserted Row in ${referencingTable.javaName}");
-        RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Table.getUsedRefs().get(${reftable.javaVariableName}Ref); 
+        RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Ref.getBuilder(this); 
         RowBuilder_${referencingTable.javaName} row = ${referencingTable.javaVariableName}Table.getTableModel().insertRow();
 #foreach( $rcol in $referencingTable.columns )
         row.set${rcol.javaName}(${rcol.reference.table.javaVariableName}.get${rcol.reference.javaName}());
@@ -92,7 +88,7 @@ public class ${model.name}DSL {
       for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List)
       {
         System.out.println("RELATION: Updated Row in ${reftable.javaName}");
-        RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Table.getUsedRefs().get(${reftable.javaVariableName}Ref);
+        RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Ref.getBuilder(this);
         ${col.javaType} value = ${table.javaVariableName}.get${col.reference.column.javaName}();
         ${reftable.javaVariableName}.set${col.javaName}(value);
       }
