@@ -26,7 +26,6 @@ class DemoRefs {
 
 DBUnitExamplesDSL hochschule = new DBUnitExamplesDSL()
 hochschule.tables {
-    
   professorTable.rows {
     REF    | name    | vorname  | titel            | fakultaet
     WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
@@ -64,18 +63,37 @@ hochschule.tables {
 
 }
 
-hochschule.relations {
-  HAASE.leitet(DPATTERNS)  // => Lehrveranstaltung
-  DPATTERNS.geleitetVon(HAASE) // => Lehrveranstaltung
-  WAESCH.beaufsichtigt(P_VSYS) // => Beaufsichtigt
-  MOLL.besucht(VSYS) // => Besucht
-  MOLL.istTutor(VSYS) // => Isttutor
-  P_VSYS.geschriebenVon(MOLL) // => Schreibt
-  MOLL.schreibt(P_VSYS) // =>Schreibt
-  MUSTERMANN.besucht(DPATTERNS) // => Besucht
-
-    // HAASE.beaufsichtigt(P_DPATTERNS)
+class Test {
+  public Test() {
+    DBUnitExamplesDSL x = new DBUnitExamplesDSL()
+    x.tables {
+      professorTable.rows {
+        REF    | name    | vorname  | titel            | fakultaet
+        WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
+        HAASE  | "Haase" | "Oliver" | "Prof. Dr."      | "Informatik"
+      }
+      println "Hallo";
+    }
+  }
+  
+  String name
+  
 }
+
+new Test();
+
+//hochschule.relations {
+//  HAASE.leitet(DPATTERNS)  // => Lehrveranstaltung
+//  DPATTERNS.geleitetVon(HAASE) // => Lehrveranstaltung
+//  WAESCH.beaufsichtigt(P_VSYS) // => Beaufsichtigt
+//  MOLL.besucht(VSYS) // => Besucht
+//  MOLL.istTutor(VSYS) // => Isttutor
+//  P_VSYS.geschriebenVon(MOLL) // => Schreibt
+//  MOLL.schreibt(P_VSYS) // =>Schreibt
+//  MUSTERMANN.besucht(DPATTERNS) // => Besucht
+//
+//    // HAASE.beaufsichtigt(P_DPATTERNS)
+//}
 
 println hochschule.createDataSet()
 println "Vor Änderung [erwartet: Haase]: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()

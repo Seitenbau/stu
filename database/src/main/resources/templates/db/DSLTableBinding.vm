@@ -61,7 +61,17 @@ public class ${model.javaName}TableBinding {
       }
       definedIdsSet.add(row);
 #end
+#if( $col.references && $col.references.size() != 0 )
+      // Handle RefType :-)
+      if (value instanceof ${col.reference.table.javaName}Ref) {
+        ${col.reference.table.javaName}Ref reference = (${col.reference.table.javaName}Ref)value;
+        // TODO get Id by Reference
+      } else {
+        row.set${col.javaName}Raw(value);
+      }
+#else     
       row.set${col.javaName}Raw(value);
+#end
     }
 #if ( ${col.isIdentifier()} )
 
