@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.generator;
 
+import com.seitenbau.testing.util.CamelCase;
+
 public class ReferenceBuilder
 {
   private final ColumnBuilder columnBuilder;
@@ -25,7 +27,6 @@ public class ReferenceBuilder
     return remote;
   }
   
-  
   public ReferenceBuilder(ColumnBuilder columnBuilder, Column reference)
   {
     this.columnBuilder = columnBuilder;
@@ -45,8 +46,9 @@ public class ReferenceBuilder
   }
   
   private void buildReference() {
-    String localName = null;
-    String remoteName = null;
+    String localName = CamelCase.makeFirstLowerCase(columnBuilder.getColumnJavaName()) + "To";
+        //column.getTable().getJavaName() + "To";
+    String remoteName = CamelCase.makeFirstLowerCase(columnBuilder.getTableBuilder().getTable().getJavaName()) + "To";
     Integer remoteMin = null;
     Integer remoteMax = null;
 

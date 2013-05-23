@@ -28,4 +28,9 @@ public class TableBuilder
   {
     table.addColumn(column);
   }
+  
+  Table getTable()
+  {
+    return table;
+  }
 }

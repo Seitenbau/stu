@@ -3,6 +3,8 @@ package com.seitenbau.testing.dbunit.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.seitenbau.testing.util.CamelCase;
+
 public class ColumnBuilder
 {
   private final TableBuilder tableBuilder;
@@ -60,7 +62,8 @@ public class ColumnBuilder
     return new ReferenceBuilder(this, reference.getIdColumn());
   }
   
-  void addReference(Reference reference) {
+  void addReference(Reference reference) 
+  {
     references.add(reference);
   }
   
@@ -99,4 +102,19 @@ public class ColumnBuilder
     return flags.toArray(new Flags[] {});
   }
 
+  String getColumnName()
+  {
+    return name;
+  }
+  
+  TableBuilder getTableBuilder()
+  {
+    return tableBuilder;
+  }
+
+  public String getColumnJavaName()
+  {
+    String javaName = CamelCase.makeFirstOfBlockUppercase(name);
+    return CamelCase.makeFirstUpperCase(javaName);
+  }
 }
