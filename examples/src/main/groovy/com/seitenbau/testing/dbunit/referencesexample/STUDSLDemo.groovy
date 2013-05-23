@@ -1,5 +1,6 @@
 package com.seitenbau.testing.dbunit.referencesexample
 
+import static com.seitenbau.testing.dbunit.referencesexample.SampleRefs.*;
 import com.seitenbau.testing.dbunit.datasets.SampleDataSet;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.model.JobsTable.JobsWhere;
@@ -12,7 +13,7 @@ import com.seitenbau.testing.dbunit.model.dsl.STUDSL;
 import com.seitenbau.testing.dbunit.model.dsl.TeamsRef
 import com.seitenbau.testing.dbunit.model.dsl.TeamsTable;
 
-class STUDSLDemo {
+class SampleRefs{
   public static JobsRef SWD = new JobsRef();
   public static JobsRef SWT = new JobsRef();
   public static JobsRef TM = new JobsRef();
@@ -22,8 +23,7 @@ class STUDSLDemo {
   public static PersonsRef KAULBERSCH = new PersonsRef();
   public static PersonsRef GUITTON = new PersonsRef();
   public static PersonsRef BARANOWSKI = new PersonsRef();
-  
-  public static void main(String[] args) {
+}
     STUDSL sampleData = new STUDSL();
     sampleData.tables {
       jobsTable.rows {
@@ -39,12 +39,10 @@ class STUDSLDemo {
       }
       
       personsTable.rows {
-        REF           | id  | first_name              /*| name                */| job    | team_id
-        KAULBERSCH    | 1   | "Dennis"                /*| "Kaulbersch"        */| SWD       | 1.longValue()
-//        REF           | id  | first_name              | name                | job_id    | team_id
-//        KAULBERSCH    | 1   | "Dennis"                | "Kaulbersch"        | SWD       | QA
-//        GUITTON       | 2   | "Julien"                | "Guitton"           | SWT       | QA
-//        BARANOWSKI    | 3   | "Christian"             | "Baranowski"        | TM        | QA
+        REF           | id  | first_name              | name                | job_id    | team_id
+        KAULBERSCH    | 1   | "Dennis"                | "Kaulbersch"        | SWD       | QA
+        GUITTON       | 2   | "Julien"                | "Guitton"           | SWT       | QA
+        BARANOWSKI    | 3   | "Christian"             | "Baranowski"        | TM        | QA
       }
       
     }
@@ -54,6 +52,4 @@ class STUDSLDemo {
     println("Jobtitle for SWD = " + sampleData.dataset.table_Jobs.findWhere.id(1).getTitle())
     println("Jobid for SWD = " + sampleData.dataset.table_Jobs.findWhere.title("Software Developer").getId())
     println("Teamtitle for id QA = " + sampleData.dataset.table_Teams.findWhere.id(1).getTitle())
-    println("Foreign Jobid for Dennis = " + sampleData.dataset.table_Persons.findWhere.firstName("Dennis").getJobId().value)
-  }
-}
+//    println("Foreign Jobid for Dennis = " + sampleData.dataset.table_Persons.findWhere.firstName("Dennis").getJobId())
