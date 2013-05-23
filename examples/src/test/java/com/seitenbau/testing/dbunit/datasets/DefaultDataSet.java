@@ -21,7 +21,7 @@ public class DefaultDataSet extends EmptyDataSet
     RowGetters_Jobs teamManager = //
     table_Jobs.insertRow() //
         .setTitle("Team Manager") //
-        .setDescription("Nobody knows");
+        .setDescription("Makes the world go round");
 
     RowGetters_Teams qualityAssurance = //
     table_Teams.insertRow() //

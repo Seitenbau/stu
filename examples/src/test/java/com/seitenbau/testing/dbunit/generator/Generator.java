@@ -1,5 +1,6 @@
 package com.seitenbau.testing.dbunit.generator;
 
+
 public class Generator
 {
   public static void main(String[] args) throws Exception
@@ -8,43 +9,40 @@ public class Generator
     {
       {
         database("STU");
-        packageName("com.seitenbau.testing.dbunit");
+        packageName("com.seitenbau.testing.dbunit.model");
       }
     };
-    
-    Table jobs = db.addTable("jobs") //
-        .addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod) //
-        .addColumn("title", DataType.VARCHAR) //
-        .addColumn("description", DataType.VARCHAR);
 
-    Table teams = db.addTable("teams") //
-        .addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod) //
-        .addColumn("title", DataType.VARCHAR) //
-        .addColumn("description", DataType.VARCHAR) //
-        .addColumn("membersize", DataType.BIGINT);
+    Table jobs = db.table("jobs") //
+          .column("id", DataType.BIGINT) //
+            .autoIdHandling() //
+            .identifierColumn() //
+          .column("title", DataType.VARCHAR) //
+          .column("description", DataType.VARCHAR) //
+        .build();
+
+    Table teams = db.table("teams") //
+          .column("id", DataType.BIGINT) //
+            .autoIdHandling() //
+            .identifierColumn() //
+          .column("title", DataType.VARCHAR) //
+          .column("description", DataType.VARCHAR) //
+          .column("membersize", DataType.BIGINT) //
+        .build();
     ; //
 
-    Table persons = db.addTable("persons") //
-        .addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod) //
-        .addColumn("first_name", DataType.VARCHAR) //
-        .addColumn("name", DataType.VARCHAR) //
-        .addColumn("job_id", DataType.BIGINT, jobs.ref("id")) //
-        .addColumn("team_id", DataType.BIGINT, teams.ref("id"));
+    Table persons = db.table("persons") //
+          .column("id", DataType.BIGINT) //
+            .autoIdHandling() //
+            .identifierColumn() //
+          .column("first_name", DataType.VARCHAR) //
+          .column("name", DataType.VARCHAR) //
+          .column("job_id", DataType.BIGINT) //
+            .references(jobs.ref("id")) //
+          .column("team_id", DataType.BIGINT) //
+            .references(teams.ref("id")) //
+        .build();
 
-    
-    TableBuilder tableBuilder = new TableBuilder("sample");
-
-    Table sample = tableBuilder //
-        .column("id", DataType.BIGINT) //
-          .identifierColumn() //
-          .autoIdHandling() //
-        .column("title", DataType.VARCHAR) //
-        .column("foreign_id", DataType.BIGINT) //
-          .references(teams.ref("id")) //
-    .build();
-
-    db.addTable(sample);
-   
     db.generate();
   }
 }

@@ -142,7 +142,7 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
   private void throwException(String message, int lineNr, TableRowModel row)
   {
     StringBuilder builder = new StringBuilder();
-    builder.append("Error in Schreibt, line " + lineNr + ": " + message);
+    builder.append("Error in line " + lineNr + ": " + message);
     if (row.getValues().size() > 0)
     {
       builder.append(" [TableRowModel: ");
