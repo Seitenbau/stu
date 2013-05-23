@@ -35,14 +35,33 @@ public class PersonsTable {
 
   private final Map<PersonsRef, RowBuilder_Persons> _usedRefs;
 
-  private final ITableAdapter<RowBuilder_Persons, PersonsWhere> _adapter = new ITableAdapter<RowBuilder_Persons, PersonsWhere>()
+  private final ITableAdapter<RowBuilder_Persons, PersonsWhere, PersonsRef> _adapter = new ITableAdapter<RowBuilder_Persons, PersonsWhere, PersonsRef>()
   {
-    public RowBuilder_Persons insertRow() {
+    public RowBuilder_Persons insertRow() 
+    {
       return _table.insertRow();
     }
 	  
-    public PersonsWhere getFindWhere() {
+    public PersonsWhere getFindWhere()
+    {
       return _table.findWhere;
+    }
+    
+	public void referenceUsed(PersonsRef reference, RowBuilder_Persons row)
+	{
+	  if (row != null) {
+        //System.out.println("Used ref: " + row.values[colRef]);
+	    _usedRefs.put(reference, row);
+	  }
+	}
+
+	public RowBuilder_Persons getRowByReference(PersonsRef reference)
+	{
+	  return _usedRefs.get(reference);
+	}
+    
+    public String getTableName() {
+      return "Persons";
     }
   };
     
@@ -64,7 +83,7 @@ public class PersonsTable {
   
   public void rows(Closure<?> rows) {
     GeneralTableRowCallback<RowBuilder_Persons, PersonsWhere, PersonsRef> callback = 
-        new GeneralTableRowCallback<RowBuilder_Persons, PersonsWhere, PersonsRef>(_adapter, _usedRefs);
+        new GeneralTableRowCallback<RowBuilder_Persons, PersonsWhere, PersonsRef>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
 }

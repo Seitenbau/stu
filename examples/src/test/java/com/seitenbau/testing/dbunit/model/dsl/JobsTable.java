@@ -27,14 +27,33 @@ public class JobsTable {
 
   private final Map<JobsRef, RowBuilder_Jobs> _usedRefs;
 
-  private final ITableAdapter<RowBuilder_Jobs, JobsWhere> _adapter = new ITableAdapter<RowBuilder_Jobs, JobsWhere>()
+  private final ITableAdapter<RowBuilder_Jobs, JobsWhere, JobsRef> _adapter = new ITableAdapter<RowBuilder_Jobs, JobsWhere, JobsRef>()
   {
-    public RowBuilder_Jobs insertRow() {
+    public RowBuilder_Jobs insertRow() 
+    {
       return _table.insertRow();
     }
 	  
-    public JobsWhere getFindWhere() {
+    public JobsWhere getFindWhere()
+    {
       return _table.findWhere;
+    }
+    
+	public void referenceUsed(JobsRef reference, RowBuilder_Jobs row)
+	{
+	  if (row != null) {
+        //System.out.println("Used ref: " + row.values[colRef]);
+	    _usedRefs.put(reference, row);
+	  }
+	}
+
+	public RowBuilder_Jobs getRowByReference(JobsRef reference)
+	{
+	  return _usedRefs.get(reference);
+	}
+    
+    public String getTableName() {
+      return "Jobs";
     }
   };
     
@@ -56,7 +75,7 @@ public class JobsTable {
   
   public void rows(Closure<?> rows) {
     GeneralTableRowCallback<RowBuilder_Jobs, JobsWhere, JobsRef> callback = 
-        new GeneralTableRowCallback<RowBuilder_Jobs, JobsWhere, JobsRef>(_adapter, _usedRefs);
+        new GeneralTableRowCallback<RowBuilder_Jobs, JobsWhere, JobsRef>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
 }
