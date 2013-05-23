@@ -42,14 +42,33 @@ public class ${model.javaName}Table {
 
   private final Map<${model.javaName}Ref, RowBuilder_${model.javaName}> _usedRefs;
 
-  private final ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where> _adapter = new ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where>()
+  private final ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref> _adapter = new ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref>()
   {
-    public RowBuilder_${model.javaName} insertRow() {
+    public RowBuilder_${model.javaName} insertRow() 
+    {
       return _table.insertRow();
     }
 	  
-    public ${model.javaName}Where getFindWhere() {
+    public ${model.javaName}Where getFindWhere()
+    {
       return _table.findWhere;
+    }
+    
+	public void referenceUsed(${model.javaName}Ref reference, RowBuilder_${model.javaName} row)
+	{
+	  if (row != null) {
+        //System.out.println("Used ref: " + row.values[colRef]);
+	    _usedRefs.put(reference, row);
+	  }
+	}
+
+	public RowBuilder_${model.javaName} getRowByReference(${model.javaName}Ref reference)
+	{
+	  return _usedRefs.get(reference);
+	}
+    
+    public String getTableName() {
+      return "${model.javaName}";
     }
   };
     
@@ -71,7 +90,7 @@ public class ${model.javaName}Table {
   
   public void rows(Closure<?> rows) {
     GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref> callback = 
-        new GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref>(_adapter, _usedRefs);
+        new GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
 }

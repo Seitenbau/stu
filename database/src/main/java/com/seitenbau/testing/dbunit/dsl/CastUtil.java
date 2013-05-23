@@ -27,6 +27,19 @@ public class CastUtil
       break;
     case DOUBLE:
     case FLOAT:
+      if (value instanceof Float) {
+        return Double.valueOf((Float)value);
+      }
+      if (value instanceof Integer) {
+        return Double.valueOf((Integer)value);
+      }
+      if (value instanceof Long) {
+        return Double.valueOf((Long)value);
+      }
+      if (value instanceof String) {
+        return Double.valueOf((String)value);
+      }
+      break;
     default:
       return value;
     }

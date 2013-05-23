@@ -1,7 +1,5 @@
 package com.seitenbau.testing.dbunit.dsl;
 
-import java.util.Map;
-
 public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implements IParsedTableRowCallback
 {
   private TableRowModel _head;
@@ -14,14 +12,11 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
 
   private int _colId;
 
-  private final Map<D, R> _usedRefs;
+  private final ITableAdapter<R, F, D> _tableAdapter;
 
-  private final ITableAdapter<R, F> _tableAdapter;
-
-  public GeneralTableRowCallback(ITableAdapter<R, F> tableAdapter, Map<D, R> usedRefs)
+  public GeneralTableRowCallback(ITableAdapter<R, F, D> tableAdapter)
   {
     _tableAdapter = tableAdapter;
-    _usedRefs = usedRefs;
     _head = null;
     _columns = 0;
     _lineNr = 0;
@@ -51,7 +46,9 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
 
     if (_colRef != -1)
     {
-      builderByRef = _usedRefs.get(row.getValue(_colRef));
+      @SuppressWarnings("unchecked")
+      D ref = (D)row.getValue(_colRef);
+      builderByRef = _tableAdapter.getRowByReference(ref);
     }
 
     if (builderByRef != null || builderById != null)
@@ -105,7 +102,6 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       throwColumnsDoNotMatchException(_lineNr, row);
     R rowbuilder = getRowBuilder(row);
 
-    // def resultRow = new SchreibtTableRow()
     for (int columnIndex = 0; columnIndex < _columns; columnIndex++)
     {
       if (columnIndex == _colRef || columnIndex == _colId)
@@ -118,12 +114,11 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       column.set(rowbuilder, row.getValue(columnIndex));
     }
 
-    if (_colRef != -1 && row.getValue(_colRef) != null && !_usedRefs.keySet().contains(row.getValue(_colRef)))
+    if (_colRef != -1 && row.getValue(_colRef) != null)
     {
       @SuppressWarnings("unchecked")
       D ref = (D) row.getValue(_colRef);
-      _usedRefs.put(ref, rowbuilder);
-      // println "Used ref in Schreibt: " + row.values[colRef]
+      _tableAdapter.referenceUsed(ref, rowbuilder);
     }
   }
 
@@ -140,7 +135,7 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
   private void throwException(String message, int lineNr, TableRowModel row)
   {
     StringBuilder builder = new StringBuilder();
-    builder.append("Error in Schreibt, line " + lineNr + ": " + message);
+    builder.append("Error in " + _tableAdapter.getTableName() + ", line " + lineNr + ": " + message);
     if (row.getValues().size() > 0)
     {
       builder.append(" [TableRowModel: ");
