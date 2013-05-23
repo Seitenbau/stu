@@ -111,7 +111,13 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
 
       @SuppressWarnings("unchecked")
       ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(columnIndex);
-      column.set(rowbuilder, row.getValue(columnIndex));
+      Object value = row.getValue(columnIndex);
+      if (value instanceof DatabaseReference) {
+        // TODO 
+        System.out.println("DATABASE REFERENCE");
+      } else {
+        column.set(rowbuilder, value);
+      }
     }
 
     if (_colRef != -1 && row.getValue(_colRef) != null)

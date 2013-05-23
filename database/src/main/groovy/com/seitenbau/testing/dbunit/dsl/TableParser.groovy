@@ -13,6 +13,7 @@ public class TableParser {
     
     // TODO NM/CB Is it possible to achieve this Groovy feature in Java?
 		use(TableParserContext) {
+      rows.resolveStrategy = Closure.DELEGATE_FIRST // ensure that column bindings are used
 			rows.setDelegate(delegate);
 			rows.call();
 		}
