@@ -7,11 +7,16 @@ public abstract class ColumnBinding<R, F>
   
   public abstract void set(R row, Object value);
   
+  public void setReference(R row, DatabaseReference reference)
+  {
+    throw new RuntimeException("Setting a reference is not supported for this column");
+  }
+
   public boolean isRefColumn() {
     return false;
   }
   
-  public boolean isIdColumn() {
+  public boolean isIdentifierColumn() {
     return false;
   }
   

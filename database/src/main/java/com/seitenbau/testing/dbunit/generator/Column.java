@@ -1,50 +1,44 @@
 package com.seitenbau.testing.dbunit.generator;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
 import com.seitenbau.testing.util.CamelCase;
 
 public class Column
 {
 
-  String _type;
+  private final String _type;
 
-  String _javaType;
+  private final String _javaType;
 
-  String _name;
+  private final String _name;
 
-  String _javaName;
+  private final String _javaName;
 
-  EnumSet<Flags> _flags = EnumSet.noneOf(Flags.class);
+  private final Reference _reference;
 
-  List<Reference> _references = new ArrayList<Reference>();
+  private final Table _table;
+  
+  private final boolean _isIdentifier;
+  
+  private final boolean _enableAutoIdHandling;
+  
+  private final boolean _isAutoIncrement;
+  
+  private final boolean _isNextIdMethodGenerated;
 
-  Table _table;
-
-  public Column(Table table, String name, String javaName, String type, String javaType, Reference[] references,
-      Flags[] flags)
+  Column(Table table, String name, String javaName, String type, String javaType, Reference reference,
+      boolean isIdentifier, boolean isAutoIncrement, boolean addNextMethod, boolean enableAutoIdHandling)
   {
     _table = table;
     _name = name;
     _javaName = javaName;
     _type = type;
     _javaType = javaType;
-    if (flags != null)
-    {
-      for (Flags flag : flags)
-      {
-        _flags.add(flag);
-      }
-    }
-    if (references != null)
-    {
-      for (Reference ref : references)
-      {
-        _references.add(ref);
-      }
-    }
+    _reference = reference;
+    _isAutoIncrement = isAutoIncrement;
+    _isIdentifier = isIdentifier;
+    _enableAutoIdHandling = enableAutoIdHandling;
+    
+    _isNextIdMethodGenerated = addNextMethod || isAutoIncrement || enableAutoIdHandling;
   }
 
   public Table getTable()
@@ -67,29 +61,24 @@ public class Column
     return _name;
   }
 
-  public EnumSet<Flags> getFlags()
+  public Reference getReference()
   {
-    return _flags;
-  }
-
-  public List<Reference> getReferences()
-  {
-    return _references;
+    return _reference;
   }
 
   public boolean isAutoIncrement()
   {
-    return _flags.contains(Flags.AutoIncrement);
+    return _isAutoIncrement;
   }
 
   public boolean isIdGenerationAutoInvokeOnInsert()
   {
-    return _flags.contains(Flags.AutoInvokeNextIdMethod);
+    return _enableAutoIdHandling;
   }
 
-  public boolean isIdGeneration()
+  public boolean isNextIdMethodGenerated()
   {
-    return isAutoIncrement() || isIdGenerationAutoInvokeOnInsert() || _flags.contains(Flags.AddNextIdMethod);
+    return _isNextIdMethodGenerated; 
   }
 
   public String getJavaName()
@@ -107,55 +96,41 @@ public class Column
     return CamelCase.makeFirstLowerCase(getJavaName());
   }
 
-  public boolean isIdentifier()
+  public boolean isIdentifierColumn()
   {
-    return _flags.contains(Flags.IdentifierColumn);
+    return _isIdentifier;
   }
 
-  public Reference getReference() 
-  {
-    if (_references.size() == 0) {
-      throw new IllegalStateException("No references...");
-    }
-    
-    return _references.get(0);
-  }
-  
   public boolean isReferencingTable(Table table)
   {
-    for (Reference reference : _references) {
-      for (Column column : table.getColumns()) {
-        if (reference.getColumn() == column) {
-          return true;
-        }
-      }
-    }
-    
-    return false;
-  }
-  
-  public boolean isIdTruncable()
-  {
-    if (_references.size() == 0 || !_name.endsWith("_id")) {
+    if (_reference == null) {
       return false;
     }
+
+    return _reference.getColumn().getTable() == table;
+    // if statement above does not work:
+    //for (Column column : table.getColumns()) {
+    //  if (_reference.getColumn() == column) {
+    //    return true;
+    //  }
+    //}
+    //return false;
+  }
+  
+  public String getTruncatedReferenceName()
+  {
+    if (_reference == null || !_name.endsWith("_id")) {
+      return null;
+    }
     
-    final String shortName = getNameWithoutId();
+    final String result = _name.substring(0, _name.length() - 3);
     for (Column column : _table.getColumns()) {
-      if (shortName.equals(column.getName())) {
-        return false;
+      if (result.equals(column.getName())) {
+        // column cannot be truncated
+        return null;
       }
     }
     
-    return true;
+    return result;
   }
-  
-  public String getNameWithoutId()
-  {
-    if (_name.endsWith("_id")) {
-      return _name.substring(0, _name.length() - 3);
-    } else {
-      return _name;
-    }
-  }  
 }

@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.model;
+package com.seitenbau.testing.dbunit.demomodel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,11 +20,10 @@ import org.dbunit.dataset.NoSuchColumnException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowGetters_Persons;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
-import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.dbunit.model.JobsTable.RowGetters_Jobs;
-import com.seitenbau.testing.dbunit.model.PersonsTable.RowGetters_Persons;
-import com.seitenbau.testing.dbunit.model.TeamsTable.RowGetters_Teams;
 import com.seitenbau.testing.util.date.DateBuilder;
 
 
@@ -60,15 +59,6 @@ public class PersonsTable implements ITable
     new Column(Columns.TeamId, DataType.BIGINT)
   };
 
-  static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
-  static {
-    GENERATOR_METADATA = new HashMap<String, EnumSet<Flags>>();
-    GENERATOR_METADATA.put(Columns.Id,EnumSet.of( Flags.AutoInvokeNextIdMethod));
-    GENERATOR_METADATA.put(Columns.FirstName,EnumSet.noneOf( Flags.class ));
-    GENERATOR_METADATA.put(Columns.Name,EnumSet.noneOf( Flags.class ));
-    GENERATOR_METADATA.put(Columns.JobId,EnumSet.noneOf( Flags.class ));
-    GENERATOR_METADATA.put(Columns.TeamId,EnumSet.noneOf( Flags.class ));
-  }
   // @formatter:on
 
   ITableMetaData _metaData;
@@ -138,17 +128,17 @@ public class PersonsTable implements ITable
 
     public RowBuilder_Persons setId(Integer intValue)
     {
-      data[ 0 ] = (intValue==null?null:Long.valueOf(intValue));
+      data[0] = (intValue==null?null:Long.valueOf(intValue));
       return this;
     }
     public RowBuilder_Persons setId(java.lang.Long value)
     {
-      data[ 0 ] = value;
+      data[0] = value;
       return this;
     }
     public RowBuilder_Persons setIdRaw(Object value)
     {
-      data[ 0 ] = value;
+      data[0] = value;
       return this;
     }
     public RowBuilder_Persons nextId()
@@ -164,14 +154,19 @@ public class PersonsTable implements ITable
       return (java.lang.Long) data[0];
     }
 
+    public Object getIdRaw()
+    {
+      return data[0];
+    }
+
     public RowBuilder_Persons setFirstName(java.lang.String value)
     {
-      data[ 1 ] = value;
+      data[1] = value;
       return this;
     }
     public RowBuilder_Persons setFirstNameRaw(Object value)
     {
-      data[ 1 ] = value;
+      data[1] = value;
       return this;
     }
 
@@ -180,14 +175,19 @@ public class PersonsTable implements ITable
       return (java.lang.String) data[1];
     }
 
+    public Object getFirstNameRaw()
+    {
+      return data[1];
+    }
+
     public RowBuilder_Persons setName(java.lang.String value)
     {
-      data[ 2 ] = value;
+      data[2] = value;
       return this;
     }
     public RowBuilder_Persons setNameRaw(Object value)
     {
-      data[ 2 ] = value;
+      data[2] = value;
       return this;
     }
 
@@ -196,19 +196,24 @@ public class PersonsTable implements ITable
       return (java.lang.String) data[2];
     }
 
+    public Object getNameRaw()
+    {
+      return data[2];
+    }
+
     public RowBuilder_Persons setJobId(Integer intValue)
     {
-      data[ 3 ] = (intValue==null?null:Long.valueOf(intValue));
+      data[3] = (intValue==null?null:Long.valueOf(intValue));
       return this;
     }
     public RowBuilder_Persons setJobId(java.lang.Long value)
     {
-      data[ 3 ] = value;
+      data[3] = value;
       return this;
     }
     public RowBuilder_Persons setJobIdRaw(Object value)
     {
-      data[ 3 ] = value;
+      data[3] = value;
       return this;
     }
 
@@ -217,25 +222,35 @@ public class PersonsTable implements ITable
       return (java.lang.Long) data[3];
     }
 
+    public Object getJobIdRaw()
+    {
+      return data[3];
+    }
+
     public RowBuilder_Persons setTeamId(Integer intValue)
     {
-      data[ 4 ] = (intValue==null?null:Long.valueOf(intValue));
+      data[4] = (intValue==null?null:Long.valueOf(intValue));
       return this;
     }
     public RowBuilder_Persons setTeamId(java.lang.Long value)
     {
-      data[ 4 ] = value;
+      data[4] = value;
       return this;
     }
     public RowBuilder_Persons setTeamIdRaw(Object value)
     {
-      data[ 4 ] = value;
+      data[4] = value;
       return this;
     }
 
     public java.lang.Long getTeamId()
     {
       return (java.lang.Long) data[4];
+    }
+
+    public Object getTeamIdRaw()
+    {
+      return data[4];
     }
     /**
     * Insert a new Row at the end of the Table

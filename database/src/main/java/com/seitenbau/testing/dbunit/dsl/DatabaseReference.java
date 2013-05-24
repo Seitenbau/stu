@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class DatabaseReference
 {
-
+  
   protected <S, T> List<T> getOrCreateList(Map<S, List<T>> map, ThreadLocal<S> threadScope) 
   {
     final S scope = threadScope.get();

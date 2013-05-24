@@ -111,7 +111,7 @@ public class DataSetGenerator
       // DSL Additions
       generateDSL(targetPath + "/");
       generateDSLTableModel(targetPath + "/");
-      generateDSLTableBinding(targetPath + "/");
+      //generateDSLTableBinding(targetPath + "/");
       generateDSLTableReferences(targetPath + "/");
     }
     finally

@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.model;
+package com.seitenbau.testing.dbunit.demomodel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,11 +20,10 @@ import org.dbunit.dataset.NoSuchColumnException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowGetters_Persons;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
-import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.dbunit.model.JobsTable.RowGetters_Jobs;
-import com.seitenbau.testing.dbunit.model.PersonsTable.RowGetters_Persons;
-import com.seitenbau.testing.dbunit.model.TeamsTable.RowGetters_Teams;
 import com.seitenbau.testing.util.date.DateBuilder;
 
 
@@ -54,13 +53,6 @@ public class JobsTable implements ITable
     new Column(Columns.Description, DataType.VARCHAR)
   };
 
-  static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
-  static {
-    GENERATOR_METADATA = new HashMap<String, EnumSet<Flags>>();
-    GENERATOR_METADATA.put(Columns.Id,EnumSet.of( Flags.AutoInvokeNextIdMethod));
-    GENERATOR_METADATA.put(Columns.Title,EnumSet.noneOf( Flags.class ));
-    GENERATOR_METADATA.put(Columns.Description,EnumSet.noneOf( Flags.class ));
-  }
   // @formatter:on
 
   ITableMetaData _metaData;
@@ -122,17 +114,17 @@ public class JobsTable implements ITable
 
     public RowBuilder_Jobs setId(Integer intValue)
     {
-      data[ 0 ] = (intValue==null?null:Long.valueOf(intValue));
+      data[0] = (intValue==null?null:Long.valueOf(intValue));
       return this;
     }
     public RowBuilder_Jobs setId(java.lang.Long value)
     {
-      data[ 0 ] = value;
+      data[0] = value;
       return this;
     }
     public RowBuilder_Jobs setIdRaw(Object value)
     {
-      data[ 0 ] = value;
+      data[0] = value;
       return this;
     }
     public RowBuilder_Jobs nextId()
@@ -148,14 +140,19 @@ public class JobsTable implements ITable
       return (java.lang.Long) data[0];
     }
 
+    public Object getIdRaw()
+    {
+      return data[0];
+    }
+
     public RowBuilder_Jobs setTitle(java.lang.String value)
     {
-      data[ 1 ] = value;
+      data[1] = value;
       return this;
     }
     public RowBuilder_Jobs setTitleRaw(Object value)
     {
-      data[ 1 ] = value;
+      data[1] = value;
       return this;
     }
 
@@ -164,20 +161,30 @@ public class JobsTable implements ITable
       return (java.lang.String) data[1];
     }
 
+    public Object getTitleRaw()
+    {
+      return data[1];
+    }
+
     public RowBuilder_Jobs setDescription(java.lang.String value)
     {
-      data[ 2 ] = value;
+      data[2] = value;
       return this;
     }
     public RowBuilder_Jobs setDescriptionRaw(Object value)
     {
-      data[ 2 ] = value;
+      data[2] = value;
       return this;
     }
 
     public java.lang.String getDescription()
     {
       return (java.lang.String) data[2];
+    }
+
+    public Object getDescriptionRaw()
+    {
+      return data[2];
     }
     /**
     * Insert a new Row at the end of the Table

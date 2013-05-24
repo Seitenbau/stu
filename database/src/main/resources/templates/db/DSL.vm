@@ -27,7 +27,7 @@ public class ${model.name}DSL
   };
 
 #foreach( $table in $model.tables )
-  ${table.javaName}Table ${table.javaVariableName}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
+  ${table.javaName}Table ${table.javaNameFirstLower}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
   
 #end
   public void tables(Closure<?> table)
@@ -82,17 +82,16 @@ public class ${model.name}DSL
 #foreach( $col in $table.columns )
 #if( $col.references && $col.references.size() != 0 )
 #set($clsRef = ${table.javaName} + "Ref")
-#set($varRef = ${table.javaVariableName} + "Ref")
-#set($varTable = ${table.javaVariableName} + "Table")
+#set($varRef = ${table.javaNameFirstLower} + "Ref")
+#set($varTable = ${table.javaNameFirstLower} + "Table")
 #set($clsRowbuilder = "RowBuilder_" + ${table.javaName})
-#set($varRowbuilder = ${table.javaVariableName})
+#set($varRowbuilder = ${table.javaNameFirstLower})
     for (${clsRef} ${varRef} : ${varTable}.getUsedRefs())
     {
-//1
 #set($refClsRef = ${col.reference.table.javaName} + "Ref")      
-#set($refVarRef = ${col.reference.table.javaVariableName} + "Ref")      
+#set($refVarRef = ${col.reference.table.javaNameFirstLower} + "Ref")      
 #set($refClsRowbuilder = "RowBuilder_" + ${col.reference.table.javaName})
-#set($refVarRowbuilder = ${col.reference.table.javaVariableName})
+#set($refVarRowbuilder = ${col.reference.table.javaNameFirstLower})
       ${clsRowbuilder} ${varRowbuilder} = ${varRef}.getBuilder(this);
       for (${refClsRef} ${refVarRef} : ${varRef}.${col.reference.localName}List.get(this))
       {
@@ -107,46 +106,43 @@ public class ${model.name}DSL
 #end
 #end
 
-
-
-
 #foreach( $referencingTable in $table.dataSet.tables )
 #foreach( $col in $referencingTable.columns )
-#set($varRef = ${table.javaVariableName} + "Ref")
+#set($varRef = ${table.javaNameFirstLower} + "Ref")
 #if( ${col.isReferencingTable($table)} )
 #set($varList = ${col.reference.remoteName} + "List")
 #set($clsRef = ${table.javaName} + "Ref")
-    for (${clsRef} ${varRef} : ${table.javaVariableName}Table.getUsedRefs())
+    for (${clsRef} ${varRef} : ${table.javaNameFirstLower}Table.getUsedRefs())
     {
-      RowBuilder_${table.javaName} ${table.javaVariableName} = ${varRef}.getBuilder(this);
+      RowBuilder_${table.javaName} ${table.javaNameFirstLower} = ${varRef}.getBuilder(this);
 #if ( ${referencingTable.isAssociativeTable()} )
-//2
+######### Associative Table ############################
 #set($reftable = ${referencingTable.getAssociatedTable($table)})
 #set($refClsRef = ${reftable.javaName} + "Ref")
-#set($refVarRef = ${reftable.javaVariableName} + "Ref")
+#set($refVarRef = ${reftable.javaNameFirstLower} + "Ref")
 #set($refClsRowbuilder = "RowBuilder_" + ${reftable.javaName})
-#set($refVarRowbuilder = ${reftable.javaVariableName})
+#set($refVarRowbuilder = ${reftable.javaNameFirstLower})
       for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
       {
         System.out.println("RELATION: Inserted Row in ${referencingTable.javaName}");
         ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this); 
-        RowBuilder_${referencingTable.javaName} row = ${referencingTable.javaVariableName}Table.getTableModel().insertRow();
+        RowBuilder_${referencingTable.javaName} row = ${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
 #foreach( $rcol in $referencingTable.columns )
-        row.set${rcol.javaName}(${rcol.reference.table.javaVariableName}.get${rcol.reference.javaName}());
+#set($currentRowBuilder = ${rcol.reference.table.javaNameFirstLower})
+        row.set${rcol.javaName}(${currentRowBuilder}.get${rcol.reference.javaName}());
 #end
       }
 #else
-//3
 #set($reftable = ${col.table})
 #set($refClsRef = ${reftable.javaName} + "Ref")
-#set($refVarRef = ${reftable.javaVariableName} + "Ref")
+#set($refVarRef = ${reftable.javaNameFirstLower} + "Ref")
 #set($refClsRowbuilder = "RowBuilder_" + ${reftable.javaName})
-#set($refVarRowbuilder = ${reftable.javaVariableName})
+#set($refVarRowbuilder = ${reftable.javaNameFirstLower})
       for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
       {
         System.out.println("RELATION: Updated Row in ${reftable.javaName}");
         ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
-        ${col.javaType} value = ${table.javaVariableName}.get${col.reference.column.javaName}();
+        ${col.javaType} value = ${table.javaNameFirstLower}.get${col.reference.column.javaName}();
         ${refVarRowbuilder}.set${col.javaName}(value);
       }
 #end
@@ -157,8 +153,26 @@ public class ${model.name}DSL
 #end
 #end
   }
-
 #end
+#end
+#foreach( $reftable in $model.tables )
+
+  void replace${reftable.javaName}RefWithId(${reftable.javaName}Ref reference, RowBuilder_${reftable.javaName} row)
+  {
+#foreach( $table in $model.tables )
+#foreach( $col in $table.columns )
+#if ($col.reference && $col.reference.table == $reftable)
+### $col in $table referes on reference
+    // Ref: ${table.javaName} on ${col.javaName}
+    for (${table.javaName}Ref ${table.javaNameFirstLower}Ref : ${table.javaNameFirstLower}Table.getUsedRefs()) {
+      RowBuilder_${table.javaName} builder = ${table.javaNameFirstLower}Ref.getBuilder(this);
+      builder.set${col.javaName}(row.get${col.reference.column.javaName}());
+    }
+    
+#end
+#end
+#end  
+  }
 #end
 
   public IDataSet createDataSet() 

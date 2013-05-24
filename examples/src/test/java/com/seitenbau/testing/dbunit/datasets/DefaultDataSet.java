@@ -1,7 +1,7 @@
 package com.seitenbau.testing.dbunit.datasets;
 
-import com.seitenbau.testing.dbunit.model.JobsTable.RowGetters_Jobs;
-import com.seitenbau.testing.dbunit.model.TeamsTable.RowGetters_Teams;
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
 
 public class DefaultDataSet extends EmptyDataSet
 {

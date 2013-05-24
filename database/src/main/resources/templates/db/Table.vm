@@ -33,7 +33,6 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
-import com.seitenbau.testing.dbunit.generator.Flags;
 import com.seitenbau.testing.util.date.DateBuilder;
 
 #foreach( $otab in $model.dataSet.tables )
@@ -69,20 +68,6 @@ public class ${tableClass} implements ITable
 #end
   };
 
-  static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
-  static {
-    GENERATOR_METADATA = new HashMap<String, EnumSet<Flags>>();
-#foreach( $column in $model.columns )
-#if( ${column.flags.size()} > 0 )
-    GENERATOR_METADATA.put(Columns.${column.javaName},EnumSet.of(#foreach( $flag in $column.flags )
- Flags.${flag}#if(!$foreach.isLast()),#end
-#end
-));
-#else
-    GENERATOR_METADATA.put(Columns.${column.javaName},EnumSet.noneOf( Flags.class ));
-#end
-#end
-  }
   // @formatter:on
 
   ITableMetaData _metaData;
@@ -120,7 +105,7 @@ public class ${tableClass} implements ITable
 #end
     T set${column.javaName}(${column.javaType} value);
     T set${column.javaName}Raw(Object value);
-#if( $column.isIdGeneration() )
+#if( $column.isNextIdMethodGenerated() )
     T next${column.javaName}();
 #end
 #end 
@@ -152,33 +137,33 @@ public class ${tableClass} implements ITable
 #if( $column.javaType.contains("Date") )
     public ${rowbuilder} set${column.javaName}(String dateString)
     {
-      data[ $foreach.index ] = toDate(dateString);
+      data[${foreach.index}] = toDate(dateString);
       return this;
     }
     public ${rowbuilder} set${column.javaName}(DateBuilder datum)
     {
-      data[ $foreach.index ] = toDate(datum);
+      data[${foreach.index}] = toDate(datum);
       return this;
     }
 #end
 #if( $column.javaType.contains("Long") )
     public ${rowbuilder} set${column.javaName}(Integer intValue)
     {
-      data[ $foreach.index ] = (intValue==null?null:Long.valueOf(intValue));
+      data[${foreach.index}] = (intValue==null?null:Long.valueOf(intValue));
       return this;
     }
 #end
     public ${rowbuilder} set${column.javaName}(${column.javaType} value)
     {
-      data[ $foreach.index ] = value;
+      data[${foreach.index}] = value;
       return this;
     }
     public ${rowbuilder} set${column.javaName}Raw(Object value)
     {
-      data[ $foreach.index ] = value;
+      data[${foreach.index}] = value;
       return this;
     }
-#if( $column.isIdGeneration() )
+#if( $column.isNextIdMethodGenerated() )
     public ${rowbuilder} next${column.javaName}()
     {
       DatasetIdGenerator generator = table.getDataset().getIdGenerator();
@@ -193,9 +178,9 @@ public class ${tableClass} implements ITable
       return (${column.javaType}) data[$foreach.index];
     }
 
-    public Object get${column.javaName}Raw(Object value)
+    public Object get${column.javaName}Raw()
     {
-      return data[ $foreach.index ];
+      return data[$foreach.index];
     }
 #end 
     /**
@@ -264,12 +249,12 @@ public class ${tableClass} implements ITable
     }
     
 #foreach( $column in $model.columns )
-#foreach( $ref in $column.references )
-#set($otherGetter  = "RowGetters_" + ${ref.table.javaName} )
+#if( $column.reference )
+#set($otherGetter  = "RowGetters_" + ${column.reference.table.javaName} )
 
     public ${rowbuilder} ref${column.javaName}($otherGetter reference)
     {
-      set${column.javaName}(reference.get${ref.javaName}());
+      set${column.javaName}(reference.get${column.reference.javaName}());
       return this;
     }
 #end

@@ -49,12 +49,13 @@ public class TableRowModel {
 		return -1;
 	}
 
-	public int getIdColumn() {
+	public int getIdentifierColumn() {
 		int index = 0;
 		for (Object o : values) {
 			ColumnBinding<?, ?> column = (ColumnBinding<?, ?>) o;
-			if (column.isIdColumn())
+			if (column.isIdentifierColumn()) {
 				return index;
+			}
 			index++;
 		}
 		return -1;

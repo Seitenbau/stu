@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.model;
+package com.seitenbau.testing.dbunit.demomodel;
 
 import java.util.Date;
 import com.seitenbau.testing.util.DateUtil;

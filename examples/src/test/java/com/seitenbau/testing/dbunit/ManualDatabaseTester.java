@@ -22,9 +22,9 @@ import com.seitenbau.testing.dbunit.dao.Person;
 import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.EmptyDataSet;
-import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
-import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
-import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.services.PersonService;
 

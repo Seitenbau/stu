@@ -64,7 +64,7 @@ public class $tableClass
   {
     return ${column.getJavaNameFirstLower()};
   }
-#if( $column.isIdGeneration() )
+#if( $column.isNextIdMethodGenerated() )
   public $tableClass next${column.javaName}()
   {
     Long nextId = _generator.nextId("${model.name}","$column.name");

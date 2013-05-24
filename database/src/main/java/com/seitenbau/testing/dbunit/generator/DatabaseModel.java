@@ -54,21 +54,6 @@ public abstract class DatabaseModel
     getDataSetGenInstance().catchException(exception);
   }
 
-  public Table addTable(String name, String javaName)
-  {
-    return getDataSetGenInstance().addTable(name, javaName);
-  }
-
-  public Table addTable(String name)
-  {
-    return getDataSetGenInstance().addTable(name);
-  }
-  
-  public void addTable(Table table) 
-  {
-    getDataSetGenInstance().addTable(table);
-  }
-  
   public TableBuilder table(String name) {
     final TableBuilder result = new TableBuilder(name);
     getDataSetGenInstance().addTable(result.build());

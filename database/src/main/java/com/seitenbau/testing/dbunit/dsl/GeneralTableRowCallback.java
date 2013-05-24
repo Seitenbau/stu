@@ -27,61 +27,56 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
   R getRowBuilder(TableRowModel row)
   {
     R result = null;
-    R builderById = null;
-    R builderByRef = null;
-
-    if (_colId != -1)
-    {
-      @SuppressWarnings("unchecked")
-      ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
-      try
-      {
-        Object id = CastUtil.cast(row.getValue(_colId), column.getDataType());
-        builderById = column.query(_tableAdapter.getFindWhere(), id);
-      }
-      catch (Exception e)
-      {
-      }
-    }
-
+    boolean isNewRef = false;
+    Object id = null;
+    
+    // get builder by reference (if available)
     if (_colRef != -1)
     {
       @SuppressWarnings("unchecked")
       D ref = (D)row.getValue(_colRef);
-      builderByRef = _tableAdapter.getRowByReference(ref);
-    }
-
-    if (builderByRef != null || builderById != null)
-    {
-      if (builderByRef == builderById)
-      {
-        result = builderByRef;
-      }
-      else if (builderByRef == null)
-      {
-        result = builderById;
-      }
-      else if (builderById == null)
-      {
-        result = builderByRef;
-      }
-      else
-      {
-        // ERROR
-        result = builderByRef;
-      }
-    }
-    else
-    {
-      result = _tableAdapter.insertRow();
+      result = _tableAdapter.getRowByReference(ref);
+      isNewRef = (result == null);
     }
 
     if (_colId != -1)
     {
       @SuppressWarnings("unchecked")
       ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
-      Object value = CastUtil.cast(row.getValue(_colId), column.getDataType());
-      column.set(result, value);
+      id = row.getValue(_colId);
+      
+      R builderById = null;
+      // TODO NM use getWhere instead of findWhere
+      try
+      {
+        builderById = column.query(_tableAdapter.getFindWhere(), CastUtil.cast(id, column.getDataType()));
+      }
+      catch (Exception e)
+      {
+      }
+      if (result != null && builderById != null && builderById != result) {
+        throw new RuntimeException("Table structure failure");
+      }
+      if (builderById != null) {
+        result = builderById;
+      }
+    }
+    
+    if (result == null)
+    {
+      result = _tableAdapter.insertRow();
+    }
+
+    if (isNewRef) {
+      @SuppressWarnings("unchecked")
+      D ref = (D)row.getValue(_colRef);
+      if (id != null) {
+        // Set manual given ID
+        @SuppressWarnings("unchecked")
+        ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
+        column.set(result, id);
+      } 
+      _tableAdapter.handleReferences(ref, result);
     }
     return result;
   }
@@ -93,7 +88,7 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
     {
       _head = row;
       _colRef = _head.getRefColumn();
-      _colId = _head.getIdColumn();
+      _colId = _head.getIdentifierColumn();
       _columns = _head.getColumnCount();
       return;
     }
@@ -114,7 +109,8 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       Object value = row.getValue(columnIndex);
       if (value instanceof DatabaseReference) {
         // TODO 
-        System.out.println("DATABASE REFERENCE");
+        DatabaseReference ref = (DatabaseReference)value;
+        column.setReference(rowbuilder, ref);
       } else {
         column.set(rowbuilder, value);
       }
@@ -131,11 +127,6 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
   private void throwColumnsDoNotMatchException(int lineNr, TableRowModel row)
   {
     throwException("column count does not match", lineNr, row);
-  }
-
-  private void throwRedefinedIdException(int lineNr, TableRowModel row)
-  {
-    throwException("Id redefined", lineNr, row);
   }
 
   private void throwException(String message, int lineNr, TableRowModel row)

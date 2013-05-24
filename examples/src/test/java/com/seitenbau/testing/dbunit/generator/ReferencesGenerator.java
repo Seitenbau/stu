@@ -36,12 +36,8 @@ public class ReferencesGenerator {
           .column("name", DataType.VARCHAR) //
           .column("job_id", DataType.BIGINT) //
             .references(jobs.ref("id")) //
-              .local("worksAs") //
-              .remote("isJobOf")
           .column("team_id", DataType.BIGINT) //
             .references(teams.ref("id")) //
-              .local("worksIn") //
-              .remote("hasMember") //
         .build(); //s
 
     db.generate();

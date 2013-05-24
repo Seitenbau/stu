@@ -39,80 +39,12 @@ public class Table
     return _name;
   }
 
-  public void addColumn(Column column)
+  void addColumn(Column column)
   {
     _columns.add(column);
   }
-  
-  public Table addColumn(String dbColName, String type, String javaType)
-  {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] {}, new Flags[] {}));
-    return this;
-  }
 
-  public Table addColumn(String dbColName, String javaName, String type, String javaType)
-  {
-    _columns.add(new Column(this, dbColName, javaName, type, javaType, new Reference[] {}, new Flags[] {}));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, String type, String javaType, Flags... flags)
-  {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] {}, flags));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, String type, String javaType, Column reference, Flags... flags)
-  {
-    final Reference ref = new Reference(reference, null, null, null, null);
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] { ref }, flags));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, DataType type, Column reference, Flags... flags)
-  {
-    final Reference ref = new Reference(reference, null, null, null, null);
-    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Reference[] { ref },
-        flags));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, DataType type)
-  {
-    return addColumn(dbColName, type.getDataType(), type.getJavaType());
-  }
-
-  public Table addColumn(String dbColName, String javaName, DataType type)
-  {
-    return addColumn(dbColName, javaName, type.getDataType(), type.getJavaType());
-  }
-
-  /** use Flag.AutoIncrement instead of boolean */
-  @Deprecated
-  // use Flag.AutoIncrement instead of boolean
-  public Table addColumn(String dbColName, DataType type, boolean auto)
-  {
-    if (auto)
-    {
-      return addColumn(dbColName, type, Flags.AutoIncrement);
-    }
-    else
-    {
-      return addColumn(dbColName, type);
-    }
-  }
-
-  public Table addColumn(String dbColName, DataType type, Flags... flags)
-  {
-    return addColumn(dbColName, type.getDataType(), type.getJavaType(), flags);
-  }
-
-  public Table addColumn(String name, DataType type, Class<?> javaType)
-  {
-    return addColumn(name, type.getDataType(), javaType.getCanonicalName());
-  }
-
-  public void setParent(DataSet dataSet)
+  void setParent(DataSet dataSet)
   {
     _dataSet = dataSet;
   }
@@ -126,13 +58,9 @@ public class Table
     return DataSet.makeNiceJavaName(_name);
   }
   
-  public String getJavaVariableName()
+  public String getJavaNameFirstLower()
   {
-    if (_javaName != null)
-    {
-      return CamelCase.makeFirstLowerCase(_javaName);
-    }
-    return CamelCase.makeFirstLowerCase(DataSet.makeNiceJavaName(_name));
+    return CamelCase.makeFirstLowerCase(getJavaName());
   }
 
   public DataSet getDataSet()
@@ -162,16 +90,16 @@ public class Table
     throw new RuntimeException("No column " + colName);
   }
 
-  public Column getIdColumn()
+  public Column getIdentifierColumn()
   {
     for (Column col : getColumns())
     {
-      if (col.isIdentifier())
+      if (col.isIdentifierColumn())
       {
         return col;
       }
     }
-    throw new RuntimeException("No ID column");
+    throw new RuntimeException("No Identifier column");
   }
 
   public boolean isAssociativeTable()
@@ -182,7 +110,7 @@ public class Table
     }
     for (Column col : getColumns())
     {
-      if (col.getReferences().size() == 0)
+      if (col.getReference() == null)
       {
         return false;
       }
@@ -195,13 +123,15 @@ public class Table
   {
     for (Column col : getColumns())
     {
-      for (Reference reference : col.getReferences()) {
-        if (reference.getColumn().getTable() == table) {
-          continue;
-        }
-        
-        return reference.getColumn().getTable();
+      final Reference reference = col.getReference();
+      if (reference == null) {
+        continue;
       }
+      if (reference.getColumn().getTable() == table) {
+        continue;
+      }
+      
+      return reference.getColumn().getTable();
     }
     
     return null;

@@ -4,13 +4,10 @@ import com.seitenbau.testing.dbunit.generator.Table;
 
 public class TableBuilder
 {
-  private final String name;
-
   private Table table;
 
   public TableBuilder(String name)
   {
-    this.name = name;
     this.table = new Table(name);
   }
 

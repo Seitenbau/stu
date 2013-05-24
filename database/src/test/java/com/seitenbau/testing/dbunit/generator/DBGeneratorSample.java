@@ -12,7 +12,7 @@ public class DBGeneratorSample
       }
     };
 
-    db.addTable("Users").addColumn("ID", DataType.INTEGER).addColumn("Name", DataType.VARCHAR);
+    db.table("Users").column("ID", DataType.INTEGER).column("Name", DataType.VARCHAR);
 
     db.generate();
   }
