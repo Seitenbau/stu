@@ -192,6 +192,11 @@ public class ${tableClass} implements ITable
     {
       return (${column.javaType}) data[$foreach.index];
     }
+
+    public Object get${column.javaName}Raw(Object value)
+    {
+      return data[ $foreach.index ];
+    }
 #end 
     /**
     * Insert a new Row at the end of the Table

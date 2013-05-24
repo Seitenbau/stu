@@ -4,6 +4,9 @@
 #else
 #set($package  = "dsl" )
 #end
+#set($clsScope = ${model.dataSet.name} + "DSL")
+#set($clsRef = ${model.javaName} + "Ref")
+#set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
 package ${package};
 
 #set($utilImportsNeeded  = false )
@@ -30,20 +33,32 @@ import java.util.Map;
 import java.util.HashMap;
 #end
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
+import ${model.package}.${model.javaName}Table.${clsRowbuilder};
 
-public class ${model.javaName}Ref extends DatabaseReference {
+public class ${clsRef} extends DatabaseReference {
 
-  private final Map<${model.dataSet.name}DSL, RowBuilder_${model.javaName}> builders;
+  private final Map<${clsScope}, ${clsRowbuilder}> builders;
   
-  public ${model.javaName}Ref()
+  public ${clsRef}()
   {
-    builders = new HashMap<${model.dataSet.name}DSL, RowBuilder_${model.javaName}>();
+    builders = new HashMap<${clsScope}, ${clsRowbuilder}>();
   }
   
-  void setBuilder(${model.dataSet.name}DSL scope, RowBuilder_${model.javaName} builder)
+  private static final ThreadLocal<${clsScope}> threadScope = new ThreadLocal<${clsScope}>();
+  
+  static void setThreadLocalScope(${clsScope} scope) 
   {
-    RowBuilder_${model.javaName} lastBuilder = builders.put(scope, builder);
+    threadScope.set(scope);    
+  }
+  
+  static void unsetThreadLocalScope() 
+  {
+    threadScope.remove();
+  }
+  
+  void setBuilder(${clsScope} scope, ${clsRowbuilder} builder)
+  {
+    ${clsRowbuilder} lastBuilder = builders.put(scope, builder);
     if (lastBuilder != null && lastBuilder != builder) {
       throw new RuntimeException("Builder cannot be redefined");
     }
@@ -52,19 +67,23 @@ public class ${model.javaName}Ref extends DatabaseReference {
     }
   }
   
-  RowBuilder_${model.javaName} getBuilder(${model.dataSet.name}DSL scope)
+  ${clsRowbuilder} getBuilder(${clsScope} scope)
   {
     return builders.get(scope);
   }
-
+  
 #if ( !${model.isAssociativeTable()} )
 #foreach( $col in $model.columns )
 #if( $col.references && $col.references.size() != 0 )
-  List<${col.reference.table.javaName}Ref> ${col.reference.localName}List = new LinkedList<${col.reference.table.javaName}Ref>();
+#set($methodName = ${col.reference.localName})
+#set($listName = ${methodName} + "List")
+#set($refRef = ${col.reference.table.javaName} + "Ref" )
+  Map<${clsScope}, List<${refRef}>> ${listName} = new HashMap<${clsScope}, List<${refRef}>>();
 
   // depending on relation type with or without ellipse (...)
-  void ${col.reference.localName}(${col.reference.table.javaName}Ref ... refs) {
-    ${col.reference.localName}List.addAll(Arrays.asList(refs));
+  void ${methodName}(${refRef} ... refs) {
+    final List<${refRef}> list = getOrCreateList(${listName});
+    list.addAll(Arrays.asList(refs));
   }
 
 #end
@@ -72,21 +91,39 @@ public class ${model.javaName}Ref extends DatabaseReference {
 #foreach( $referencingTable in $model.dataSet.tables )
 #foreach( $col in $referencingTable.columns )
 #if( ${col.isReferencingTable($model)} )
-  // depending on relation type with or with ellipse (...)
 #if ( ${referencingTable.isAssociativeTable()} )
-#set( $reftype = ${referencingTable.getAssociatedTable($model).javaName} )
+#set( $refRef = ${referencingTable.getAssociatedTable($model).javaName} + "Ref" )
 #else
-#set( $reftype = ${col.table.javaName} )
+#set( $refRef = ${col.table.javaName} + "Ref" )
 #end
-  List<${reftype}Ref> ${col.reference.remoteName}List = new LinkedList<${reftype}Ref>();
+#set($methodName = ${col.reference.remoteName})
+#set($listName = ${methodName} + "List")
+  Map<${clsScope}, List<${refRef}>> $listName = new HashMap<${clsScope}, List<${refRef}>>();
 
-  void ${col.reference.remoteName}(${reftype}Ref ... refs) {
-    ${col.reference.remoteName}List.addAll(Arrays.asList(refs));
+  // depending on relation type with or with ellipse (...)
+  void ${methodName}(${refRef} ... refs) {
+    final List<${refRef}> list = getOrCreateList(${listName});
+    list.addAll(Arrays.asList(refs));
   }
 
 #end
 #end
 #end
 #end
+
+  private <T> List<T> getOrCreateList(Map<${clsScope}, List<T>> map) 
+  {
+    final ${clsScope} scope = threadScope.get();
+    if (scope == null) {
+      throw new RuntimeException("Cannot build reference out of a scope");
+    }
+    List<T> result = map.get(scope);
+    if (result == null) 
+    {
+      result = new LinkedList<T>();
+      map.put(scope, result);
+    }
+    return result;
+  }
 }
 

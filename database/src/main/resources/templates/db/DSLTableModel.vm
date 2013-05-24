@@ -4,6 +4,12 @@
 #else
 #set($package  = "dsl" )
 #end
+#set($clsScope = ${model.dataSet.name} + "DSL")
+#set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
+#set($clsWhere = ${model.javaName} + "Where")
+#set($clsRef = ${model.javaName} + "Ref")
+#set($clsTable = ${model.javaName} + "Table")
+#set($clsBinding = ${model.javaName} + "TableBinding")
 package ${package};
 
 import groovy.lang.Closure;
@@ -14,9 +20,9 @@ import java.util.Set;
 ###if( $model.package && $model.package.length() != 0 )
 ##import ${model.package}.${model.dataSet.name}DataSet;
 ###end
-import ${model.package}.${model.javaName}Table.${model.javaName}Where;
-import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
-##import ${model.package}.${model.javaName}Table.RowCollection_${model.javaName};
+import ${model.package}.$clsTable.${clsWhere};
+import ${model.package}.$clsTable.${clsRowbuilder};
+##import ${model.package}.$clsTable.RowCollection_${model.javaName};
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
@@ -24,39 +30,39 @@ import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 
 #set($table = $model)
 
-public class ${model.javaName}Table {
+public class $clsTable {
 
-  public ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = ${model.javaName}TableBinding.REF;
+  public ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = ${clsBinding}.REF;
 
 #foreach( $col in $model.columns )
-  ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${col.name} = ${model.javaName}TableBinding.${col.name};
+  ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = ${clsBinding}.${col.name};
 
 ## check if column is an identifier
 #if ( ${col.isIdTruncable()} )
 #set( $shortname  = $col.getNameWithoutId() )
-  public ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${shortname} = ${model.javaName}TableBinding.${col.name};
+  public ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${shortname} = ${clsBinding}.${col.name};
 
 #end
 #end
-  private final ${model.dataSet.name}DSL _scope;
+  private final ${clsScope} _scope;
 
-  private final ${model.package}.${model.javaName}Table _table;
+  private final ${model.package}.$clsTable _table;
 
-  private final Set<${model.javaName}Ref> _usedRefs;
+  private final Set<${clsRef}> _usedRefs;
 
-  private final ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref> _adapter = new ITableAdapter<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref>()
+  private final ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}> _adapter = new ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}>()
   {
-    public RowBuilder_${model.javaName} insertRow() 
+    public ${clsRowbuilder} insertRow() 
     {
       return _table.insertRow();
     }
 	  
-    public ${model.javaName}Where getFindWhere()
+    public ${clsWhere} getFindWhere()
     {
       return _table.findWhere;
     }
     
-	public void referenceUsed(${model.javaName}Ref reference, RowBuilder_${model.javaName} row)
+	public void referenceUsed(${clsRef} reference, ${clsRowbuilder} row)
 	{
 	  if (row != null) {
         reference.setBuilder(_scope, row);
@@ -64,7 +70,7 @@ public class ${model.javaName}Table {
 	  }
 	}
 
-	public RowBuilder_${model.javaName} getRowByReference(${model.javaName}Ref reference)
+	public ${clsRowbuilder} getRowByReference(${clsRef} reference)
 	{
 	  return reference.getBuilder(_scope);
 	}
@@ -74,26 +80,26 @@ public class ${model.javaName}Table {
     }
   };
     
-  ${model.javaName}Table(${model.dataSet.name}DSL scope, ${model.package}.${model.javaName}Table table)
+  $clsTable(${clsScope} scope, ${model.package}.$clsTable table)
   {
     _scope = scope;
     _table = table;
-    _usedRefs = new HashSet<${model.javaName}Ref>();
+    _usedRefs = new HashSet<${clsRef}>();
   }
   
-  Set<${model.javaName}Ref> getUsedRefs()
+  Set<${clsRef}> getUsedRefs()
   {
     return _usedRefs;
   }
   
-  ${model.package}.${model.javaName}Table getTableModel()
+  ${model.package}.$clsTable getTableModel()
   {
     return _table;
   }
   
   public void rows(Closure<?> rows) {
-    GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref> callback = 
-        new GeneralTableRowCallback<RowBuilder_${model.javaName}, ${model.javaName}Where, ${model.javaName}Ref>(_adapter);
+    GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}> callback = 
+        new GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
 }

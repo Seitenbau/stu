@@ -4,6 +4,10 @@
 #else
 #set($package  = "dsl" )
 #end
+#set($clsBinding = ${model.javaName} + "TableBinding")
+#set($clsTable = ${model.javaName} + "Table")
+#set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
+#set($clsWhere = ${model.javaName} + "Where")
 package ${package};
 
 #set($hasIdentifier = false )
@@ -18,8 +22,8 @@ import java.util.HashSet;
 import java.util.Set;
 #end
 
-import ${model.package}.${model.javaName}Table.${model.javaName}Where;
-import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
+import ${model.package}.${clsTable}.${clsWhere};
+import ${model.package}.${clsTable}.${clsRowbuilder};
 #if( $hasIdentifier )
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
@@ -29,17 +33,17 @@ import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 import com.seitenbau.testing.dbunit.generator.DataType;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 
-public class ${model.javaName}TableBinding {
+public class $clsBinding {
 
   private static boolean valueMustBeSetRaw(Object value)
   {
     return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
   }
 
-  public static final ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> REF = new ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where>() 
+  public static final ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = new ColumnBinding<${clsRowbuilder}, ${clsWhere}>() 
   {
     @Override
-    public void set(RowBuilder_${model.javaName} row, Object value)
+    public void set(${clsRowbuilder} row, Object value)
     {
       // TODO NM think about it :-)
       // Setting reference does not make sense on REF column...
@@ -57,10 +61,10 @@ public class ${model.javaName}TableBinding {
   };
 
 #foreach( $col in $model.columns )
-  public static final ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where> ${col.name} = new ColumnBinding<RowBuilder_${model.javaName}, ${model.javaName}Where>() 
+  public static final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = new ColumnBinding<${clsRowbuilder}, ${clsWhere}>() 
   {
     @Override
-    public void set(RowBuilder_${model.javaName} row, Object value)
+    public void set(${clsRowbuilder} row, Object value)
     {
 #if ( ${col.isIdentifier()} )
       if (definedIdsSet.contains(row) && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
@@ -78,7 +82,7 @@ public class ${model.javaName}TableBinding {
 #if ( ${col.isIdentifier()} )
 
     @Override
-    public RowBuilder_${model.javaName} query(${model.javaName}Where findWhere, Object value) {
+    public ${clsRowbuilder} query(${clsWhere} findWhere, Object value) {
       return findWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
     }
 
@@ -87,7 +91,7 @@ public class ${model.javaName}TableBinding {
       return true;
     }
     
-    private Set<RowBuilder_${model.javaName}> definedIdsSet = new HashSet<RowBuilder_${model.javaName}>();
+    private Set<${clsRowbuilder}> definedIdsSet = new HashSet<${clsRowbuilder}>();
 #end
 
     public DataType getDataType() {

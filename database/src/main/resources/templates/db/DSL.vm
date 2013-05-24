@@ -35,11 +35,21 @@ public class ${model.name}DSL {
   }
   
   public void relations(Closure<?> relations) {
+#foreach( $table in $model.tables )
+#if ( !${table.isAssociativeTable()} )
+    ${table.javaName}Ref.setThreadLocalScope(this);
+#end
+#end
     relations.call();
     
 #foreach( $table in $model.tables )
 #if ( !${table.isAssociativeTable()} )
     updateRelations${table.javaName}Ref();
+#end
+#end
+#foreach( $table in $model.tables )
+#if ( !${table.isAssociativeTable()} )
+    ${table.javaName}Ref.unsetThreadLocalScope();
 #end
 #end
   }
@@ -52,7 +62,7 @@ public class ${model.name}DSL {
     for (${table.javaName}Ref ${table.javaVariableName}Ref : ${table.javaVariableName}Table.getUsedRefs())
     {
       RowBuilder_${table.javaName} ${table.javaVariableName} = ${table.javaVariableName}Ref.getBuilder(this);
-      for (${col.reference.table.javaName}Ref ${col.reference.table.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.localName}List)
+      for (${col.reference.table.javaName}Ref ${col.reference.table.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.localName}List.get(this))
       {
         System.out.println("RELATION: Updated Row in ${table.javaName}");
         RowBuilder_${col.reference.table.javaName} ${col.reference.table.javaVariableName} = ${col.reference.table.javaVariableName}Ref.getBuilder(this);
@@ -72,7 +82,7 @@ public class ${model.name}DSL {
       RowBuilder_${table.javaName} ${table.javaVariableName} = ${table.javaVariableName}Ref.getBuilder(this);
 #if ( ${referencingTable.isAssociativeTable()} )
 #set( $reftable = ${referencingTable.getAssociatedTable($table)} )
-      for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List)
+      for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List.get(this))
       {
         System.out.println("RELATION: Inserted Row in ${referencingTable.javaName}");
         RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Ref.getBuilder(this); 
@@ -85,7 +95,7 @@ public class ${model.name}DSL {
       ${table.javaVariableName}Ref.${col.reference.remoteName}List.clear();
 #else
 #set( $reftable = ${col.table} )
-      for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List)
+      for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List.get(this))
       {
         System.out.println("RELATION: Updated Row in ${reftable.javaName}");
         RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Ref.getBuilder(this);
