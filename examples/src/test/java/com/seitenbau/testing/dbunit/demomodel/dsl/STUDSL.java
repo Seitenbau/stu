@@ -6,6 +6,12 @@ import com.seitenbau.testing.dbunit.demomodel.STUDataSet;
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
+import com.seitenbau.testing.dbunit.demomodel.dsl.JobsRef;
+import com.seitenbau.testing.dbunit.demomodel.dsl.JobsTable;
+import com.seitenbau.testing.dbunit.demomodel.dsl.PersonsRef;
+import com.seitenbau.testing.dbunit.demomodel.dsl.PersonsTable;
+import com.seitenbau.testing.dbunit.demomodel.dsl.TeamsRef;
+import com.seitenbau.testing.dbunit.demomodel.dsl.TeamsTable;
 
 import groovy.lang.Closure;
 
@@ -67,12 +73,15 @@ public class STUDSL
     for (JobsRef jobsRef : jobsTable.getUsedRefs())
     {
       RowBuilder_Jobs jobs = jobsRef.getBuilder(this);
-      for (PersonsRef personsRef : jobsRef.personsToList.get(this))
+      if (jobsRef.personsToList.get(this) != null)
       {
-        System.out.println("RELATION: Updated Row in Persons");
-        RowBuilder_Persons persons = personsRef.getBuilder(this);
-        java.lang.Long value = jobs.getId();
-        persons.setJobId(value);
+        for (PersonsRef personsRef : jobsRef.personsToList.get(this))
+        {
+          System.out.println("RELATION: Updated Row in Persons");
+          RowBuilder_Persons persons = personsRef.getBuilder(this);
+          java.lang.Long value = jobs.getId();
+          persons.setJobId(value);
+        }
       }
 
       jobsRef.personsToList.clear(); 
@@ -85,12 +94,15 @@ public class STUDSL
     for (TeamsRef teamsRef : teamsTable.getUsedRefs())
     {
       RowBuilder_Teams teams = teamsRef.getBuilder(this);
-      for (PersonsRef personsRef : teamsRef.personsToList.get(this))
+      if (teamsRef.personsToList.get(this) != null)
       {
-        System.out.println("RELATION: Updated Row in Persons");
-        RowBuilder_Persons persons = personsRef.getBuilder(this);
-        java.lang.Long value = teams.getId();
-        persons.setTeamId(value);
+        for (PersonsRef personsRef : teamsRef.personsToList.get(this))
+        {
+          System.out.println("RELATION: Updated Row in Persons");
+          RowBuilder_Persons persons = personsRef.getBuilder(this);
+          java.lang.Long value = teams.getId();
+          persons.setTeamId(value);
+        }
       }
 
       teamsRef.personsToList.clear(); 

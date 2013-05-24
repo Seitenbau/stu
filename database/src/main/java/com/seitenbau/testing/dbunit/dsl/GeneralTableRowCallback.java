@@ -54,8 +54,9 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       catch (Exception e)
       {
       }
-      if (result != null && builderById != null && builderById != result) {
-        throw new RuntimeException("Table structure failure");
+      //System.out.println("RESULT " + result + " BUILDER " + builderById);
+      if (result != null && builderById != result) {
+        throw new RuntimeException("Table structure failure [Possibly trial of ID redefinition]");
       }
       if (builderById != null) {
         result = builderById;
