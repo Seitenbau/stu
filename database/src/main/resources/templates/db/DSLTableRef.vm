@@ -27,11 +27,12 @@ package ${package};
 
 #if ( $utilImportsNeeded )
 import java.util.Arrays;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.HashMap;
 #end
+#if ( !${model.isAssociativeTable()} )
+import java.util.List;
+#end
+import java.util.HashMap;
+import java.util.Map;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 import ${model.package}.${model.javaName}Table.${clsRowbuilder};
 
@@ -72,20 +73,24 @@ public class ${clsRef} extends DatabaseReference {
     return builders.get(scope);
   }
   
-#if ( !${model.isAssociativeTable()} )
-#foreach( $col in $model.columns )
-#if( $col.references && $col.references.size() != 0 )
-#set($methodName = ${col.reference.localName})
-#set($listName = ${methodName} + "List")
-#set($refRef = ${col.reference.table.javaName} + "Ref" )
+#macro( addReference $verb $refRef )
+#set($methodName = $verb)
+#set($listName = ${verb} + "List")
   Map<${clsScope}, List<${refRef}>> ${listName} = new HashMap<${clsScope}, List<${refRef}>>();
 
   // depending on relation type with or without ellipse (...)
   void ${methodName}(${refRef} ... refs) {
-    final List<${refRef}> list = getOrCreateList(${listName});
+    final List<${refRef}> list = getOrCreateList(${listName}, threadScope);
     list.addAll(Arrays.asList(refs));
   }
 
+#end  
+#if ( !${model.isAssociativeTable()} )
+#foreach( $col in $model.columns )
+#if( $col.references && $col.references.size() != 0 )
+#set($verb = ${col.reference.localName})
+#set($refRef = ${col.reference.table.javaName} + "Ref" )
+#addReference( $verb $refRef )
 #end
 #end
 #foreach( $referencingTable in $model.dataSet.tables )
@@ -96,34 +101,12 @@ public class ${clsRef} extends DatabaseReference {
 #else
 #set( $refRef = ${col.table.javaName} + "Ref" )
 #end
-#set($methodName = ${col.reference.remoteName})
-#set($listName = ${methodName} + "List")
-  Map<${clsScope}, List<${refRef}>> $listName = new HashMap<${clsScope}, List<${refRef}>>();
-
-  // depending on relation type with or with ellipse (...)
-  void ${methodName}(${refRef} ... refs) {
-    final List<${refRef}> list = getOrCreateList(${listName});
-    list.addAll(Arrays.asList(refs));
-  }
-
+#set($verb = ${col.reference.remoteName})
+#addReference( $verb $refRef )
 #end
 #end
 #end
 #end
 
-  private <T> List<T> getOrCreateList(Map<${clsScope}, List<T>> map) 
-  {
-    final ${clsScope} scope = threadScope.get();
-    if (scope == null) {
-      throw new RuntimeException("Cannot build reference out of a scope");
-    }
-    List<T> result = map.get(scope);
-    if (result == null) 
-    {
-      result = new LinkedList<T>();
-      map.put(scope, result);
-    }
-    return result;
-  }
 }
 

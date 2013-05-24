@@ -17,94 +17,141 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 
 import groovy.lang.Closure;
 
-public class ${model.name}DSL {
+public class ${model.name}DSL 
+{
 
-  ${model.name}DataSet dataset = new ${model.name}DataSet() {
-      @Override
-      public void initDataSet() { }
-    };
+  ${model.name}DataSet dataset = new ${model.name}DataSet() 
+  {
+    @Override
+    public void initDataSet() { }
+  };
 
 #foreach( $table in $model.tables )
   ${table.javaName}Table ${table.javaVariableName}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
   
 #end
-  public void tables(Closure<?> table) {
+  public void tables(Closure<?> table)
+  {
     table.setDelegate(this);
     table.setResolveStrategy(Closure.DELEGATE_FIRST);
     table.call();
   }
   
-  public void relations(Closure<?> relations) {
+  public void relations(Closure<?> relations)
+  {
+    setReferencesContext();
+    relations.call();
+    resolveRelations();
+    unsetReferencesContext();
+  }
+  
+  private void setReferencesContext()
+  {
 #foreach( $table in $model.tables )
 #if ( !${table.isAssociativeTable()} )
     ${table.javaName}Ref.setThreadLocalScope(this);
 #end
 #end
-    relations.call();
-    
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-    updateRelations${table.javaName}Ref();
-#end
-#end
+  }
+  
+  private void unsetReferencesContext()
+  {
 #foreach( $table in $model.tables )
 #if ( !${table.isAssociativeTable()} )
     ${table.javaName}Ref.unsetThreadLocalScope();
 #end
 #end
   }
+
+  private void resolveRelations()
+  {
+#foreach( $table in $model.tables )
+#if ( !${table.isAssociativeTable()} )
+    updateRelations${table.javaName}Ref();
+#end
+#end
+  }
  
 #foreach( $table in $model.tables )
 #if ( !${table.isAssociativeTable()} )
-  private void updateRelations${table.javaName}Ref() {
+  private void updateRelations${table.javaName}Ref()
+  {
+#macro( addReference $verb $refRef )
+#end  
+  
 #foreach( $col in $table.columns )
 #if( $col.references && $col.references.size() != 0 )
-    for (${table.javaName}Ref ${table.javaVariableName}Ref : ${table.javaVariableName}Table.getUsedRefs())
+#set($clsRef = ${table.javaName} + "Ref")
+#set($varRef = ${table.javaVariableName} + "Ref")
+#set($varTable = ${table.javaVariableName} + "Table")
+#set($clsRowbuilder = "RowBuilder_" + ${table.javaName})
+#set($varRowbuilder = ${table.javaVariableName})
+    for (${clsRef} ${varRef} : ${varTable}.getUsedRefs())
     {
-      RowBuilder_${table.javaName} ${table.javaVariableName} = ${table.javaVariableName}Ref.getBuilder(this);
-      for (${col.reference.table.javaName}Ref ${col.reference.table.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.localName}List.get(this))
+//1
+#set($refClsRef = ${col.reference.table.javaName} + "Ref")      
+#set($refVarRef = ${col.reference.table.javaVariableName} + "Ref")      
+#set($refClsRowbuilder = "RowBuilder_" + ${col.reference.table.javaName})
+#set($refVarRowbuilder = ${col.reference.table.javaVariableName})
+      ${clsRowbuilder} ${varRowbuilder} = ${varRef}.getBuilder(this);
+      for (${refClsRef} ${refVarRef} : ${varRef}.${col.reference.localName}List.get(this))
       {
         System.out.println("RELATION: Updated Row in ${table.javaName}");
-        RowBuilder_${col.reference.table.javaName} ${col.reference.table.javaVariableName} = ${col.reference.table.javaVariableName}Ref.getBuilder(this);
-        ${col.javaType} value = ${col.reference.table.javaVariableName}.get${col.reference.column.javaName}();
-        ${table.javaVariableName}.set${col.javaName}(value);
+        ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
+        ${col.javaType} value = ${refVarRowbuilder}.get${col.reference.column.javaName}();
+        ${varRowbuilder}.set${col.javaName}(value);
       }
       
-      ${table.javaVariableName}Ref.${col.reference.localName}List.clear();
+      ${varRef}.${col.reference.localName}List.clear();
     } 
 #end
 #end
+
+
+
+
 #foreach( $referencingTable in $table.dataSet.tables )
 #foreach( $col in $referencingTable.columns )
+#set($varRef = ${table.javaVariableName} + "Ref")
 #if( ${col.isReferencingTable($table)} )
-    for (${table.javaName}Ref ${table.javaVariableName}Ref : ${table.javaVariableName}Table.getUsedRefs())
+#set($varList = ${col.reference.remoteName} + "List")
+#set($clsRef = ${table.javaName} + "Ref")
+    for (${clsRef} ${varRef} : ${table.javaVariableName}Table.getUsedRefs())
     {
-      RowBuilder_${table.javaName} ${table.javaVariableName} = ${table.javaVariableName}Ref.getBuilder(this);
+      RowBuilder_${table.javaName} ${table.javaVariableName} = ${varRef}.getBuilder(this);
 #if ( ${referencingTable.isAssociativeTable()} )
-#set( $reftable = ${referencingTable.getAssociatedTable($table)} )
-      for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List.get(this))
+//2
+#set($reftable = ${referencingTable.getAssociatedTable($table)})
+#set($refClsRef = ${reftable.javaName} + "Ref")
+#set($refVarRef = ${reftable.javaVariableName} + "Ref")
+#set($refClsRowbuilder = "RowBuilder_" + ${reftable.javaName})
+#set($refVarRowbuilder = ${reftable.javaVariableName})
+      for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
       {
         System.out.println("RELATION: Inserted Row in ${referencingTable.javaName}");
-        RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Ref.getBuilder(this); 
+        ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this); 
         RowBuilder_${referencingTable.javaName} row = ${referencingTable.javaVariableName}Table.getTableModel().insertRow();
 #foreach( $rcol in $referencingTable.columns )
         row.set${rcol.javaName}(${rcol.reference.table.javaVariableName}.get${rcol.reference.javaName}());
 #end
       }
-      
-      ${table.javaVariableName}Ref.${col.reference.remoteName}List.clear();
 #else
-#set( $reftable = ${col.table} )
-      for (${reftable.javaName}Ref ${reftable.javaVariableName}Ref : ${table.javaVariableName}Ref.${col.reference.remoteName}List.get(this))
+//3
+#set($reftable = ${col.table})
+#set($refClsRef = ${reftable.javaName} + "Ref")
+#set($refVarRef = ${reftable.javaVariableName} + "Ref")
+#set($refClsRowbuilder = "RowBuilder_" + ${reftable.javaName})
+#set($refVarRowbuilder = ${reftable.javaVariableName})
+      for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
       {
         System.out.println("RELATION: Updated Row in ${reftable.javaName}");
-        RowBuilder_${reftable.javaName} ${reftable.javaVariableName} = ${reftable.javaVariableName}Ref.getBuilder(this);
+        ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
         ${col.javaType} value = ${table.javaVariableName}.get${col.reference.column.javaName}();
-        ${reftable.javaVariableName}.set${col.javaName}(value);
+        ${refVarRowbuilder}.set${col.javaName}(value);
       }
-      
-      ${table.javaVariableName}Ref.${col.reference.remoteName}List.clear(); 
 #end
+
+      ${varRef}.${varList}.clear(); 
     }
 #end
 #end
@@ -114,7 +161,8 @@ public class ${model.name}DSL {
 #end
 #end
 
-  public IDataSet createDataSet() {
+  public IDataSet createDataSet() 
+  {
     return dataset.createDBUnitDataSet();
   }
 }
