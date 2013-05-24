@@ -41,7 +41,7 @@ public class ${model.name}DSL
   {
     setReferencesContext();
     relations.call();
-    resolveRelations();
+    //resolveRelations();
     unsetReferencesContext();
   }
   
@@ -97,7 +97,6 @@ public class ${model.name}DSL
       {
         for (${refClsRef} ${refVarRef} : ${varRef}.${col.reference.localName}List.get(this))
         {
-          System.out.println("RELATION: Updated Row in ${table.javaName}");
           ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
           ${col.javaType} value = ${refVarRowbuilder}.get${col.reference.column.javaName}();
           ${varRowbuilder}.set${col.javaName}(value);
@@ -129,7 +128,6 @@ public class ${model.name}DSL
       {
         for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
         {
-          System.out.println("RELATION: Inserted Row in ${referencingTable.javaName}");
           ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this); 
           RowBuilder_${referencingTable.javaName} row = ${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
 #foreach( $rcol in $referencingTable.columns )
@@ -148,7 +146,6 @@ public class ${model.name}DSL
       {
         for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
         {
-          System.out.println("RELATION: Updated Row in ${reftable.javaName}");
           ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
           ${col.javaType} value = ${table.javaNameFirstLower}.get${col.reference.column.javaName}();
           ${refVarRowbuilder}.set${col.javaName}(value);

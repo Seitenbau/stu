@@ -34,7 +34,10 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import ${model.package}.${model.javaName}Table.${clsRowbuilder};
+#foreach( $table in $model.dataSet.tables )
+import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
+#end
+##import ${model.package}.${model.javaName}Table.${clsRowbuilder};
 
 public class ${clsRef} extends DatabaseReference {
 
@@ -63,9 +66,6 @@ public class ${clsRef} extends DatabaseReference {
     if (lastBuilder != null && lastBuilder != builder) {
       throw new RuntimeException("Builder cannot be redefined");
     }
-    if (lastBuilder != null) {
-      System.out.println("Reference has been associated to scope");
-    }
   }
   
   ${clsRowbuilder} getBuilder(${clsScope} scope)
@@ -73,36 +73,51 @@ public class ${clsRef} extends DatabaseReference {
     return builders.get(scope);
   }
   
-#macro( addReference $verb $refRef )
-#set($methodName = $verb)
-#set($listName = ${verb} + "List")
-  Map<${clsScope}, List<${refRef}>> ${listName} = new HashMap<${clsScope}, List<${refRef}>>();
+#macro( addReference $refTable $verb $remoteVerb )
+#set($refRef = ${refTable.javaName} + "Ref" )
+  Map<${clsScope}, List<${refRef}>> ${verb}List = new HashMap<${clsScope}, List<${refRef}>>();
 
   // depending on relation type with or without ellipse (...)
-  void ${methodName}(${refRef} ... refs) {
-    final List<${refRef}> list = getOrCreateList(${listName}, threadScope);
-    list.addAll(Arrays.asList(refs));
+  void ${verb}(${refRef} ... refs) {
+    ${clsScope} scope = threadScope.get();
+    ${clsRowbuilder} thisBuilder = getBuilder(scope);
+    
+    for (${refRef} ref : refs) 
+    {
+      RowBuilder_${refTable.javaName} otherBuilder = ref.getBuilder(scope);
+      
+      if (thisBuilder != null && otherBuilder != null) 
+      {
+        // TODO NM correct handling
+        //otherBuilder.setProfessorId(thisBuilder.getId());
+      }
+      else {
+        if (thisBuilder == null)
+        {
+          getOrCreateList(${verb}List, threadScope).add(ref);
+        }
+        if (otherBuilder == null) {
+          getOrCreateList(ref.${remoteVerb}List, threadScope).add(this);
+        }
+      }
+    }
   }
 
 #end  
 #if ( !${model.isAssociativeTable()} )
 #foreach( $col in $model.columns )
-#if( $col.references && $col.references.size() != 0 )
-#set($verb = ${col.reference.localName})
-#set($refRef = ${col.reference.table.javaName} + "Ref" )
-#addReference( $verb $refRef )
+#if( $col.reference )
+#addReference( $col.reference.table ${col.reference.localName} ${col.reference.remoteName} )
 #end
 #end
 #foreach( $referencingTable in $model.dataSet.tables )
 #foreach( $col in $referencingTable.columns )
 #if( ${col.isReferencingTable($model)} )
 #if ( ${referencingTable.isAssociativeTable()} )
-#set( $refRef = ${referencingTable.getAssociatedTable($model).javaName} + "Ref" )
+#addReference( ${referencingTable.getAssociatedTable($model)} ${col.reference.remoteName} ${referencingTable.getReferencingColumn($model).reference.remoteName} )
 #else
-#set( $refRef = ${col.table.javaName} + "Ref" )
+#addReference( ${col.table} ${col.reference.remoteName} ${col.reference.localName} )
 #end
-#set($verb = ${col.reference.remoteName})
-#addReference( $verb $refRef )
 #end
 #end
 #end

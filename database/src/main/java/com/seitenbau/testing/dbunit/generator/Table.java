@@ -138,4 +138,22 @@ public class Table
     //throw new RuntimeException("No associating column found");
   }
   
+  public Column getReferencingColumn(Table table)
+  {
+    for (Column col : getColumns())
+    {
+      final Reference reference = col.getReference();
+      if (reference == null) {
+        continue;
+      }
+      if (reference.getColumn().getTable() == table) {
+        continue;
+      }
+      
+      return col;
+    }
+    
+    return null;
+    //throw new RuntimeException("No associating column found");
+  }
 }
