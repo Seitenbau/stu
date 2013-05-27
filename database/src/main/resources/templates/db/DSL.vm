@@ -76,8 +76,6 @@ public class ${model.name}DSL
     for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getAllRowBuilders()) {
       if (builder.get${col.javaName}Raw() == reference)
       {
-        System.out.println("=!=!=!=!=!=!=!=!= UPDATE =!=!=!=!=!=!=!=!=");
-        System.out.println("setting ${col.javaName}");
         builder.set${col.javaName}(row.get${col.reference.column.javaName}());
       }
     }
