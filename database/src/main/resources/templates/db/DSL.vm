@@ -74,7 +74,12 @@ public class ${model.name}DSL
 ### $col in $table referes on reference
     // Ref: ${table.javaName} on ${col.javaName}
     for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getAllRowBuilders()) {
-      builder.set${col.javaName}(row.get${col.reference.column.javaName}());
+      if (builder.get${col.javaName}Raw() == reference)
+      {
+        System.out.println("=!=!=!=!=!=!=!=!= UPDATE =!=!=!=!=!=!=!=!=");
+        System.out.println("setting ${col.javaName}");
+        builder.set${col.javaName}(row.get${col.reference.column.javaName}());
+      }
     }
     
 #end
