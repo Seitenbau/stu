@@ -13,6 +13,8 @@
 package ${package};
 #end
 
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -292,9 +294,6 @@ public class ${tableClass} implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with ${column.name} = " + toSearch );
-      }
       return modifiers;
     }
 #foreach( $column in $model.columns )  
@@ -306,9 +305,6 @@ public class ${tableClass} implements ITable
         {
           modifiers.add(row);
         }
-      }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with ${column.name} = " + toSearch );
       }
       return modifiers;
     }
@@ -333,29 +329,29 @@ public class ${tableClass} implements ITable
        table = theTable;
     }
     
-    public ${rowbuilder} rowComparesTo(Comparable<${rowbuilder}> toSearch) {
+    public Optional<${rowbuilder}> rowComparesTo(Comparable<${rowbuilder}> toSearch) {
       for (${rowbuilder} row : rows) 
       {
         if (toSearch.compareTo(row) == 0) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<${rowbuilder}> absent();
     }
 #foreach( $column in $model.columns )  
-    public ${rowbuilder} ${column.javaNameFirstLower}(${column.javaType} toSearch) {
+    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${column.javaType} toSearch) {
       for (${rowbuilder} row : rows) 
       {
         if (row.get${column.javaName}().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<${rowbuilder}> absent();
     }
 #if( $column.javaType.contains("Long") )
-    public ${rowbuilder} ${column.javaNameFirstLower}(Integer toSearch) 
+    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(Integer toSearch) 
     {
       return ${column.javaNameFirstLower}( Long.valueOf(toSearch) );
     }

@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.dsl;
 
+import com.google.common.base.Optional;
+
 public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implements IParsedTableRowCallback
 {
   private TableRowModel _head;
@@ -45,12 +47,13 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
       id = row.getValue(_colId);
       
-      R builderById = column.query(_tableAdapter.getWhere(), CastUtil.cast(id, column.getDataType()));
-      if (result != null && builderById != result) {
-        throw new RuntimeException("Table structure failure [Possibly trial of ID redefinition]");
-      }
-      if (builderById != null) {
-        result = builderById;
+      Optional<R> builderById = column.getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, column.getDataType()));
+      if (builderById.isPresent()) {
+        if (result != null && builderById.get() != result) {
+          throw new RuntimeException("Table structure failure [Possibly trial of ID redefinition]");
+        }
+
+        result = builderById.get();
       }
     }
     

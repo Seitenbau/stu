@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.demomodel;
 
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -379,9 +381,6 @@ public class PersonsTable implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with ${column.name} = " + toSearch );
-      }
       return modifiers;
     }
     public RowCollection_Persons id(java.lang.Long toSearch) {
@@ -392,9 +391,6 @@ public class PersonsTable implements ITable
         {
           modifiers.add(row);
         }
-      }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with id = " + toSearch );
       }
       return modifiers;
     }
@@ -411,9 +407,6 @@ public class PersonsTable implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with first_name = " + toSearch );
-      }
       return modifiers;
     }
     public RowCollection_Persons name(java.lang.String toSearch) {
@@ -425,9 +418,6 @@ public class PersonsTable implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with name = " + toSearch );
-      }
       return modifiers;
     }
     public RowCollection_Persons jobId(java.lang.Long toSearch) {
@@ -438,9 +428,6 @@ public class PersonsTable implements ITable
         {
           modifiers.add(row);
         }
-      }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with job_id = " + toSearch );
       }
       return modifiers;
     }
@@ -456,9 +443,6 @@ public class PersonsTable implements ITable
         {
           modifiers.add(row);
         }
-      }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with team_id = " + toSearch );
       }
       return modifiers;
     }
@@ -480,75 +464,75 @@ public class PersonsTable implements ITable
        table = theTable;
     }
     
-    public RowBuilder_Persons rowComparesTo(Comparable<RowBuilder_Persons> toSearch) {
+    public Optional<RowBuilder_Persons> rowComparesTo(Comparable<RowBuilder_Persons> toSearch) {
       for (RowBuilder_Persons row : rows) 
       {
         if (toSearch.compareTo(row) == 0) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Persons> absent();
     }
-    public RowBuilder_Persons id(java.lang.Long toSearch) {
+    public Optional<RowBuilder_Persons> id(java.lang.Long toSearch) {
       for (RowBuilder_Persons row : rows) 
       {
         if (row.getId().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Persons> absent();
     }
-    public RowBuilder_Persons id(Integer toSearch) 
+    public Optional<RowBuilder_Persons> id(Integer toSearch) 
     {
       return id( Long.valueOf(toSearch) );
     }
-    public RowBuilder_Persons firstName(java.lang.String toSearch) {
+    public Optional<RowBuilder_Persons> firstName(java.lang.String toSearch) {
       for (RowBuilder_Persons row : rows) 
       {
         if (row.getFirstName().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Persons> absent();
     }
-    public RowBuilder_Persons name(java.lang.String toSearch) {
+    public Optional<RowBuilder_Persons> name(java.lang.String toSearch) {
       for (RowBuilder_Persons row : rows) 
       {
         if (row.getName().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Persons> absent();
     }
-    public RowBuilder_Persons jobId(java.lang.Long toSearch) {
+    public Optional<RowBuilder_Persons> jobId(java.lang.Long toSearch) {
       for (RowBuilder_Persons row : rows) 
       {
         if (row.getJobId().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Persons> absent();
     }
-    public RowBuilder_Persons jobId(Integer toSearch) 
+    public Optional<RowBuilder_Persons> jobId(Integer toSearch) 
     {
       return jobId( Long.valueOf(toSearch) );
     }
-    public RowBuilder_Persons teamId(java.lang.Long toSearch) {
+    public Optional<RowBuilder_Persons> teamId(java.lang.Long toSearch) {
       for (RowBuilder_Persons row : rows) 
       {
         if (row.getTeamId().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Persons> absent();
     }
-    public RowBuilder_Persons teamId(Integer toSearch) 
+    public Optional<RowBuilder_Persons> teamId(Integer toSearch) 
     {
       return teamId( Long.valueOf(toSearch) );
     }

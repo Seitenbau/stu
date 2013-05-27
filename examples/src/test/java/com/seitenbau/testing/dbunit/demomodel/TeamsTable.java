@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.demomodel;
 
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -327,9 +329,6 @@ public class TeamsTable implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with ${column.name} = " + toSearch );
-      }
       return modifiers;
     }
     public RowCollection_Teams id(java.lang.Long toSearch) {
@@ -340,9 +339,6 @@ public class TeamsTable implements ITable
         {
           modifiers.add(row);
         }
-      }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with id = " + toSearch );
       }
       return modifiers;
     }
@@ -359,9 +355,6 @@ public class TeamsTable implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with title = " + toSearch );
-      }
       return modifiers;
     }
     public RowCollection_Teams description(java.lang.String toSearch) {
@@ -373,9 +366,6 @@ public class TeamsTable implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with description = " + toSearch );
-      }
       return modifiers;
     }
     public RowCollection_Teams membersize(java.lang.Long toSearch) {
@@ -386,9 +376,6 @@ public class TeamsTable implements ITable
         {
           modifiers.add(row);
         }
-      }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with membersize = " + toSearch );
       }
       return modifiers;
     }
@@ -410,61 +397,61 @@ public class TeamsTable implements ITable
        table = theTable;
     }
     
-    public RowBuilder_Teams rowComparesTo(Comparable<RowBuilder_Teams> toSearch) {
+    public Optional<RowBuilder_Teams> rowComparesTo(Comparable<RowBuilder_Teams> toSearch) {
       for (RowBuilder_Teams row : rows) 
       {
         if (toSearch.compareTo(row) == 0) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Teams> absent();
     }
-    public RowBuilder_Teams id(java.lang.Long toSearch) {
+    public Optional<RowBuilder_Teams> id(java.lang.Long toSearch) {
       for (RowBuilder_Teams row : rows) 
       {
         if (row.getId().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Teams> absent();
     }
-    public RowBuilder_Teams id(Integer toSearch) 
+    public Optional<RowBuilder_Teams> id(Integer toSearch) 
     {
       return id( Long.valueOf(toSearch) );
     }
-    public RowBuilder_Teams title(java.lang.String toSearch) {
+    public Optional<RowBuilder_Teams> title(java.lang.String toSearch) {
       for (RowBuilder_Teams row : rows) 
       {
         if (row.getTitle().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Teams> absent();
     }
-    public RowBuilder_Teams description(java.lang.String toSearch) {
+    public Optional<RowBuilder_Teams> description(java.lang.String toSearch) {
       for (RowBuilder_Teams row : rows) 
       {
         if (row.getDescription().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Teams> absent();
     }
-    public RowBuilder_Teams membersize(java.lang.Long toSearch) {
+    public Optional<RowBuilder_Teams> membersize(java.lang.Long toSearch) {
       for (RowBuilder_Teams row : rows) 
       {
         if (row.getMembersize().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Teams> absent();
     }
-    public RowBuilder_Teams membersize(Integer toSearch) 
+    public Optional<RowBuilder_Teams> membersize(Integer toSearch) 
     {
       return membersize( Long.valueOf(toSearch) );
     }

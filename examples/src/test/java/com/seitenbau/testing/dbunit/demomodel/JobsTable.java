@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.demomodel;
 
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -287,9 +289,6 @@ public class JobsTable implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with ${column.name} = " + toSearch );
-      }
       return modifiers;
     }
     public RowCollection_Jobs id(java.lang.Long toSearch) {
@@ -300,9 +299,6 @@ public class JobsTable implements ITable
         {
           modifiers.add(row);
         }
-      }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with id = " + toSearch );
       }
       return modifiers;
     }
@@ -319,9 +315,6 @@ public class JobsTable implements ITable
           modifiers.add(row);
         }
       }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with title = " + toSearch );
-      }
       return modifiers;
     }
     public RowCollection_Jobs description(java.lang.String toSearch) {
@@ -332,9 +325,6 @@ public class JobsTable implements ITable
         {
           modifiers.add(row);
         }
-      }
-      if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with description = " + toSearch );
       }
       return modifiers;
     }
@@ -352,49 +342,49 @@ public class JobsTable implements ITable
        table = theTable;
     }
     
-    public RowBuilder_Jobs rowComparesTo(Comparable<RowBuilder_Jobs> toSearch) {
+    public Optional<RowBuilder_Jobs> rowComparesTo(Comparable<RowBuilder_Jobs> toSearch) {
       for (RowBuilder_Jobs row : rows) 
       {
         if (toSearch.compareTo(row) == 0) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Jobs> absent();
     }
-    public RowBuilder_Jobs id(java.lang.Long toSearch) {
+    public Optional<RowBuilder_Jobs> id(java.lang.Long toSearch) {
       for (RowBuilder_Jobs row : rows) 
       {
         if (row.getId().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Jobs> absent();
     }
-    public RowBuilder_Jobs id(Integer toSearch) 
+    public Optional<RowBuilder_Jobs> id(Integer toSearch) 
     {
       return id( Long.valueOf(toSearch) );
     }
-    public RowBuilder_Jobs title(java.lang.String toSearch) {
+    public Optional<RowBuilder_Jobs> title(java.lang.String toSearch) {
       for (RowBuilder_Jobs row : rows) 
       {
         if (row.getTitle().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Jobs> absent();
     }
-    public RowBuilder_Jobs description(java.lang.String toSearch) {
+    public Optional<RowBuilder_Jobs> description(java.lang.String toSearch) {
       for (RowBuilder_Jobs row : rows) 
       {
         if (row.getDescription().equals(toSearch)) 
         {
-          return row;
+          return Optional.of(row);
         }
       }
-      return null;
+      return Optional.<RowBuilder_Jobs> absent();
     }
   }
   

@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.demomodel.dsl;
 
+import com.google.common.base.Optional;
+
 import groovy.lang.Closure;
 
 import java.util.HashSet;
@@ -52,6 +54,7 @@ public class JobsTable {
     {
       if (row != null) {
         reference.setBuilder(_scope, row);
+        _usedRefs.add(reference);
       }
     }
 
@@ -141,8 +144,8 @@ public class JobsTable {
       }
 
       @Override
-      public RowBuilder_Jobs query(JobsGetWhere findWhere, Object value) {
-        return findWhere.id((java.lang.Long)CastUtil.cast(value, DataType.BIGINT));
+      public Optional<RowBuilder_Jobs> getWhere(JobsGetWhere getWhere, Object value) {
+        return getWhere.id((java.lang.Long)CastUtil.cast(value, DataType.BIGINT));
       }
 
       @Override

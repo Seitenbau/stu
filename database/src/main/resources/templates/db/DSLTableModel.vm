@@ -11,6 +11,8 @@
 #set($clsTable = ${model.javaName} + "Table")
 package ${package};
 
+import com.google.common.base.Optional;
+
 import groovy.lang.Closure;
 
 import java.util.HashSet;
@@ -182,8 +184,8 @@ public class ${clsTable} {
 #if ( ${col.isIdentifierColumn()} )
 
       @Override
-      public ${clsRowbuilder} query(${clsWhere} findWhere, Object value) {
-        return findWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
+      public Optional<${clsRowbuilder}> getWhere(${clsWhere} getWhere, Object value) {
+        return getWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
       }
 
       @Override
