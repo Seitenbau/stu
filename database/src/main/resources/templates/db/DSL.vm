@@ -73,8 +73,7 @@ public class ${model.name}DSL
 #if ($col.reference && $col.reference.table == $reftable)
 ### $col in $table referes on reference
     // Ref: ${table.javaName} on ${col.javaName}
-    for (${table.javaName}Ref ${table.javaNameFirstLower}Ref : ${table.javaNameFirstLower}Table.getUsedRefs()) {
-      RowBuilder_${table.javaName} builder = ${table.javaNameFirstLower}Ref.getBuilder(this);
+    for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getAllRowBuilders()) {
       builder.set${col.javaName}(row.get${col.reference.column.javaName}());
     }
     

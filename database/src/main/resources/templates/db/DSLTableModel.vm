@@ -62,13 +62,15 @@ public class ${clsTable} {
 
   private final ${model.package}.${clsTable} _table;
 
-  private final Set<${clsRef}> _usedRefs;
+  private final Set<${clsRowbuilder}> _allRows;
 
   private final ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}> _adapter = new ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}>()
   {
     public ${clsRowbuilder} insertRow() 
     {
-      return _table.insertRow();
+      ${clsRowbuilder} result = _table.insertRow();
+      _allRows.add(result);
+      return result;
     }
   
     public ${clsWhere} getWhere()
@@ -80,7 +82,6 @@ public class ${clsTable} {
     {
       if (row != null) {
         reference.setBuilder(_scope, row);
-        _usedRefs.add(reference);
       }
     }
 
@@ -104,12 +105,12 @@ public class ${clsTable} {
   {
     _scope = scope;
     _table = table;
-    _usedRefs = new HashSet<${clsRef}>();
+    _allRows = new HashSet<${clsRowbuilder}>();
   }
   
-  Set<${clsRef}> getUsedRefs()
+  Set<${clsRowbuilder}> getAllRowBuilders()
   {
-    return _usedRefs;
+    return _allRows;
   }
   
   ${model.package}.${clsTable} getTableModel()
