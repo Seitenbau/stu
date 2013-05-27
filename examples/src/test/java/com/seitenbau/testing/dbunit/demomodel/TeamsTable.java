@@ -20,12 +20,12 @@ import org.dbunit.dataset.NoSuchColumnException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
-import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowGetters_Persons;
-import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.util.date.DateBuilder;
 
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowGetters_Persons;
 
 import static com.seitenbau.testing.util.DateUtil.*;
 
@@ -306,14 +306,14 @@ public class TeamsTable implements ITable
     }
   }
   
-  public TeamsWhere findWhere = new TeamsWhere(this);
+  public TeamsFindWhere findWhere = new TeamsFindWhere(this);
 
-  public static class TeamsWhere
+  public static class TeamsFindWhere
   {
     public List<RowBuilder_Teams> rows;
     TeamsTable table;
     
-    public TeamsWhere(TeamsTable theTable) {
+    public TeamsFindWhere(TeamsTable theTable) {
        rows = theTable.rows;
        table = theTable;
     }
@@ -393,6 +393,78 @@ public class TeamsTable implements ITable
       return modifiers;
     }
     public RowCollection_Teams membersize(Integer toSearch) 
+    {
+      return membersize( Long.valueOf(toSearch) );
+    }
+  }
+
+  public TeamsGetWhere getWhere = new TeamsGetWhere(this);
+
+  public static class TeamsGetWhere
+  {
+    public List<RowBuilder_Teams> rows;
+    TeamsTable table;
+    
+    public TeamsGetWhere(TeamsTable theTable) {
+       rows = theTable.rows;
+       table = theTable;
+    }
+    
+    public RowBuilder_Teams rowComparesTo(Comparable<RowBuilder_Teams> toSearch) {
+      for (RowBuilder_Teams row : rows) 
+      {
+        if (toSearch.compareTo(row) == 0) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Teams id(java.lang.Long toSearch) {
+      for (RowBuilder_Teams row : rows) 
+      {
+        if (row.getId().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Teams id(Integer toSearch) 
+    {
+      return id( Long.valueOf(toSearch) );
+    }
+    public RowBuilder_Teams title(java.lang.String toSearch) {
+      for (RowBuilder_Teams row : rows) 
+      {
+        if (row.getTitle().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Teams description(java.lang.String toSearch) {
+      for (RowBuilder_Teams row : rows) 
+      {
+        if (row.getDescription().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Teams membersize(java.lang.Long toSearch) {
+      for (RowBuilder_Teams row : rows) 
+      {
+        if (row.getMembersize().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Teams membersize(Integer toSearch) 
     {
       return membersize( Long.valueOf(toSearch) );
     }
@@ -555,7 +627,7 @@ public class TeamsTable implements ITable
   }
   
   public static class RowCollection_Teams extends RowModify_Teams {
-    public TeamsWhere where = new TeamsWhere(table);
+    public TeamsFindWhere where = new TeamsFindWhere(table);
     
     public RowCollection_Teams(TeamsTable theTable)
     {

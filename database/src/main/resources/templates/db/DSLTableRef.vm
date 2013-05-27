@@ -7,27 +7,9 @@
 #set($clsScope = ${model.dataSet.name} + "DSL")
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
+#set($privateListPrefix = "private_")
 package ${package};
 
-#set($utilImportsNeeded  = false )
-#if ( !${model.isAssociativeTable()} )
-#foreach( $col in $model.columns )
-#if( $col.references && $col.references.size() != 0 )
-#set($utilImportsNeeded  = true )
-#end
-#end
-#foreach( $referencingTable in $model.dataSet.tables )
-#foreach( $col in $referencingTable.columns )
-#if( ${col.isReferencingTable($model)} )
-#set($utilImportsNeeded  = true )
-#end
-#end
-#end
-#end
-
-#if ( $utilImportsNeeded )
-import java.util.Arrays;
-#end
 import java.util.Iterator;
 #if ( !${model.isAssociativeTable()} )
 import java.util.List;
@@ -38,7 +20,6 @@ import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 #foreach( $table in $model.dataSet.tables )
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 #end
-##import ${model.package}.${model.javaName}Table.${clsRowbuilder};
 
 public class ${clsRef} extends DatabaseReference {
 
@@ -73,7 +54,7 @@ public class ${clsRef} extends DatabaseReference {
 #set($refClsRef = ${col.reference.table.javaName} + "Ref")
 #set($verb = ${col.reference.localName})
 
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${verb}List, threadScope);
+    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, threadScope);
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
       ${refClsRef} ref = it.next();
@@ -85,7 +66,7 @@ public class ${clsRef} extends DatabaseReference {
       }
       
       builder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${col.reference.remoteName}List, threadScope);
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, threadScope);
       if (otherList.contains(this)) 
       {
         otherList.remove(this);
@@ -107,7 +88,7 @@ public class ${clsRef} extends DatabaseReference {
 #set($remoteKey = $c.reference.column.javaName) 
 #end
 #end
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${verb}List, threadScope);
+    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, threadScope);
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
       ${refClsRef} ref = it.next();
@@ -121,7 +102,7 @@ public class ${clsRef} extends DatabaseReference {
       RowBuilder_${referencingTable.javaName} row = scope.${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
       row.set${col.javaName}(builder.get${col.reference.column.javaName}());
       row.set${refColumn.javaName}(otherBuilder.get${remoteKey}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${refColumn.reference.remoteName}List, threadScope);
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${refColumn.reference.remoteName}Map, threadScope);
       if(otherList.contains(this)) 
       {
         otherList.remove(this);
@@ -132,7 +113,7 @@ public class ${clsRef} extends DatabaseReference {
 #set($refClsRef = ${referencingTable.javaName} + "Ref")
 #set($verb = ${col.reference.remoteName})
 
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${verb}List, threadScope);
+    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, threadScope);
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
       ${refClsRef} ref = it.next();
@@ -144,7 +125,7 @@ public class ${clsRef} extends DatabaseReference {
       }
       
       otherBuilder.set${col.javaName}(builder.get${col.reference.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${col.reference.localName}List, threadScope);
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.localName}Map, threadScope);
       if (otherList.contains(this)) 
       {
         otherList.remove(this);
@@ -168,7 +149,7 @@ public class ${clsRef} extends DatabaseReference {
 #end
 #macro( addReference $refTable $verb $remoteVerb )
 #set($refClsRef = ${refTable.javaName} + "Ref" )
-  Map<${clsScope}, List<${refClsRef}>> ${verb}List = new HashMap<${clsScope}, List<${refClsRef}>>();
+  Map<${clsScope}, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<${clsScope}, List<${refClsRef}>>();
 
   // depending on relation type with or without ellipse (...)
   void ${verb}(${refClsRef} ... refs) {
@@ -191,10 +172,10 @@ public class ${clsRef} extends DatabaseReference {
         // to the Refs where no builder exist.
         if (thisBuilder == null)
         {
-          getOrCreateList(${verb}List, threadScope).add(ref);
+          getOrCreateList(${privateListPrefix}${verb}Map, threadScope).add(ref);
         }
         if (otherBuilder == null) {
-          getOrCreateList(ref.${remoteVerb}List, threadScope).add(this);
+          getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, threadScope).add(this);
         }
       }
     }

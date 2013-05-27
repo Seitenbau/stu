@@ -5,10 +5,10 @@ import groovy.lang.Closure;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.seitenbau.testing.dbunit.demomodel.JobsTable.JobsWhere;
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.JobsGetWhere;
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
@@ -22,13 +22,13 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class JobsTable {
 
-  public final ColumnBinding<RowBuilder_Jobs, JobsWhere> REF = createREFBinding();
+  public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> REF = createREFBinding();
 
-  public final ColumnBinding<RowBuilder_Jobs, JobsWhere> id = createIdBinding();
+  public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> id = createIdBinding();
 
-  public final ColumnBinding<RowBuilder_Jobs, JobsWhere> title = createTitleBinding();
+  public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> title = createTitleBinding();
 
-  public final ColumnBinding<RowBuilder_Jobs, JobsWhere> description = createDescriptionBinding();
+  public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> description = createDescriptionBinding();
 
   private final STUDSL _scope;
 
@@ -36,23 +36,22 @@ public class JobsTable {
 
   private final Set<JobsRef> _usedRefs;
 
-  private final ITableAdapter<RowBuilder_Jobs, JobsWhere, JobsRef> _adapter = new ITableAdapter<RowBuilder_Jobs, JobsWhere, JobsRef>()
+  private final ITableAdapter<RowBuilder_Jobs, JobsGetWhere, JobsRef> _adapter = new ITableAdapter<RowBuilder_Jobs, JobsGetWhere, JobsRef>()
   {
     public RowBuilder_Jobs insertRow() 
     {
       return _table.insertRow();
     }
   
-    public JobsWhere getFindWhere()
+    public JobsGetWhere getWhere()
     {
-      return _table.findWhere;
+      return _table.getWhere;
     }
     
-    public void referenceUsed(JobsRef reference, RowBuilder_Jobs row)
+    public void bindToScope(JobsRef reference, RowBuilder_Jobs row)
     {
       if (row != null) {
         reference.setBuilder(_scope, row);
-        _usedRefs.add(reference);
       }
     }
 
@@ -90,8 +89,8 @@ public class JobsTable {
   }
   
   public void rows(Closure<?> rows) {
-    GeneralTableRowCallback<RowBuilder_Jobs, JobsWhere, JobsRef> callback = 
-        new GeneralTableRowCallback<RowBuilder_Jobs, JobsWhere, JobsRef>(_adapter);
+    GeneralTableRowCallback<RowBuilder_Jobs, JobsGetWhere, JobsRef> callback = 
+        new GeneralTableRowCallback<RowBuilder_Jobs, JobsGetWhere, JobsRef>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
 
@@ -100,9 +99,9 @@ public class JobsTable {
     return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
   }
 
-  private ColumnBinding<RowBuilder_Jobs, JobsWhere> createREFBinding()
+  private ColumnBinding<RowBuilder_Jobs, JobsGetWhere> createREFBinding()
   {
-    return new ColumnBinding<RowBuilder_Jobs, JobsWhere>()
+    return new ColumnBinding<RowBuilder_Jobs, JobsGetWhere>()
     { 
       @Override
       public void set(RowBuilder_Jobs row, Object value)
@@ -122,9 +121,9 @@ public class JobsTable {
     };
   }
 
-  private ColumnBinding<RowBuilder_Jobs, JobsWhere> createIdBinding() 
+  private ColumnBinding<RowBuilder_Jobs, JobsGetWhere> createIdBinding() 
   {
-    return new ColumnBinding<RowBuilder_Jobs, JobsWhere>()
+    return new ColumnBinding<RowBuilder_Jobs, JobsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Jobs row, Object value)
@@ -142,7 +141,7 @@ public class JobsTable {
       }
 
       @Override
-      public RowBuilder_Jobs query(JobsWhere findWhere, Object value) {
+      public RowBuilder_Jobs query(JobsGetWhere findWhere, Object value) {
         return findWhere.id((java.lang.Long)CastUtil.cast(value, DataType.BIGINT));
       }
 
@@ -159,9 +158,9 @@ public class JobsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Jobs, JobsWhere> createTitleBinding() 
+  private ColumnBinding<RowBuilder_Jobs, JobsGetWhere> createTitleBinding() 
   {
-    return new ColumnBinding<RowBuilder_Jobs, JobsWhere>()
+    return new ColumnBinding<RowBuilder_Jobs, JobsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Jobs row, Object value)
@@ -180,9 +179,9 @@ public class JobsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Jobs, JobsWhere> createDescriptionBinding() 
+  private ColumnBinding<RowBuilder_Jobs, JobsGetWhere> createDescriptionBinding() 
   {
-    return new ColumnBinding<RowBuilder_Jobs, JobsWhere>()
+    return new ColumnBinding<RowBuilder_Jobs, JobsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Jobs row, Object value)

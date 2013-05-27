@@ -4,14 +4,8 @@ import org.dbunit.dataset.IDataSet;
 
 import com.seitenbau.testing.dbunit.demomodel.STUDataSet;
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
-import com.seitenbau.testing.dbunit.demomodel.dsl.JobsRef;
-import com.seitenbau.testing.dbunit.demomodel.dsl.JobsTable;
-import com.seitenbau.testing.dbunit.demomodel.dsl.PersonsRef;
-import com.seitenbau.testing.dbunit.demomodel.dsl.PersonsTable;
-import com.seitenbau.testing.dbunit.demomodel.dsl.TeamsRef;
-import com.seitenbau.testing.dbunit.demomodel.dsl.TeamsTable;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 
 import groovy.lang.Closure;
 
@@ -32,16 +26,17 @@ public class STUDSL
   
   public void tables(Closure<?> table)
   {
+    setReferencesContext();
     table.setDelegate(this);
     table.setResolveStrategy(Closure.DELEGATE_FIRST);
     table.call();
+    unsetReferencesContext();
   }
   
   public void relations(Closure<?> relations)
   {
     setReferencesContext();
     relations.call();
-    resolveRelations();
     unsetReferencesContext();
   }
   
@@ -58,61 +53,7 @@ public class STUDSL
     TeamsRef.unsetThreadLocalScope();
     PersonsRef.unsetThreadLocalScope();
   }
-
-  private void resolveRelations()
-  {
-    updateRelationsJobsRef();
-    updateRelationsTeamsRef();
-    updateRelationsPersonsRef();
-  }
  
-  private void updateRelationsJobsRef()
-  {
-  
-
-    for (JobsRef jobsRef : jobsTable.getUsedRefs())
-    {
-      RowBuilder_Jobs jobs = jobsRef.getBuilder(this);
-      if (jobsRef.personsToList.get(this) != null)
-      {
-        for (PersonsRef personsRef : jobsRef.personsToList.get(this))
-        {
-          System.out.println("RELATION: Updated Row in Persons");
-          RowBuilder_Persons persons = personsRef.getBuilder(this);
-          java.lang.Long value = jobs.getId();
-          persons.setJobId(value);
-        }
-      }
-
-      jobsRef.personsToList.clear(); 
-    }
-  }
-  private void updateRelationsTeamsRef()
-  {
-  
-
-    for (TeamsRef teamsRef : teamsTable.getUsedRefs())
-    {
-      RowBuilder_Teams teams = teamsRef.getBuilder(this);
-      if (teamsRef.personsToList.get(this) != null)
-      {
-        for (PersonsRef personsRef : teamsRef.personsToList.get(this))
-        {
-          System.out.println("RELATION: Updated Row in Persons");
-          RowBuilder_Persons persons = personsRef.getBuilder(this);
-          java.lang.Long value = teams.getId();
-          persons.setTeamId(value);
-        }
-      }
-
-      teamsRef.personsToList.clear(); 
-    }
-  }
-  private void updateRelationsPersonsRef()
-  {
-  
-
-  }
 
   void replaceJobsRefWithId(JobsRef reference, RowBuilder_Jobs row)
   {

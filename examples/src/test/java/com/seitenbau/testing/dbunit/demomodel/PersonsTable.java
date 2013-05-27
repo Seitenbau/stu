@@ -20,12 +20,12 @@ import org.dbunit.dataset.NoSuchColumnException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
-import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowGetters_Persons;
-import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.util.date.DateBuilder;
 
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowGetters_Persons;
 
 import static com.seitenbau.testing.util.DateUtil.*;
 
@@ -358,14 +358,14 @@ public class PersonsTable implements ITable
     }
   }
   
-  public PersonsWhere findWhere = new PersonsWhere(this);
+  public PersonsFindWhere findWhere = new PersonsFindWhere(this);
 
-  public static class PersonsWhere
+  public static class PersonsFindWhere
   {
     public List<RowBuilder_Persons> rows;
     PersonsTable table;
     
-    public PersonsWhere(PersonsTable theTable) {
+    public PersonsFindWhere(PersonsTable theTable) {
        rows = theTable.rows;
        table = theTable;
     }
@@ -463,6 +463,92 @@ public class PersonsTable implements ITable
       return modifiers;
     }
     public RowCollection_Persons teamId(Integer toSearch) 
+    {
+      return teamId( Long.valueOf(toSearch) );
+    }
+  }
+
+  public PersonsGetWhere getWhere = new PersonsGetWhere(this);
+
+  public static class PersonsGetWhere
+  {
+    public List<RowBuilder_Persons> rows;
+    PersonsTable table;
+    
+    public PersonsGetWhere(PersonsTable theTable) {
+       rows = theTable.rows;
+       table = theTable;
+    }
+    
+    public RowBuilder_Persons rowComparesTo(Comparable<RowBuilder_Persons> toSearch) {
+      for (RowBuilder_Persons row : rows) 
+      {
+        if (toSearch.compareTo(row) == 0) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Persons id(java.lang.Long toSearch) {
+      for (RowBuilder_Persons row : rows) 
+      {
+        if (row.getId().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Persons id(Integer toSearch) 
+    {
+      return id( Long.valueOf(toSearch) );
+    }
+    public RowBuilder_Persons firstName(java.lang.String toSearch) {
+      for (RowBuilder_Persons row : rows) 
+      {
+        if (row.getFirstName().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Persons name(java.lang.String toSearch) {
+      for (RowBuilder_Persons row : rows) 
+      {
+        if (row.getName().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Persons jobId(java.lang.Long toSearch) {
+      for (RowBuilder_Persons row : rows) 
+      {
+        if (row.getJobId().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Persons jobId(Integer toSearch) 
+    {
+      return jobId( Long.valueOf(toSearch) );
+    }
+    public RowBuilder_Persons teamId(java.lang.Long toSearch) {
+      for (RowBuilder_Persons row : rows) 
+      {
+        if (row.getTeamId().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Persons teamId(Integer toSearch) 
     {
       return teamId( Long.valueOf(toSearch) );
     }
@@ -655,7 +741,7 @@ public class PersonsTable implements ITable
   }
   
   public static class RowCollection_Persons extends RowModify_Persons {
-    public PersonsWhere where = new PersonsWhere(table);
+    public PersonsFindWhere where = new PersonsFindWhere(table);
     
     public RowCollection_Persons(PersonsTable theTable)
     {

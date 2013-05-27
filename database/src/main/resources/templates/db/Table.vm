@@ -3,7 +3,8 @@
 #set($rowbuilder   = "RowBuilder_" + ${model.javaName} )
 #set($rowsetters   = "RowSetters_" + ${model.javaName} )
 #set($rowsgetters  = "RowGetters_" + ${model.javaName} )
-#set($whereClass   = ${model.javaName} + "Where" ) 
+#set($findWhereClass = ${model.javaName} + "FindWhere" ) 
+#set($getWhereClass  = ${model.javaName} + "GetWhere" ) 
 #set($rowmodify    = "RowModify_" + ${model.javaName} )
 #set($rowcollection= "RowCollection_" + ${model.javaName} )
 #set($tableClass   = ${model.javaName} + ${model.suffix} )
@@ -270,14 +271,14 @@ public class ${tableClass} implements ITable
     }
   }
   
-  public $whereClass findWhere = new $whereClass(this);
+  public $findWhereClass findWhere = new $findWhereClass(this);
 
-  public static class $whereClass
+  public static class $findWhereClass
   {
     public List<${rowbuilder}> rows;
     ${tableClass} table;
     
-    public $whereClass(${tableClass} theTable) {
+    public $findWhereClass(${tableClass} theTable) {
        rows = theTable.rows;
        table = theTable;
     }
@@ -313,6 +314,48 @@ public class ${tableClass} implements ITable
     }
 #if( $column.javaType.contains("Long") )
     public ${rowcollection} ${column.javaNameFirstLower}(Integer toSearch) 
+    {
+      return ${column.javaNameFirstLower}( Long.valueOf(toSearch) );
+    }
+#end
+#end
+  }
+
+  public $getWhereClass getWhere = new $getWhereClass(this);
+
+  public static class $getWhereClass
+  {
+    public List<${rowbuilder}> rows;
+    ${tableClass} table;
+    
+    public $getWhereClass(${tableClass} theTable) {
+       rows = theTable.rows;
+       table = theTable;
+    }
+    
+    public ${rowbuilder} rowComparesTo(Comparable<${rowbuilder}> toSearch) {
+      for (${rowbuilder} row : rows) 
+      {
+        if (toSearch.compareTo(row) == 0) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+#foreach( $column in $model.columns )  
+    public ${rowbuilder} ${column.javaNameFirstLower}(${column.javaType} toSearch) {
+      for (${rowbuilder} row : rows) 
+      {
+        if (row.get${column.javaName}().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+#if( $column.javaType.contains("Long") )
+    public ${rowbuilder} ${column.javaNameFirstLower}(Integer toSearch) 
     {
       return ${column.javaNameFirstLower}( Long.valueOf(toSearch) );
     }
@@ -423,7 +466,7 @@ public class ${tableClass} implements ITable
   }
   
   public static class ${rowcollection} extends ${rowmodify} {
-    public $whereClass where = new $whereClass(table);
+    public $findWhereClass where = new $findWhereClass(table);
     
     public ${rowcollection}(${tableClass} theTable)
     {

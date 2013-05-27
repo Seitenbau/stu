@@ -2,18 +2,18 @@ package com.seitenbau.testing.dbunit.demomodel;
 import com.seitenbau.testing.dbunit.util.DbCompare;
 import com.seitenbau.testing.util.DateUtil;
 import com.seitenbau.testing.util.date.DateBuilder;
-import com.seitenbau.testing.dbunit.demomodel.JobsModel;
-import com.seitenbau.testing.dbunit.demomodel.PersonsModel;
-import com.seitenbau.testing.dbunit.demomodel.TeamsModel;
-import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
-import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.extend.impl.DefaultIdGenerator;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.IDataSet;
 import java.util.Date;
 
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
+import com.seitenbau.testing.dbunit.demomodel.JobsModel;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
+import com.seitenbau.testing.dbunit.demomodel.TeamsModel;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
+import com.seitenbau.testing.dbunit.demomodel.PersonsModel;
 
 /*********************************************************
   {@link DbUnitDatasetFactory} factory to create in-memory 

@@ -20,12 +20,12 @@ import org.dbunit.dataset.NoSuchColumnException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
-import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowGetters_Persons;
-import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.util.date.DateBuilder;
 
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowGetters_Teams;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowGetters_Persons;
 
 import static com.seitenbau.testing.util.DateUtil.*;
 
@@ -266,14 +266,14 @@ public class JobsTable implements ITable
     }
   }
   
-  public JobsWhere findWhere = new JobsWhere(this);
+  public JobsFindWhere findWhere = new JobsFindWhere(this);
 
-  public static class JobsWhere
+  public static class JobsFindWhere
   {
     public List<RowBuilder_Jobs> rows;
     JobsTable table;
     
-    public JobsWhere(JobsTable theTable) {
+    public JobsFindWhere(JobsTable theTable) {
        rows = theTable.rows;
        table = theTable;
     }
@@ -337,6 +337,64 @@ public class JobsTable implements ITable
         throw new RuntimeException("No Row with description = " + toSearch );
       }
       return modifiers;
+    }
+  }
+
+  public JobsGetWhere getWhere = new JobsGetWhere(this);
+
+  public static class JobsGetWhere
+  {
+    public List<RowBuilder_Jobs> rows;
+    JobsTable table;
+    
+    public JobsGetWhere(JobsTable theTable) {
+       rows = theTable.rows;
+       table = theTable;
+    }
+    
+    public RowBuilder_Jobs rowComparesTo(Comparable<RowBuilder_Jobs> toSearch) {
+      for (RowBuilder_Jobs row : rows) 
+      {
+        if (toSearch.compareTo(row) == 0) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Jobs id(java.lang.Long toSearch) {
+      for (RowBuilder_Jobs row : rows) 
+      {
+        if (row.getId().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Jobs id(Integer toSearch) 
+    {
+      return id( Long.valueOf(toSearch) );
+    }
+    public RowBuilder_Jobs title(java.lang.String toSearch) {
+      for (RowBuilder_Jobs row : rows) 
+      {
+        if (row.getTitle().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
+    }
+    public RowBuilder_Jobs description(java.lang.String toSearch) {
+      for (RowBuilder_Jobs row : rows) 
+      {
+        if (row.getDescription().equals(toSearch)) 
+        {
+          return row;
+        }
+      }
+      return null;
     }
   }
   
@@ -467,7 +525,7 @@ public class JobsTable implements ITable
   }
   
   public static class RowCollection_Jobs extends RowModify_Jobs {
-    public JobsWhere where = new JobsWhere(table);
+    public JobsFindWhere where = new JobsFindWhere(table);
     
     public RowCollection_Jobs(JobsTable theTable)
     {

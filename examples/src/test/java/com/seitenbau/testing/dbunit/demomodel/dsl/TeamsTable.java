@@ -5,10 +5,10 @@ import groovy.lang.Closure;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.TeamsGetWhere;
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
-import com.seitenbau.testing.dbunit.demomodel.TeamsTable.TeamsWhere;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
@@ -22,15 +22,15 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class TeamsTable {
 
-  public final ColumnBinding<RowBuilder_Teams, TeamsWhere> REF = createREFBinding();
+  public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> REF = createREFBinding();
 
-  public final ColumnBinding<RowBuilder_Teams, TeamsWhere> id = createIdBinding();
+  public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> id = createIdBinding();
 
-  public final ColumnBinding<RowBuilder_Teams, TeamsWhere> title = createTitleBinding();
+  public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> title = createTitleBinding();
 
-  public final ColumnBinding<RowBuilder_Teams, TeamsWhere> description = createDescriptionBinding();
+  public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> description = createDescriptionBinding();
 
-  public final ColumnBinding<RowBuilder_Teams, TeamsWhere> membersize = createMembersizeBinding();
+  public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> membersize = createMembersizeBinding();
 
   private final STUDSL _scope;
 
@@ -38,23 +38,22 @@ public class TeamsTable {
 
   private final Set<TeamsRef> _usedRefs;
 
-  private final ITableAdapter<RowBuilder_Teams, TeamsWhere, TeamsRef> _adapter = new ITableAdapter<RowBuilder_Teams, TeamsWhere, TeamsRef>()
+  private final ITableAdapter<RowBuilder_Teams, TeamsGetWhere, TeamsRef> _adapter = new ITableAdapter<RowBuilder_Teams, TeamsGetWhere, TeamsRef>()
   {
     public RowBuilder_Teams insertRow() 
     {
       return _table.insertRow();
     }
   
-    public TeamsWhere getFindWhere()
+    public TeamsGetWhere getWhere()
     {
-      return _table.findWhere;
+      return _table.getWhere;
     }
     
-    public void referenceUsed(TeamsRef reference, RowBuilder_Teams row)
+    public void bindToScope(TeamsRef reference, RowBuilder_Teams row)
     {
       if (row != null) {
         reference.setBuilder(_scope, row);
-        _usedRefs.add(reference);
       }
     }
 
@@ -92,8 +91,8 @@ public class TeamsTable {
   }
   
   public void rows(Closure<?> rows) {
-    GeneralTableRowCallback<RowBuilder_Teams, TeamsWhere, TeamsRef> callback = 
-        new GeneralTableRowCallback<RowBuilder_Teams, TeamsWhere, TeamsRef>(_adapter);
+    GeneralTableRowCallback<RowBuilder_Teams, TeamsGetWhere, TeamsRef> callback = 
+        new GeneralTableRowCallback<RowBuilder_Teams, TeamsGetWhere, TeamsRef>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
 
@@ -102,9 +101,9 @@ public class TeamsTable {
     return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
   }
 
-  private ColumnBinding<RowBuilder_Teams, TeamsWhere> createREFBinding()
+  private ColumnBinding<RowBuilder_Teams, TeamsGetWhere> createREFBinding()
   {
-    return new ColumnBinding<RowBuilder_Teams, TeamsWhere>()
+    return new ColumnBinding<RowBuilder_Teams, TeamsGetWhere>()
     { 
       @Override
       public void set(RowBuilder_Teams row, Object value)
@@ -124,9 +123,9 @@ public class TeamsTable {
     };
   }
 
-  private ColumnBinding<RowBuilder_Teams, TeamsWhere> createIdBinding() 
+  private ColumnBinding<RowBuilder_Teams, TeamsGetWhere> createIdBinding() 
   {
-    return new ColumnBinding<RowBuilder_Teams, TeamsWhere>()
+    return new ColumnBinding<RowBuilder_Teams, TeamsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Teams row, Object value)
@@ -144,7 +143,7 @@ public class TeamsTable {
       }
 
       @Override
-      public RowBuilder_Teams query(TeamsWhere findWhere, Object value) {
+      public RowBuilder_Teams query(TeamsGetWhere findWhere, Object value) {
         return findWhere.id((java.lang.Long)CastUtil.cast(value, DataType.BIGINT));
       }
 
@@ -161,9 +160,9 @@ public class TeamsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Teams, TeamsWhere> createTitleBinding() 
+  private ColumnBinding<RowBuilder_Teams, TeamsGetWhere> createTitleBinding() 
   {
-    return new ColumnBinding<RowBuilder_Teams, TeamsWhere>()
+    return new ColumnBinding<RowBuilder_Teams, TeamsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Teams row, Object value)
@@ -182,9 +181,9 @@ public class TeamsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Teams, TeamsWhere> createDescriptionBinding() 
+  private ColumnBinding<RowBuilder_Teams, TeamsGetWhere> createDescriptionBinding() 
   {
-    return new ColumnBinding<RowBuilder_Teams, TeamsWhere>()
+    return new ColumnBinding<RowBuilder_Teams, TeamsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Teams row, Object value)
@@ -203,9 +202,9 @@ public class TeamsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Teams, TeamsWhere> createMembersizeBinding() 
+  private ColumnBinding<RowBuilder_Teams, TeamsGetWhere> createMembersizeBinding() 
   {
-    return new ColumnBinding<RowBuilder_Teams, TeamsWhere>()
+    return new ColumnBinding<RowBuilder_Teams, TeamsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Teams row, Object value)

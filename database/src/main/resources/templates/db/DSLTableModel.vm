@@ -6,7 +6,7 @@
 #end
 #set($clsScope = ${model.dataSet.name} + "DSL")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
-#set($clsWhere = ${model.javaName} + "Where")
+#set($clsWhere = ${model.javaName} + "GetWhere")
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsTable = ${model.javaName} + "Table")
 package ${package};
@@ -63,12 +63,12 @@ public class ${clsTable} {
       return _table.insertRow();
     }
   
-    public ${clsWhere} getFindWhere()
+    public ${clsWhere} getWhere()
     {
-      return _table.findWhere;
+      return _table.getWhere;
     }
     
-    public void referenceUsed(${clsRef} reference, ${clsRowbuilder} row)
+    public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
     {
       if (row != null) {
         reference.setBuilder(_scope, row);

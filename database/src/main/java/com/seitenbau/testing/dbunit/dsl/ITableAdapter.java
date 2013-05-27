@@ -4,9 +4,9 @@ public interface ITableAdapter<R, F, D extends DatabaseReference> {
 
 	R insertRow();
 
-	F getFindWhere();
+	F getWhere();
 	
-	void referenceUsed(D reference, R row);
+	void bindToScope(D reference, R row);
 	
 	void handleReferences(D reference, R row);
 

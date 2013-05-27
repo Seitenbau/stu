@@ -45,16 +45,7 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
       id = row.getValue(_colId);
       
-      R builderById = null;
-      // TODO NM use getWhere instead of findWhere
-      try
-      {
-        builderById = column.query(_tableAdapter.getFindWhere(), CastUtil.cast(id, column.getDataType()));
-      }
-      catch (Exception e)
-      {
-      }
-      //System.out.println("RESULT " + result + " BUILDER " + builderById);
+      R builderById = column.query(_tableAdapter.getWhere(), CastUtil.cast(id, column.getDataType()));
       if (result != null && builderById != result) {
         throw new RuntimeException("Table structure failure [Possibly trial of ID redefinition]");
       }
@@ -121,7 +112,7 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
     {
       @SuppressWarnings("unchecked")
       D ref = (D) row.getValue(_colRef);
-      _tableAdapter.referenceUsed(ref, rowbuilder);
+      _tableAdapter.bindToScope(ref, rowbuilder);
     }
   }
 

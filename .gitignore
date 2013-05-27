@@ -4,6 +4,7 @@
 .project
 .settings
 bin
+generated-java
 
 # Mac
 .DS_Store
@@ -12,3 +13,4 @@ bin
 build
 .gradle
 target
+

@@ -5,10 +5,10 @@ import groovy.lang.Closure;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.PersonsGetWhere;
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.PersonsWhere;
-import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
@@ -22,21 +22,21 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class PersonsTable {
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsWhere> REF = createREFBinding();
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> REF = createREFBinding();
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsWhere> id = createIdBinding();
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> id = createIdBinding();
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsWhere> first_name = createFirstNameBinding();
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> first_name = createFirstNameBinding();
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsWhere> name = createNameBinding();
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> name = createNameBinding();
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsWhere> job_id = createJobIdBinding();
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job_id = createJobIdBinding();
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsWhere> job = job_id;
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job = job_id;
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsWhere> team_id = createTeamIdBinding();
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team_id = createTeamIdBinding();
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsWhere> team = team_id;
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team = team_id;
 
   private final STUDSL _scope;
 
@@ -44,23 +44,22 @@ public class PersonsTable {
 
   private final Set<PersonsRef> _usedRefs;
 
-  private final ITableAdapter<RowBuilder_Persons, PersonsWhere, PersonsRef> _adapter = new ITableAdapter<RowBuilder_Persons, PersonsWhere, PersonsRef>()
+  private final ITableAdapter<RowBuilder_Persons, PersonsGetWhere, PersonsRef> _adapter = new ITableAdapter<RowBuilder_Persons, PersonsGetWhere, PersonsRef>()
   {
     public RowBuilder_Persons insertRow() 
     {
       return _table.insertRow();
     }
   
-    public PersonsWhere getFindWhere()
+    public PersonsGetWhere getWhere()
     {
-      return _table.findWhere;
+      return _table.getWhere;
     }
     
-    public void referenceUsed(PersonsRef reference, RowBuilder_Persons row)
+    public void bindToScope(PersonsRef reference, RowBuilder_Persons row)
     {
       if (row != null) {
         reference.setBuilder(_scope, row);
-        _usedRefs.add(reference);
       }
     }
 
@@ -98,8 +97,8 @@ public class PersonsTable {
   }
   
   public void rows(Closure<?> rows) {
-    GeneralTableRowCallback<RowBuilder_Persons, PersonsWhere, PersonsRef> callback = 
-        new GeneralTableRowCallback<RowBuilder_Persons, PersonsWhere, PersonsRef>(_adapter);
+    GeneralTableRowCallback<RowBuilder_Persons, PersonsGetWhere, PersonsRef> callback = 
+        new GeneralTableRowCallback<RowBuilder_Persons, PersonsGetWhere, PersonsRef>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
 
@@ -108,9 +107,9 @@ public class PersonsTable {
     return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
   }
 
-  private ColumnBinding<RowBuilder_Persons, PersonsWhere> createREFBinding()
+  private ColumnBinding<RowBuilder_Persons, PersonsGetWhere> createREFBinding()
   {
-    return new ColumnBinding<RowBuilder_Persons, PersonsWhere>()
+    return new ColumnBinding<RowBuilder_Persons, PersonsGetWhere>()
     { 
       @Override
       public void set(RowBuilder_Persons row, Object value)
@@ -130,9 +129,9 @@ public class PersonsTable {
     };
   }
 
-  private ColumnBinding<RowBuilder_Persons, PersonsWhere> createIdBinding() 
+  private ColumnBinding<RowBuilder_Persons, PersonsGetWhere> createIdBinding() 
   {
-    return new ColumnBinding<RowBuilder_Persons, PersonsWhere>()
+    return new ColumnBinding<RowBuilder_Persons, PersonsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Persons row, Object value)
@@ -150,7 +149,7 @@ public class PersonsTable {
       }
 
       @Override
-      public RowBuilder_Persons query(PersonsWhere findWhere, Object value) {
+      public RowBuilder_Persons query(PersonsGetWhere findWhere, Object value) {
         return findWhere.id((java.lang.Long)CastUtil.cast(value, DataType.BIGINT));
       }
 
@@ -167,9 +166,9 @@ public class PersonsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Persons, PersonsWhere> createFirstNameBinding() 
+  private ColumnBinding<RowBuilder_Persons, PersonsGetWhere> createFirstNameBinding() 
   {
-    return new ColumnBinding<RowBuilder_Persons, PersonsWhere>()
+    return new ColumnBinding<RowBuilder_Persons, PersonsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Persons row, Object value)
@@ -188,9 +187,9 @@ public class PersonsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Persons, PersonsWhere> createNameBinding() 
+  private ColumnBinding<RowBuilder_Persons, PersonsGetWhere> createNameBinding() 
   {
-    return new ColumnBinding<RowBuilder_Persons, PersonsWhere>()
+    return new ColumnBinding<RowBuilder_Persons, PersonsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Persons row, Object value)
@@ -209,9 +208,9 @@ public class PersonsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Persons, PersonsWhere> createJobIdBinding() 
+  private ColumnBinding<RowBuilder_Persons, PersonsGetWhere> createJobIdBinding() 
   {
-    return new ColumnBinding<RowBuilder_Persons, PersonsWhere>()
+    return new ColumnBinding<RowBuilder_Persons, PersonsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Persons row, Object value)
@@ -244,9 +243,9 @@ public class PersonsTable {
       }
     };
   }
-  private ColumnBinding<RowBuilder_Persons, PersonsWhere> createTeamIdBinding() 
+  private ColumnBinding<RowBuilder_Persons, PersonsGetWhere> createTeamIdBinding() 
   {
-    return new ColumnBinding<RowBuilder_Persons, PersonsWhere>()
+    return new ColumnBinding<RowBuilder_Persons, PersonsGetWhere>()
     {
       @Override
       public void set(RowBuilder_Persons row, Object value)
