@@ -9,6 +9,9 @@
 #set($clsWhere = ${model.javaName} + "GetWhere")
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsTable = ${model.javaName} + "Table")
+#set($clsTableFindWhere = ${model.javaName} + "TableFindWhere")
+#set($clsTableGetWhere = ${model.javaName} + "TableGetWhere")
+#set($clsRowcollection= "RowCollection_" + ${model.javaName} )
 package ${package};
 
 import com.google.common.base.Optional;
@@ -22,7 +25,7 @@ import java.util.Set;
 ##import ${model.package}.${model.dataSet.name}DataSet;
 ###end
 import ${model.package}.${clsTable}.${clsWhere};
-##import ${model.package}.${clsTable}.${clsRowbuilder};
+import ${model.package}.${clsTable}.${clsRowcollection};
 #foreach( $table in $model.dataSet.tables )
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 #end
@@ -207,5 +210,74 @@ public class ${clsTable} {
   }
 #end
   
+  public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);
+
+  public static class ${clsTableFindWhere} {
+    private final ${clsTable} table;
+    
+    ${clsTableFindWhere}(${clsTable} table) 
+    {
+      this.table = table;
+    }
+#foreach( $col in $model.columns )
+
+    public ${clsRowcollection} ${col.javaNameFirstLower}(${clsRef} ref)
+    {
+      ${clsRowbuilder} builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new ${clsRowcollection}(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
+    }
+
+    public ${clsRowcollection} ${col.javaNameFirstLower}(${col.javaType} toSearch)
+    {
+      return table.getTableModel().findWhere.${col.javaNameFirstLower}(toSearch);
+    }
+#if( $col.javaType.contains("Long") )
+
+    public ${clsRowcollection} ${col.javaNameFirstLower}(Integer toSearch) 
+    {
+      return ${col.javaNameFirstLower}(Long.valueOf(toSearch));
+    }
+#end
+#end
+  }
+  
+  public final ${clsTableGetWhere} getWhere = new ${clsTableGetWhere}(this);
+
+  public static class ${clsTableGetWhere} {
+    private final ${clsTable} table;
+    
+    ${clsTableGetWhere}(${clsTable} table) 
+    {
+      this.table = table;
+    }
+#foreach( $col in $model.columns )
+
+    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${clsRef} ref)
+    {
+      ${clsRowbuilder} builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<${clsRowbuilder}> absent();
+      }
+      return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
+    }
+
+    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${col.javaType} toSearch)
+    {
+      return table.getTableModel().getWhere.${col.javaNameFirstLower}(toSearch);
+    }
+#if( $col.javaType.contains("Long") )
+
+    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(Integer toSearch) 
+    {
+      return ${col.javaNameFirstLower}(Long.valueOf(toSearch));
+    }
+#end
+#end
+  }
 }
 
