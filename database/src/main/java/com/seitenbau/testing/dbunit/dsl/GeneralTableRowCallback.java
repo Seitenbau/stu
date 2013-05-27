@@ -51,13 +51,15 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
       id = row.getValue(_colId);
       
-      Optional<R> builderById = column.getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, column.getDataType()));
-      if (builderById.isPresent()) {
-        if (result != null && builderById.get() != result) {
-          throw new RuntimeException("Table structure failure [Possibly trial of ID redefinition]");
+      if (!(id instanceof NoValue)) {
+        Optional<R> builderById = column.getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, column.getDataType()));
+        if (builderById.isPresent()) {
+          if (result != null && builderById.get() != result) {
+            throw new RuntimeException("Table structure failure [Possibly trial of ID redefinition]");
+          }
+  
+          result = builderById.get();
         }
-
-        result = builderById.get();
       }
     }
     
