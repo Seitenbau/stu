@@ -63,7 +63,7 @@ project("common") {
     compile("org.mockito:mockito-all:$mockitoVersion", optional)
     compile("org.springframework:spring-beans:$springVersion", optional)
     compile("ch.qos.logback:logback-classic:$logbackVersion", optional)
-	compile("com.google.guava:guava:$guavaVersion")
+	compile("com.google.guava:guava:$guavaVersion", optional)
   }
 }
 
