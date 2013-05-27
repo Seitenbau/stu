@@ -29,9 +29,10 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
+import com.seitenbau.testing.dbunit.dsl.NoValue;
+import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
@@ -41,6 +42,8 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 public class ${clsTable} {
 
   public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = createREFBinding();
+  
+  public final NoValue _ = new NoValue();
 
 #foreach( $col in $model.columns )
   public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = create${col.javaName}Binding();

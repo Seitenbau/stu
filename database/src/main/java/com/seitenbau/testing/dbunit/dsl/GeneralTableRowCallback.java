@@ -35,10 +35,14 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
     // get builder by reference (if available)
     if (_colRef != -1)
     {
-      @SuppressWarnings("unchecked")
-      D ref = (D)row.getValue(_colRef);
-      result = _tableAdapter.getRowByReference(ref);
-      isNewRef = (result == null);
+      Object refValue = row.getValue(_colRef);
+      if (!(refValue instanceof NoValue))
+      {
+        @SuppressWarnings("unchecked")
+        D ref = (D)row.getValue(_colRef);
+        result = _tableAdapter.getRowByReference(ref);
+        isNewRef = (result == null);
+      }
     }
 
     if (_colId != -1)
@@ -102,6 +106,10 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       @SuppressWarnings("unchecked")
       ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(columnIndex);
       Object value = row.getValue(columnIndex);
+      if (value instanceof NoValue) {
+        continue;
+      }
+      
       if (value instanceof DatabaseReference) {
         // TODO 
         DatabaseReference ref = (DatabaseReference)value;
@@ -113,9 +121,13 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
 
     if (_colRef != -1 && row.getValue(_colRef) != null)
     {
-      @SuppressWarnings("unchecked")
-      D ref = (D) row.getValue(_colRef);
-      _tableAdapter.bindToScope(ref, rowbuilder);
+      Object refValue = row.getValue(_colRef);
+      if (!(refValue instanceof NoValue)) 
+      {
+        @SuppressWarnings("unchecked")
+        D ref = (D) row.getValue(_colRef);
+        _tableAdapter.bindToScope(ref, rowbuilder);
+      }
     }
   }
 
