@@ -108,13 +108,6 @@ public class Column
     }
 
     return _reference.getColumn().getTable() == table;
-    // if statement above does not work:
-    //for (Column column : table.getColumns()) {
-    //  if (_reference.getColumn() == column) {
-    //    return true;
-    //  }
-    //}
-    //return false;
   }
   
   public String getTruncatedReferenceName()

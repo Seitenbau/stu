@@ -32,16 +32,17 @@ public class ${model.name}DSL
 #end
   public void tables(Closure<?> table)
   {
+    setReferencesContext();
     table.setDelegate(this);
     table.setResolveStrategy(Closure.DELEGATE_FIRST);
     table.call();
+    unsetReferencesContext();
   }
   
   public void relations(Closure<?> relations)
   {
     setReferencesContext();
     relations.call();
-    //resolveRelations();
     unsetReferencesContext();
   }
   
@@ -62,105 +63,7 @@ public class ${model.name}DSL
 #end
 #end
   }
-
-  private void resolveRelations()
-  {
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-    updateRelations${table.javaName}Ref();
-#end
-#end
-  }
  
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-  private void updateRelations${table.javaName}Ref()
-  {
-#macro( addReference $verb $refRef )
-#end  
-  
-#foreach( $col in $table.columns )
-#if( $col.references && $col.references.size() != 0 )
-#set($clsRef = ${table.javaName} + "Ref")
-#set($varRef = ${table.javaNameFirstLower} + "Ref")
-#set($varTable = ${table.javaNameFirstLower} + "Table")
-#set($clsRowbuilder = "RowBuilder_" + ${table.javaName})
-#set($varRowbuilder = ${table.javaNameFirstLower})
-    for (${clsRef} ${varRef} : ${varTable}.getUsedRefs())
-    {
-#set($refClsRef = ${col.reference.table.javaName} + "Ref")      
-#set($refVarRef = ${col.reference.table.javaNameFirstLower} + "Ref")      
-#set($refClsRowbuilder = "RowBuilder_" + ${col.reference.table.javaName})
-#set($refVarRowbuilder = ${col.reference.table.javaNameFirstLower})
-      ${clsRowbuilder} ${varRowbuilder} = ${varRef}.getBuilder(this);
-      if (${varRef}.${col.reference.localName}List.get(this) != null)
-      {
-        for (${refClsRef} ${refVarRef} : ${varRef}.${col.reference.localName}List.get(this))
-        {
-          ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
-          ${col.javaType} value = ${refVarRowbuilder}.get${col.reference.column.javaName}();
-          ${varRowbuilder}.set${col.javaName}(value);
-        }
-      }
-      
-      ${varRef}.${col.reference.localName}List.clear();
-    } 
-#end
-#end
-
-#foreach( $referencingTable in $table.dataSet.tables )
-#foreach( $col in $referencingTable.columns )
-#set($varRef = ${table.javaNameFirstLower} + "Ref")
-#if( ${col.isReferencingTable($table)} )
-#set($varList = ${col.reference.remoteName} + "List")
-#set($clsRef = ${table.javaName} + "Ref")
-    for (${clsRef} ${varRef} : ${table.javaNameFirstLower}Table.getUsedRefs())
-    {
-      RowBuilder_${table.javaName} ${table.javaNameFirstLower} = ${varRef}.getBuilder(this);
-#if ( ${referencingTable.isAssociativeTable()} )
-######### Associative Table ############################
-#set($reftable = ${referencingTable.getAssociatedTable($table)})
-#set($refClsRef = ${reftable.javaName} + "Ref")
-#set($refVarRef = ${reftable.javaNameFirstLower} + "Ref")
-#set($refClsRowbuilder = "RowBuilder_" + ${reftable.javaName})
-#set($refVarRowbuilder = ${reftable.javaNameFirstLower})
-      if (${varRef}.${varList}.get(this) != null)
-      {
-        for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
-        {
-          ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this); 
-          RowBuilder_${referencingTable.javaName} row = ${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
-#foreach( $rcol in $referencingTable.columns )
-#set($currentRowBuilder = ${rcol.reference.table.javaNameFirstLower})
-          row.set${rcol.javaName}(${currentRowBuilder}.get${rcol.reference.javaName}());
-#end
-        }
-      }
-#else
-#set($reftable = ${col.table})
-#set($refClsRef = ${reftable.javaName} + "Ref")
-#set($refVarRef = ${reftable.javaNameFirstLower} + "Ref")
-#set($refClsRowbuilder = "RowBuilder_" + ${reftable.javaName})
-#set($refVarRowbuilder = ${reftable.javaNameFirstLower})
-      if (${varRef}.${varList}.get(this) != null)
-      {
-        for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
-        {
-          ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
-          ${col.javaType} value = ${table.javaNameFirstLower}.get${col.reference.column.javaName}();
-          ${refVarRowbuilder}.set${col.javaName}(value);
-        }
-      }
-#end
-
-      ${varRef}.${varList}.clear(); 
-    }
-#end
-#end
-#end
-  }
-#end
-#end
 #foreach( $reftable in $model.tables )
 
   void replace${reftable.javaName}RefWithId(${reftable.javaName}Ref reference, RowBuilder_${reftable.javaName} row)
