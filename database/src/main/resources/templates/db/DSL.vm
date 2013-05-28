@@ -4,12 +4,15 @@
 #else
 #set($package  = "dsl" )
 #end
+#set($clsScope = ${model.name} + "DSL")
+#set($clsDataSet = ${model.name} + "DataSet")
+#set($referenceMethod = "reference")
 package ${package};
 
 import org.dbunit.dataset.IDataSet;
 
 #if( $model.package && $model.package.length() != 0 )
-import ${model.package}.${model.name}DataSet;
+import ${model.package}.${clsDataSet};
 #end
 #foreach( $table in $model.tables )
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
@@ -17,10 +20,10 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 
 import groovy.lang.Closure;
 
-public class ${model.name}DSL 
+public class ${clsScope} 
 {
 
-  ${model.name}DataSet dataset = new ${model.name}DataSet() 
+  ${clsDataSet} dataset = new ${clsDataSet}() 
   {
     @Override
     public void initDataSet() { }
@@ -86,6 +89,36 @@ public class ${model.name}DSL
   }
 #end
 
+#foreach( $table in $model.tables )
+#set($clsRef = ${table.javaName} + "Ref")
+#set($clsRefAccess = ${table.javaName} + "RefAccess")
+#set($varTable = ${table.javaNameFirstLower} + "Table")
+
+  public ${clsRefAccess} ${referenceMethod}(${clsRef} ref)
+  {
+    return new ${clsRefAccess}(ref, this);
+  }
+  
+  public static class ${clsRefAccess}
+  {
+    private final ${clsRef} _ref;
+    private final ${clsScope} _scope;
+    
+    private $clsRefAccess(${clsRef} ref, ${clsScope} scope)
+    {
+      _ref = ref;
+      _scope = scope;
+    }
+#foreach( $col in $table.columns )
+
+    public ${col.javaType} ${col.javaNameFirstLower}()
+    {
+      return _ref.getBuilder(_scope).get${col.javaName}();
+    }
+#end
+  }
+#end
+  
   public IDataSet createDataSet() 
   {
     return dataset.createDBUnitDataSet();

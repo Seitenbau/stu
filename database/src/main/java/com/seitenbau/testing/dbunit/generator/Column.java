@@ -1,5 +1,8 @@
 package com.seitenbau.testing.dbunit.generator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.seitenbau.testing.util.CamelCase;
 
 public class Column
@@ -14,7 +17,7 @@ public class Column
   private final String _javaName;
 
   private final Reference _reference;
-
+  
   private final Table _table;
   
   private final boolean _isIdentifier;
@@ -24,6 +27,8 @@ public class Column
   private final boolean _isAutoIncrement;
   
   private final boolean _isNextIdMethodGenerated;
+  
+  private final List<Column> _referencedBy;
 
   Column(Table table, String name, String javaName, String type, String javaType, Reference reference,
       boolean isIdentifier, boolean isAutoIncrement, boolean addNextMethod, boolean enableAutoIdHandling)
@@ -39,6 +44,11 @@ public class Column
     _enableAutoIdHandling = enableAutoIdHandling;
     
     _isNextIdMethodGenerated = addNextMethod || isAutoIncrement || enableAutoIdHandling;
+    
+    _referencedBy = new ArrayList<Column>();
+    if (reference != null) {
+      reference.getColumn()._referencedBy.add(this);
+    }
   }
 
   public Table getTable()
@@ -108,6 +118,11 @@ public class Column
     }
 
     return _reference.getColumn().getTable() == table;
+  }
+  
+  public List<Column> getReferencedByList()
+  {
+    return _referencedBy;
   }
   
   public String getTruncatedReferenceName()

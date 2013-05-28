@@ -113,6 +113,7 @@ public class DataSetGenerator
       generateDSLTableModel(targetPath + "/");
       //generateDSLTableBinding(targetPath + "/");
       generateDSLTableReferences(targetPath + "/");
+      generateDSLTableReferenceFactory(targetPath + "/");
     }
     finally
     {
@@ -197,6 +198,12 @@ public class DataSetGenerator
     logger.info("created " + _dataSet.getTables().size()  + " DSL Table References");
   }
   
+  protected void generateDSLTableReferenceFactory(String into) throws Exception
+  {
+    templates.executeTemplate(_dataSet, getTemplatePathRefFactory(), into);
+    logger.info("created 1 RefFactory class");
+  }
+  
   protected void generateDSL(String into) throws Exception
   {
     templates.executeTemplate(_dataSet, getTemplatePathDSL(), into);
@@ -216,6 +223,11 @@ public class DataSetGenerator
   protected String getTemplatePathTableReferences()
   {
     return "/templates/db/DSLTableRef.vm";
+  }
+  
+  protected String getTemplatePathRefFactory()
+  {
+    return "/templates/db/DSLRefFactory.vm";
   }
   
   protected String getTemplatePathDSL()

@@ -48,46 +48,9 @@ public class ${clsRef} extends DatabaseReference {
     if (lastBuilder != null && lastBuilder != builder) {
       throw new RuntimeException("Builder cannot be redefined");
     }
-#if ( !${model.isAssociativeTable()} )
-#foreach( $col in $model.columns )
-#if( $col.reference )
-#set($refClsRef = ${col.reference.table.javaName} + "Ref")
-#set($verb = ${col.reference.localName})
-
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, threadScope);
-    for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
-    {
-      ${refClsRef} ref = it.next();
-      it.remove();	// remove iterator because if it will not resolve now, it will never
-      RowBuilder_${col.reference.table.javaName} otherBuilder = ref.getBuilder(scope);
-      if (otherBuilder == null) 
-      {
-        continue;
-      }
-      
-      builder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, threadScope);
-      if (otherList.contains(this)) 
-      {
-        otherList.remove(this);
-      }
-    }
-#end
-#end
-#foreach( $referencingTable in $model.dataSet.tables )
-#foreach( $col in $referencingTable.columns )
-#if( ${col.isReferencingTable($model)} )
-#if ( ${referencingTable.isAssociativeTable()} )
-#set($verb = ${col.reference.remoteName})
-#set($refColumn = ${referencingTable.getReferencingColumn($model)})
-#set($refTable = ${refColumn.reference.table})
+#macro( setBuilderHandlerHead $refTable $verb )
 #set($refClsRef = ${refTable.javaName} + "Ref")
 
-#foreach ($c in $referencingTable.columns)
-#if ($c != $col)
-#set($remoteKey = $c.reference.column.javaName) 
-#end
-#end
     List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, threadScope);
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
@@ -98,41 +61,60 @@ public class ${clsRef} extends DatabaseReference {
       {
         continue;
       }
-      
-      RowBuilder_${referencingTable.javaName} row = scope.${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
-      row.set${col.javaName}(builder.get${col.reference.column.javaName}());
-      row.set${refColumn.javaName}(otherBuilder.get${remoteKey}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${refColumn.reference.remoteName}Map, threadScope);
-      if(otherList.contains(this)) 
-      {
-        otherList.remove(this);
-      }
-    }
-#else
-## foreign reference
-#set($refClsRef = ${referencingTable.javaName} + "Ref")
-#set($verb = ${col.reference.remoteName})
-
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, threadScope);
-    for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
-    {
-      ${refClsRef} ref = it.next();
-      it.remove();	// remove iterator because if it will not resolve now, it will never
-      RowBuilder_${referencingTable.javaName} otherBuilder = ref.getBuilder(scope);
-      if (otherBuilder == null) 
-      {
-        continue;
-      }
-      
-      otherBuilder.set${col.javaName}(builder.get${col.reference.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.localName}Map, threadScope);
+#end
+#macro( setBuilderHandlerFooter )
       if (otherList.contains(this)) 
       {
         otherList.remove(this);
       }
     }
+#end    
+#### Handle own references #####################################
+#if ( !${model.isAssociativeTable()} )
+#foreach( $col in $model.columns )
+#if( $col.reference )
+#set($refClsRef = ${col.reference.table.javaName} + "Ref")
+#set($verb = ${col.reference.localName})
+#setBuilderHandlerHead(${col.reference.table} $verb)
+      builder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, threadScope);
+#setBuilderHandlerFooter()
+#end
+#### Handle foreign references #####################################
+#foreach ( $referencingColumn in ${col.referencedByList} )
+#set($referencingTable = ${referencingColumn.table})
+#set($isAssociative = ${referencingTable.isAssociativeTable()})
+#if ($isAssociative)
+#set($verb = ${referencingColumn.reference.remoteName})
+#set($refColumn = ${referencingTable.getAssociatedColumn($model)})
+#set($refTable = ${refColumn.reference.table})
+#set($refClsRef = ${refTable.javaName} + "Ref")
+#set($thisMethod = ${referencingColumn.javaName})
+#foreach ($c in $referencingTable.columns)
+#if ($c != $referencingColumn)
+#set($remoteKey = $c.reference.column.javaName)
+#else
+#set($thisKey = ${c.reference.column.javaName})
 #end
 #end
+#set($otherMap = ${refColumn.reference.remoteName})
+#else
+## foreign reference
+#set($refColumn = ${referencingColumn})
+#set($refTable = ${refColumn.table})
+#set($refClsRef = ${referencingTable.javaName} + "Ref")
+#set($verb = ${referencingColumn.reference.remoteName})
+#set($remoteKey = ${referencingColumn.reference.column.javaName})
+#set($otherMap = ${refColumn.reference.localName})
+#end
+#setBuilderHandlerHead($refTable $verb)
+      RowBuilder_${referencingTable.javaName} row = scope.${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
+#if($isAssociative)      
+      row.set${thisMethod}(builder.get${thisKey}());
+#end      
+      row.set${refColumn.javaName}(otherBuilder.get${remoteKey}());
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, threadScope);
+#setBuilderHandlerFooter()
 #end
 #end
 #end
@@ -147,7 +129,7 @@ public class ${clsRef} extends DatabaseReference {
 #if ($list.add($item))
 #end
 #end
-#macro( addReference $refTable $verb $remoteVerb )
+#macro( addReference $refTable $verb $remoteVerb $resolveCode )
 #set($refClsRef = ${refTable.javaName} + "Ref" )
   Map<${clsScope}, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<${clsScope}, List<${refClsRef}>>();
 
@@ -185,35 +167,30 @@ public class ${clsRef} extends DatabaseReference {
 #if ( !${model.isAssociativeTable()} )
 #foreach( $col in $model.columns )
 #if( $col.reference )
-#set($resolveCode = [ "// simple reference" ] )
-#addToList($resolveCode "thisBuilder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());")
+#set($resolveCode = [ "thisBuilder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());" ] )
 #addReference( $col.reference.table ${col.reference.localName} ${col.reference.remoteName} $resolveCode )
 #end
-#end
-#foreach( $referencingTable in $model.dataSet.tables )
-#foreach( $col in $referencingTable.columns )
-#if( ${col.isReferencingTable($model)} )
-#if ( ${referencingTable.isAssociativeTable()} )
+#### Handle foreign references ################
+#foreach( $referencingCol in $col.referencedByList )
+#if ( ${referencingCol.table.isAssociativeTable()} )
+### Association Table Foreign Key ####################
+#set($assocTable = $referencingCol.table)
 #set($resolveCode = [ "// associative table" ] )
-#set($refColumn = ${referencingTable.getReferencingColumn($model)})
-#foreach ($c in $referencingTable.columns)
-#if ($c != $col)
-#set($remoteKey = $c.reference.column.javaName) 
-#end
-#end
-#addToList($resolveCode "RowBuilder_${referencingTable.javaName} builder = scope.${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();")
-#addToList($resolveCode "builder.set${col.javaName}(thisBuilder.get${col.reference.column.javaName}());")
-#addToList($resolveCode "builder.set${refColumn.javaName}(otherBuilder.get${remoteKey}());")
-#addReference( ${referencingTable.getAssociatedTable($model)} ${col.reference.remoteName} ${referencingTable.getReferencingColumn($model).reference.remoteName} $resolveCode)
+#set($assocColumn = ${assocTable.getAssociatedColumn($model)})
+#set( $p_refTable = ${referencingCol.table.getAssociatedTable($model)})
+#set( $p_verb = ${referencingCol.reference.remoteName})
+#set( $p_remoteVerb = ${referencingCol.table.getAssociatedColumn($model).reference.remoteName})
+#addToList($resolveCode "RowBuilder_${referencingCol.table.javaName} builder = scope.${referencingCol.table.javaNameFirstLower}Table.getTableModel().insertRow();")
+#addToList($resolveCode "builder.set${referencingCol.javaName}(thisBuilder.get${col.javaName}());")
+#addToList($resolveCode "builder.set${assocColumn.javaName}(otherBuilder.get${assocColumn.reference.column.javaName}());")
+#addReference( $p_refTable $p_verb $p_remoteVerb $resolveCode)
 #else
+### Simple Foreign Key ####################
 #set($resolveCode = [ "// foreign reference" ] )
-#addToList($resolveCode "otherBuilder.set${col.javaName}(thisBuilder.get${col.reference.column.javaName}());")
-#addReference( ${col.table} ${col.reference.remoteName} ${col.reference.localName} $resolveCode )
+#addToList($resolveCode "otherBuilder.set${referencingCol.javaName}(thisBuilder.get${col.javaName}());")
+#addReference( ${referencingCol.table} ${referencingCol.reference.remoteName} ${referencingCol.reference.localName} $resolveCode )
 #end
 #end
 #end
 #end
-#end
-
 }
-

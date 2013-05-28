@@ -1,0 +1,19 @@
+#set($filename = ${model.name} + "RefFactory" )
+#if( $model.package && $model.package.length() != 0 )
+#set($package  = ${model.package} + ".dsl" )
+#else
+#set($package  = "dsl" )
+#end
+#set($clsFactory = ${model.name} + "RefFactory")
+package ${package};
+
+public class ${clsFactory} 
+{
+#foreach( $table in $model.tables )
+
+  public static ${table.javaName}Ref create${table.javaName}Ref()
+  {
+    return new ${table.javaName}Ref();
+  }
+#end
+}

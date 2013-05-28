@@ -104,19 +104,23 @@ public class Table
 
   public boolean isAssociativeTable()
   {
-    if (getColumns().size() != 2)
+    int foreignKeys = 0;
+    if (getColumns().size() < 2)
     {
       return false;
     }
     for (Column col : getColumns())
     {
-      if (col.getReference() == null)
-      {
+      if (col.isIdentifierColumn()) {
         return false;
+      }
+      if (col.getReference() != null)
+      {
+        foreignKeys++;
       }
     }
 
-    return true;
+    return (foreignKeys == 2);
   }
 
   public Table getAssociatedTable(Table table)
@@ -138,7 +142,7 @@ public class Table
     //throw new RuntimeException("No associating column found");
   }
   
-  public Column getReferencingColumn(Table table)
+  public Column getAssociatedColumn(Table table)
   {
     for (Column col : getColumns())
     {
