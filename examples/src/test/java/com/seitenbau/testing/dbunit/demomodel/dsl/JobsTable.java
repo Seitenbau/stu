@@ -23,7 +23,6 @@ import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
 
-
 public class JobsTable {
 
   /**
@@ -31,25 +30,30 @@ public class JobsTable {
    */
   public final NoValue _ = new NoValue();
 
+  /**
+   * Column Header for Jobs table.
+   * <p>
+   * Data Type: JobsRef
+   */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> REF = createREFBinding();
 
   /**
-   * Column Header for Jobs table
-   * 
+   * Column Header for Jobs table.
+   * <p>
    * Data Type: java.lang.Long
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> id = createIdBinding();
 
   /**
-   * Column Header for Jobs table
-   * 
+   * Column Header for Jobs table.
+   * <p>
    * Data Type: java.lang.String
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> title = createTitleBinding();
 
   /**
-   * Column Header for Jobs table
-   * 
+   * Column Header for Jobs table.
+   * <p>
    * Data Type: java.lang.String
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> description = createDescriptionBinding();

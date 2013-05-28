@@ -1,6 +1,6 @@
 package com.seitenbau.testing.dbunit.demomodel.dsl;
 
-public class STURefFactory 
+public class RefFactory 
 {
 
   public static JobsRef createJobsRef()

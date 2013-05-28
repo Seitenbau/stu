@@ -23,7 +23,6 @@ import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
 
-
 public class PersonsTable {
 
   /**
@@ -31,32 +30,37 @@ public class PersonsTable {
    */
   public final NoValue _ = new NoValue();
 
+  /**
+   * Column Header for Persons table.
+   * <p>
+   * Data Type: PersonsRef
+   */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> REF = createREFBinding();
 
   /**
-   * Column Header for Persons table
-   * 
+   * Column Header for Persons table.
+   * <p>
    * Data Type: java.lang.Long
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> id = createIdBinding();
 
   /**
-   * Column Header for Persons table
-   * 
+   * Column Header for Persons table.
+   * <p>
    * Data Type: java.lang.String
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> first_name = createFirstNameBinding();
 
   /**
-   * Column Header for Persons table
-   * 
+   * Column Header for Persons table.
+   * <p>
    * Data Type: java.lang.String
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> name = createNameBinding();
 
   /**
-   * Column Header for Persons table
-   * 
+   * Column Header for Persons table.
+   * <p>
    * Data Type: java.lang.Long
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job_id = createJobIdBinding();
@@ -64,8 +68,8 @@ public class PersonsTable {
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job = job_id;
 
   /**
-   * Column Header for Persons table
-   * 
+   * Column Header for Persons table.
+   * <p>
    * Data Type: java.lang.Long
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team_id = createTeamIdBinding();

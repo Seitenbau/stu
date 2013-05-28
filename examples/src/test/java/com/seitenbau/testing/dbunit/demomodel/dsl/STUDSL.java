@@ -23,16 +23,31 @@ public class STUDSL
    */
   final JobsTable jobsTable;
   
+  // Getter for Groovy property access
+  public JobsTable getJobsTable()
+  {
+    return jobsTable;
+  }
   /**
    * The Teams table
    */
   final TeamsTable teamsTable;
   
+  // Getter for Groovy property access
+  public TeamsTable getTeamsTable()
+  {
+    return teamsTable;
+  }
   /**
    * The Persons table
    */
   final PersonsTable personsTable;
   
+  // Getter for Groovy property access
+  public PersonsTable getPersonsTable()
+  {
+    return personsTable;
+  }
   public STUDSL() {
     this(new STUDataSet() 
     {

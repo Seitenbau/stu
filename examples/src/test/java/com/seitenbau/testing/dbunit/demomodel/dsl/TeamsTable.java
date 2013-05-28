@@ -23,7 +23,6 @@ import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
 
-
 public class TeamsTable {
 
   /**
@@ -31,32 +30,37 @@ public class TeamsTable {
    */
   public final NoValue _ = new NoValue();
 
+  /**
+   * Column Header for Teams table.
+   * <p>
+   * Data Type: TeamsRef
+   */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> REF = createREFBinding();
 
   /**
-   * Column Header for Teams table
-   * 
+   * Column Header for Teams table.
+   * <p>
    * Data Type: java.lang.Long
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> id = createIdBinding();
 
   /**
-   * Column Header for Teams table
-   * 
+   * Column Header for Teams table.
+   * <p>
    * Data Type: java.lang.String
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> title = createTitleBinding();
 
   /**
-   * Column Header for Teams table
-   * 
+   * Column Header for Teams table.
+   * <p>
    * Data Type: java.lang.String
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> description = createDescriptionBinding();
 
   /**
-   * Column Header for Teams table
-   * 
+   * Column Header for Teams table.
+   * <p>
    * Data Type: java.lang.Long
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> membersize = createMembersizeBinding();
