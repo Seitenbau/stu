@@ -40,8 +40,6 @@ import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
 
-#set($table = $model)
-
 public class ${clsTable} {
 
   /**
@@ -49,12 +47,17 @@ public class ${clsTable} {
    */
   public final NoValue _ = new NoValue();
 
+  /**
+   * Column Header for ${model.javaName} table.
+   * <p>
+   * Data Type: ${model.javaName}Ref
+   */
   public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = createREFBinding();
 
 #foreach( $col in $model.columns )
   /**
-   * Column Header for ${model.javaName} table
-   * 
+   * Column Header for ${model.javaName} table.
+   * <p>
    * Data Type: ${col.javaType}
    */
   public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = create${col.javaName}Binding();

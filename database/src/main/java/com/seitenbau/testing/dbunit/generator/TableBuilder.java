@@ -20,12 +20,12 @@ public class TableBuilder
   {
     return new ColumnBuilder(this, name, dataType);
   }
-  
+
   public void addColumn(Column column)
   {
     table.addColumn(column);
   }
-  
+
   Table getTable()
   {
     return table;

@@ -57,7 +57,7 @@ public class Table
     }
     return DataSet.makeNiceJavaName(_name);
   }
-  
+
   public String getJavaNameFirstLower()
   {
     return CamelCase.makeFirstLowerCase(getJavaName());
@@ -111,7 +111,8 @@ public class Table
     }
     for (Column col : getColumns())
     {
-      if (col.isIdentifierColumn()) {
+      if (col.isIdentifierColumn())
+      {
         return false;
       }
       if (col.getReference() != null)
@@ -128,36 +129,40 @@ public class Table
     for (Column col : getColumns())
     {
       final Reference reference = col.getReference();
-      if (reference == null) {
+      if (reference == null)
+      {
         continue;
       }
-      if (reference.getColumn().getTable() == table) {
+      if (reference.getColumn().getTable() == table)
+      {
         continue;
       }
-      
+
       return reference.getColumn().getTable();
     }
-    
+
     return null;
-    //throw new RuntimeException("No associating column found");
+    // throw new RuntimeException("No associating column found");
   }
-  
+
   public Column getAssociatedColumn(Table table)
   {
     for (Column col : getColumns())
     {
       final Reference reference = col.getReference();
-      if (reference == null) {
+      if (reference == null)
+      {
         continue;
       }
-      if (reference.getColumn().getTable() == table) {
+      if (reference.getColumn().getTable() == table)
+      {
         continue;
       }
-      
+
       return col;
     }
-    
+
     return null;
-    //throw new RuntimeException("No associating column found");
+    // throw new RuntimeException("No associating column found");
   }
 }

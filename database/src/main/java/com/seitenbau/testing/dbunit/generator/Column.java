@@ -17,17 +17,17 @@ public class Column
   private final String _javaName;
 
   private final Reference _reference;
-  
+
   private final Table _table;
-  
+
   private final boolean _isIdentifier;
-  
+
   private final boolean _enableAutoIdHandling;
-  
+
   private final boolean _isAutoIncrement;
-  
+
   private final boolean _isNextIdMethodGenerated;
-  
+
   private final List<Column> _referencedBy;
 
   Column(Table table, String name, String javaName, String type, String javaType, Reference reference,
@@ -42,11 +42,12 @@ public class Column
     _isAutoIncrement = isAutoIncrement;
     _isIdentifier = isIdentifier;
     _enableAutoIdHandling = enableAutoIdHandling;
-    
+
     _isNextIdMethodGenerated = addNextMethod || isAutoIncrement || enableAutoIdHandling;
-    
+
     _referencedBy = new ArrayList<Column>();
-    if (reference != null) {
+    if (reference != null)
+    {
       reference.getColumn()._referencedBy.add(this);
     }
   }
@@ -88,7 +89,7 @@ public class Column
 
   public boolean isNextIdMethodGenerated()
   {
-    return _isNextIdMethodGenerated; 
+    return _isNextIdMethodGenerated;
   }
 
   public String getJavaName()
@@ -113,32 +114,36 @@ public class Column
 
   public boolean isReferencingTable(Table table)
   {
-    if (_reference == null) {
+    if (_reference == null)
+    {
       return false;
     }
 
     return _reference.getColumn().getTable() == table;
   }
-  
+
   public List<Column> getReferencedByList()
   {
     return _referencedBy;
   }
-  
+
   public String getTruncatedReferenceName()
   {
-    if (_reference == null || !_name.endsWith("_id")) {
+    if (_reference == null || !_name.endsWith("_id"))
+    {
       return null;
     }
-    
+
     final String result = _name.substring(0, _name.length() - 3);
-    for (Column column : _table.getColumns()) {
-      if (result.equals(column.getName())) {
+    for (Column column : _table.getColumns())
+    {
+      if (result.equals(column.getName()))
+      {
         // column cannot be truncated
         return null;
       }
     }
-    
+
     return result;
   }
 }

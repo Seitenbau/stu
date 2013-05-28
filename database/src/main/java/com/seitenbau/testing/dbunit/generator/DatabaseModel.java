@@ -9,7 +9,7 @@ public abstract class DatabaseModel
   DataSetGenerator generator;
 
   String databaseName;
-  
+
   String packageName;
 
   String targetPath = DataSetGenerator.DEFAULT_OUTPUT_FOLDER;
@@ -31,7 +31,7 @@ public abstract class DatabaseModel
   {
     this.databaseName = name;
   }
-  
+
   public void packageName(String name)
   {
     this.packageName = name;
@@ -54,7 +54,8 @@ public abstract class DatabaseModel
     getDataSetGenInstance().catchException(exception);
   }
 
-  public TableBuilder table(String name) {
+  public TableBuilder table(String name)
+  {
     final TableBuilder result = new TableBuilder(name);
     getDataSetGenInstance().addTable(result.build());
     return result;

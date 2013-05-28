@@ -1,8 +1,5 @@
 package com.seitenbau.testing.dbunit.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.seitenbau.testing.dbunit.extend.DatabaseTesterCleanAction;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.util.CamelCase;
@@ -18,11 +15,11 @@ public class ColumnBuilder
   private Reference reference;
 
   private boolean enableAutoIdHandling;
-  
+
   private boolean isAutoIncrementColumn;
 
   private boolean isIdentifierColumn;
-  
+
   private boolean addNextMethod;
 
   public ColumnBuilder(TableBuilder tableBuilder, String name, DataType dataType)
@@ -53,7 +50,7 @@ public class ColumnBuilder
     this.enableAutoIdHandling = true;
     return addNextMethod();
   }
-  
+
   /**
    * Erzeugt in der DBUnit Spalte eine AutoIncrement Flag. Sinnvoll
    * falls Beispielsweise ein {@link DatabaseTesterCleanAction} diese
@@ -65,7 +62,7 @@ public class ColumnBuilder
     this.isAutoIncrementColumn = true;
     return addNextMethod();
   }
-  
+
   /**
    * Erzeugt zusätzlich zu den setter Methoden der Spalte noch eine
    * nextId Methode (Wobei Id = Spaltenname). Diese Methode erzeugt
@@ -95,15 +92,16 @@ public class ColumnBuilder
   {
     return new ReferenceBuilder(this, reference.getIdentifierColumn());
   }
-  
-  void addReference(Reference reference) 
+
+  void addReference(Reference reference)
   {
-    if (reference != null) {
+    if (reference != null)
+    {
       // TODO NM/CB exception?
     }
     this.reference = reference;
   }
-  
+
   private void buildColumn()
   {
     Table parentTable = tableBuilder.build();
@@ -117,7 +115,7 @@ public class ColumnBuilder
   {
     return name;
   }
-  
+
   TableBuilder getTableBuilder()
   {
     return tableBuilder;
