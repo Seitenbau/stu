@@ -8,15 +8,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.seitenbau.testing.dbunit.demomodel.PersonsTable.PersonsGetWhere;
+import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowCollection_Persons;
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
+import com.seitenbau.testing.dbunit.dsl.NoValue;
+import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
@@ -25,6 +27,8 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 public class PersonsTable {
 
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> REF = createREFBinding();
+  
+  public final NoValue _ = new NoValue();
 
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> id = createIdBinding();
 
@@ -44,13 +48,15 @@ public class PersonsTable {
 
   private final com.seitenbau.testing.dbunit.demomodel.PersonsTable _table;
 
-  private final Set<PersonsRef> _usedRefs;
+  private final Set<RowBuilder_Persons> _allRows;
 
   private final ITableAdapter<RowBuilder_Persons, PersonsGetWhere, PersonsRef> _adapter = new ITableAdapter<RowBuilder_Persons, PersonsGetWhere, PersonsRef>()
   {
     public RowBuilder_Persons insertRow() 
     {
-      return _table.insertRow();
+      RowBuilder_Persons result = _table.insertRow();
+      _allRows.add(result);
+      return result;
     }
   
     public PersonsGetWhere getWhere()
@@ -62,7 +68,6 @@ public class PersonsTable {
     {
       if (row != null) {
         reference.setBuilder(_scope, row);
-        _usedRefs.add(reference);
       }
     }
 
@@ -86,12 +91,12 @@ public class PersonsTable {
   {
     _scope = scope;
     _table = table;
-    _usedRefs = new HashSet<PersonsRef>();
+    _allRows = new HashSet<RowBuilder_Persons>();
   }
   
-  Set<PersonsRef> getUsedRefs()
+  Set<RowBuilder_Persons> getAllRowBuilders()
   {
-    return _usedRefs;
+    return _allRows;
   }
   
   com.seitenbau.testing.dbunit.demomodel.PersonsTable getTableModel()
@@ -282,5 +287,206 @@ public class PersonsTable {
     };
   }
   
+  public final PersonsTableFindWhere findWhere = new PersonsTableFindWhere(this);
+
+  public static class PersonsTableFindWhere {
+    private final PersonsTable table;
+    
+    PersonsTableFindWhere(PersonsTable table) 
+    {
+      this.table = table;
+    }
+
+    public RowCollection_Persons id(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Persons(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.id(builder.getId());
+    }
+
+    public RowCollection_Persons id(java.lang.Long toSearch)
+    {
+      return table.getTableModel().findWhere.id(toSearch);
+    }
+
+    public RowCollection_Persons id(Integer toSearch) 
+    {
+      return id(Long.valueOf(toSearch));
+    }
+
+    public RowCollection_Persons firstName(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Persons(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.firstName(builder.getFirstName());
+    }
+
+    public RowCollection_Persons firstName(java.lang.String toSearch)
+    {
+      return table.getTableModel().findWhere.firstName(toSearch);
+    }
+
+    public RowCollection_Persons name(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Persons(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.name(builder.getName());
+    }
+
+    public RowCollection_Persons name(java.lang.String toSearch)
+    {
+      return table.getTableModel().findWhere.name(toSearch);
+    }
+
+    public RowCollection_Persons jobId(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Persons(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.jobId(builder.getJobId());
+    }
+
+    public RowCollection_Persons jobId(java.lang.Long toSearch)
+    {
+      return table.getTableModel().findWhere.jobId(toSearch);
+    }
+
+    public RowCollection_Persons jobId(Integer toSearch) 
+    {
+      return jobId(Long.valueOf(toSearch));
+    }
+
+    public RowCollection_Persons teamId(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Persons(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.teamId(builder.getTeamId());
+    }
+
+    public RowCollection_Persons teamId(java.lang.Long toSearch)
+    {
+      return table.getTableModel().findWhere.teamId(toSearch);
+    }
+
+    public RowCollection_Persons teamId(Integer toSearch) 
+    {
+      return teamId(Long.valueOf(toSearch));
+    }
+  }
+  
+  public final PersonsTableGetWhere getWhere = new PersonsTableGetWhere(this);
+
+  public static class PersonsTableGetWhere {
+    private final PersonsTable table;
+    
+    PersonsTableGetWhere(PersonsTable table) 
+    {
+      this.table = table;
+    }
+
+    public Optional<RowBuilder_Persons> id(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Persons> absent();
+      }
+      return table.getTableModel().getWhere.id(builder.getId());
+    }
+
+    public Optional<RowBuilder_Persons> id(java.lang.Long toSearch)
+    {
+      return table.getTableModel().getWhere.id(toSearch);
+    }
+
+    public Optional<RowBuilder_Persons> id(Integer toSearch) 
+    {
+      return id(Long.valueOf(toSearch));
+    }
+
+    public Optional<RowBuilder_Persons> firstName(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Persons> absent();
+      }
+      return table.getTableModel().getWhere.firstName(builder.getFirstName());
+    }
+
+    public Optional<RowBuilder_Persons> firstName(java.lang.String toSearch)
+    {
+      return table.getTableModel().getWhere.firstName(toSearch);
+    }
+
+    public Optional<RowBuilder_Persons> name(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Persons> absent();
+      }
+      return table.getTableModel().getWhere.name(builder.getName());
+    }
+
+    public Optional<RowBuilder_Persons> name(java.lang.String toSearch)
+    {
+      return table.getTableModel().getWhere.name(toSearch);
+    }
+
+    public Optional<RowBuilder_Persons> jobId(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Persons> absent();
+      }
+      return table.getTableModel().getWhere.jobId(builder.getJobId());
+    }
+
+    public Optional<RowBuilder_Persons> jobId(java.lang.Long toSearch)
+    {
+      return table.getTableModel().getWhere.jobId(toSearch);
+    }
+
+    public Optional<RowBuilder_Persons> jobId(Integer toSearch) 
+    {
+      return jobId(Long.valueOf(toSearch));
+    }
+
+    public Optional<RowBuilder_Persons> teamId(PersonsRef ref)
+    {
+      RowBuilder_Persons builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Persons> absent();
+      }
+      return table.getTableModel().getWhere.teamId(builder.getTeamId());
+    }
+
+    public Optional<RowBuilder_Persons> teamId(java.lang.Long toSearch)
+    {
+      return table.getTableModel().getWhere.teamId(toSearch);
+    }
+
+    public Optional<RowBuilder_Persons> teamId(Integer toSearch) 
+    {
+      return teamId(Long.valueOf(toSearch));
+    }
+  }
 }
 

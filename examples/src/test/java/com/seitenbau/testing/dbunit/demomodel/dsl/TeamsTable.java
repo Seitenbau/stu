@@ -8,15 +8,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.TeamsGetWhere;
+import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowCollection_Teams;
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
+import com.seitenbau.testing.dbunit.dsl.NoValue;
+import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
@@ -25,6 +27,8 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 public class TeamsTable {
 
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> REF = createREFBinding();
+  
+  public final NoValue _ = new NoValue();
 
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> id = createIdBinding();
 
@@ -38,13 +42,15 @@ public class TeamsTable {
 
   private final com.seitenbau.testing.dbunit.demomodel.TeamsTable _table;
 
-  private final Set<TeamsRef> _usedRefs;
+  private final Set<RowBuilder_Teams> _allRows;
 
   private final ITableAdapter<RowBuilder_Teams, TeamsGetWhere, TeamsRef> _adapter = new ITableAdapter<RowBuilder_Teams, TeamsGetWhere, TeamsRef>()
   {
     public RowBuilder_Teams insertRow() 
     {
-      return _table.insertRow();
+      RowBuilder_Teams result = _table.insertRow();
+      _allRows.add(result);
+      return result;
     }
   
     public TeamsGetWhere getWhere()
@@ -56,7 +62,6 @@ public class TeamsTable {
     {
       if (row != null) {
         reference.setBuilder(_scope, row);
-        _usedRefs.add(reference);
       }
     }
 
@@ -80,12 +85,12 @@ public class TeamsTable {
   {
     _scope = scope;
     _table = table;
-    _usedRefs = new HashSet<TeamsRef>();
+    _allRows = new HashSet<RowBuilder_Teams>();
   }
   
-  Set<TeamsRef> getUsedRefs()
+  Set<RowBuilder_Teams> getAllRowBuilders()
   {
-    return _usedRefs;
+    return _allRows;
   }
   
   com.seitenbau.testing.dbunit.demomodel.TeamsTable getTableModel()
@@ -227,5 +232,166 @@ public class TeamsTable {
     };
   }
   
+  public final TeamsTableFindWhere findWhere = new TeamsTableFindWhere(this);
+
+  public static class TeamsTableFindWhere {
+    private final TeamsTable table;
+    
+    TeamsTableFindWhere(TeamsTable table) 
+    {
+      this.table = table;
+    }
+
+    public RowCollection_Teams id(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Teams(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.id(builder.getId());
+    }
+
+    public RowCollection_Teams id(java.lang.Long toSearch)
+    {
+      return table.getTableModel().findWhere.id(toSearch);
+    }
+
+    public RowCollection_Teams id(Integer toSearch) 
+    {
+      return id(Long.valueOf(toSearch));
+    }
+
+    public RowCollection_Teams title(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Teams(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.title(builder.getTitle());
+    }
+
+    public RowCollection_Teams title(java.lang.String toSearch)
+    {
+      return table.getTableModel().findWhere.title(toSearch);
+    }
+
+    public RowCollection_Teams description(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Teams(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.description(builder.getDescription());
+    }
+
+    public RowCollection_Teams description(java.lang.String toSearch)
+    {
+      return table.getTableModel().findWhere.description(toSearch);
+    }
+
+    public RowCollection_Teams membersize(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Teams(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.membersize(builder.getMembersize());
+    }
+
+    public RowCollection_Teams membersize(java.lang.Long toSearch)
+    {
+      return table.getTableModel().findWhere.membersize(toSearch);
+    }
+
+    public RowCollection_Teams membersize(Integer toSearch) 
+    {
+      return membersize(Long.valueOf(toSearch));
+    }
+  }
+  
+  public final TeamsTableGetWhere getWhere = new TeamsTableGetWhere(this);
+
+  public static class TeamsTableGetWhere {
+    private final TeamsTable table;
+    
+    TeamsTableGetWhere(TeamsTable table) 
+    {
+      this.table = table;
+    }
+
+    public Optional<RowBuilder_Teams> id(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Teams> absent();
+      }
+      return table.getTableModel().getWhere.id(builder.getId());
+    }
+
+    public Optional<RowBuilder_Teams> id(java.lang.Long toSearch)
+    {
+      return table.getTableModel().getWhere.id(toSearch);
+    }
+
+    public Optional<RowBuilder_Teams> id(Integer toSearch) 
+    {
+      return id(Long.valueOf(toSearch));
+    }
+
+    public Optional<RowBuilder_Teams> title(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Teams> absent();
+      }
+      return table.getTableModel().getWhere.title(builder.getTitle());
+    }
+
+    public Optional<RowBuilder_Teams> title(java.lang.String toSearch)
+    {
+      return table.getTableModel().getWhere.title(toSearch);
+    }
+
+    public Optional<RowBuilder_Teams> description(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Teams> absent();
+      }
+      return table.getTableModel().getWhere.description(builder.getDescription());
+    }
+
+    public Optional<RowBuilder_Teams> description(java.lang.String toSearch)
+    {
+      return table.getTableModel().getWhere.description(toSearch);
+    }
+
+    public Optional<RowBuilder_Teams> membersize(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Teams> absent();
+      }
+      return table.getTableModel().getWhere.membersize(builder.getMembersize());
+    }
+
+    public Optional<RowBuilder_Teams> membersize(java.lang.Long toSearch)
+    {
+      return table.getTableModel().getWhere.membersize(toSearch);
+    }
+
+    public Optional<RowBuilder_Teams> membersize(Integer toSearch) 
+    {
+      return membersize(Long.valueOf(toSearch));
+    }
+  }
 }
 

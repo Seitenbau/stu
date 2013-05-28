@@ -47,7 +47,6 @@ public class PersonsRef extends DatabaseReference {
       {
         continue;
       }
-      
       builder.setJobId(otherBuilder.getId());
       List<PersonsRef> otherList = getOrCreateList(ref.private_personsToMap, threadScope);
       if (otherList.contains(this)) 
@@ -66,7 +65,6 @@ public class PersonsRef extends DatabaseReference {
       {
         continue;
       }
-      
       builder.setTeamId(otherBuilder.getId());
       List<PersonsRef> otherList = getOrCreateList(ref.private_personsToMap, threadScope);
       if (otherList.contains(this)) 
@@ -95,11 +93,10 @@ public class PersonsRef extends DatabaseReference {
       // check if both row builders exist to resolve relation
       if (thisBuilder != null && otherBuilder != null) 
       {
-        // simple reference
         thisBuilder.setJobId(otherBuilder.getId());
       }
       else {
-        // at least one builder does not exist... at relation information
+        // at least one builder does not exist... add relation information
         // to the Refs where no builder exist.
         if (thisBuilder == null)
         {
@@ -126,11 +123,10 @@ public class PersonsRef extends DatabaseReference {
       // check if both row builders exist to resolve relation
       if (thisBuilder != null && otherBuilder != null) 
       {
-        // simple reference
         thisBuilder.setTeamId(otherBuilder.getId());
       }
       else {
-        // at least one builder does not exist... at relation information
+        // at least one builder does not exist... add relation information
         // to the Refs where no builder exist.
         if (thisBuilder == null)
         {
@@ -143,6 +139,4 @@ public class PersonsRef extends DatabaseReference {
     }
   }
 
-
 }
-

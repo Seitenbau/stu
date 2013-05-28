@@ -8,15 +8,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.JobsGetWhere;
+import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowCollection_Jobs;
 import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
+import com.seitenbau.testing.dbunit.dsl.NoValue;
+import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
@@ -25,6 +27,8 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 public class JobsTable {
 
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> REF = createREFBinding();
+  
+  public final NoValue _ = new NoValue();
 
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> id = createIdBinding();
 
@@ -36,13 +40,15 @@ public class JobsTable {
 
   private final com.seitenbau.testing.dbunit.demomodel.JobsTable _table;
 
-  private final Set<JobsRef> _usedRefs;
+  private final Set<RowBuilder_Jobs> _allRows;
 
   private final ITableAdapter<RowBuilder_Jobs, JobsGetWhere, JobsRef> _adapter = new ITableAdapter<RowBuilder_Jobs, JobsGetWhere, JobsRef>()
   {
     public RowBuilder_Jobs insertRow() 
     {
-      return _table.insertRow();
+      RowBuilder_Jobs result = _table.insertRow();
+      _allRows.add(result);
+      return result;
     }
   
     public JobsGetWhere getWhere()
@@ -54,7 +60,6 @@ public class JobsTable {
     {
       if (row != null) {
         reference.setBuilder(_scope, row);
-        _usedRefs.add(reference);
       }
     }
 
@@ -78,12 +83,12 @@ public class JobsTable {
   {
     _scope = scope;
     _table = table;
-    _usedRefs = new HashSet<JobsRef>();
+    _allRows = new HashSet<RowBuilder_Jobs>();
   }
   
-  Set<JobsRef> getUsedRefs()
+  Set<RowBuilder_Jobs> getAllRowBuilders()
   {
-    return _usedRefs;
+    return _allRows;
   }
   
   com.seitenbau.testing.dbunit.demomodel.JobsTable getTableModel()
@@ -204,5 +209,126 @@ public class JobsTable {
     };
   }
   
+  public final JobsTableFindWhere findWhere = new JobsTableFindWhere(this);
+
+  public static class JobsTableFindWhere {
+    private final JobsTable table;
+    
+    JobsTableFindWhere(JobsTable table) 
+    {
+      this.table = table;
+    }
+
+    public RowCollection_Jobs id(JobsRef ref)
+    {
+      RowBuilder_Jobs builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Jobs(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.id(builder.getId());
+    }
+
+    public RowCollection_Jobs id(java.lang.Long toSearch)
+    {
+      return table.getTableModel().findWhere.id(toSearch);
+    }
+
+    public RowCollection_Jobs id(Integer toSearch) 
+    {
+      return id(Long.valueOf(toSearch));
+    }
+
+    public RowCollection_Jobs title(JobsRef ref)
+    {
+      RowBuilder_Jobs builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Jobs(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.title(builder.getTitle());
+    }
+
+    public RowCollection_Jobs title(java.lang.String toSearch)
+    {
+      return table.getTableModel().findWhere.title(toSearch);
+    }
+
+    public RowCollection_Jobs description(JobsRef ref)
+    {
+      RowBuilder_Jobs builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Jobs(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.description(builder.getDescription());
+    }
+
+    public RowCollection_Jobs description(java.lang.String toSearch)
+    {
+      return table.getTableModel().findWhere.description(toSearch);
+    }
+  }
+  
+  public final JobsTableGetWhere getWhere = new JobsTableGetWhere(this);
+
+  public static class JobsTableGetWhere {
+    private final JobsTable table;
+    
+    JobsTableGetWhere(JobsTable table) 
+    {
+      this.table = table;
+    }
+
+    public Optional<RowBuilder_Jobs> id(JobsRef ref)
+    {
+      RowBuilder_Jobs builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Jobs> absent();
+      }
+      return table.getTableModel().getWhere.id(builder.getId());
+    }
+
+    public Optional<RowBuilder_Jobs> id(java.lang.Long toSearch)
+    {
+      return table.getTableModel().getWhere.id(toSearch);
+    }
+
+    public Optional<RowBuilder_Jobs> id(Integer toSearch) 
+    {
+      return id(Long.valueOf(toSearch));
+    }
+
+    public Optional<RowBuilder_Jobs> title(JobsRef ref)
+    {
+      RowBuilder_Jobs builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Jobs> absent();
+      }
+      return table.getTableModel().getWhere.title(builder.getTitle());
+    }
+
+    public Optional<RowBuilder_Jobs> title(java.lang.String toSearch)
+    {
+      return table.getTableModel().getWhere.title(toSearch);
+    }
+
+    public Optional<RowBuilder_Jobs> description(JobsRef ref)
+    {
+      RowBuilder_Jobs builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Jobs> absent();
+      }
+      return table.getTableModel().getWhere.description(builder.getDescription());
+    }
+
+    public Optional<RowBuilder_Jobs> description(java.lang.String toSearch)
+    {
+      return table.getTableModel().getWhere.description(toSearch);
+    }
+  }
 }
 

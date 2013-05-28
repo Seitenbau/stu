@@ -58,9 +58,11 @@ public class STUDSL
   void replaceJobsRefWithId(JobsRef reference, RowBuilder_Jobs row)
   {
     // Ref: Persons on JobId
-    for (PersonsRef personsRef : personsTable.getUsedRefs()) {
-      RowBuilder_Persons builder = personsRef.getBuilder(this);
-      builder.setJobId(row.getId());
+    for (RowBuilder_Persons builder : personsTable.getAllRowBuilders()) {
+      if (builder.getJobIdRaw() == reference)
+      {
+        builder.setJobId(row.getId());
+      }
     }
     
   }
@@ -68,9 +70,11 @@ public class STUDSL
   void replaceTeamsRefWithId(TeamsRef reference, RowBuilder_Teams row)
   {
     // Ref: Persons on TeamId
-    for (PersonsRef personsRef : personsTable.getUsedRefs()) {
-      RowBuilder_Persons builder = personsRef.getBuilder(this);
-      builder.setTeamId(row.getId());
+    for (RowBuilder_Persons builder : personsTable.getAllRowBuilders()) {
+      if (builder.getTeamIdRaw() == reference)
+      {
+        builder.setTeamId(row.getId());
+      }
     }
     
   }
@@ -79,6 +83,118 @@ public class STUDSL
   {
   }
 
+
+  public JobsRefAccess reference(JobsRef ref)
+  {
+    return new JobsRefAccess(ref, this);
+  }
+  
+  public static class JobsRefAccess
+  {
+    private final JobsRef _ref;
+    private final STUDSL _scope;
+    
+    private JobsRefAccess(JobsRef ref, STUDSL scope)
+    {
+      _ref = ref;
+      _scope = scope;
+    }
+
+    public java.lang.Long id()
+    {
+      return _ref.getBuilder(_scope).getId();
+    }
+
+    public java.lang.String title()
+    {
+      return _ref.getBuilder(_scope).getTitle();
+    }
+
+    public java.lang.String description()
+    {
+      return _ref.getBuilder(_scope).getDescription();
+    }
+  }
+
+  public TeamsRefAccess reference(TeamsRef ref)
+  {
+    return new TeamsRefAccess(ref, this);
+  }
+  
+  public static class TeamsRefAccess
+  {
+    private final TeamsRef _ref;
+    private final STUDSL _scope;
+    
+    private TeamsRefAccess(TeamsRef ref, STUDSL scope)
+    {
+      _ref = ref;
+      _scope = scope;
+    }
+
+    public java.lang.Long id()
+    {
+      return _ref.getBuilder(_scope).getId();
+    }
+
+    public java.lang.String title()
+    {
+      return _ref.getBuilder(_scope).getTitle();
+    }
+
+    public java.lang.String description()
+    {
+      return _ref.getBuilder(_scope).getDescription();
+    }
+
+    public java.lang.Long membersize()
+    {
+      return _ref.getBuilder(_scope).getMembersize();
+    }
+  }
+
+  public PersonsRefAccess reference(PersonsRef ref)
+  {
+    return new PersonsRefAccess(ref, this);
+  }
+  
+  public static class PersonsRefAccess
+  {
+    private final PersonsRef _ref;
+    private final STUDSL _scope;
+    
+    private PersonsRefAccess(PersonsRef ref, STUDSL scope)
+    {
+      _ref = ref;
+      _scope = scope;
+    }
+
+    public java.lang.Long id()
+    {
+      return _ref.getBuilder(_scope).getId();
+    }
+
+    public java.lang.String firstName()
+    {
+      return _ref.getBuilder(_scope).getFirstName();
+    }
+
+    public java.lang.String name()
+    {
+      return _ref.getBuilder(_scope).getName();
+    }
+
+    public java.lang.Long jobId()
+    {
+      return _ref.getBuilder(_scope).getJobId();
+    }
+
+    public java.lang.Long teamId()
+    {
+      return _ref.getBuilder(_scope).getTeamId();
+    }
+  }
+  
   public IDataSet createDataSet() 
   {
     return dataset.createDBUnitDataSet();

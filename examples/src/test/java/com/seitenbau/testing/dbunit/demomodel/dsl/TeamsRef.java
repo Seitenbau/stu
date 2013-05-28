@@ -47,8 +47,8 @@ public class TeamsRef extends DatabaseReference {
       {
         continue;
       }
-      
-      otherBuilder.setTeamId(builder.getId());
+      RowBuilder_Persons row = scope.personsTable.getTableModel().insertRow();
+      row.setTeamId(otherBuilder.getId());
       List<TeamsRef> otherList = getOrCreateList(ref.private_teamIdToMap, threadScope);
       if (otherList.contains(this)) 
       {
@@ -80,7 +80,7 @@ public class TeamsRef extends DatabaseReference {
         otherBuilder.setTeamId(thisBuilder.getId());
       }
       else {
-        // at least one builder does not exist... at relation information
+        // at least one builder does not exist... add relation information
         // to the Refs where no builder exist.
         if (thisBuilder == null)
         {
@@ -93,6 +93,4 @@ public class TeamsRef extends DatabaseReference {
     }
   }
 
-
 }
-
