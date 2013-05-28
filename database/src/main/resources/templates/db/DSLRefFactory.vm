@@ -1,10 +1,10 @@
-#set($filename = ${model.name} + "RefFactory" )
+#set($filename = "RefFactory" )
 #if( $model.package && $model.package.length() != 0 )
 #set($package  = ${model.package} + ".dsl" )
 #else
 #set($package  = "dsl" )
 #end
-#set($clsFactory = ${model.name} + "RefFactory")
+#set($clsFactory = "RefFactory")
 package ${package};
 
 public class ${clsFactory} 
