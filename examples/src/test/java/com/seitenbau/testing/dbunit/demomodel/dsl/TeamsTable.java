@@ -26,16 +26,39 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class TeamsTable {
 
-  public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> REF = createREFBinding();
-  
+  /**
+   * Do not set a value. (To remove a value use <i>null</i>)
+   */
   public final NoValue _ = new NoValue();
 
+  public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> REF = createREFBinding();
+
+  /**
+   * Column Header for Teams table
+   * 
+   * Data Type: java.lang.Long
+   */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> id = createIdBinding();
 
+  /**
+   * Column Header for Teams table
+   * 
+   * Data Type: java.lang.String
+   */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> title = createTitleBinding();
 
+  /**
+   * Column Header for Teams table
+   * 
+   * Data Type: java.lang.String
+   */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> description = createDescriptionBinding();
 
+  /**
+   * Column Header for Teams table
+   * 
+   * Data Type: java.lang.Long
+   */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> membersize = createMembersizeBinding();
 
   private final STUDSL _scope;
@@ -98,6 +121,17 @@ public class TeamsTable {
     return _table;
   }
   
+  /**
+   * Parses the rows of a Teams table. Supported columns are:
+   * <ul>
+   *   <li>REF</li>
+   *   <li> id
+   *   <li> title
+   *   <li> description
+   *   <li> membersize
+   * </ul>
+   * @param rows The table data
+   */
   public void rows(Closure<?> rows) {
     GeneralTableRowCallback<RowBuilder_Teams, TeamsGetWhere, TeamsRef> callback = 
         new GeneralTableRowCallback<RowBuilder_Teams, TeamsGetWhere, TeamsRef>(_adapter);

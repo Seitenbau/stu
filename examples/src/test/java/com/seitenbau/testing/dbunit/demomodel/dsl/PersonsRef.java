@@ -9,6 +9,9 @@ import com.seitenbau.testing.dbunit.demomodel.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.demomodel.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.demomodel.PersonsTable.RowBuilder_Persons;
 
+/**
+ * Reference to an Persons table row
+ */
 public class PersonsRef extends DatabaseReference {
 
   private final Map<STUDSL, RowBuilder_Persons> builders;
@@ -82,7 +85,11 @@ public class PersonsRef extends DatabaseReference {
   Map<STUDSL, List<JobsRef>> private_jobIdToMap = new HashMap<STUDSL, List<JobsRef>>();
 
   // depending on relation type with or without ellipse (...)
-  void jobIdTo(JobsRef ... refs) {
+  /**
+   * 
+   * @param refs
+   */
+  public void jobIdTo(JobsRef ... refs) {
     STUDSL scope = threadScope.get();
     RowBuilder_Persons thisBuilder = getBuilder(scope);
     
@@ -112,7 +119,11 @@ public class PersonsRef extends DatabaseReference {
   Map<STUDSL, List<TeamsRef>> private_teamIdToMap = new HashMap<STUDSL, List<TeamsRef>>();
 
   // depending on relation type with or without ellipse (...)
-  void teamIdTo(TeamsRef ... refs) {
+  /**
+   * 
+   * @param refs
+   */
+  public void teamIdTo(TeamsRef ... refs) {
     STUDSL scope = threadScope.get();
     RowBuilder_Persons thisBuilder = getBuilder(scope);
     

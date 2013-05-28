@@ -44,11 +44,19 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class ${clsTable} {
 
-  public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = createREFBinding();
-  
+  /**
+   * Do not set a value. (To remove a value use <i>null</i>)
+   */
   public final NoValue _ = new NoValue();
 
+  public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = createREFBinding();
+
 #foreach( $col in $model.columns )
+  /**
+   * Column Header for ${model.javaName} table
+   * 
+   * Data Type: ${col.javaType}
+   */
   public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = create${col.javaName}Binding();
 
 ## check if column is an identifier
@@ -118,6 +126,20 @@ public class ${clsTable} {
     return _table;
   }
   
+  /**
+   * Parses the rows of a ${model.javaName} table. Supported columns are:
+   * <ul>
+   *   <li>REF</li>
+#foreach( $col in $model.columns )
+#set( $shortname  = "" )
+#if ( ${col.truncatedReferenceName} )
+#set( $shortname  = " (alias: " + ${col.truncatedReferenceName} + ")")
+#end
+   *   <li> ${col.name}$shortname
+#end
+   * </ul>
+   * @param rows The table data
+   */
   public void rows(Closure<?> rows) {
     GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}> callback = 
         new GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}>(_adapter);

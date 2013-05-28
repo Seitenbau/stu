@@ -26,20 +26,48 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class PersonsTable {
 
-  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> REF = createREFBinding();
-  
+  /**
+   * Do not set a value. (To remove a value use <i>null</i>)
+   */
   public final NoValue _ = new NoValue();
 
+  public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> REF = createREFBinding();
+
+  /**
+   * Column Header for Persons table
+   * 
+   * Data Type: java.lang.Long
+   */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> id = createIdBinding();
 
+  /**
+   * Column Header for Persons table
+   * 
+   * Data Type: java.lang.String
+   */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> first_name = createFirstNameBinding();
 
+  /**
+   * Column Header for Persons table
+   * 
+   * Data Type: java.lang.String
+   */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> name = createNameBinding();
 
+  /**
+   * Column Header for Persons table
+   * 
+   * Data Type: java.lang.Long
+   */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job_id = createJobIdBinding();
 
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job = job_id;
 
+  /**
+   * Column Header for Persons table
+   * 
+   * Data Type: java.lang.Long
+   */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team_id = createTeamIdBinding();
 
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team = team_id;
@@ -104,6 +132,18 @@ public class PersonsTable {
     return _table;
   }
   
+  /**
+   * Parses the rows of a Persons table. Supported columns are:
+   * <ul>
+   *   <li>REF</li>
+   *   <li> id
+   *   <li> first_name
+   *   <li> name
+   *   <li> job_id (alias: job)
+   *   <li> team_id (alias: team)
+   * </ul>
+   * @param rows The table data
+   */
   public void rows(Closure<?> rows) {
     GeneralTableRowCallback<RowBuilder_Persons, PersonsGetWhere, PersonsRef> callback = 
         new GeneralTableRowCallback<RowBuilder_Persons, PersonsGetWhere, PersonsRef>(_adapter);

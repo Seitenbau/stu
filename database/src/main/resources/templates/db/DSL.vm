@@ -6,7 +6,7 @@
 #end
 #set($clsScope = ${model.name} + "DSL")
 #set($clsDataSet = ${model.name} + "DataSet")
-#set($referenceMethod = "reference")
+#set($referenceMethod = "ref")
 package ${package};
 
 import org.dbunit.dataset.IDataSet;
@@ -20,19 +20,49 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 
 import groovy.lang.Closure;
 
+/**
+ * Represents a ${model.name} Data Set Scope. Parses the DSL and builds
+ * the datasets
+ */
 public class ${clsScope} 
 {
 
-  ${clsDataSet} dataset = new ${clsDataSet}() 
-  {
-    @Override
-    public void initDataSet() { }
-  };
+  private final ${clsDataSet} dataset;
 
 #foreach( $table in $model.tables )
-  ${table.javaName}Table ${table.javaNameFirstLower}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
+  /**
+   * The ${table.javaName} table
+   */
+  final ${table.javaName}Table ${table.javaNameFirstLower}Table;
   
 #end
+  public ${clsScope}() {
+    this(new ${clsDataSet}() 
+    {
+      @Override
+      public void initDataSet() { }
+    });
+  }
+  
+  public ${clsScope}($clsDataSet dataset)
+  {
+    this.dataset = dataset;
+#foreach( $table in $model.tables )
+    ${table.javaNameFirstLower}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
+#end  
+  }
+
+  /**
+   * Parses and integrates the tables to the data set
+   * Supported tables:
+   * <ul>
+#foreach( $table in $model.tables )
+   *   <li>${table.javaNameFirstLower}Table</li>
+#end
+   * </ul>
+   *  
+   * @param table Table data
+   */
   public void tables(Closure<?> table)
   {
     setReferencesContext();
@@ -42,6 +72,10 @@ public class ${clsScope}
     unsetReferencesContext();
   }
   
+  /**
+   * Parses the defined relations and integrates them into the data set
+   * @param relations The relations data
+   */
   public void relations(Closure<?> relations)
   {
     setReferencesContext();
@@ -68,13 +102,18 @@ public class ${clsScope}
   }
  
 #foreach( $reftable in $model.tables )
-
+  
+  /**
+   * Replaces all occurrences of a ${reftable.javaName} reference with the represented value
+   * @param reference The reference, which can be resolved now
+   * @param row The row containing the represented values 
+   */
   void replace${reftable.javaName}RefWithId(${reftable.javaName}Ref reference, RowBuilder_${reftable.javaName} row)
   {
 #foreach( $table in $model.tables )
 #foreach( $col in $table.columns )
 #if ($col.reference && $col.reference.table == $reftable)
-### $col in $table referes on reference
+### $col in $table refers on reference
     // Ref: ${table.javaName} on ${col.javaName}
     for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getAllRowBuilders()) {
       if (builder.get${col.javaName}Raw() == reference)
@@ -94,31 +133,21 @@ public class ${clsScope}
 #set($clsRefAccess = ${table.javaName} + "RefAccess")
 #set($varTable = ${table.javaNameFirstLower} + "Table")
 
-  public ${clsRefAccess} ${referenceMethod}(${clsRef} ref)
+  /**
+   * Allows ${table.javaName} table data access using references
+   * @param ref The reference which represents tha data
+   * @return The accessor object 
+   */
+  public RowBuilder_${table.javaName} ${referenceMethod}(${clsRef} ref)
   {
-    return new ${clsRefAccess}(ref, this);
-  }
-  
-  public static class ${clsRefAccess}
-  {
-    private final ${clsRef} _ref;
-    private final ${clsScope} _scope;
-    
-    private $clsRefAccess(${clsRef} ref, ${clsScope} scope)
-    {
-      _ref = ref;
-      _scope = scope;
-    }
-#foreach( $col in $table.columns )
-
-    public ${col.javaType} ${col.javaNameFirstLower}()
-    {
-      return _ref.getBuilder(_scope).get${col.javaName}();
-    }
-#end
+    return ref.getBuilder(this);
   }
 #end
   
+  /**
+   * Creates a DbUnit dataset
+   * @return The Dbunit dataset
+   */
   public IDataSet createDataSet() 
   {
     return dataset.createDBUnitDataSet();

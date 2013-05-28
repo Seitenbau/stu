@@ -21,6 +21,9 @@ import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 #end
 
+/**
+ * Reference to an ${model.javaName} table row
+ */
 public class ${clsRef} extends DatabaseReference {
 
   private final Map<${clsScope}, ${clsRowbuilder}> builders;
@@ -69,7 +72,10 @@ public class ${clsRef} extends DatabaseReference {
       }
     }
 #end    
-#### Handle own references #####################################
+##
+##
+#### Handle own references ####################################
+##
 #if ( !${model.isAssociativeTable()} )
 #foreach( $col in $model.columns )
 #if( $col.reference )
@@ -80,11 +86,15 @@ public class ${clsRef} extends DatabaseReference {
       List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, threadScope);
 #setBuilderHandlerFooter()
 #end
+##
+##
 #### Handle foreign references #####################################
+##
 #foreach ( $referencingColumn in ${col.referencedByList} )
 #set($referencingTable = ${referencingColumn.table})
 #set($isAssociative = ${referencingTable.isAssociativeTable()})
 #if ($isAssociative)
+## -- Associative Table ----------
 #set($verb = ${referencingColumn.reference.remoteName})
 #set($refColumn = ${referencingTable.getAssociatedColumn($model)})
 #set($refTable = ${refColumn.reference.table})
@@ -99,7 +109,7 @@ public class ${clsRef} extends DatabaseReference {
 #end
 #set($otherMap = ${refColumn.reference.remoteName})
 #else
-## foreign reference
+## -- Simple foreign reference ----------
 #set($refColumn = ${referencingColumn})
 #set($refTable = ${refColumn.table})
 #set($refClsRef = ${referencingTable.javaName} + "Ref")
@@ -108,11 +118,13 @@ public class ${clsRef} extends DatabaseReference {
 #set($otherMap = ${refColumn.reference.localName})
 #end
 #setBuilderHandlerHead($refTable $verb)
-      RowBuilder_${referencingTable.javaName} row = scope.${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
 #if($isAssociative)      
+      RowBuilder_${referencingTable.javaName} row = scope.${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
       row.set${thisMethod}(builder.get${thisKey}());
-#end      
       row.set${refColumn.javaName}(otherBuilder.get${remoteKey}());
+#else
+      otherBuilder.set${refColumn.javaName}(builder.get${remoteKey}());
+#end      
       List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, threadScope);
 #setBuilderHandlerFooter()
 #end
@@ -134,7 +146,11 @@ public class ${clsRef} extends DatabaseReference {
   Map<${clsScope}, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<${clsScope}, List<${refClsRef}>>();
 
   // depending on relation type with or without ellipse (...)
-  void ${verb}(${refClsRef} ... refs) {
+  /**
+   * 
+   * @param refs
+   */
+  public void ${verb}(${refClsRef} ... refs) {
     ${clsScope} scope = threadScope.get();
     ${clsRowbuilder} thisBuilder = getBuilder(scope);
     

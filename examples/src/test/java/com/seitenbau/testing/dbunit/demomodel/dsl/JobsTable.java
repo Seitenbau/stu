@@ -26,14 +26,32 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class JobsTable {
 
-  public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> REF = createREFBinding();
-  
+  /**
+   * Do not set a value. (To remove a value use <i>null</i>)
+   */
   public final NoValue _ = new NoValue();
 
+  public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> REF = createREFBinding();
+
+  /**
+   * Column Header for Jobs table
+   * 
+   * Data Type: java.lang.Long
+   */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> id = createIdBinding();
 
+  /**
+   * Column Header for Jobs table
+   * 
+   * Data Type: java.lang.String
+   */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> title = createTitleBinding();
 
+  /**
+   * Column Header for Jobs table
+   * 
+   * Data Type: java.lang.String
+   */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> description = createDescriptionBinding();
 
   private final STUDSL _scope;
@@ -96,6 +114,16 @@ public class JobsTable {
     return _table;
   }
   
+  /**
+   * Parses the rows of a Jobs table. Supported columns are:
+   * <ul>
+   *   <li>REF</li>
+   *   <li> id
+   *   <li> title
+   *   <li> description
+   * </ul>
+   * @param rows The table data
+   */
   public void rows(Closure<?> rows) {
     GeneralTableRowCallback<RowBuilder_Jobs, JobsGetWhere, JobsRef> callback = 
         new GeneralTableRowCallback<RowBuilder_Jobs, JobsGetWhere, JobsRef>(_adapter);
