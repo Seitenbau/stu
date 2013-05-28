@@ -346,7 +346,7 @@ public class PersonsTable {
       }
       return table.getTableModel().findWhere.id(builder.getId());
     }
-
+    
     public RowCollection_Persons id(java.lang.Long toSearch)
     {
       return table.getTableModel().findWhere.id(toSearch);
@@ -366,7 +366,7 @@ public class PersonsTable {
       }
       return table.getTableModel().findWhere.firstName(builder.getFirstName());
     }
-
+    
     public RowCollection_Persons firstName(java.lang.String toSearch)
     {
       return table.getTableModel().findWhere.firstName(toSearch);
@@ -381,7 +381,7 @@ public class PersonsTable {
       }
       return table.getTableModel().findWhere.name(builder.getName());
     }
-
+    
     public RowCollection_Persons name(java.lang.String toSearch)
     {
       return table.getTableModel().findWhere.name(toSearch);
@@ -397,6 +397,16 @@ public class PersonsTable {
       return table.getTableModel().findWhere.jobId(builder.getJobId());
     }
 
+    public RowCollection_Persons jobId(JobsRef ref)
+    {
+      RowBuilder_Jobs builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Persons(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.jobId(builder.getId());
+    }
+    
     public RowCollection_Persons jobId(java.lang.Long toSearch)
     {
       return table.getTableModel().findWhere.jobId(toSearch);
@@ -417,6 +427,16 @@ public class PersonsTable {
       return table.getTableModel().findWhere.teamId(builder.getTeamId());
     }
 
+    public RowCollection_Persons teamId(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new RowCollection_Persons(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.teamId(builder.getId());
+    }
+    
     public RowCollection_Persons teamId(java.lang.Long toSearch)
     {
       return table.getTableModel().findWhere.teamId(toSearch);
@@ -498,6 +518,16 @@ public class PersonsTable {
       return table.getTableModel().getWhere.jobId(builder.getJobId());
     }
 
+    public Optional<RowBuilder_Persons> jobId(JobsRef ref)
+    {
+      RowBuilder_Jobs builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Persons> absent();
+      }
+      return table.getTableModel().getWhere.jobId(builder.getId());
+    }
+
     public Optional<RowBuilder_Persons> jobId(java.lang.Long toSearch)
     {
       return table.getTableModel().getWhere.jobId(toSearch);
@@ -516,6 +546,16 @@ public class PersonsTable {
         return Optional.<RowBuilder_Persons> absent();
       }
       return table.getTableModel().getWhere.teamId(builder.getTeamId());
+    }
+
+    public Optional<RowBuilder_Persons> teamId(TeamsRef ref)
+    {
+      RowBuilder_Teams builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<RowBuilder_Persons> absent();
+      }
+      return table.getTableModel().getWhere.teamId(builder.getId());
     }
 
     public Optional<RowBuilder_Persons> teamId(java.lang.Long toSearch)

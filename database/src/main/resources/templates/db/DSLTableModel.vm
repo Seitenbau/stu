@@ -253,7 +253,19 @@ public class ${clsTable} {
       }
       return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
     }
+#if( $col.reference )
 
+    public ${clsRowcollection} ${col.javaNameFirstLower}(${col.reference.column.table.javaName}Ref ref)
+    {
+      RowBuilder_${col.reference.column.table.javaName} builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new ${clsRowcollection}(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.reference.column.javaName}());
+    }
+#end    
+    
     public ${clsRowcollection} ${col.javaNameFirstLower}(${col.javaType} toSearch)
     {
       return table.getTableModel().findWhere.${col.javaNameFirstLower}(toSearch);
@@ -288,6 +300,18 @@ public class ${clsTable} {
       }
       return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
     }
+#if( $col.reference )
+
+    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${col.reference.column.table.javaName}Ref ref)
+    {
+      RowBuilder_${col.reference.column.table.javaName} builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<${clsRowbuilder}> absent();
+      }
+      return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.reference.column.javaName}());
+    }
+#end    
 
     public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${col.javaType} toSearch)
     {

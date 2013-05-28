@@ -285,7 +285,7 @@ public class TeamsTable {
       }
       return table.getTableModel().findWhere.id(builder.getId());
     }
-
+    
     public RowCollection_Teams id(java.lang.Long toSearch)
     {
       return table.getTableModel().findWhere.id(toSearch);
@@ -305,7 +305,7 @@ public class TeamsTable {
       }
       return table.getTableModel().findWhere.title(builder.getTitle());
     }
-
+    
     public RowCollection_Teams title(java.lang.String toSearch)
     {
       return table.getTableModel().findWhere.title(toSearch);
@@ -320,7 +320,7 @@ public class TeamsTable {
       }
       return table.getTableModel().findWhere.description(builder.getDescription());
     }
-
+    
     public RowCollection_Teams description(java.lang.String toSearch)
     {
       return table.getTableModel().findWhere.description(toSearch);
@@ -335,7 +335,7 @@ public class TeamsTable {
       }
       return table.getTableModel().findWhere.membersize(builder.getMembersize());
     }
-
+    
     public RowCollection_Teams membersize(java.lang.Long toSearch)
     {
       return table.getTableModel().findWhere.membersize(toSearch);

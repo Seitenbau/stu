@@ -256,7 +256,7 @@ public class JobsTable {
       }
       return table.getTableModel().findWhere.id(builder.getId());
     }
-
+    
     public RowCollection_Jobs id(java.lang.Long toSearch)
     {
       return table.getTableModel().findWhere.id(toSearch);
@@ -276,7 +276,7 @@ public class JobsTable {
       }
       return table.getTableModel().findWhere.title(builder.getTitle());
     }
-
+    
     public RowCollection_Jobs title(java.lang.String toSearch)
     {
       return table.getTableModel().findWhere.title(toSearch);
@@ -291,7 +291,7 @@ public class JobsTable {
       }
       return table.getTableModel().findWhere.description(builder.getDescription());
     }
-
+    
     public RowCollection_Jobs description(java.lang.String toSearch)
     {
       return table.getTableModel().findWhere.description(toSearch);
