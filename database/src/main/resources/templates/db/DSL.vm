@@ -35,6 +35,11 @@ public class ${clsScope}
    */
   final ${table.javaName}Table ${table.javaNameFirstLower}Table;
   
+  // Getter for Groovy property access
+  public ${table.javaName}Table get${table.javaName}Table()
+  {
+    return ${table.javaNameFirstLower}Table;
+  }
 #end
   public ${clsScope}() {
     this(new ${clsDataSet}() 
