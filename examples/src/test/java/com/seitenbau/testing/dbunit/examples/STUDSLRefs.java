@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.referencesexample;
+package com.seitenbau.testing.dbunit.examples;
 
 import com.seitenbau.testing.dbunit.model.dsl.JobsRef;
 import com.seitenbau.testing.dbunit.model.dsl.PersonsRef;

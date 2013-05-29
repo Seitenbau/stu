@@ -3,8 +3,6 @@ package com.seitenbau.testing.dbunit.generator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.seitenbau.testing.util.CamelCase;
-
 public class TableBuilder
 {
   

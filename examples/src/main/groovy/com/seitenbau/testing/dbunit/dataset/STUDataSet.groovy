@@ -1,15 +1,15 @@
-package com.seitenbau.testing.dbunit.referencesexample
+package com.seitenbau.testing.dbunit.dataset
 
-import static com.seitenbau.testing.dbunit.referencesexample.STUDSLRefs.*;
+import static com.seitenbau.testing.dbunit.examples.STUDSLRefs.*;
 import com.seitenbau.testing.dbunit.model.dsl.STUDSL
 import com.seitenbau.testing.dbunit.model.dsl.JobsRef
 import com.seitenbau.testing.dbunit.model.dsl.PersonsRef
 import com.seitenbau.testing.dbunit.model.dsl.STUDSL;
 import com.seitenbau.testing.dbunit.model.dsl.TeamsRef
 
-class STUDSLDataSet extends STUDSL
+class STUDataSet extends STUDSL
 {
-  STUDSLDataSet() {
+  STUDataSet() {
     tables {
       
       jobsTable.rows {

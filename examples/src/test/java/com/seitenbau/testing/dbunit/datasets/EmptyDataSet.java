@@ -1,6 +1,6 @@
 package com.seitenbau.testing.dbunit.datasets;
 
-import com.seitenbau.testing.dbunit.demomodel.STUDataSet;
+import com.seitenbau.testing.dbunit.model.STUDataSet;
 
 
 public class EmptyDataSet extends STUDataSet

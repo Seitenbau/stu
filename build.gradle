@@ -63,7 +63,7 @@ project("common") {
     compile("org.mockito:mockito-all:$mockitoVersion", optional)
     compile("org.springframework:spring-beans:$springVersion", optional)
     compile("ch.qos.logback:logback-classic:$logbackVersion", optional)
-	compile("com.google.guava:guava:$guavaVersion", optional)
+    compile("com.google.guava:guava:$guavaVersion", optional)
   }
 }
 
@@ -100,6 +100,26 @@ project("examples") {
     compile("org.springframework.data:spring-data-jpa:$springDataVersion")
     compile("org.hibernate.javax.persistence:hibernate-jpa-2.0-api:$hibernatPersistanceVersion")
     compile("org.hibernate:hibernate-entitymanager:$hibernatEntityManagerVersion")
+  }
+  
+  sourceSets {
+    test {
+      java {
+        srcDir 'src/test/generated-java'
+      }
+    }
+    test {
+      groovy {
+        srcDir 'src/test/java'
+        srcDir 'src/test/generated-java'
+      }
+    }
+    main {
+      groovy {
+        srcDir 'src/test/java'
+        srcDir 'src/test/generated-java'
+      }
+    }
   }
 }
 
