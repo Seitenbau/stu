@@ -26,11 +26,13 @@ class STUDSLDataSet extends STUDSL
         BARANOWSKI    | 3   | "Christian"             | "Baranowski"        | TM  | QA
       }
       
+      // Because of the query in column membersize, it is important that the persons table
+      // is defined before
       teamsTable.rows {
         REF           | id  | title                   | description         | membersize
         QA            | 1   | "Quality Assurance"     | "Verifies software" | { personsTable.findWhere.teamId(QA).getRowCount() } 
       }
-      
+
     }
   }
 }
