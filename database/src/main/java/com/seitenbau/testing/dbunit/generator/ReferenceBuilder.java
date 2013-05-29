@@ -11,7 +11,20 @@ public class ReferenceBuilder
   private LocalReferenceBuilder local;
 
   private RemoteReferenceBuilder remote;
+  
+  private String localName;
 
+  private String localDescription;
+
+  private String remoteName;
+
+  private String remoteDescription;
+
+  private Integer remoteMin;
+
+  private Integer remoteMax;
+
+  
   public Column getColumn()
   {
     return column;
@@ -44,27 +57,34 @@ public class ReferenceBuilder
     buildReference();
     return columnBuilder.build();
   }
+  
+  private static String getUsedName(String name, String columnJavaName) 
+  {
+    if (name == null) 
+    {
+      return CamelCase.makeFirstLowerCase(columnJavaName) + "To";
+    }
+    return name;
+  }
 
   private void buildReference()
   {
-    String localName = CamelCase.makeFirstLowerCase(columnBuilder.getColumnJavaName()) + "To";
-    // column.getTable().getJavaName() + "To";
-    String remoteName = CamelCase.makeFirstLowerCase(columnBuilder.getTableBuilder().getTable().getJavaName()) + "To";
-    Integer remoteMin = null;
-    Integer remoteMax = null;
+    String p_localName = getUsedName(localName, columnBuilder.getColumnJavaName());
+    String p_remoteName = getUsedName(remoteName, columnBuilder.getTableBuilder().getTable().getJavaName());
+    
+    // Avoid null pointer for Apache Velocity
+    String p_localDescription = localDescription != null ? localDescription : "";
+    String p_remoteDescription = remoteDescription != null ? remoteDescription : "";
 
-    if (local != null)
-    {
-      localName = local.getName();
-    }
+    columnBuilder.addReference(new Reference(column, p_localName, p_localDescription, p_remoteName, p_remoteDescription,
+        remoteMin, remoteMax));
 
-    if (remote != null)
-    {
-      remoteName = remote.getName();
-      remoteMin = remote.getMin();
-      remoteMax = remote.getMax();
-    }
-    columnBuilder.addReference(new Reference(column, localName, remoteName, remoteMin, remoteMax));
+  }
+  
+  public ReferenceBuilder description(String description)
+  {
+    remoteDescription = description;
+    return this;
   }
 
   public LocalReferenceBuilder local(String name)
@@ -91,12 +111,16 @@ public class ReferenceBuilder
   {
     private final ReferenceBuilder parent;
 
-    private final String name;
-
     public LocalReferenceBuilder(ReferenceBuilder parent, String name)
     {
       this.parent = parent;
-      this.name = name;
+      parent.localName = name;
+    }
+
+    public LocalReferenceBuilder description(String description)
+    {
+      parent.localDescription = description;
+      return this;
     }
 
     public RemoteReferenceBuilder remote(String name)
@@ -116,7 +140,12 @@ public class ReferenceBuilder
 
     public String getName()
     {
-      return name;
+      return parent.localName;
+    }
+
+    public String getDescription()
+    {
+      return parent.localDescription;
     }
   }
 
@@ -124,27 +153,28 @@ public class ReferenceBuilder
   {
     private final ReferenceBuilder parent;
 
-    private final String name;
-
-    private Integer min;
-
-    private Integer max;
 
     public RemoteReferenceBuilder(ReferenceBuilder parent, final String name)
     {
       this.parent = parent;
-      this.name = name;
+      parent.remoteName = name;
+    }
+
+    public RemoteReferenceBuilder description(String description)
+    {
+      parent.remoteDescription = description;
+      return this;
     }
 
     public RemoteReferenceBuilder min(int min)
     {
-      this.min = min;
+      parent.remoteMin = min;
       return this;
     }
 
     public RemoteReferenceBuilder max(int max)
     {
-      this.max = max;
+      parent.remoteMax = max;
       return this;
     }
 
@@ -165,17 +195,22 @@ public class ReferenceBuilder
 
     public String getName()
     {
-      return name;
+      return parent.remoteName;
+    }
+
+    public String getDescription()
+    {
+      return parent.remoteDescription;
     }
 
     public Integer getMin()
     {
-      return min;
+      return parent.remoteMin;
     }
 
     public Integer getMax()
     {
-      return max;
+      return parent.remoteMax;
     }
   }
 

@@ -1,5 +1,11 @@
 package com.seitenbau.testing.dbunit.dsl;
 
+import groovy.lang.Closure;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.google.common.base.Optional;
 
 public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implements IParsedTableRowCallback
@@ -105,6 +111,7 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
     }
     R rowbuilder = getRowBuilder(row);
 
+    Map<ColumnBinding<R, F>, Closure<?>> closures = new HashMap<ColumnBinding<R, F>, Closure<?>>();
     for (int columnIndex = 0; columnIndex < _columns; columnIndex++)
     {
       if (columnIndex == _colRef || columnIndex == _colId)
@@ -125,6 +132,9 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
         // TODO
         DatabaseReference ref = (DatabaseReference) value;
         column.setReference(rowbuilder, ref);
+      } else if (value instanceof Closure) {
+        // call closure values after row has been built and registered
+        closures.put(column, (Closure<?>)value);
       }
       else
       {
@@ -141,6 +151,14 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
         D ref = (D) row.getValue(_colRef);
         _tableAdapter.bindToScope(ref, rowbuilder);
       }
+    }
+    
+    for (Entry<ColumnBinding<R, F>, Closure<?>> entry : closures.entrySet()) 
+    {
+      ColumnBinding<R,F> column = entry.getKey();
+      Closure<?> closure = entry.getValue();
+      Object value = closure.call();
+      column.set(rowbuilder, value);
     }
   }
 

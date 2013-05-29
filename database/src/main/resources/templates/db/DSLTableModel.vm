@@ -55,16 +55,29 @@ public class ${clsTable} {
   public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = createREFBinding();
 
 #foreach( $col in $model.columns )
+#macro( comments )
   /**
    * Column Header for ${model.javaName} table.
    * <p>
-   * Data Type: ${col.javaType}
+   * Data Type: {@code ${col.javaType}}
+#if( ${col.reference} )
+   * or {@code ${col.reference.column.table.javaName}Ref}  
+#end
+   * <br>   
+   * Database Type: ${col.type}
+#if( ${col.isIdentifierColumn()} )
+   * <br>Primary Key
+#end
+   * <br>other Flags :-)
    */
+#end
+#comments()   
   public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = create${col.javaName}Binding();
 
 ## check if column is an identifier
 #if ( ${col.truncatedReferenceName} )
 #set( $shortname  = ${col.truncatedReferenceName} )
+#comments()   
   public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${shortname} = ${col.name};
 
 #end
@@ -132,13 +145,13 @@ public class ${clsTable} {
   /**
    * Parses the rows of a ${model.javaName} table. Supported columns are:
    * <ul>
-   *   <li>REF</li>
+   *   <li><strong>{@code REF}</strong>: {@code ${model.javaName}Ref}</li>
 #foreach( $col in $model.columns )
 #set( $shortname  = "" )
 #if ( ${col.truncatedReferenceName} )
-#set( $shortname  = " (alias: " + ${col.truncatedReferenceName} + ")")
+#set( $shortname  = " (alias: <strong>{@code " + ${col.truncatedReferenceName} + "}</strong>)")
 #end
-   *   <li> ${col.name}$shortname
+   *   <li> <strong>{@code ${col.name}}</strong>$shortname: {@code ${col.javaType}}
 #end
    * </ul>
    * @param rows The table data

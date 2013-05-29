@@ -36,9 +36,11 @@ public class ReferencesGenerator {
           .column("name", DataType.VARCHAR) //
           .column("job_id", DataType.BIGINT) //
             .references(jobs.ref("id")) //
+              .description("Assigns a job to the person")
           .column("team_id", DataType.BIGINT) //
             .references(teams.ref("id")) //
-        .build(); //s
+              .description("Assigns a team to the person")
+        .build(); //
 
     db.generate();
     

@@ -40,21 +40,31 @@ public class JobsTable {
   /**
    * Column Header for Jobs table.
    * <p>
-   * Data Type: java.lang.Long
+   * Data Type: {@code java.lang.Long}
+   * <br>   
+   * Database Type: DataType.BIGINT
+   * <br>Primary Key
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> id = createIdBinding();
 
   /**
    * Column Header for Jobs table.
    * <p>
-   * Data Type: java.lang.String
+   * Data Type: {@code java.lang.String}
+   * <br>   
+   * Database Type: DataType.VARCHAR
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> title = createTitleBinding();
 
   /**
    * Column Header for Jobs table.
    * <p>
-   * Data Type: java.lang.String
+   * Data Type: {@code java.lang.String}
+   * <br>   
+   * Database Type: DataType.VARCHAR
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> description = createDescriptionBinding();
 
@@ -121,10 +131,10 @@ public class JobsTable {
   /**
    * Parses the rows of a Jobs table. Supported columns are:
    * <ul>
-   *   <li>REF</li>
-   *   <li> id
-   *   <li> title
-   *   <li> description
+   *   <li><strong>{@code REF}</strong>: {@code JobsRef}</li>
+   *   <li> <strong>{@code id}</strong>: {@code java.lang.Long}
+   *   <li> <strong>{@code title}</strong>: {@code java.lang.String}
+   *   <li> <strong>{@code description}</strong>: {@code java.lang.String}
    * </ul>
    * @param rows The table data
    */

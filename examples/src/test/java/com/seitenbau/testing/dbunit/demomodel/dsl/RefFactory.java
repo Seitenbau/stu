@@ -1,5 +1,9 @@
 package com.seitenbau.testing.dbunit.demomodel.dsl;
 
+import com.seitenbau.testing.dbunit.demomodel.dsl.JobsRef;
+import com.seitenbau.testing.dbunit.demomodel.dsl.PersonsRef;
+import com.seitenbau.testing.dbunit.demomodel.dsl.TeamsRef;
+
 public class RefFactory 
 {
 

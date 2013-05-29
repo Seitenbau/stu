@@ -16,12 +16,87 @@ public class PersonsRef extends DatabaseReference {
 
   private final Map<STUDSL, RowBuilder_Persons> builders;
   
+  private static final ThreadLocal<STUDSL> threadScope = new ThreadLocal<STUDSL>();
+
   public PersonsRef()
   {
     builders = new HashMap<STUDSL, RowBuilder_Persons>();
   }
-  
-  private static final ThreadLocal<STUDSL> threadScope = new ThreadLocal<STUDSL>();
+
+  public java.lang.Long getId()
+  {
+    final STUDSL scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query Id in PersonsRef");
+    } 
+    final RowBuilder_Persons row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query Id in PersonsRef");
+    }
+    return row.getId();
+  } 
+
+  public java.lang.String getFirstName()
+  {
+    final STUDSL scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query FirstName in PersonsRef");
+    } 
+    final RowBuilder_Persons row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query FirstName in PersonsRef");
+    }
+    return row.getFirstName();
+  } 
+
+  public java.lang.String getName()
+  {
+    final STUDSL scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query Name in PersonsRef");
+    } 
+    final RowBuilder_Persons row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query Name in PersonsRef");
+    }
+    return row.getName();
+  } 
+
+  public java.lang.Long getJobId()
+  {
+    final STUDSL scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query JobId in PersonsRef");
+    } 
+    final RowBuilder_Persons row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query JobId in PersonsRef");
+    }
+    return row.getJobId();
+  } 
+
+  public java.lang.Long getTeamId()
+  {
+    final STUDSL scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query TeamId in PersonsRef");
+    } 
+    final RowBuilder_Persons row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query TeamId in PersonsRef");
+    }
+    return row.getTeamId();
+  } 
   
   static void setThreadLocalScope(STUDSL scope) 
   {
@@ -87,7 +162,7 @@ public class PersonsRef extends DatabaseReference {
   // depending on relation type with or without ellipse (...)
   /**
    * 
-   * @param refs
+   * @param refs The references to associate with this one
    */
   public void jobIdTo(JobsRef ... refs) {
     STUDSL scope = threadScope.get();
@@ -121,7 +196,7 @@ public class PersonsRef extends DatabaseReference {
   // depending on relation type with or without ellipse (...)
   /**
    * 
-   * @param refs
+   * @param refs The references to associate with this one
    */
   public void teamIdTo(TeamsRef ... refs) {
     STUDSL scope = threadScope.get();

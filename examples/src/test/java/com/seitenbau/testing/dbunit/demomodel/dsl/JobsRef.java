@@ -16,12 +16,57 @@ public class JobsRef extends DatabaseReference {
 
   private final Map<STUDSL, RowBuilder_Jobs> builders;
   
+  private static final ThreadLocal<STUDSL> threadScope = new ThreadLocal<STUDSL>();
+
   public JobsRef()
   {
     builders = new HashMap<STUDSL, RowBuilder_Jobs>();
   }
-  
-  private static final ThreadLocal<STUDSL> threadScope = new ThreadLocal<STUDSL>();
+
+  public java.lang.Long getId()
+  {
+    final STUDSL scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query Id in JobsRef");
+    } 
+    final RowBuilder_Jobs row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query Id in JobsRef");
+    }
+    return row.getId();
+  } 
+
+  public java.lang.String getTitle()
+  {
+    final STUDSL scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query Title in JobsRef");
+    } 
+    final RowBuilder_Jobs row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query Title in JobsRef");
+    }
+    return row.getTitle();
+  } 
+
+  public java.lang.String getDescription()
+  {
+    final STUDSL scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query Description in JobsRef");
+    } 
+    final RowBuilder_Jobs row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query Description in JobsRef");
+    }
+    return row.getDescription();
+  } 
   
   static void setThreadLocalScope(STUDSL scope) 
   {
@@ -68,8 +113,8 @@ public class JobsRef extends DatabaseReference {
 
   // depending on relation type with or without ellipse (...)
   /**
-   * 
-   * @param refs
+   * Assigns a job to the person
+   * @param refs The references to associate with this one
    */
   public void personsTo(PersonsRef ... refs) {
     STUDSL scope = threadScope.get();

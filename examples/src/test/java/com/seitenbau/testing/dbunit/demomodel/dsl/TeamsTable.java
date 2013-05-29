@@ -40,28 +40,41 @@ public class TeamsTable {
   /**
    * Column Header for Teams table.
    * <p>
-   * Data Type: java.lang.Long
+   * Data Type: {@code java.lang.Long}
+   * <br>   
+   * Database Type: DataType.BIGINT
+   * <br>Primary Key
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> id = createIdBinding();
 
   /**
    * Column Header for Teams table.
    * <p>
-   * Data Type: java.lang.String
+   * Data Type: {@code java.lang.String}
+   * <br>   
+   * Database Type: DataType.VARCHAR
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> title = createTitleBinding();
 
   /**
    * Column Header for Teams table.
    * <p>
-   * Data Type: java.lang.String
+   * Data Type: {@code java.lang.String}
+   * <br>   
+   * Database Type: DataType.VARCHAR
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> description = createDescriptionBinding();
 
   /**
    * Column Header for Teams table.
    * <p>
-   * Data Type: java.lang.Long
+   * Data Type: {@code java.lang.Long}
+   * <br>   
+   * Database Type: DataType.BIGINT
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> membersize = createMembersizeBinding();
 
@@ -128,11 +141,11 @@ public class TeamsTable {
   /**
    * Parses the rows of a Teams table. Supported columns are:
    * <ul>
-   *   <li>REF</li>
-   *   <li> id
-   *   <li> title
-   *   <li> description
-   *   <li> membersize
+   *   <li><strong>{@code REF}</strong>: {@code TeamsRef}</li>
+   *   <li> <strong>{@code id}</strong>: {@code java.lang.Long}
+   *   <li> <strong>{@code title}</strong>: {@code java.lang.String}
+   *   <li> <strong>{@code description}</strong>: {@code java.lang.String}
+   *   <li> <strong>{@code membersize}</strong>: {@code java.lang.Long}
    * </ul>
    * @param rows The table data
    */

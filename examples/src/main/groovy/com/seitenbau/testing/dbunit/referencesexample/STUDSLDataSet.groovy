@@ -28,7 +28,7 @@ class STUDSLDataSet extends STUDSL
       
       teamsTable.rows {
         REF           | id  | title                   | description         | membersize
-        QA            | 1   | "Quality Assurance"     | "Verifies software" | 3
+        QA            | 1   | "Quality Assurance"     | "Verifies software" | { personsTable.findWhere.teamId(QA).getRowCount() } 
       }
       
     }

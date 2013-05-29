@@ -1,5 +1,6 @@
 package com.seitenbau.testing.dbunit.demomodel.dsl;
 
+import com.seitenbau.testing.dbunit.dsl.IScope;
 import org.dbunit.dataset.IDataSet;
 
 import com.seitenbau.testing.dbunit.demomodel.STUDataSet;
@@ -13,7 +14,7 @@ import groovy.lang.Closure;
  * Represents a STU Data Set Scope. Parses the DSL and builds
  * the datasets
  */
-public class STUDSL 
+public class STUDSL implements IScope
 {
 
   private final STUDataSet dataset;
@@ -21,30 +22,30 @@ public class STUDSL
   /**
    * The Jobs table
    */
-  final JobsTable jobsTable;
+  public final JobsTable jobsTable;
   
   // Getter for Groovy property access
-  public JobsTable getJobsTable()
+  protected JobsTable getJobsTable()
   {
     return jobsTable;
   }
   /**
    * The Teams table
    */
-  final TeamsTable teamsTable;
+  public final TeamsTable teamsTable;
   
   // Getter for Groovy property access
-  public TeamsTable getTeamsTable()
+  protected TeamsTable getTeamsTable()
   {
     return teamsTable;
   }
   /**
    * The Persons table
    */
-  final PersonsTable personsTable;
+  public final PersonsTable personsTable;
   
   // Getter for Groovy property access
-  public PersonsTable getPersonsTable()
+  protected PersonsTable getPersonsTable()
   {
     return personsTable;
   }
@@ -182,6 +183,12 @@ public class STUDSL
   public RowBuilder_Persons ref(PersonsRef ref)
   {
     return ref.getBuilder(this);
+  }
+
+  @Override
+  public void bindRefs()
+  {
+    setReferencesContext();
   }
   
   /**

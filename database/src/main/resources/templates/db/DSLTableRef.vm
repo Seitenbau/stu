@@ -28,12 +28,29 @@ public class ${clsRef} extends DatabaseReference {
 
   private final Map<${clsScope}, ${clsRowbuilder}> builders;
   
+  private static final ThreadLocal<${clsScope}> threadScope = new ThreadLocal<${clsScope}>();
+
   public ${clsRef}()
   {
     builders = new HashMap<${clsScope}, ${clsRowbuilder}>();
   }
-  
-  private static final ThreadLocal<${clsScope}> threadScope = new ThreadLocal<${clsScope}>();
+#foreach ($col in $model.columns)
+
+  public ${col.javaType} get${col.javaName}()
+  {
+    final ${clsScope} scope = threadScope.get();
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context to query ${col.javaName} in ${model.javaName}Ref");
+    } 
+    final ${clsRowbuilder} row = builders.get(scope);
+    if (scope == null)
+    {
+      throw new IllegalStateException("No corresponding row to query ${col.javaName} in ${model.javaName}Ref");
+    }
+    return row.get${col.javaName}();
+  } 
+#end
   
   static void setThreadLocalScope(${clsScope} scope) 
   {
@@ -141,14 +158,14 @@ public class ${clsRef} extends DatabaseReference {
 #if ($list.add($item))
 #end
 #end
-#macro( addReference $refTable $verb $remoteVerb $resolveCode )
+#macro( addReference $refTable $verb $remoteVerb $resolveCode $description )
 #set($refClsRef = ${refTable.javaName} + "Ref" )
   Map<${clsScope}, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<${clsScope}, List<${refClsRef}>>();
 
   // depending on relation type with or without ellipse (...)
   /**
-   * 
-   * @param refs
+   * ${description}
+   * @param refs The references to associate with this one
    */
   public void ${verb}(${refClsRef} ... refs) {
     ${clsScope} scope = threadScope.get();
@@ -184,7 +201,7 @@ public class ${clsRef} extends DatabaseReference {
 #foreach( $col in $model.columns )
 #if( $col.reference )
 #set($resolveCode = [ "thisBuilder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());" ] )
-#addReference( $col.reference.table ${col.reference.localName} ${col.reference.remoteName} $resolveCode )
+#addReference( $col.reference.table ${col.reference.localName} ${col.reference.remoteName} $resolveCode ${col.reference.localDescription} )
 #end
 #### Handle foreign references ################
 #foreach( $referencingCol in $col.referencedByList )
@@ -196,15 +213,17 @@ public class ${clsRef} extends DatabaseReference {
 #set( $p_refTable = ${referencingCol.table.getAssociatedTable($model)})
 #set( $p_verb = ${referencingCol.reference.remoteName})
 #set( $p_remoteVerb = ${referencingCol.table.getAssociatedColumn($model).reference.remoteName})
+#set( $p_description = ${referencingCol.reference.remoteDescription} )
 #addToList($resolveCode "RowBuilder_${referencingCol.table.javaName} builder = scope.${referencingCol.table.javaNameFirstLower}Table.getTableModel().insertRow();")
 #addToList($resolveCode "builder.set${referencingCol.javaName}(thisBuilder.get${col.javaName}());")
 #addToList($resolveCode "builder.set${assocColumn.javaName}(otherBuilder.get${assocColumn.reference.column.javaName}());")
-#addReference( $p_refTable $p_verb $p_remoteVerb $resolveCode)
+#addReference( $p_refTable $p_verb $p_remoteVerb $resolveCode $p_description)
 #else
 ### Simple Foreign Key ####################
 #set($resolveCode = [ "// foreign reference" ] )
+#set( $p_description = ${referencingCol.reference.remoteDescription} )
 #addToList($resolveCode "otherBuilder.set${referencingCol.javaName}(thisBuilder.get${col.javaName}());")
-#addReference( ${referencingCol.table} ${referencingCol.reference.remoteName} ${referencingCol.reference.localName} $resolveCode )
+#addReference( ${referencingCol.table} ${referencingCol.reference.remoteName} ${referencingCol.reference.localName} $resolveCode $p_description)
 #end
 #end
 #end

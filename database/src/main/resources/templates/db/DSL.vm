@@ -9,6 +9,7 @@
 #set($referenceMethod = "ref")
 package ${package};
 
+import com.seitenbau.testing.dbunit.dsl.IScope;
 import org.dbunit.dataset.IDataSet;
 
 #if( $model.package && $model.package.length() != 0 )
@@ -24,7 +25,7 @@ import groovy.lang.Closure;
  * Represents a ${model.name} Data Set Scope. Parses the DSL and builds
  * the datasets
  */
-public class ${clsScope} 
+public class ${clsScope} implements IScope
 {
 
   private final ${clsDataSet} dataset;
@@ -33,10 +34,10 @@ public class ${clsScope}
   /**
    * The ${table.javaName} table
    */
-  final ${table.javaName}Table ${table.javaNameFirstLower}Table;
+  public final ${table.javaName}Table ${table.javaNameFirstLower}Table;
   
   // Getter for Groovy property access
-  public ${table.javaName}Table get${table.javaName}Table()
+  protected ${table.javaName}Table get${table.javaName}Table()
   {
     return ${table.javaNameFirstLower}Table;
   }
@@ -148,6 +149,12 @@ public class ${clsScope}
     return ref.getBuilder(this);
   }
 #end
+
+  @Override
+  public void bindRefs()
+  {
+    setReferencesContext();
+  }
   
   /**
    * Creates a DbUnit dataset

@@ -40,40 +40,76 @@ public class PersonsTable {
   /**
    * Column Header for Persons table.
    * <p>
-   * Data Type: java.lang.Long
+   * Data Type: {@code java.lang.Long}
+   * <br>   
+   * Database Type: DataType.BIGINT
+   * <br>Primary Key
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> id = createIdBinding();
 
   /**
    * Column Header for Persons table.
    * <p>
-   * Data Type: java.lang.String
+   * Data Type: {@code java.lang.String}
+   * <br>   
+   * Database Type: DataType.VARCHAR
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> first_name = createFirstNameBinding();
 
   /**
    * Column Header for Persons table.
    * <p>
-   * Data Type: java.lang.String
+   * Data Type: {@code java.lang.String}
+   * <br>   
+   * Database Type: DataType.VARCHAR
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> name = createNameBinding();
 
   /**
    * Column Header for Persons table.
    * <p>
-   * Data Type: java.lang.Long
+   * Data Type: {@code java.lang.Long}
+   * or {@code JobsRef}  
+   * <br>   
+   * Database Type: DataType.BIGINT
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job_id = createJobIdBinding();
 
+  /**
+   * Column Header for Persons table.
+   * <p>
+   * Data Type: {@code java.lang.Long}
+   * or {@code JobsRef}  
+   * <br>   
+   * Database Type: DataType.BIGINT
+   * <br>other Flags :-)
+   */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job = job_id;
 
   /**
    * Column Header for Persons table.
    * <p>
-   * Data Type: java.lang.Long
+   * Data Type: {@code java.lang.Long}
+   * or {@code TeamsRef}  
+   * <br>   
+   * Database Type: DataType.BIGINT
+   * <br>other Flags :-)
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team_id = createTeamIdBinding();
 
+  /**
+   * Column Header for Persons table.
+   * <p>
+   * Data Type: {@code java.lang.Long}
+   * or {@code TeamsRef}  
+   * <br>   
+   * Database Type: DataType.BIGINT
+   * <br>other Flags :-)
+   */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team = team_id;
 
   private final STUDSL _scope;
@@ -139,12 +175,12 @@ public class PersonsTable {
   /**
    * Parses the rows of a Persons table. Supported columns are:
    * <ul>
-   *   <li>REF</li>
-   *   <li> id
-   *   <li> first_name
-   *   <li> name
-   *   <li> job_id (alias: job)
-   *   <li> team_id (alias: team)
+   *   <li><strong>{@code REF}</strong>: {@code PersonsRef}</li>
+   *   <li> <strong>{@code id}</strong>: {@code java.lang.Long}
+   *   <li> <strong>{@code first_name}</strong>: {@code java.lang.String}
+   *   <li> <strong>{@code name}</strong>: {@code java.lang.String}
+   *   <li> <strong>{@code job_id}</strong> (alias: <strong>{@code job}</strong>): {@code java.lang.Long}
+   *   <li> <strong>{@code team_id}</strong> (alias: <strong>{@code team}</strong>): {@code java.lang.Long}
    * </ul>
    * @param rows The table data
    */
