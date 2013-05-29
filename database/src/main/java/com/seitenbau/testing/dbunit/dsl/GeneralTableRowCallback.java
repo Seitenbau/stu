@@ -36,6 +36,7 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
   {
     R result = null;
     boolean isNewRef = false;
+    boolean updateId = false;
     Object id = null;
 
     // get builder by reference (if available)
@@ -59,6 +60,11 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
 
       if (!(id instanceof NoValue))
       {
+        updateId = true;
+        System.out.println("No builder id is present: " + id);
+        if (id instanceof Integer && (Integer)id == 4) {
+          System.out.println("here wo go");
+        }
         Optional<R> builderById = column.getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, column.getDataType()));
         if (builderById.isPresent())
         {
@@ -77,7 +83,7 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       result = _tableAdapter.insertRow();
     }
 
-    if (isNewRef)
+    if (isNewRef || updateId)
     {
       @SuppressWarnings("unchecked")
       D ref = (D) row.getValue(_colRef);
@@ -88,7 +94,9 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
         ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
         column.set(result, id);
       }
-      _tableAdapter.handleReferences(ref, result);
+      if (isNewRef) {
+        _tableAdapter.handleReferences(ref, result);
+      }
     }
     return result;
   }
