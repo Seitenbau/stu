@@ -10,6 +10,8 @@ public class ColumnBuilder
 
   private final String name;
 
+  private String javaName;
+  
   private final DataType dataType;
 
   private Reference reference;
@@ -26,6 +28,7 @@ public class ColumnBuilder
   {
     this.tableBuilder = tableBuilder;
     this.name = name;
+    this.javaName = null;
     this.dataType = dataType;
     this.enableAutoIdHandling = false;
     this.isIdentifierColumn = false;
@@ -42,13 +45,25 @@ public class ColumnBuilder
   
   Column buildColumn(Table table)
   {
-    return new Column(table, name, null, dataType.getDataType(), dataType.getJavaType(), reference,
+    String p_javaName = javaName;
+    if (p_javaName == null)
+    {
+      p_javaName = CamelCase.makeFirstOfBlockUppercase(name);
+    }
+    p_javaName = CamelCase.makeFirstUpperCase(p_javaName);
+    return new Column(table, name, p_javaName, dataType.getDataType(), dataType.getJavaType(), reference,
       isIdentifierColumn, isAutoIncrementColumn, addNextMethod, enableAutoIdHandling);
   }
 
   public ColumnBuilder column(String name, DataType dataType)
   {
     return new ColumnBuilder(tableBuilder, name, dataType);
+  }
+  
+  public ColumnBuilder javaName(String javaName)
+  {
+    this.javaName = javaName;
+    return this;
   }
 
   public ColumnBuilder autoIdHandling()

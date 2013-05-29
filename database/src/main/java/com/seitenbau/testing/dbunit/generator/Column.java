@@ -94,12 +94,7 @@ public class Column
 
   public String getJavaName()
   {
-    if (_javaName != null)
-    {
-      return CamelCase.makeFirstUpperCase(_javaName);
-    }
-    String name = CamelCase.makeFirstOfBlockUppercase(_name);
-    return CamelCase.makeFirstUpperCase(name); // old
+    return _javaName;
   }
 
   public String getJavaNameFirstLower()
