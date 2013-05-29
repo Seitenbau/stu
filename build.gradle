@@ -105,18 +105,10 @@ project("examples") {
   sourceSets {
     test {
       java {
-        srcDir 'src/test/generated-java'
-      }
-    }
-    test {
-      groovy {
         srcDir 'src/test/java'
-        srcDir 'src/test/generated-java'
-      }
-    }
-    main {
-      groovy {
-        srcDir 'src/test/java'
+        srcDir 'src/main/java'
+        srcDir 'src/test/groovy'
+        srcDir 'src/main/groovy'
         srcDir 'src/test/generated-java'
       }
     }
