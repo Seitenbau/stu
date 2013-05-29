@@ -43,8 +43,7 @@ public class JobsTable {
    * Data Type: {@code java.lang.Long}
    * <br>   
    * Database Type: DataType.BIGINT
-   * <br>Primary Key
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> id = createIdBinding();
 
@@ -54,7 +53,7 @@ public class JobsTable {
    * Data Type: {@code java.lang.String}
    * <br>   
    * Database Type: DataType.VARCHAR
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> title = createTitleBinding();
 
@@ -64,7 +63,7 @@ public class JobsTable {
    * Data Type: {@code java.lang.String}
    * <br>   
    * Database Type: DataType.VARCHAR
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Jobs, JobsGetWhere> description = createDescriptionBinding();
 

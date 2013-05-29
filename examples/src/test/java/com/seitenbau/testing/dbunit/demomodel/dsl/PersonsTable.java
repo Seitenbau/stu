@@ -43,8 +43,7 @@ public class PersonsTable {
    * Data Type: {@code java.lang.Long}
    * <br>   
    * Database Type: DataType.BIGINT
-   * <br>Primary Key
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> id = createIdBinding();
 
@@ -54,17 +53,19 @@ public class PersonsTable {
    * Data Type: {@code java.lang.String}
    * <br>   
    * Database Type: DataType.VARCHAR
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> first_name = createFirstNameBinding();
 
   /**
    * Column Header for Persons table.
    * <p>
+   * Actually this column represents tha last name of a person
+   * <p>
    * Data Type: {@code java.lang.String}
    * <br>   
    * Database Type: DataType.VARCHAR
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> name = createNameBinding();
 
@@ -75,7 +76,7 @@ public class PersonsTable {
    * or {@code JobsRef}  
    * <br>   
    * Database Type: DataType.BIGINT
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job_id = createJobIdBinding();
 
@@ -86,7 +87,7 @@ public class PersonsTable {
    * or {@code JobsRef}  
    * <br>   
    * Database Type: DataType.BIGINT
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> job = job_id;
 
@@ -97,7 +98,7 @@ public class PersonsTable {
    * or {@code TeamsRef}  
    * <br>   
    * Database Type: DataType.BIGINT
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team_id = createTeamIdBinding();
 
@@ -108,7 +109,7 @@ public class PersonsTable {
    * or {@code TeamsRef}  
    * <br>   
    * Database Type: DataType.BIGINT
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Persons, PersonsGetWhere> team = team_id;
 

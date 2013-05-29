@@ -20,7 +20,7 @@ public class STUDSL implements IScope
   private final STUDataSet dataset;
 
   /**
-   * The Jobs table
+   * The table containing the jobs of a great company
    */
   public final JobsTable jobsTable;
   
@@ -30,7 +30,7 @@ public class STUDSL implements IScope
     return jobsTable;
   }
   /**
-   * The Teams table
+   * The table containing the teams of a great company
    */
   public final TeamsTable teamsTable;
   
@@ -40,7 +40,7 @@ public class STUDSL implements IScope
     return teamsTable;
   }
   /**
-   * The Persons table
+   * The table containing the staff of a great company
    */
   public final PersonsTable personsTable;
   
@@ -69,9 +69,9 @@ public class STUDSL implements IScope
    * Parses and integrates the tables to the data set
    * Supported tables:
    * <ul>
-   *   <li>jobsTable</li>
-   *   <li>teamsTable</li>
-   *   <li>personsTable</li>
+   *   <li>{@code jobsTable} - The table containing the jobs of a great company</li>
+   *   <li>{@code teamsTable} - The table containing the teams of a great company</li>
+   *   <li>{@code personsTable} - The table containing the staff of a great company</li>
    * </ul>
    *  
    * @param table Table data

@@ -111,7 +111,8 @@ public class PersonsRef extends DatabaseReference {
   void setBuilder(STUDSL scope, RowBuilder_Persons builder)
   {
     RowBuilder_Persons lastBuilder = builders.put(scope, builder);
-    if (lastBuilder != null && lastBuilder != builder) {
+    if (lastBuilder != null && lastBuilder != builder)
+    {
       throw new RuntimeException("Builder cannot be redefined");
     }
 

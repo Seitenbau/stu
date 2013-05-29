@@ -32,7 +32,7 @@ public class ${clsScope} implements IScope
 
 #foreach( $table in $model.tables )
   /**
-   * The ${table.javaName} table
+   * ${table.description}
    */
   public final ${table.javaName}Table ${table.javaNameFirstLower}Table;
   
@@ -63,7 +63,7 @@ public class ${clsScope} implements IScope
    * Supported tables:
    * <ul>
 #foreach( $table in $model.tables )
-   *   <li>${table.javaNameFirstLower}Table</li>
+   *   <li>{@code ${table.javaNameFirstLower}Table} - ${table.description}</li>
 #end
    * </ul>
    *  

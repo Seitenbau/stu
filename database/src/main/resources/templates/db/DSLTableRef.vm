@@ -65,7 +65,8 @@ public class ${clsRef} extends DatabaseReference {
   void setBuilder(${clsScope} scope, ${clsRowbuilder} builder)
   {
     ${clsRowbuilder} lastBuilder = builders.put(scope, builder);
-    if (lastBuilder != null && lastBuilder != builder) {
+    if (lastBuilder != null && lastBuilder != builder)
+    {
       throw new RuntimeException("Builder cannot be redefined");
     }
 #macro( setBuilderHandlerHead $refTable $verb )
@@ -167,7 +168,8 @@ public class ${clsRef} extends DatabaseReference {
    * ${description}
    * @param refs The references to associate with this one
    */
-  public void ${verb}(${refClsRef} ... refs) {
+  public void ${verb}(${refClsRef} ... refs) 
+  {
     ${clsScope} scope = threadScope.get();
     ${clsRowbuilder} thisBuilder = getBuilder(scope);
     
@@ -181,15 +183,15 @@ public class ${clsRef} extends DatabaseReference {
 #foreach( $line in $resolveCode )
         $line
 #end        
-      }
-      else {
+      } else {
         // at least one builder does not exist... add relation information
         // to the Refs where no builder exist.
         if (thisBuilder == null)
         {
           getOrCreateList(${privateListPrefix}${verb}Map, threadScope).add(ref);
         }
-        if (otherBuilder == null) {
+        if (otherBuilder == null) 
+        {
           getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, threadScope).add(this);
         }
       }

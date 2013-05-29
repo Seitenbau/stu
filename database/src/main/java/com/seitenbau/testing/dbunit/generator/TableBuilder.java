@@ -14,6 +14,8 @@ public class TableBuilder
 
   private String javaName;
   
+  private String description;
+  
   private final List<ColumnBuilder> columnBuilders;
   
   public TableBuilder(DatabaseModel model, String name)
@@ -26,9 +28,19 @@ public class TableBuilder
 
   public Table build()
   {
-    final Table result = new Table(name, javaName, columnBuilders);
+    final Table result = new Table(name, javaName, getTableDescription(), columnBuilders);
     model.addTable(result);
     return result;
+  }
+  
+  private String getTableDescription()
+  {
+    if (description != null)
+    {
+      return description;
+    }
+    
+    return "The " + name + " table";
   }
   
   public String getName()
@@ -36,14 +48,26 @@ public class TableBuilder
     return name;
   }
 
-  public void setJavaName(String javaName)
+  public TableBuilder javaName(String javaName)
   {
     this.javaName = javaName;
+    return this;
   }
 
   public String getJavaName()
   {
     return javaName;
+  }
+
+  public TableBuilder description(String description)
+  {
+    this.description = description;
+    return this;
+  }
+
+  public String getDescription()
+  {
+    return description;
   }
 
   public ColumnBuilder column(String name, DataType dataType)

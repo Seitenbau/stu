@@ -14,15 +14,18 @@ public class Table
   private DataSet _dataSet;
 
   private final String _name;
-
+  
   private final String _javaName;
+  
+  private final String _description;
 
   private final List<Column> _columns;
 
-  public Table(String name, String javaName, List<ColumnBuilder> columnBuilders)
+  public Table(String name, String javaName, String description, List<ColumnBuilder> columnBuilders)
   {
     _name = name;
     _javaName = javaName;
+    _description = description;
     _columns = new ArrayList<Column>();
     for (ColumnBuilder columnBuilder : columnBuilders) {
       _columns.add(columnBuilder.buildColumn(this));
@@ -32,6 +35,11 @@ public class Table
   public String getName()
   {
     return _name;
+  }
+
+  public String getDescription()
+  {
+    return _description;
   }
 
   public List<Column> getColumns()

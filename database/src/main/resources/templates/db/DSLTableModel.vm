@@ -58,6 +58,10 @@ public class ${clsTable} {
 #macro( comments )
   /**
    * Column Header for ${model.javaName} table.
+#if( ${col.description} )
+   * <p>
+   * ${col.description}
+#end
    * <p>
    * Data Type: {@code ${col.javaType}}
 #if( ${col.reference} )
@@ -101,7 +105,8 @@ public class ${clsTable} {
     
     public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
     {
-      if (row != null) {
+      if (row != null)
+      {
         reference.setBuilder(_scope, row);
       }
     }
@@ -116,7 +121,8 @@ public class ${clsTable} {
       return reference.getBuilder(_scope);
     }
 
-    public String getTableName() {
+    public String getTableName()
+    {
       return "${model.javaName}";
     }
     
@@ -153,7 +159,8 @@ public class ${clsTable} {
    * </ul>
    * @param rows The table data
    */
-  public void rows(Closure<?> rows) {
+  public void rows(Closure<?> rows)
+  {
     GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}> callback = 
         new GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}>(_adapter);
     TableParser.parseTable(rows, this, callback);
@@ -175,12 +182,14 @@ public class ${clsTable} {
       }
     
       @Override
-      public boolean isRefColumn() {
+      public boolean isRefColumn() 
+      {
         return true;
       }
 
       @Override
-      public DataType getDataType() {
+      public DataType getDataType() 
+      {
         return null;
       }
     };
@@ -200,10 +209,10 @@ public class ${clsTable} {
         }
         definedIdsSet.add(row);
 #end
-        if (valueMustBeSetRaw(value)) {
+        if (valueMustBeSetRaw(value)) 
+        {
           row.set${col.javaName}Raw(value);
-        }
-        else {
+        } else {
           row.set${col.javaName}((${col.javaType})CastUtil.cast(value, ${col.type}));
         }
       }
@@ -226,12 +235,14 @@ public class ${clsTable} {
 #if ( ${col.isIdentifierColumn()} )
 
       @Override
-      public Optional<${clsRowbuilder}> getWhere(${clsWhere} getWhere, Object value) {
+      public Optional<${clsRowbuilder}> getWhere(${clsWhere} getWhere, Object value)
+      {
         return getWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
       }
 
       @Override
-      public boolean isIdentifierColumn() {
+      public boolean isIdentifierColumn()
+      {
         return true;
       }
     
@@ -239,7 +250,8 @@ public class ${clsTable} {
 #end
       
       @Override
-      public DataType getDataType() {
+      public DataType getDataType()
+      {
         return ${col.type};
       }
     };
@@ -248,7 +260,9 @@ public class ${clsTable} {
   
   public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);
 
-  public static class ${clsTableFindWhere} {
+  public static class ${clsTableFindWhere}
+  {
+   
     private final ${clsTable} table;
     
     ${clsTableFindWhere}(${clsTable} table) 
@@ -295,7 +309,9 @@ public class ${clsTable} {
   
   public final ${clsTableGetWhere} getWhere = new ${clsTableGetWhere}(this);
 
-  public static class ${clsTableGetWhere} {
+  public static class ${clsTableGetWhere}
+  {
+
     private final ${clsTable} table;
     
     ${clsTableGetWhere}(${clsTable} table) 

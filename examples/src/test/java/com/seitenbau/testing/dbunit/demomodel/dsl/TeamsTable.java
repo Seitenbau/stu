@@ -43,8 +43,7 @@ public class TeamsTable {
    * Data Type: {@code java.lang.Long}
    * <br>   
    * Database Type: DataType.BIGINT
-   * <br>Primary Key
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> id = createIdBinding();
 
@@ -54,7 +53,7 @@ public class TeamsTable {
    * Data Type: {@code java.lang.String}
    * <br>   
    * Database Type: DataType.VARCHAR
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> title = createTitleBinding();
 
@@ -64,7 +63,7 @@ public class TeamsTable {
    * Data Type: {@code java.lang.String}
    * <br>   
    * Database Type: DataType.VARCHAR
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> description = createDescriptionBinding();
 
@@ -74,7 +73,7 @@ public class TeamsTable {
    * Data Type: {@code java.lang.Long}
    * <br>   
    * Database Type: DataType.BIGINT
-   * <br>other Flags :-)
+   * 
    */
   public final ColumnBinding<RowBuilder_Teams, TeamsGetWhere> membersize = createMembersizeBinding();
 

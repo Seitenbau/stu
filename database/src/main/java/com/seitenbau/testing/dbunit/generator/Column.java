@@ -17,6 +17,8 @@ public class Column
   private final String _name;
 
   private final String _javaName;
+  
+  private final String _description;
 
   private final Reference _reference;
 
@@ -30,12 +32,13 @@ public class Column
 
   private final List<Column> _referencedBy;
 
-  Column(Table table, String name, String javaName, String type, String javaType, Reference reference,
+  Column(Table table, String name, String javaName, String description, String type, String javaType, Reference reference,
       boolean isIdentifier, boolean isAutoIncrement, boolean addNextMethod, boolean enableAutoIdHandling)
   {
     _table = table;
     _name = name;
     _javaName = javaName;
+    _description = description;
     _type = type;
     _javaType = javaType;
     _reference = reference;
@@ -72,6 +75,21 @@ public class Column
     return _name;
   }
 
+  public String getJavaName()
+  {
+    return _javaName;
+  }
+
+  public String getJavaNameFirstLower()
+  {
+    return CamelCase.makeFirstLowerCase(getJavaName());
+  }
+
+  public String getDescription()
+  {
+    return _description;
+  }
+  
   public Reference getReference()
   {
     return _reference;
@@ -90,16 +108,6 @@ public class Column
   public boolean isNextIdMethodGenerated()
   {
     return _isNextIdMethodGenerated;
-  }
-
-  public String getJavaName()
-  {
-    return _javaName;
-  }
-
-  public String getJavaNameFirstLower()
-  {
-    return CamelCase.makeFirstLowerCase(getJavaName());
   }
 
   public boolean isIdentifierColumn()
