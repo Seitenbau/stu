@@ -65,10 +65,7 @@ public class ${clsTable} {
 #end
    * <br>   
    * Database Type: ${col.type}
-#if( ${col.isIdentifierColumn()} )
-   * <br>Primary Key
-#end
-   * <br>other Flags :-)
+   * 
    */
 #end
 #comments()   

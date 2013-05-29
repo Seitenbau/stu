@@ -1,7 +1,9 @@
 package com.seitenbau.testing.dbunit.referencesexample;
 
-import static com.seitenbau.testing.dbunit.referencesexample.STUDSLRefs.QA;
-import static com.seitenbau.testing.dbunit.referencesexample.STUDSLRefs.SWD;
+import static com.seitenbau.testing.dbunit.referencesexample.STUDSLRefs.*;
+
+import static com.seitenbau.testing.dbunit.dsl.ScopeRegistry.use;
+
 
 public class STUDSLDemo
 {
@@ -17,6 +19,9 @@ public class STUDSLDemo
     println("Job SWD member count", sampleData.personsTable.findWhere.jobId(SWD).getRowCount());
     println("Team QA member size", sampleData.teamsTable.findWhere.id(QA).getMembersize());
     println("Team QA member count", sampleData.personsTable.findWhere.teamId(QA).getRowCount());
+    
+    use(sampleData);
+    println("Dennis' last name", KAULBERSCH.getName());
   }
   
   private static void println(String message, Object value) 
