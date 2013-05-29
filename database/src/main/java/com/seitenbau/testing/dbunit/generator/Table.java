@@ -1,6 +1,7 @@
 package com.seitenbau.testing.dbunit.generator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.seitenbau.testing.util.CamelCase;
@@ -10,28 +11,22 @@ public class Table
 
   public static final String NAME_SUFFIX = "Table";
 
-  String _name;
+  private DataSet _dataSet;
 
-  DataSet _dataSet;
+  private final String _name;
 
-  String _javaName;
+  private final String _javaName;
 
-  List<Column> _columns = new ArrayList<Column>();
+  private final List<Column> _columns;
 
-  public List<Column> getColumns()
-  {
-    return _columns;
-  }
-
-  public Table(String name)
-  {
-    _name = name;
-  }
-
-  public Table(String name, String javaName)
+  public Table(String name, String javaName, List<ColumnBuilder> columnBuilders)
   {
     _name = name;
     _javaName = javaName;
+    _columns = new ArrayList<Column>();
+    for (ColumnBuilder columnBuilder : columnBuilders) {
+      _columns.add(columnBuilder.buildColumn(this));
+    }
   }
 
   public String getName()
@@ -39,33 +34,19 @@ public class Table
     return _name;
   }
 
-  void addColumn(Column column)
+  public List<Column> getColumns()
   {
-    _columns.add(column);
-  }
-
-  void setParent(DataSet dataSet)
-  {
-    _dataSet = dataSet;
+    return Collections.unmodifiableList(_columns);
   }
 
   public String getJavaName()
   {
-    if (_javaName != null)
-    {
-      return CamelCase.makeFirstUpperCase(_javaName);
-    }
-    return DataSet.makeNiceJavaName(_name);
+    return _javaName;
   }
 
   public String getJavaNameFirstLower()
   {
     return CamelCase.makeFirstLowerCase(getJavaName());
-  }
-
-  public DataSet getDataSet()
-  {
-    return _dataSet;
   }
 
   public String getPackage()
@@ -76,6 +57,16 @@ public class Table
   public String getSuffix()
   {
     return NAME_SUFFIX;
+  }
+
+  void setParent(DataSet dataSet)
+  {
+    _dataSet = dataSet;
+  }
+
+  public DataSet getDataSet()
+  {
+    return _dataSet;
   }
 
   public Column ref(String colName)

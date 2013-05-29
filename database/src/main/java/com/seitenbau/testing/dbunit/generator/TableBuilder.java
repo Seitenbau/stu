@@ -1,19 +1,49 @@
 package com.seitenbau.testing.dbunit.generator;
 
-import com.seitenbau.testing.dbunit.generator.Table;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.seitenbau.testing.util.CamelCase;
 
 public class TableBuilder
 {
-  private Table table;
+  
+  private final DatabaseModel model;
+  
+  private final String name;
 
-  public TableBuilder(String name)
+  private String javaName;
+  
+  private final List<ColumnBuilder> columnBuilders;
+  
+  public TableBuilder(DatabaseModel model, String name)
   {
-    this.table = new Table(name);
+    this.model = model;
+    this.name = name;
+    javaName = DataSet.makeNiceJavaName(name);
+    columnBuilders = new LinkedList<ColumnBuilder>();
   }
 
   public Table build()
   {
-    return table;
+    final Table result = new Table(name, javaName, columnBuilders);
+    model.addTable(result);
+    return result;
+  }
+  
+  public String getName()
+  {
+    return name;
+  }
+
+  public void setJavaName(String javaName)
+  {
+    this.javaName = javaName;
+  }
+
+  public String getJavaName()
+  {
+    return javaName;
   }
 
   public ColumnBuilder column(String name, DataType dataType)
@@ -21,13 +51,19 @@ public class TableBuilder
     return new ColumnBuilder(this, name, dataType);
   }
 
-  public void addColumn(Column column)
+  void addColumnBuilder(ColumnBuilder columnBuilder)
   {
-    table.addColumn(column);
+    columnBuilders.add(columnBuilder);
   }
 
-  Table getTable()
-  {
-    return table;
+
+//  public void addColumn(Column column)
+//  {
+//    table.addColumn(column);
+//  }
+
+//  Table getTable()
+//  {
+//    return table;
+//  }
   }
-}

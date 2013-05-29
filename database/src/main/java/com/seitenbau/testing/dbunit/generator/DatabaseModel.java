@@ -56,14 +56,23 @@ public abstract class DatabaseModel
 
   public TableBuilder table(String name)
   {
-    final TableBuilder result = new TableBuilder(name);
-    getDataSetGenInstance().addTable(result.build());
-    return result;
+    return new TableBuilder(this, name);
+  }
+  
+  /**
+   * Adds a built table to the data set
+   * @param table The Table built by a TableBuilder
+   */
+  void addTable(Table table)
+  {
+    getDataSetGenInstance().addTable(table);
   }
 
   public void generate() throws Exception
   {
     DataSetGenerator gen = getDataSetGenInstance();
+    
+    
     if (__forceCaller != null)
     {
       gen.setCaller(__forceCaller);

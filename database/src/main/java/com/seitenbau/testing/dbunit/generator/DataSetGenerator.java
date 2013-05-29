@@ -65,20 +65,6 @@ public class DataSetGenerator
   {
     _sourceWriter = writer;
   }
-
-  public Table addTable(String name, String javaName)
-  {
-    Table table = new Table(name, javaName);
-    _dataSet.addTable(table);
-    return table;
-  }
-
-  public Table addTable(String name)
-  {
-    Table table = new Table(name);
-    _dataSet.addTable(table);
-    return table;
-  }
   
   public Table addTable(Table table)
   {

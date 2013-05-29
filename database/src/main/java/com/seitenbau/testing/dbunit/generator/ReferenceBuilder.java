@@ -70,7 +70,7 @@ public class ReferenceBuilder
   private void buildReference()
   {
     String p_localName = getUsedName(localName, columnBuilder.getColumnJavaName());
-    String p_remoteName = getUsedName(remoteName, columnBuilder.getTableBuilder().getTable().getJavaName());
+    String p_remoteName = getUsedName(remoteName, columnBuilder.getTableBuilder().getJavaName());
     
     // Avoid null pointer for Apache Velocity
     String p_localDescription = localDescription != null ? localDescription : "";

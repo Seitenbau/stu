@@ -31,17 +31,23 @@ public class ColumnBuilder
     this.isIdentifierColumn = false;
     this.isIdentifierColumn = false;
     this.addNextMethod = false;
+
+    tableBuilder.addColumnBuilder(this);
   }
 
   public Table build()
   {
-    buildColumn();
     return tableBuilder.build();
+  }
+  
+  Column buildColumn(Table table)
+  {
+    return new Column(table, name, null, dataType.getDataType(), dataType.getJavaType(), reference,
+      isIdentifierColumn, isAutoIncrementColumn, addNextMethod, enableAutoIdHandling);
   }
 
   public ColumnBuilder column(String name, DataType dataType)
   {
-    buildColumn();
     return new ColumnBuilder(tableBuilder, name, dataType);
   }
 
@@ -100,15 +106,6 @@ public class ColumnBuilder
       // TODO NM/CB exception?
     }
     this.reference = reference;
-  }
-
-  private void buildColumn()
-  {
-    Table parentTable = tableBuilder.build();
-    Column column = new Column(parentTable, name, null, dataType.getDataType(), dataType.getJavaType(), reference,
-        isIdentifierColumn, isAutoIncrementColumn, addNextMethod, enableAutoIdHandling);
-
-    tableBuilder.addColumn(column);
   }
 
   String getColumnName()

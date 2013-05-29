@@ -8,6 +8,8 @@ import com.seitenbau.testing.util.CamelCase;
 public class Column
 {
 
+  private final Table _table;
+
   private final String _type;
 
   private final String _javaType;
@@ -17,8 +19,6 @@ public class Column
   private final String _javaName;
 
   private final Reference _reference;
-
-  private final Table _table;
 
   private final boolean _isIdentifier;
 
