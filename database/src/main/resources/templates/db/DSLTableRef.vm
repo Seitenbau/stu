@@ -44,7 +44,7 @@ public class ${clsRef} extends DatabaseReference {
       throw new IllegalStateException("No active context to query ${col.javaName} in ${model.javaName}Ref");
     } 
     final ${clsRowbuilder} row = builders.get(scope);
-    if (scope == null)
+    if (row == null)
     {
       throw new IllegalStateException("No corresponding row to query ${col.javaName} in ${model.javaName}Ref");
     }

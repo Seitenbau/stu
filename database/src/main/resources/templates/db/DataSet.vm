@@ -36,13 +36,13 @@ public abstract class ${model.name}${model.suffix}
 {
   /** 
    * Now at time of creation, This is 'fixed' so the time can be used when
-   * adding multipe lines, it's still kind of 'now' but can be predicted.
+   * adding multiple lines, it's still kind of 'now' but can be predicted.
    */ 
   DateBuilder _jetzt = DateUtil.datum();
   
   /**
    * Reference to an {@link DatasetIdGenerator}. Used to set IDs.
-   * See Flags when adding an columnin your model to create nextId()
+   * See Flags when adding an column in your model to create nextId()
    * methods.
    */
   DatasetIdGenerator _idGenerator;
@@ -72,17 +72,21 @@ public abstract class ${model.name}${model.suffix}
   public IDataSet createDBUnitDataSet()
   {
     beforeDataSetCreation();
-#if( $model.createException ) try { #end
-    DefaultDataSet dataSet = new DefaultDataSet();
-#foreach( $table in $model.tables )
-    dataSet.addTable(table_${table.javaName});
-    table_${table.javaName}.resetIterator();
+#set($tabs = "")
+#if( $model.createException )
+#set($tabs = "  ")
+    try {
 #end
-     afterDataSetCreation(dataSet);
-     return finalModify( dataSet );
+    ${tabs}DefaultDataSet dataSet = new DefaultDataSet();
+#foreach( $table in $model.tables )
+    ${tabs}dataSet.addTable(table_${table.javaName});
+    ${tabs}table_${table.javaName}.resetIterator();
+#end
+    ${tabs}afterDataSetCreation(dataSet);
+    ${tabs}return finalModify( dataSet );
 #if( $model.createException )
     } catch($model.createException e) {
-       throw new RuntimeException(e);
+      throw new RuntimeException(e);
     } 
 #end
   }
@@ -151,7 +155,7 @@ public abstract class ${model.name}${model.suffix}
    */
   public Date around(DateBuilder datum) 
   {
-      return DbCompare.warp(datum);
+    return DbCompare.warp(datum);
   }
 
   /** 
@@ -204,7 +208,8 @@ public abstract class ${model.name}${model.suffix}
    * Interface for the double dispatch. Used by {@link #modify} to
    * extract creation logic into an external strategy.
    */ 
-  public static interface ${model.name}${model.suffix}Modifier {
+  public static interface ${model.name}${model.suffix}Modifier
+  {
     void modify(${model.name}${model.suffix} dataset);
   }
   
