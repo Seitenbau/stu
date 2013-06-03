@@ -130,6 +130,51 @@ public class ${tableClass} implements ITable
     Object getValue(String column) throws RuntimeException;
 
     ${rowbuilder} clone();
+
+    /**
+    * Insert a new Row at the end of the Table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow()
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
+    ${rowbuilder} insertRow();
+
+    /**
+    * Insert a new Row at the end of the Table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow()
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
+    ${rowbuilder} insertRow(${model.javaName}Model row);
+    
+    /**
+    * Insert a new Row at the given position
+    * <code><pre>
+    * ds.table_${model.javaName}.this.insertRowAt(2)
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
+    ${rowbuilder} insertRowAt(int index);
+    
+    /**
+    * Insert a row at the end of the table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow(baseUser);
+    * </pre></code>
+    */
+    ${rowbuilder} insertRow(${rowbuilder} theRow);
+
 #foreach( $column in $model.columns )
 
     Object get${column.javaName}Raw();
@@ -207,57 +252,22 @@ public class ${tableClass} implements ITable
       return data[$foreach.index];
     }
 #end 
-    /**
-    * Insert a new Row at the end of the Table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow()
-#foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
-#end
-    *   ;
-    * </pre></code>
-    */
+
     public ${rowbuilder} insertRow()
     {
       return table.insertRow();
     }
     
-    /**
-    * Insert a new Row at the end of the Table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow()
-#foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
-#end
-    *   ;
-    * </pre></code>
-    */
     public ${rowbuilder} insertRow(${model.javaName}Model row)
     {
       return table.insertRow(row);
     }
     
-    /**
-    * Insert a new Row at the given position
-    * <code><pre>
-    * ds.table_${model.javaName}.this.insertRowAt(2)
-#foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
-#end
-    *   ;
-    * </pre></code>
-    */
     public ${rowbuilder} insertRowAt(int index)
     {
       return table.insertRowAt(index);
     }
 
-    /**
-    * Insert a row at the end of the table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow(baseUser);
-    * </pre></code>
-    */
     public ${rowbuilder} insertRow(${rowbuilder} theRow)
     {
       return table.insertRow(theRow);

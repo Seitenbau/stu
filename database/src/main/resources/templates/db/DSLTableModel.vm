@@ -27,6 +27,7 @@ import java.util.Set;
 ###end
 import ${model.package}.${clsTable}.${clsWhere};
 import ${model.package}.${clsTable}.${clsRowcollection};
+import ${model.package}.${model.javaName}Model;
 #foreach( $table in $model.dataSet.tables )
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 import ${model.package}.${table.javaName}Table.RowGetters_${table.javaName};
@@ -264,6 +265,21 @@ public class ${clsTable} {
   {
     return new ${clsExtRowbuilder}(this, _table.insertRow());
   }
+
+  public ${clsExtRowbuilder} insertRow(${model.javaName}Model row)
+  {
+    return new ${clsExtRowbuilder}(this, _table.insertRow(row));
+  }
+
+  public ${clsExtRowbuilder} insertRowAt(int index)
+  {
+    return new ${clsExtRowbuilder}(this, _table.insertRowAt(index));
+  }
+
+  public ${clsExtRowbuilder} insertRow(${clsRowbuilder} theRow)
+  {
+    return new ${clsExtRowbuilder}(this, _table.insertRow(theRow));
+  }
   
   public static class ${clsExtRowbuilder} implements ${clsRowbuilder}
   {
@@ -355,6 +371,21 @@ public class ${clsTable} {
       return _parent.insertRow();
     }
     
+    public ${clsExtRowbuilder} insertRow(${model.javaName}Model row)
+    {
+      return _parent.insertRow(row); 
+    }
+
+    public ${clsExtRowbuilder} insertRowAt(int index)
+    {
+      return _parent.insertRowAt(index);
+    }
+
+    public ${clsExtRowbuilder} insertRow(${clsRowbuilder} theRow)
+    {
+      return _parent.insertRow(theRow);
+    }
+    
     public Object getValue(String column) throws RuntimeException {
       return _delegate.getValue(column);
     }
@@ -373,13 +404,9 @@ public class ${clsTable} {
     
     @Override
     public ${clsExtRowbuilder} clone() {
-      // TODO
-      //${rowbuilder} clone = new ${rowbuilderImpl}(table);
-#foreach( $column in $model.columns )
-      //clone.set${column.javaName}(get${column.javaName}());
-#end
-      //return clone;
-      return null;
+      ${clsRowbuilder} cloneDelegate = _delegate.clone();
+      ${clsExtRowbuilder} clone = new ${clsExtRowbuilder}(_parent, cloneDelegate);
+      return clone;
     }
 
   }
