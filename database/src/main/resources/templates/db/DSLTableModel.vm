@@ -35,13 +35,14 @@ import ${model.package}.${table.javaName}Table.RowGetters_${table.javaName};
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
+import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 import com.seitenbau.testing.dbunit.dsl.NoValue;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.generator.DataType;
+import com.seitenbau.testing.util.date.DateBuilder;
 
 public class ${clsTable} {
 
@@ -164,8 +165,8 @@ public class ${clsTable} {
    */
   public void rows(Closure<?> rows)
   {
-    GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}> callback = 
-        new GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}>(_adapter);
+    TableParserCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}> callback = 
+        new TableParserCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
 
