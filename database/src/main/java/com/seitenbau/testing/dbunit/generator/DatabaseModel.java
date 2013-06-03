@@ -9,7 +9,7 @@ public abstract class DatabaseModel
   DataSetGenerator generator;
 
   String databaseName;
-  
+
   String packageName;
 
   String targetPath = DataSetGenerator.DEFAULT_OUTPUT_FOLDER;
@@ -31,7 +31,7 @@ public abstract class DatabaseModel
   {
     this.databaseName = name;
   }
-  
+
   public void packageName(String name)
   {
     this.packageName = name;
@@ -54,30 +54,25 @@ public abstract class DatabaseModel
     getDataSetGenInstance().catchException(exception);
   }
 
-  public Table addTable(String name, String javaName)
+  public TableBuilder table(String name)
   {
-    return getDataSetGenInstance().addTable(name, javaName);
-  }
-
-  public Table addTable(String name)
-  {
-    return getDataSetGenInstance().addTable(name);
+    return new TableBuilder(this, name);
   }
   
-  public void addTable(Table table) 
+  /**
+   * Adds a built table to the data set
+   * @param table The Table built by a TableBuilder
+   */
+  void addTable(Table table)
   {
     getDataSetGenInstance().addTable(table);
-  }
-  
-  public TableBuilder table(String name) {
-    final TableBuilder result = new TableBuilder(name);
-    getDataSetGenInstance().addTable(result.build());
-    return result;
   }
 
   public void generate() throws Exception
   {
     DataSetGenerator gen = getDataSetGenInstance();
+    
+    
     if (__forceCaller != null)
     {
       gen.setCaller(__forceCaller);

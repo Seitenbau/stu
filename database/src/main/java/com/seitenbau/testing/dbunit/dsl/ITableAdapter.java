@@ -1,15 +1,18 @@
 package com.seitenbau.testing.dbunit.dsl;
 
-public interface ITableAdapter<R, F, D extends DatabaseReference> {
+public interface ITableAdapter<R, F, D extends DatabaseReference>
+{
 
-	R insertRow();
+  R insertRow();
 
-	F getFindWhere();
-	
-	void referenceUsed(D reference, R row);
+  F getWhere();
 
-	R getRowByReference(D reference);
-	
-	String getTableName();
-	
+  void bindToScope(D reference, R row);
+
+  void handleReferences(D reference, R row);
+
+  R getRowByReference(D reference);
+
+  String getTableName();
+
 }

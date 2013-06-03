@@ -1,5 +1,13 @@
 package com.seitenbau.testing.dbunit.dsl;
 
+import groovy.lang.Closure;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.google.common.base.Optional;
+
 public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implements IParsedTableRowCallback
 {
   private TableRowModel _head;
@@ -23,65 +31,72 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
     _colRef = -1;
     _colId = -1;
   }
-  
+
   R getRowBuilder(TableRowModel row)
   {
     R result = null;
-    R builderById = null;
-    R builderByRef = null;
+    boolean isNewRef = false;
+    boolean updateId = false;
+    Object id = null;
+
+    // get builder by reference (if available)
+    if (_colRef != -1)
+    {
+      Object refValue = row.getValue(_colRef);
+      if (!(refValue instanceof NoValue))
+      {
+        @SuppressWarnings("unchecked")
+        D ref = (D) row.getValue(_colRef);
+        result = _tableAdapter.getRowByReference(ref);
+        isNewRef = (result == null);
+      }
+    }
 
     if (_colId != -1)
     {
       @SuppressWarnings("unchecked")
       ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
-      try
+      id = row.getValue(_colId);
+
+      if (!(id instanceof NoValue))
       {
-        Object id = CastUtil.cast(row.getValue(_colId), column.getDataType());
-        builderById = column.query(_tableAdapter.getFindWhere(), id);
-      }
-      catch (Exception e)
-      {
+        updateId = true;
+        System.out.println("No builder id is present: " + id);
+        if (id instanceof Integer && (Integer)id == 4) {
+          System.out.println("here wo go");
+        }
+        Optional<R> builderById = column.getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, column.getDataType()));
+        if (builderById.isPresent())
+        {
+          if (result != null && builderById.get() != result)
+          {
+            throw new RuntimeException("Table structure failure [Possibly trial of ID redefinition]");
+          }
+
+          result = builderById.get();
+        }
       }
     }
 
-    if (_colRef != -1)
-    {
-      @SuppressWarnings("unchecked")
-      D ref = (D)row.getValue(_colRef);
-      builderByRef = _tableAdapter.getRowByReference(ref);
-    }
-
-    if (builderByRef != null || builderById != null)
-    {
-      if (builderByRef == builderById)
-      {
-        result = builderByRef;
-      }
-      else if (builderByRef == null)
-      {
-        result = builderById;
-      }
-      else if (builderById == null)
-      {
-        result = builderByRef;
-      }
-      else
-      {
-        // ERROR
-        result = builderByRef;
-      }
-    }
-    else
+    if (result == null)
     {
       result = _tableAdapter.insertRow();
     }
 
-    if (_colId != -1)
+    if (isNewRef || updateId)
     {
       @SuppressWarnings("unchecked")
-      ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
-      Object value = CastUtil.cast(row.getValue(_colId), column.getDataType());
-      column.set(result, value);
+      D ref = (D) row.getValue(_colRef);
+      if (id != null)
+      {
+        // Set manual given ID
+        @SuppressWarnings("unchecked")
+        ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_colId);
+        column.set(result, id);
+      }
+      if (isNewRef) {
+        _tableAdapter.handleReferences(ref, result);
+      }
     }
     return result;
   }
@@ -93,15 +108,18 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
     {
       _head = row;
       _colRef = _head.getRefColumn();
-      _colId = _head.getIdColumn();
+      _colId = _head.getIdentifierColumn();
       _columns = _head.getColumnCount();
       return;
     }
 
     if (row.getColumnCount() != _columns)
+    {
       throwColumnsDoNotMatchException(_lineNr, row);
+    }
     R rowbuilder = getRowBuilder(row);
 
+    Map<ColumnBinding<R, F>, Closure<?>> closures = new HashMap<ColumnBinding<R, F>, Closure<?>>();
     for (int columnIndex = 0; columnIndex < _columns; columnIndex++)
     {
       if (columnIndex == _colRef || columnIndex == _colId)
@@ -112,30 +130,49 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       @SuppressWarnings("unchecked")
       ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(columnIndex);
       Object value = row.getValue(columnIndex);
-      if (value instanceof DatabaseReference) {
-        // TODO 
-        System.out.println("DATABASE REFERENCE");
-      } else {
+      if (value instanceof NoValue)
+      {
+        continue;
+      }
+
+      if (value instanceof DatabaseReference)
+      {
+        // TODO
+        DatabaseReference ref = (DatabaseReference) value;
+        column.setReference(rowbuilder, ref);
+      } else if (value instanceof Closure) {
+        // call closure values after row has been built and registered
+        closures.put(column, (Closure<?>)value);
+      }
+      else
+      {
         column.set(rowbuilder, value);
       }
     }
 
     if (_colRef != -1 && row.getValue(_colRef) != null)
     {
-      @SuppressWarnings("unchecked")
-      D ref = (D) row.getValue(_colRef);
-      _tableAdapter.referenceUsed(ref, rowbuilder);
+      Object refValue = row.getValue(_colRef);
+      if (!(refValue instanceof NoValue))
+      {
+        @SuppressWarnings("unchecked")
+        D ref = (D) row.getValue(_colRef);
+        _tableAdapter.bindToScope(ref, rowbuilder);
+      }
+    }
+    
+    for (Entry<ColumnBinding<R, F>, Closure<?>> entry : closures.entrySet()) 
+    {
+      ColumnBinding<R,F> column = entry.getKey();
+      Closure<?> closure = entry.getValue();
+      Object value = closure.call();
+      column.set(rowbuilder, value);
     }
   }
 
   private void throwColumnsDoNotMatchException(int lineNr, TableRowModel row)
   {
     throwException("column count does not match", lineNr, row);
-  }
-
-  private void throwRedefinedIdException(int lineNr, TableRowModel row)
-  {
-    throwException("Id redefined", lineNr, row);
   }
 
   private void throwException(String message, int lineNr, TableRowModel row)

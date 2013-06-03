@@ -1,7 +1,6 @@
 package com.seitenbau.testing.dbunit.generator;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import com.seitenbau.testing.util.CamelCase;
@@ -9,41 +8,50 @@ import com.seitenbau.testing.util.CamelCase;
 public class Column
 {
 
-  String _type;
+  private final Table _table;
 
-  String _javaType;
+  private final String _type;
 
-  String _name;
+  private final String _javaType;
 
-  String _javaName;
+  private final String _name;
 
-  EnumSet<Flags> _flags = EnumSet.noneOf(Flags.class);
+  private final String _javaName;
+  
+  private final String _description;
 
-  List<Reference> _references = new ArrayList<Reference>();
+  private final Reference _reference;
 
-  Table _table;
+  private final boolean _isIdentifier;
 
-  public Column(Table table, String name, String javaName, String type, String javaType, Reference[] references,
-      Flags[] flags)
+  private final boolean _enableAutoIdHandling;
+
+  private final boolean _isAutoIncrement;
+
+  private final boolean _isNextIdMethodGenerated;
+
+  private final List<Column> _referencedBy;
+
+  Column(Table table, String name, String javaName, String description, String type, String javaType, Reference reference,
+      boolean isIdentifier, boolean isAutoIncrement, boolean addNextMethod, boolean enableAutoIdHandling)
   {
     _table = table;
     _name = name;
     _javaName = javaName;
+    _description = description;
     _type = type;
     _javaType = javaType;
-    if (flags != null)
+    _reference = reference;
+    _isAutoIncrement = isAutoIncrement;
+    _isIdentifier = isIdentifier;
+    _enableAutoIdHandling = enableAutoIdHandling;
+
+    _isNextIdMethodGenerated = addNextMethod || isAutoIncrement || enableAutoIdHandling;
+
+    _referencedBy = new ArrayList<Column>();
+    if (reference != null)
     {
-      for (Flags flag : flags)
-      {
-        _flags.add(flag);
-      }
-    }
-    if (references != null)
-    {
-      for (Reference ref : references)
-      {
-        _references.add(ref);
-      }
+      reference.getColumn()._referencedBy.add(this);
     }
   }
 
@@ -67,39 +75,9 @@ public class Column
     return _name;
   }
 
-  public EnumSet<Flags> getFlags()
-  {
-    return _flags;
-  }
-
-  public List<Reference> getReferences()
-  {
-    return _references;
-  }
-
-  public boolean isAutoIncrement()
-  {
-    return _flags.contains(Flags.AutoIncrement);
-  }
-
-  public boolean isIdGenerationAutoInvokeOnInsert()
-  {
-    return _flags.contains(Flags.AutoInvokeNextIdMethod);
-  }
-
-  public boolean isIdGeneration()
-  {
-    return isAutoIncrement() || isIdGenerationAutoInvokeOnInsert() || _flags.contains(Flags.AddNextIdMethod);
-  }
-
   public String getJavaName()
   {
-    if (_javaName != null)
-    {
-      return CamelCase.makeFirstUpperCase(_javaName);
-    }
-    String name = CamelCase.makeFirstOfBlockUppercase(_name);
-    return CamelCase.makeFirstUpperCase(name); // old
+    return _javaName;
   }
 
   public String getJavaNameFirstLower()
@@ -107,55 +85,68 @@ public class Column
     return CamelCase.makeFirstLowerCase(getJavaName());
   }
 
-  public boolean isIdentifier()
+  public String getDescription()
   {
-    return _flags.contains(Flags.IdentifierColumn);
+    return _description;
+  }
+  
+  public Reference getReference()
+  {
+    return _reference;
   }
 
-  public Reference getReference() 
+  public boolean isAutoIncrement()
   {
-    if (_references.size() == 0) {
-      throw new IllegalStateException("No references...");
-    }
-    
-    return _references.get(0);
+    return _isAutoIncrement;
   }
-  
+
+  public boolean isIdGenerationAutoInvokeOnInsert()
+  {
+    return _enableAutoIdHandling;
+  }
+
+  public boolean isNextIdMethodGenerated()
+  {
+    return _isNextIdMethodGenerated;
+  }
+
+  public boolean isIdentifierColumn()
+  {
+    return _isIdentifier;
+  }
+
   public boolean isReferencingTable(Table table)
   {
-    for (Reference reference : _references) {
-      for (Column column : table.getColumns()) {
-        if (reference.getColumn() == column) {
-          return true;
-        }
-      }
-    }
-    
-    return false;
-  }
-  
-  public boolean isIdTruncable()
-  {
-    if (_references.size() == 0 || !_name.endsWith("_id")) {
+    if (_reference == null)
+    {
       return false;
     }
-    
-    final String shortName = getNameWithoutId();
-    for (Column column : _table.getColumns()) {
-      if (shortName.equals(column.getName())) {
-        return false;
+
+    return _reference.getColumn().getTable() == table;
+  }
+
+  public List<Column> getReferencedByList()
+  {
+    return _referencedBy;
+  }
+
+  public String getTruncatedReferenceName()
+  {
+    if (_reference == null || !_name.endsWith("_id"))
+    {
+      return null;
+    }
+
+    final String result = _name.substring(0, _name.length() - 3);
+    for (Column column : _table.getColumns())
+    {
+      if (result.equals(column.getName()))
+      {
+        // column cannot be truncated
+        return null;
       }
     }
-    
-    return true;
+
+    return result;
   }
-  
-  public String getNameWithoutId()
-  {
-    if (_name.endsWith("_id")) {
-      return _name.substring(0, _name.length() - 3);
-    } else {
-      return _name;
-    }
-  }  
 }

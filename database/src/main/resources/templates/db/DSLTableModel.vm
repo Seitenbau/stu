@@ -6,11 +6,15 @@
 #end
 #set($clsScope = ${model.dataSet.name} + "DSL")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
-#set($clsWhere = ${model.javaName} + "Where")
+#set($clsWhere = ${model.javaName} + "GetWhere")
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsTable = ${model.javaName} + "Table")
-#set($clsBinding = ${model.javaName} + "TableBinding")
+#set($clsTableFindWhere = ${model.javaName} + "TableFindWhere")
+#set($clsTableGetWhere = ${model.javaName} + "TableGetWhere")
+#set($clsRowcollection= "RowCollection_" + ${model.javaName} )
 package ${package};
+
+import com.google.common.base.Optional;
 
 import groovy.lang.Closure;
 
@@ -20,87 +24,336 @@ import java.util.Set;
 ###if( $model.package && $model.package.length() != 0 )
 ##import ${model.package}.${model.dataSet.name}DataSet;
 ###end
-import ${model.package}.$clsTable.${clsWhere};
-import ${model.package}.$clsTable.${clsRowbuilder};
-##import ${model.package}.$clsTable.RowCollection_${model.javaName};
+import ${model.package}.${clsTable}.${clsWhere};
+import ${model.package}.${clsTable}.${clsRowcollection};
+#foreach( $table in $model.dataSet.tables )
+import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
+#end
+import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
-import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
 import com.seitenbau.testing.dbunit.dsl.GeneralTableRowCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
+import com.seitenbau.testing.dbunit.dsl.NoValue;
+import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
+import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
+import com.seitenbau.testing.dbunit.generator.DataType;
 
-#set($table = $model)
+public class ${clsTable} {
 
-public class $clsTable {
+  /**
+   * Do not set a value. (To remove a value use <i>null</i>)
+   */
+  public final NoValue _ = new NoValue();
 
-  public ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = ${clsBinding}.REF;
+  /**
+   * Column Header for ${model.javaName} table.
+   * <p>
+   * Data Type: ${model.javaName}Ref
+   */
+  public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = createREFBinding();
 
 #foreach( $col in $model.columns )
-  ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = ${clsBinding}.${col.name};
+#macro( comments )
+  /**
+   * Column Header for ${model.javaName} table.
+#if( ${col.description} )
+   * <p>
+   * ${col.description}
+#end
+   * <p>
+   * Data Type: {@code ${col.javaType}}
+#if( ${col.reference} )
+   * or {@code ${col.reference.column.table.javaName}Ref}  
+#end
+   * <br>   
+   * Database Type: ${col.type}
+   * 
+   */
+#end
+#comments()   
+  public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = create${col.javaName}Binding();
 
 ## check if column is an identifier
-#if ( ${col.isIdTruncable()} )
-#set( $shortname  = $col.getNameWithoutId() )
-  public ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${shortname} = ${clsBinding}.${col.name};
+#if ( ${col.truncatedReferenceName} )
+#set( $shortname  = ${col.truncatedReferenceName} )
+#comments()   
+  public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${shortname} = ${col.name};
 
 #end
 #end
   private final ${clsScope} _scope;
 
-  private final ${model.package}.$clsTable _table;
+  private final ${model.package}.${clsTable} _table;
 
-  private final Set<${clsRef}> _usedRefs;
+  private final Set<${clsRowbuilder}> _allRows;
 
   private final ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}> _adapter = new ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}>()
   {
     public ${clsRowbuilder} insertRow() 
     {
-      return _table.insertRow();
+      ${clsRowbuilder} result = _table.insertRow();
+      _allRows.add(result);
+      return result;
     }
-	  
-    public ${clsWhere} getFindWhere()
+  
+    public ${clsWhere} getWhere()
     {
-      return _table.findWhere;
+      return _table.getWhere;
     }
     
-	public void referenceUsed(${clsRef} reference, ${clsRowbuilder} row)
-	{
-	  if (row != null) {
+    public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
+    {
+      if (row != null)
+      {
         reference.setBuilder(_scope, row);
-	    _usedRefs.add(reference);
-	  }
-	}
+      }
+    }
 
-	public ${clsRowbuilder} getRowByReference(${clsRef} reference)
-	{
-	  return reference.getBuilder(_scope);
-	}
-    
-    public String getTableName() {
+    public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
+    {
+      _scope.replace${clsRef}WithId(reference, row);
+    }    
+
+    public ${clsRowbuilder} getRowByReference(${clsRef} reference)
+    {
+      return reference.getBuilder(_scope);
+    }
+
+    public String getTableName()
+    {
       return "${model.javaName}";
     }
+    
   };
     
-  $clsTable(${clsScope} scope, ${model.package}.$clsTable table)
+  ${clsTable}(${clsScope} scope, ${model.package}.${clsTable} table)
   {
     _scope = scope;
     _table = table;
-    _usedRefs = new HashSet<${clsRef}>();
+    _allRows = new HashSet<${clsRowbuilder}>();
   }
   
-  Set<${clsRef}> getUsedRefs()
+  Set<${clsRowbuilder}> getAllRowBuilders()
   {
-    return _usedRefs;
+    return _allRows;
   }
   
-  ${model.package}.$clsTable getTableModel()
+  ${model.package}.${clsTable} getTableModel()
   {
     return _table;
   }
   
-  public void rows(Closure<?> rows) {
+  /**
+   * Parses the rows of a ${model.javaName} table. Supported columns are:
+   * <ul>
+   *   <li><strong>{@code REF}</strong>: {@code ${model.javaName}Ref}</li>
+#foreach( $col in $model.columns )
+#set( $shortname  = "" )
+#if ( ${col.truncatedReferenceName} )
+#set( $shortname  = " (alias: <strong>{@code " + ${col.truncatedReferenceName} + "}</strong>)")
+#end
+   *   <li> <strong>{@code ${col.name}}</strong>$shortname: {@code ${col.javaType}}
+#end
+   * </ul>
+   * @param rows The table data
+   */
+  public void rows(Closure<?> rows)
+  {
     GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}> callback = 
         new GeneralTableRowCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}>(_adapter);
     TableParser.parseTable(rows, this, callback);
+  }
+
+  private boolean valueMustBeSetRaw(Object value)
+  {
+    return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
+  }
+
+  private ColumnBinding<${clsRowbuilder}, ${clsWhere}> createREFBinding()
+  {
+    return new ColumnBinding<${clsRowbuilder}, ${clsWhere}>()
+    { 
+      @Override
+      public void set(${clsRowbuilder} row, Object value)
+      {
+        throw new RuntimeException("Setting on REF is not allowed");
+      }
+    
+      @Override
+      public boolean isRefColumn() 
+      {
+        return true;
+      }
+
+      @Override
+      public DataType getDataType() 
+      {
+        return null;
+      }
+    };
+  }
+
+#foreach( $col in $model.columns )
+  private ColumnBinding<${clsRowbuilder}, ${clsWhere}> create${col.javaName}Binding() 
+  {
+    return new ColumnBinding<${clsRowbuilder}, ${clsWhere}>()
+    {
+      @Override
+      public void set(${clsRowbuilder} row, Object value)
+      {
+#if ( ${col.isIdentifierColumn()} )
+        if (definedIdsSet.contains(row) && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
+          throw new IllegalStateException("Cannot reset column id [" + row.get${col.javaName}() + " vs " + value + "]");
+        }
+        definedIdsSet.add(row);
+#end
+        if (valueMustBeSetRaw(value)) 
+        {
+          row.set${col.javaName}Raw(value);
+        } else {
+          row.set${col.javaName}((${col.javaType})CastUtil.cast(value, ${col.type}));
+        }
+      }
+#if ( ${col.reference} )
+
+      @Override
+      public void setReference(${clsRowbuilder} row, DatabaseReference ref)
+      {
+        ${col.reference.table.javaName}Ref reference = (${col.reference.table.javaName}Ref)ref;
+        RowBuilder_${col.reference.table.javaName} referenceBuilder = reference.getBuilder(_scope);
+        if (referenceBuilder != null)
+        {
+          final ${col.reference.column.javaType} value = referenceBuilder.get${col.reference.javaName}();
+          row.set${col.javaName}(value);
+        } else {
+          row.set${col.javaName}Raw(ref);
+        }
+      }
+#end
+#if ( ${col.isIdentifierColumn()} )
+
+      @Override
+      public Optional<${clsRowbuilder}> getWhere(${clsWhere} getWhere, Object value)
+      {
+        return getWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
+      }
+
+      @Override
+      public boolean isIdentifierColumn()
+      {
+        return true;
+      }
+    
+      private Set<${clsRowbuilder}> definedIdsSet = new HashSet<${clsRowbuilder}>();
+#end
+      
+      @Override
+      public DataType getDataType()
+      {
+        return ${col.type};
+      }
+    };
+  }
+#end
+  
+  public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);
+
+  public static class ${clsTableFindWhere}
+  {
+   
+    private final ${clsTable} table;
+    
+    ${clsTableFindWhere}(${clsTable} table) 
+    {
+      this.table = table;
+    }
+#foreach( $col in $model.columns )
+
+    public ${clsRowcollection} ${col.javaNameFirstLower}(${clsRef} ref)
+    {
+      ${clsRowbuilder} builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new ${clsRowcollection}(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
+    }
+#if( $col.reference )
+
+    public ${clsRowcollection} ${col.javaNameFirstLower}(${col.reference.column.table.javaName}Ref ref)
+    {
+      RowBuilder_${col.reference.column.table.javaName} builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return new ${clsRowcollection}(table.getTableModel()); 
+      }
+      return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.reference.column.javaName}());
+    }
+#end    
+    
+    public ${clsRowcollection} ${col.javaNameFirstLower}(${col.javaType} toSearch)
+    {
+      return table.getTableModel().findWhere.${col.javaNameFirstLower}(toSearch);
+    }
+#if( $col.javaType.contains("Long") )
+
+    public ${clsRowcollection} ${col.javaNameFirstLower}(Integer toSearch) 
+    {
+      return ${col.javaNameFirstLower}(Long.valueOf(toSearch));
+    }
+#end
+#end
+  }
+  
+  public final ${clsTableGetWhere} getWhere = new ${clsTableGetWhere}(this);
+
+  public static class ${clsTableGetWhere}
+  {
+
+    private final ${clsTable} table;
+    
+    ${clsTableGetWhere}(${clsTable} table) 
+    {
+      this.table = table;
+    }
+#foreach( $col in $model.columns )
+
+    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${clsRef} ref)
+    {
+      ${clsRowbuilder} builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<${clsRowbuilder}> absent();
+      }
+      return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
+    }
+#if( $col.reference )
+
+    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${col.reference.column.table.javaName}Ref ref)
+    {
+      RowBuilder_${col.reference.column.table.javaName} builder = ref.getBuilder(table._scope);
+      if (builder == null) 
+      {
+        return Optional.<${clsRowbuilder}> absent();
+      }
+      return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.reference.column.javaName}());
+    }
+#end    
+
+    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${col.javaType} toSearch)
+    {
+      return table.getTableModel().getWhere.${col.javaNameFirstLower}(toSearch);
+    }
+#if( $col.javaType.contains("Long") )
+
+    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(Integer toSearch) 
+    {
+      return ${col.javaNameFirstLower}(Long.valueOf(toSearch));
+    }
+#end
+#end
   }
 }
 

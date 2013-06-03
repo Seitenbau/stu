@@ -1,6 +1,7 @@
 package com.seitenbau.testing.dbunit.generator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.seitenbau.testing.util.CamelCase;
@@ -10,28 +11,25 @@ public class Table
 
   public static final String NAME_SUFFIX = "Table";
 
-  String _name;
+  private DataSet _dataSet;
 
-  DataSet _dataSet;
+  private final String _name;
+  
+  private final String _javaName;
+  
+  private final String _description;
 
-  String _javaName;
+  private final List<Column> _columns;
 
-  List<Column> _columns = new ArrayList<Column>();
-
-  public List<Column> getColumns()
-  {
-    return _columns;
-  }
-
-  public Table(String name)
-  {
-    _name = name;
-  }
-
-  public Table(String name, String javaName)
+  public Table(String name, String javaName, String description, List<ColumnBuilder> columnBuilders)
   {
     _name = name;
     _javaName = javaName;
+    _description = description;
+    _columns = new ArrayList<Column>();
+    for (ColumnBuilder columnBuilder : columnBuilders) {
+      _columns.add(columnBuilder.buildColumn(this));
+    }
   }
 
   public String getName()
@@ -39,105 +37,24 @@ public class Table
     return _name;
   }
 
-  public void addColumn(Column column)
+  public String getDescription()
   {
-    _columns.add(column);
-  }
-  
-  public Table addColumn(String dbColName, String type, String javaType)
-  {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] {}, new Flags[] {}));
-    return this;
+    return _description;
   }
 
-  public Table addColumn(String dbColName, String javaName, String type, String javaType)
+  public List<Column> getColumns()
   {
-    _columns.add(new Column(this, dbColName, javaName, type, javaType, new Reference[] {}, new Flags[] {}));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, String type, String javaType, Flags... flags)
-  {
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] {}, flags));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, String type, String javaType, Column reference, Flags... flags)
-  {
-    final Reference ref = new Reference(reference, null, null, null, null);
-    _columns.add(new Column(this, dbColName, null, type, javaType, new Reference[] { ref }, flags));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, DataType type, Column reference, Flags... flags)
-  {
-    final Reference ref = new Reference(reference, null, null, null, null);
-    _columns.add(new Column(this, dbColName, null, type.getDataType(), type.getJavaType(), new Reference[] { ref },
-        flags));
-    return this;
-  }
-
-  public Table addColumn(String dbColName, DataType type)
-  {
-    return addColumn(dbColName, type.getDataType(), type.getJavaType());
-  }
-
-  public Table addColumn(String dbColName, String javaName, DataType type)
-  {
-    return addColumn(dbColName, javaName, type.getDataType(), type.getJavaType());
-  }
-
-  /** use Flag.AutoIncrement instead of boolean */
-  @Deprecated
-  // use Flag.AutoIncrement instead of boolean
-  public Table addColumn(String dbColName, DataType type, boolean auto)
-  {
-    if (auto)
-    {
-      return addColumn(dbColName, type, Flags.AutoIncrement);
-    }
-    else
-    {
-      return addColumn(dbColName, type);
-    }
-  }
-
-  public Table addColumn(String dbColName, DataType type, Flags... flags)
-  {
-    return addColumn(dbColName, type.getDataType(), type.getJavaType(), flags);
-  }
-
-  public Table addColumn(String name, DataType type, Class<?> javaType)
-  {
-    return addColumn(name, type.getDataType(), javaType.getCanonicalName());
-  }
-
-  public void setParent(DataSet dataSet)
-  {
-    _dataSet = dataSet;
+    return Collections.unmodifiableList(_columns);
   }
 
   public String getJavaName()
   {
-    if (_javaName != null)
-    {
-      return CamelCase.makeFirstUpperCase(_javaName);
-    }
-    return DataSet.makeNiceJavaName(_name);
-  }
-  
-  public String getJavaVariableName()
-  {
-    if (_javaName != null)
-    {
-      return CamelCase.makeFirstLowerCase(_javaName);
-    }
-    return CamelCase.makeFirstLowerCase(DataSet.makeNiceJavaName(_name));
+    return _javaName;
   }
 
-  public DataSet getDataSet()
+  public String getJavaNameFirstLower()
   {
-    return _dataSet;
+    return CamelCase.makeFirstLowerCase(getJavaName());
   }
 
   public String getPackage()
@@ -148,6 +65,16 @@ public class Table
   public String getSuffix()
   {
     return NAME_SUFFIX;
+  }
+
+  void setParent(DataSet dataSet)
+  {
+    _dataSet = dataSet;
+  }
+
+  public DataSet getDataSet()
+  {
+    return _dataSet;
   }
 
   public Column ref(String colName)
@@ -162,50 +89,79 @@ public class Table
     throw new RuntimeException("No column " + colName);
   }
 
-  public Column getIdColumn()
+  public Column getIdentifierColumn()
   {
     for (Column col : getColumns())
     {
-      if (col.isIdentifier())
+      if (col.isIdentifierColumn())
       {
         return col;
       }
     }
-    throw new RuntimeException("No ID column");
+    throw new RuntimeException("No Identifier column");
   }
 
   public boolean isAssociativeTable()
   {
-    if (getColumns().size() != 2)
+    int foreignKeys = 0;
+    if (getColumns().size() < 2)
     {
       return false;
     }
     for (Column col : getColumns())
     {
-      if (col.getReferences().size() == 0)
+      if (col.isIdentifierColumn())
       {
         return false;
       }
+      if (col.getReference() != null)
+      {
+        foreignKeys++;
+      }
     }
 
-    return true;
+    return (foreignKeys == 2);
   }
 
   public Table getAssociatedTable(Table table)
   {
     for (Column col : getColumns())
     {
-      for (Reference reference : col.getReferences()) {
-        if (reference.getColumn().getTable() == table) {
-          continue;
-        }
-        
-        return reference.getColumn().getTable();
+      final Reference reference = col.getReference();
+      if (reference == null)
+      {
+        continue;
       }
+      if (reference.getColumn().getTable() == table)
+      {
+        continue;
+      }
+
+      return reference.getColumn().getTable();
     }
-    
+
     return null;
-    //throw new RuntimeException("No associating column found");
+    // throw new RuntimeException("No associating column found");
   }
-  
+
+  public Column getAssociatedColumn(Table table)
+  {
+    for (Column col : getColumns())
+    {
+      final Reference reference = col.getReference();
+      if (reference == null)
+      {
+        continue;
+      }
+      if (reference.getColumn().getTable() == table)
+      {
+        continue;
+      }
+
+      return col;
+    }
+
+    return null;
+    // throw new RuntimeException("No associating column found");
+  }
 }

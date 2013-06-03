@@ -65,20 +65,6 @@ public class DataSetGenerator
   {
     _sourceWriter = writer;
   }
-
-  public Table addTable(String name, String javaName)
-  {
-    Table table = new Table(name, javaName);
-    _dataSet.addTable(table);
-    return table;
-  }
-
-  public Table addTable(String name)
-  {
-    Table table = new Table(name);
-    _dataSet.addTable(table);
-    return table;
-  }
   
   public Table addTable(Table table)
   {
@@ -111,8 +97,9 @@ public class DataSetGenerator
       // DSL Additions
       generateDSL(targetPath + "/");
       generateDSLTableModel(targetPath + "/");
-      generateDSLTableBinding(targetPath + "/");
+      //generateDSLTableBinding(targetPath + "/");
       generateDSLTableReferences(targetPath + "/");
+      generateDSLTableReferenceFactory(targetPath + "/");
     }
     finally
     {
@@ -197,6 +184,12 @@ public class DataSetGenerator
     logger.info("created " + _dataSet.getTables().size()  + " DSL Table References");
   }
   
+  protected void generateDSLTableReferenceFactory(String into) throws Exception
+  {
+    templates.executeTemplate(_dataSet, getTemplatePathRefFactory(), into);
+    logger.info("created 1 RefFactory class");
+  }
+  
   protected void generateDSL(String into) throws Exception
   {
     templates.executeTemplate(_dataSet, getTemplatePathDSL(), into);
@@ -216,6 +209,11 @@ public class DataSetGenerator
   protected String getTemplatePathTableReferences()
   {
     return "/templates/db/DSLTableRef.vm";
+  }
+  
+  protected String getTemplatePathRefFactory()
+  {
+    return "/templates/db/DSLRefFactory.vm";
   }
   
   protected String getTemplatePathDSL()

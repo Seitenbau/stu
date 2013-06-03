@@ -4,12 +4,16 @@
 #else
 #set($package  = "dsl" )
 #end
+#set($clsScope = ${model.name} + "DSL")
+#set($clsDataSet = ${model.name} + "DataSet")
+#set($referenceMethod = "ref")
 package ${package};
 
+import com.seitenbau.testing.dbunit.dsl.IScope;
 import org.dbunit.dataset.IDataSet;
 
 #if( $model.package && $model.package.length() != 0 )
-import ${model.package}.${model.name}DataSet;
+import ${model.package}.${clsDataSet};
 #end
 #foreach( $table in $model.tables )
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
@@ -17,31 +21,71 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 
 import groovy.lang.Closure;
 
-public class ${model.name}DSL 
+/**
+ * Represents a ${model.name} Data Set Scope. Parses the DSL and builds
+ * the datasets
+ */
+public class ${clsScope} implements IScope
 {
 
-  ${model.name}DataSet dataset = new ${model.name}DataSet() 
-  {
-    @Override
-    public void initDataSet() { }
-  };
+  private final ${clsDataSet} dataset;
 
 #foreach( $table in $model.tables )
-  ${table.javaName}Table ${table.javaVariableName}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
+  /**
+   * ${table.description}
+   */
+  public final ${table.javaName}Table ${table.javaNameFirstLower}Table;
   
+  // Getter for Groovy property access
+  protected ${table.javaName}Table get${table.javaName}Table()
+  {
+    return ${table.javaNameFirstLower}Table;
+  }
 #end
+  public ${clsScope}() {
+    this(new ${clsDataSet}() 
+    {
+      @Override
+      public void initDataSet() { }
+    });
+  }
+  
+  public ${clsScope}($clsDataSet dataset)
+  {
+    this.dataset = dataset;
+#foreach( $table in $model.tables )
+    ${table.javaNameFirstLower}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
+#end  
+  }
+
+  /**
+   * Parses and integrates the tables to the data set
+   * Supported tables:
+   * <ul>
+#foreach( $table in $model.tables )
+   *   <li>{@code ${table.javaNameFirstLower}Table} - ${table.description}</li>
+#end
+   * </ul>
+   *  
+   * @param table Table data
+   */
   public void tables(Closure<?> table)
   {
+    setReferencesContext();
     table.setDelegate(this);
     table.setResolveStrategy(Closure.DELEGATE_FIRST);
     table.call();
+    unsetReferencesContext();
   }
   
+  /**
+   * Parses the defined relations and integrates them into the data set
+   * @param relations The relations data
+   */
   public void relations(Closure<?> relations)
   {
     setReferencesContext();
     relations.call();
-    resolveRelations();
     unsetReferencesContext();
   }
   
@@ -62,105 +106,60 @@ public class ${model.name}DSL
 #end
 #end
   }
-
-  private void resolveRelations()
-  {
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-    updateRelations${table.javaName}Ref();
-#end
-#end
-  }
  
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-  private void updateRelations${table.javaName}Ref()
-  {
-#macro( addReference $verb $refRef )
-#end  
+#foreach( $reftable in $model.tables )
   
+  /**
+   * Replaces all occurrences of a ${reftable.javaName} reference with the represented value
+   * @param reference The reference, which can be resolved now
+   * @param row The row containing the represented values 
+   */
+  void replace${reftable.javaName}RefWithId(${reftable.javaName}Ref reference, RowBuilder_${reftable.javaName} row)
+  {
+#foreach( $table in $model.tables )
 #foreach( $col in $table.columns )
-#if( $col.references && $col.references.size() != 0 )
-#set($clsRef = ${table.javaName} + "Ref")
-#set($varRef = ${table.javaVariableName} + "Ref")
-#set($varTable = ${table.javaVariableName} + "Table")
-#set($clsRowbuilder = "RowBuilder_" + ${table.javaName})
-#set($varRowbuilder = ${table.javaVariableName})
-    for (${clsRef} ${varRef} : ${varTable}.getUsedRefs())
-    {
-//1
-#set($refClsRef = ${col.reference.table.javaName} + "Ref")      
-#set($refVarRef = ${col.reference.table.javaVariableName} + "Ref")      
-#set($refClsRowbuilder = "RowBuilder_" + ${col.reference.table.javaName})
-#set($refVarRowbuilder = ${col.reference.table.javaVariableName})
-      ${clsRowbuilder} ${varRowbuilder} = ${varRef}.getBuilder(this);
-      for (${refClsRef} ${refVarRef} : ${varRef}.${col.reference.localName}List.get(this))
+#if ($col.reference && $col.reference.table == $reftable)
+### $col in $table refers on reference
+    // Ref: ${table.javaName} on ${col.javaName}
+    for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getAllRowBuilders()) {
+      if (builder.get${col.javaName}Raw() == reference)
       {
-        System.out.println("RELATION: Updated Row in ${table.javaName}");
-        ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
-        ${col.javaType} value = ${refVarRowbuilder}.get${col.reference.column.javaName}();
-        ${varRowbuilder}.set${col.javaName}(value);
+        builder.set${col.javaName}(row.get${col.reference.column.javaName}());
       }
-      
-      ${varRef}.${col.reference.localName}List.clear();
-    } 
-#end
-#end
-
-
-
-
-#foreach( $referencingTable in $table.dataSet.tables )
-#foreach( $col in $referencingTable.columns )
-#set($varRef = ${table.javaVariableName} + "Ref")
-#if( ${col.isReferencingTable($table)} )
-#set($varList = ${col.reference.remoteName} + "List")
-#set($clsRef = ${table.javaName} + "Ref")
-    for (${clsRef} ${varRef} : ${table.javaVariableName}Table.getUsedRefs())
-    {
-      RowBuilder_${table.javaName} ${table.javaVariableName} = ${varRef}.getBuilder(this);
-#if ( ${referencingTable.isAssociativeTable()} )
-//2
-#set($reftable = ${referencingTable.getAssociatedTable($table)})
-#set($refClsRef = ${reftable.javaName} + "Ref")
-#set($refVarRef = ${reftable.javaVariableName} + "Ref")
-#set($refClsRowbuilder = "RowBuilder_" + ${reftable.javaName})
-#set($refVarRowbuilder = ${reftable.javaVariableName})
-      for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
-      {
-        System.out.println("RELATION: Inserted Row in ${referencingTable.javaName}");
-        ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this); 
-        RowBuilder_${referencingTable.javaName} row = ${referencingTable.javaVariableName}Table.getTableModel().insertRow();
-#foreach( $rcol in $referencingTable.columns )
-        row.set${rcol.javaName}(${rcol.reference.table.javaVariableName}.get${rcol.reference.javaName}());
-#end
-      }
-#else
-//3
-#set($reftable = ${col.table})
-#set($refClsRef = ${reftable.javaName} + "Ref")
-#set($refVarRef = ${reftable.javaVariableName} + "Ref")
-#set($refClsRowbuilder = "RowBuilder_" + ${reftable.javaName})
-#set($refVarRowbuilder = ${reftable.javaVariableName})
-      for (${refClsRef} ${refVarRef} : ${varRef}.${varList}.get(this))
-      {
-        System.out.println("RELATION: Updated Row in ${reftable.javaName}");
-        ${refClsRowbuilder} ${refVarRowbuilder} = ${refVarRef}.getBuilder(this);
-        ${col.javaType} value = ${table.javaVariableName}.get${col.reference.column.javaName}();
-        ${refVarRowbuilder}.set${col.javaName}(value);
-      }
-#end
-
-      ${varRef}.${varList}.clear(); 
     }
+    
 #end
 #end
-#end
+#end  
   }
-
-#end
 #end
 
+#foreach( $table in $model.tables )
+#set($clsRef = ${table.javaName} + "Ref")
+#set($clsRefAccess = ${table.javaName} + "RefAccess")
+#set($varTable = ${table.javaNameFirstLower} + "Table")
+
+  /**
+   * Allows ${table.javaName} table data access using references
+   * @param ref The reference which represents tha data
+   * @return The accessor object 
+   */
+  public RowBuilder_${table.javaName} ${referenceMethod}(${clsRef} ref)
+  {
+    return ref.getBuilder(this);
+  }
+#end
+
+  @Override
+  public void bindRefs()
+  {
+    setReferencesContext();
+  }
+  
+  /**
+   * Creates a DbUnit dataset
+   * @return The Dbunit dataset
+   */
   public IDataSet createDataSet() 
   {
     return dataset.createDBUnitDataSet();
