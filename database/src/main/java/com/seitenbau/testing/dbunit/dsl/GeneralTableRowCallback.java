@@ -61,10 +61,6 @@ public class GeneralTableRowCallback<R, F, D extends DatabaseReference> implemen
       if (!(id instanceof NoValue))
       {
         updateId = true;
-        System.out.println("No builder id is present: " + id);
-        if (id instanceof Integer && (Integer)id == 4) {
-          System.out.println("here wo go");
-        }
         Optional<R> builderById = column.getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, column.getDataType()));
         if (builderById.isPresent())
         {
