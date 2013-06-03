@@ -8,7 +8,7 @@ public class Model extends DatabaseModel
 {
   public Model()
   {
-    database("STU");
+    database("PersonDatabase");
     packageName("com.seitenbau.testing.dbunit.model");
 
     Table jobs = table("jobs") //

@@ -55,11 +55,11 @@ public class GroovyDataSetDatabaseTest
     // execute
     sut.addPerson(person);
     
-    dataSet.dataset.table_Persons.insertRow()
+    dataSet.personsTable.insertRow()
       .setFirstName("Nikolaus")
       .setName("Moll")
-      .setJobId(SWD.getId().intValue())
-      .setTeamId(QA.getId().intValue());
+      .setJobId(SWD)
+      .setTeamId(QA);
     
     dbTester.assertDataBase(dataSet.createDataSet());
   }

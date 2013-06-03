@@ -1,16 +1,14 @@
 package com.seitenbau.testing.dbunit.examples;
 
-
-import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
-
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 import static com.seitenbau.testing.dbunit.dsl.ScopeRegistry.use;
 
+import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 
-public class STUDSLDemo
+public class PersonTableDataSetDemo
 {
 
-  public static void main(String[] args) 
+  public static void main(String[] args)
   {
     DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
     println("Jobtitle for SWD", dataSet.jobsTable.findWhere.id(SWD).getTitle());
@@ -21,12 +19,12 @@ public class STUDSLDemo
     println("Job SWD member count", dataSet.personsTable.findWhere.jobId(SWD).getRowCount());
     println("Team QA member size", dataSet.teamsTable.findWhere.id(QA).getMembersize());
     println("Team QA member count", dataSet.personsTable.findWhere.teamId(QA).getRowCount());
-    
+
     use(dataSet);
     println("Dennis' last name", KAULBERSCH.getName());
   }
-  
-  private static void println(String message, Object value) 
+
+  private static void println(String message, Object value)
   {
     System.out.println(message + " = " + value);
   }

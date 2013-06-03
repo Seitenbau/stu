@@ -4,7 +4,7 @@
 #else
 #set($package  = "dsl" )
 #end
-#set($clsScope = ${model.dataSet.name} + "DSL")
+#set($clsScope = ${model.dataSet.name} + "Builder")
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
 #set($privateListPrefix = "private_")

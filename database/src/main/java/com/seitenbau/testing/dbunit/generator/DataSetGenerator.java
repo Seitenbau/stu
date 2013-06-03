@@ -192,7 +192,7 @@ public class DataSetGenerator
   
   protected void generateDSL(String into) throws Exception
   {
-    templates.executeTemplate(_dataSet, getTemplatePathDSL(), into);
+    templates.executeTemplate(_dataSet, getTemplatePathDSLBuilder(), into);
     logger.info("created 1 DSL class");
   }
 
@@ -216,9 +216,9 @@ public class DataSetGenerator
     return "/templates/db/DSLRefFactory.vm";
   }
   
-  protected String getTemplatePathDSL()
+  protected String getTemplatePathDSLBuilder()
   {
-    return "/templates/db/DSL.vm";
+    return "/templates/db/DSLBuilder.vm";
   }
   //-----------------------------------------------  
 

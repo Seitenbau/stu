@@ -1,6 +1,7 @@
 #set($filename = ${model.javaName} + ${model.suffix} )
 #set($package  = ${model.package} )
 #set($rowbuilder   = "RowBuilder_" + ${model.javaName} )
+#set($rowbuilderImpl = "RowBuilder_" + ${model.javaName} + "Impl" )
 #set($rowsetters   = "RowSetters_" + ${model.javaName} )
 #set($rowsgetters  = "RowGetters_" + ${model.javaName} )
 #set($findWhereClass = ${model.javaName} + "FindWhere" ) 
@@ -123,14 +124,34 @@ public class ${tableClass} implements ITable
      
   }
 
-  public static class ${rowbuilder} implements ${rowsetters}<${rowbuilder}>, ${rowsgetters}<${rowbuilder}>
+  public interface ${rowbuilder} extends ${rowsetters}<${rowbuilder}>, ${rowsgetters}<${rowbuilder}>
+  {
+
+    Object getValue(String column) throws RuntimeException;
+
+    ${rowbuilder} clone();
+#foreach( $column in $model.columns )
+
+    Object get${column.javaName}Raw();
+#end
+#foreach( $column in $model.columns )
+#if( $column.reference )
+#set($otherGetter  = "RowGetters_" + ${column.reference.table.javaName} )
+
+    ${rowbuilder} ref${column.javaName}($otherGetter reference);
+#end
+#end
+  }
+
+
+  public static class ${rowbuilderImpl} implements ${rowbuilder}
   {
 
     Object[] data;
     
     ${tableClass} table;
     
-    ${rowbuilder}(${tableClass} tableDelegate) {
+    ${rowbuilderImpl}(${tableClass} tableDelegate) {
       data=new Object[COLUMNS.length];
       table = tableDelegate;
     }
@@ -265,7 +286,7 @@ public class ${tableClass} implements ITable
     
     @Override
     public ${rowbuilder} clone() {
-      ${rowbuilder} clone = new ${rowbuilder}(table);
+      ${rowbuilder} clone = new ${rowbuilderImpl}(table);
 #foreach( $column in $model.columns )
       clone.set${column.javaName}(get${column.javaName}());
 #end
@@ -360,7 +381,7 @@ public class ${tableClass} implements ITable
   }
   
   /** Inner class! Use ${rowcollection} in your code ! */
-  public static class ${rowmodify} extends ${rowbuilder} 
+  public static class ${rowmodify} extends ${rowbuilderImpl} 
   {
       List<${rowbuilder}> _rows;
 
@@ -483,7 +504,7 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} insertRow()
   {
-    ${rowbuilder} row = new ${rowbuilder}(this);
+    ${rowbuilder} row = new ${rowbuilderImpl}(this);
 #foreach( $column in $model.columns )
 #if( $column.isIdGenerationAutoInvokeOnInsert() )
     row.next${column.javaName}();
@@ -500,7 +521,7 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} insertRow(${model.javaName}Model rowToAdd)
   {
-    ${rowbuilder} row = new ${rowbuilder}(this);
+    ${rowbuilder} row = new ${rowbuilderImpl}(this);
 #foreach( $column in $model.columns )
     row.set${column.javaName}Raw( rowToAdd.get${column.javaName}Raw() );
 #end
@@ -538,7 +559,7 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} insertRowAt(int index)
   {
-    ${rowbuilder} row = new ${rowbuilder}(this);
+    ${rowbuilder} row = new ${rowbuilderImpl}(this);
     rows.add(index, row);
     return row;
   }
@@ -581,7 +602,7 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} newRow()
   {
-    ${rowbuilder} row = new ${rowbuilder}(this);
+    ${rowbuilder} row = new ${rowbuilderImpl}(this);
     return row;
   }
   

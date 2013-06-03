@@ -1,10 +1,10 @@
-#set($filename = ${model.name} + "DSL" )
+#set($filename = ${model.name} + "Builder" )
 #if( $model.package && $model.package.length() != 0 )
 #set($package  = ${model.package} + ".dsl" )
 #else
 #set($package  = "dsl" )
 #end
-#set($clsScope = ${model.name} + "DSL")
+#set($clsScope = ${model.name} + "Builder")
 #set($clsDataSet = ${model.name} + "DataSet")
 #set($referenceMethod = "ref")
 package ${package};
