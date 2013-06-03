@@ -60,4 +60,11 @@ class SimpleTests extends Specification {
     then: "verify that 3 persons exist"
       personcount == 3
   }
+  
+  def "verify QA teamsize"() {
+    when: "get the number of QA teammembers"
+      def teamsize = sut.dataset.table_Teams.findWhere.id(1).membersize
+    then: "verify that teamsize is 3"
+      teamsize == 3
+  }
 }
