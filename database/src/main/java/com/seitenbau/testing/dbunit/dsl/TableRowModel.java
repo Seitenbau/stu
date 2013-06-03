@@ -46,7 +46,7 @@ public class TableRowModel
     return true;
   }
 
-  public int getRefColumn()
+  public int getRefColumnIndex()
   {
     int index = 0;
     for (Object o : values)
@@ -61,7 +61,7 @@ public class TableRowModel
     return -1;
   }
 
-  public int getIdentifierColumn()
+  public int getIdentifierColumnIndex()
   {
     int index = 0;
     for (Object o : values)
