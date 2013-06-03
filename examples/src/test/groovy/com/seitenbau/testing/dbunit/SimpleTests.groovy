@@ -1,26 +1,9 @@
 package com.seitenbau.testing.dbunit
 
-import static com.seitenbau.testing.dbunit.examples.STUDSLRefs.*;
+import static com.seitenbau.testing.dbunit.examples.STUDSLRefs.*
+import spock.lang.Specification
 
-import com.seitenbau.testing.dbunit.config.TestConfig;
-import com.seitenbau.testing.dbunit.dao.Person;
-import com.seitenbau.testing.dbunit.model.dsl.JobsRef;
-import com.seitenbau.testing.dbunit.model.dsl.PersonsRef;
 import com.seitenbau.testing.dbunit.model.dsl.STUDSL
-import com.seitenbau.testing.dbunit.model.dsl.TeamsRef;
-import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
-import com.seitenbau.testing.dbunit.services.PersonService;
-
-import javax.swing.text.html.CSS.LengthUnit;
-
-import org.dbunit.dataset.IDataSet;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import spock.lang.Specification;
 
 class SimpleTests extends Specification {
 
