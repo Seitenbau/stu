@@ -44,7 +44,7 @@ public class AnnotationBasedDatabaseTester
   }
 
   @DatabaseBefore
-  public void removeDennis(SampleDataSet sampleDataSet)
+  public void removeHansi(SampleDataSet sampleDataSet)
   {
     sampleDataSet.table_Persons.findWhere.firstName("Hansi").delete();
   }
