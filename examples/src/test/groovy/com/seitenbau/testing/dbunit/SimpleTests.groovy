@@ -30,22 +30,24 @@ class SimpleTests extends Specification {
     sut = new STUDSL();
     sut.tables {
       jobsTable.rows {
-        REF               | id  | title                   | description
-        SWD               | 1   | "Software Developer"    | "Creating software"
-        SWT               | 2   | "Software Tester"       | "Testing software"
-        TM                | 3   | "Team Manager"          | "Makes the world go round"
+        REF           | id  | title                   | description
+        SWD           | 1   | "Software Developer"    | "Creating software"
+        SWT           | 2   | "Software Tester"       | "Testing software"
+        TM            | 3   | "Team Manager"          | "Makes the world go round"
       }
-
-      teamsTable.rows {
-        REF             | id  | title                   | description         | membersize
-        QA              | 1   | "Quality Assurance"     | "Verifies software" | 3
-      }
-
+      
       personsTable.rows {
-        REF           | id  | first_name              | name                | job_id            | team_id
-        KAULBERSCH    | 1   | "Dennis"                | "Kaulbersch"        | SWD               | QA
-        GUITTON       | 2   | "Julien"                | "Guitton"           | SWT               | QA
-        BARANOWSKI    | 3   | "Christian"             | "Baranowski"        | TM                | QA
+        REF           | id  | first_name              | name                | job | team
+        KAULBERSCH    | 1   | "Dennis"                | "Kaulbersch"        | SWD | QA
+        GUITTON       | 2   | "Julien"                | "Guitton"           | SWT | QA
+        BARANOWSKI    | 3   | "Christian"             | "Baranowski"        | TM  | QA
+      }
+      
+      // Because of the query in column membersize, it is important that the persons table
+      // is defined before
+      teamsTable.rows {
+        REF           | id  | title                   | description         | membersize
+        QA            | 1   | "Quality Assurance"     | "Verifies software" | { personsTable.findWhere.teamId(QA).getRowCount() } 
       }
     }
 
