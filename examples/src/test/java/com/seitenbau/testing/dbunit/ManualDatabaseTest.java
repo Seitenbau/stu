@@ -29,7 +29,7 @@ import com.seitenbau.testing.dbunit.services.PersonService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
-public class ManualDatabaseTester
+public class ManualDatabaseTest
 {
   @Rule
   public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);

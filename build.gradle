@@ -94,6 +94,7 @@ project("examples") {
   dependencies {
     compile project(':database')
     compile("org.apache.derby:derby:$derbyVersion")
+    runtime("org.hsqldb:hsqldb:2.2.8")
     compile("org.springframework:spring-context:$springVersion")
     compile("org.springframework:spring-orm:$springVersion")
     compile("org.springframework:spring-test:$springVersion")

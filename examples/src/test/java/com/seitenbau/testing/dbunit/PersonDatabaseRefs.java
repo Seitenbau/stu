@@ -1,11 +1,11 @@
-package com.seitenbau.testing.dbunit.examples;
+package com.seitenbau.testing.dbunit;
 
 import com.seitenbau.testing.dbunit.model.dsl.JobsRef;
 import com.seitenbau.testing.dbunit.model.dsl.PersonsRef;
 import com.seitenbau.testing.dbunit.model.dsl.RefFactory;
 import com.seitenbau.testing.dbunit.model.dsl.TeamsRef;
 
-public class STUDSLRefs
+public class PersonDatabaseRefs
 {
   public static JobsRef SWD = RefFactory.createJobsRef();
   public static JobsRef SWT = RefFactory.createJobsRef();

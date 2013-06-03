@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.seitenbau.testing.dbunit.datasets.provider.impl.JavaDataSetProvider;
 import com.seitenbau.testing.dbunit.datasets.provider.impl.STUDataSetProvider;
 
-public class DataSetCompareTester
+public class DataSetCompareTest
 {
   JavaDataSetProvider javaDataSetProvider = new JavaDataSetProvider();
 

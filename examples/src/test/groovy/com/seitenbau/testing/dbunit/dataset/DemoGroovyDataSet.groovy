@@ -1,15 +1,12 @@
 package com.seitenbau.testing.dbunit.dataset
 
-import static com.seitenbau.testing.dbunit.examples.STUDSLRefs.*;
-import com.seitenbau.testing.dbunit.model.dsl.STUDSL
-import com.seitenbau.testing.dbunit.model.dsl.JobsRef
-import com.seitenbau.testing.dbunit.model.dsl.PersonsRef
-import com.seitenbau.testing.dbunit.model.dsl.STUDSL;
-import com.seitenbau.testing.dbunit.model.dsl.TeamsRef
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 
-class STUDataSet extends STUDSL
+import com.seitenbau.testing.dbunit.model.dsl.*
+
+class DemoGroovyDataSet extends STUDSL
 {
-  STUDataSet() {
+  DemoGroovyDataSet() {
     tables {
       
       jobsTable.rows {

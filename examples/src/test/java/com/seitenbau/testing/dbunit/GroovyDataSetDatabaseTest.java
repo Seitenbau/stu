@@ -1,0 +1,68 @@
+package com.seitenbau.testing.dbunit;
+
+import static org.fest.assertions.Assertions.*;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.seitenbau.testing.dbunit.config.TestConfig;
+import com.seitenbau.testing.dbunit.dao.Person;
+import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
+import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
+import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
+import com.seitenbau.testing.dbunit.services.PersonService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
+public class GroovyDataSetDatabaseTest
+{
+
+  @Rule
+  public DatabaseTesterRule dbTester = new DatabaseTesterRule(TestConfig.class);
+
+  @Autowired
+  PersonService sut;
+  
+  DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
+  
+  @Before
+  public void setup() throws Exception {
+    ScopeRegistry.use(dataSet);
+    dbTester.truncate(dataSet.createDataSet());
+    dbTester.cleanInsert(dataSet.createDataSet());
+  }
+  
+  @Test
+  public void findPersons() {
+    assertThat(sut.findPersons()).hasSize(dataSet.personsTable.findWhere.teamId(QA).getRowCount());
+  }
+  
+  @Test
+  public void savePerson() throws Exception {
+    // TODO: Change the person class id fields to Long
+    Person person = new Person();
+    person.setFirstName("Nikolaus");
+    person.setName("Moll");
+    person.setJob(SWD.getId().intValue());
+    person.setTeam(QA.getId().intValue());
+
+    // execute
+    sut.addPerson(person);
+    
+    dataSet.dataset.table_Persons.insertRow()
+      .setFirstName("Nikolaus")
+      .setName("Moll")
+      .setJobId(SWD.getId().intValue())
+      .setTeamId(QA.getId().intValue());
+    
+    dbTester.assertDataBase(dataSet.createDataSet());
+  }
+  
+  
+}

@@ -1,10 +1,10 @@
 package com.seitenbau.testing.dbunit.examples;
 
 
-import com.seitenbau.testing.dbunit.dataset.STUDataSet;
+import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 import static com.seitenbau.testing.dbunit.dsl.ScopeRegistry.use;
-import static com.seitenbau.testing.dbunit.examples.STUDSLRefs.*;
 
 
 public class STUDSLDemo
@@ -12,7 +12,7 @@ public class STUDSLDemo
 
   public static void main(String[] args) 
   {
-    STUDataSet dataSet = new STUDataSet();
+    DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
     println("Jobtitle for SWD", dataSet.jobsTable.findWhere.id(SWD).getTitle());
     println("Jobid for SWD", dataSet.jobsTable.findWhere.title(SWD).getId());
     println("Teamtitle for id QA", dataSet.teamsTable.findWhere.id(QA).getTitle());

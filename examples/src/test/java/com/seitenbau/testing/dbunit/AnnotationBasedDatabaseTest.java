@@ -25,7 +25,7 @@ import com.seitenbau.testing.dbunit.services.PersonService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
 @DatabaseSetup(prepare = DefaultDataSet.class, assertNoModification = false)
-public class AnnotationBasedDatabaseTester
+public class AnnotationBasedDatabaseTest
 {
   @Rule
   public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);
