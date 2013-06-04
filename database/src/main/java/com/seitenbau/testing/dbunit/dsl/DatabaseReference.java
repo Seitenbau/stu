@@ -7,9 +7,8 @@ import java.util.Map;
 public class DatabaseReference
 {
 
-  protected <S, T> List<T> getOrCreateList(Map<S, List<T>> map, ThreadLocal<S> threadScope)
+  protected <S, T> List<T> getOrCreateList(Map<S, List<T>> map, S scope)
   {
-    final S scope = threadScope.get();
     if (scope == null)
     {
       throw new RuntimeException("Cannot build reference out of a scope");

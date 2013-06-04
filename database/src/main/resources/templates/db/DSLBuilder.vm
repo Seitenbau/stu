@@ -10,6 +10,7 @@
 package ${package};
 
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
+import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.dsl.IScope;
 import org.dbunit.dataset.IDataSet;
 
@@ -72,11 +73,10 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    */
   public void tables(Closure<?> table)
   {
-    setReferencesContext();
+    ScopeRegistry.use(this);
     table.setDelegate(this);
     table.setResolveStrategy(Closure.DELEGATE_FIRST);
     table.call();
-    unsetReferencesContext();
   }
   
   /**
@@ -85,27 +85,8 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    */
   public void relations(Closure<?> relations)
   {
-    setReferencesContext();
+    ScopeRegistry.use(this);
     relations.call();
-    unsetReferencesContext();
-  }
-  
-  private void setReferencesContext()
-  {
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-    ${table.javaName}Ref.setThreadLocalScope(this);
-#end
-#end
-  }
-  
-  private void unsetReferencesContext()
-  {
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-    ${table.javaName}Ref.unsetThreadLocalScope();
-#end
-#end
   }
  
 #foreach( $reftable in $model.tables )
@@ -152,9 +133,9 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
 #end
 
   @Override
-  public void bindRefs()
+  public String getName()
   {
-    setReferencesContext();
+    return "${model.name}";
   }
   
   /**
