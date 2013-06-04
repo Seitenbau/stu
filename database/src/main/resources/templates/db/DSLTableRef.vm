@@ -27,7 +27,8 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 /**
  * Reference to an ${model.javaName} table row
  */
-public class ${clsRef} extends DatabaseReference {
+public class ${clsRef} extends DatabaseReference
+{
 
   private final Map<${clsScope}, ${clsRowbuilder}> builders;
   
@@ -220,7 +221,6 @@ public class ${clsRef} extends DatabaseReference {
 
   private ${clsScope} getScope() 
   {
-    // TODO NM use model.name
     IScope scope = ScopeRegistry.getCurrentScope("${model.package}.${model.dataSet.name}");
     if (scope == null)
     {
