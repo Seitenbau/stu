@@ -82,12 +82,12 @@ public class ${tableClass} implements ITable
   
   public ${tableClass}()
   {
-    _metaData=new DefaultTableMetaData(NAME, COLUMNS);
+    _metaData = new DefaultTableMetaData(NAME, COLUMNS);
   }
 
   public void setDataset(${dataSetClass} dataSet)
   {
-    _dataSet=dataSet;
+    _dataSet = dataSet;
   }
   
   public ${dataSetClass} getDataset()
@@ -102,7 +102,7 @@ public class ${tableClass} implements ITable
 #foreach( $column in $model.columns )
 #if( $column.javaType.contains("Date") )
     T set${column.javaName}(String dateString);
-    T set${column.javaName}(DateBuilder datum);
+    T set${column.javaName}(DateBuilder date);
 #end
 #if( $column.javaType.contains("Long") )
     T set${column.javaName}(Integer intValue);
@@ -113,7 +113,6 @@ public class ${tableClass} implements ITable
     T next${column.javaName}();
 #end
 #end 
-     
   }
   
   public interface ${rowsgetters}<T extends ${rowsgetters}>
@@ -121,7 +120,6 @@ public class ${tableClass} implements ITable
 #foreach( $column in $model.columns )
     ${column.javaType} get${column.javaName}();
 #end 
-     
   }
 
   public interface ${rowbuilder} extends ${rowsetters}<${rowbuilder}>, ${rowsgetters}<${rowbuilder}>
@@ -188,7 +186,6 @@ public class ${tableClass} implements ITable
 #end
   }
 
-
   public static class ${rowbuilderImpl} implements ${rowbuilder}
   {
 
@@ -196,8 +193,9 @@ public class ${tableClass} implements ITable
     
     ${tableClass} table;
     
-    ${rowbuilderImpl}(${tableClass} tableDelegate) {
-      data=new Object[COLUMNS.length];
+    ${rowbuilderImpl}(${tableClass} tableDelegate) 
+    {
+      data = new Object[COLUMNS.length];
       table = tableDelegate;
     }
     
@@ -209,9 +207,9 @@ public class ${tableClass} implements ITable
       data[${foreach.index}] = toDate(dateString);
       return this;
     }
-    public ${rowbuilder} set${column.javaName}(DateBuilder datum)
+    public ${rowbuilder} set${column.javaName}(DateBuilder date)
     {
-      data[${foreach.index}] = toDate(datum);
+      data[${foreach.index}] = toDate(date);
       return this;
     }
 #end
@@ -273,15 +271,16 @@ public class ${tableClass} implements ITable
       return table.insertRow(theRow);
     }
     
-    public Object getValue(String column) throws RuntimeException {
+    public Object getValue(String column) throws RuntimeException 
+    {
 #foreach( $column in $model.columns )
-      if(column.equalsIgnoreCase(Columns.${column.javaName}) ) {
+      if(column.equalsIgnoreCase(Columns.${column.javaName}) )
+      {
         return data[$foreach.index];
       }
 #end
       throw new RuntimeException(NAME + " col = " + column);
     }
-    
 #foreach( $column in $model.columns )
 #if( $column.reference )
 #set($otherGetter  = "RowGetters_" + ${column.reference.table.javaName} )
@@ -295,7 +294,8 @@ public class ${tableClass} implements ITable
 #end
     
     @Override
-    public ${rowbuilder} clone() {
+    public ${rowbuilder} clone()
+    {
       ${rowbuilder} clone = new ${rowbuilderImpl}(table);
 #foreach( $column in $model.columns )
       clone.set${column.javaName}(get${column.javaName}());
@@ -308,15 +308,18 @@ public class ${tableClass} implements ITable
 
   public static class $findWhereClass
   {
-    public List<${rowbuilder}> rows;
-    ${tableClass} table;
+    // TODO NM/CB/RW must this field be public?
+    public final List<${rowbuilder}> rows;
+    final ${tableClass} table;
     
-    public $findWhereClass(${tableClass} theTable) {
+    public $findWhereClass(${tableClass} theTable)
+    {
        rows = theTable.rows;
        table = theTable;
     }
     
-    public ${rowcollection} rowComparesTo(Comparable<${rowbuilder}> toSearch) {
+    public ${rowcollection} rowComparesTo(Comparable<${rowbuilder}> toSearch) 
+    {
       ${rowcollection} modifiers = new ${rowcollection}(table);
       for (${rowbuilder} row : rows) 
       {
@@ -328,7 +331,9 @@ public class ${tableClass} implements ITable
       return modifiers;
     }
 #foreach( $column in $model.columns )  
-    public ${rowcollection} ${column.javaNameFirstLower}(${column.javaType} toSearch) {
+
+    public ${rowcollection} ${column.javaNameFirstLower}(${column.javaType} toSearch) 
+    {
       ${rowcollection} modifiers = new ${rowcollection}(table);
       for (${rowbuilder} row : rows) 
       {
@@ -340,6 +345,7 @@ public class ${tableClass} implements ITable
       return modifiers;
     }
 #if( $column.javaType.contains("Long") )
+
     public ${rowcollection} ${column.javaNameFirstLower}(Integer toSearch) 
     {
       return ${column.javaNameFirstLower}( Long.valueOf(toSearch) );
@@ -352,15 +358,18 @@ public class ${tableClass} implements ITable
 
   public static class $getWhereClass
   {
-    public List<${rowbuilder}> rows;
-    ${tableClass} table;
+    // TODO NM/CB/RW must this field be public?
+    public final List<${rowbuilder}> rows;
+    final ${tableClass} table;
     
-    public $getWhereClass(${tableClass} theTable) {
+    public $getWhereClass(${tableClass} theTable) 
+    {
        rows = theTable.rows;
        table = theTable;
     }
     
-    public Optional<${rowbuilder}> rowComparesTo(Comparable<${rowbuilder}> toSearch) {
+    public Optional<${rowbuilder}> rowComparesTo(Comparable<${rowbuilder}> toSearch) 
+    {
       for (${rowbuilder} row : rows) 
       {
         if (toSearch.compareTo(row) == 0) 
@@ -371,7 +380,9 @@ public class ${tableClass} implements ITable
       return Optional.<${rowbuilder}> absent();
     }
 #foreach( $column in $model.columns )  
-    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${column.javaType} toSearch) {
+
+    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${column.javaType} toSearch) 
+    {
       for (${rowbuilder} row : rows) 
       {
         if (row.get${column.javaName}().equals(toSearch)) 
@@ -382,6 +393,7 @@ public class ${tableClass} implements ITable
       return Optional.<${rowbuilder}> absent();
     }
 #if( $column.javaType.contains("Long") )
+    
     public Optional<${rowbuilder}> ${column.javaNameFirstLower}(Integer toSearch) 
     {
       return ${column.javaNameFirstLower}( Long.valueOf(toSearch) );
@@ -393,106 +405,130 @@ public class ${tableClass} implements ITable
   /** Inner class! Use ${rowcollection} in your code ! */
   public static class ${rowmodify} extends ${rowbuilderImpl} 
   {
-      List<${rowbuilder}> _rows;
+    
+    List<${rowbuilder}> _rows;
 
-      public ${rowmodify}(${tableClass} theTable) {
-        super(theTable);
-        _rows = new ArrayList<${rowbuilder}>();
-      }
+    public ${rowmodify}(${tableClass} theTable) 
+    {
+      super(theTable);
+      _rows = new ArrayList<${rowbuilder}>();
+    }
       
-      public void add(${rowbuilder} row) {
-          _rows.add(row);
-      }
+    public void add(${rowbuilder} row) 
+    {
+      _rows.add(row);
+    }
       
-      public boolean isEmpty() {
-          return _rows.isEmpty();
-      }
+    public boolean isEmpty() 
+    {
+      return _rows.isEmpty();
+    }
 
-      public ${rowmodify} delete() {
-          for(${rowbuilder} row : _rows) {
-            table.rows.remove(row);
-          }
-          return this;
+    public ${rowmodify} delete()
+    {
+      for(${rowbuilder} row : _rows) 
+      {
+        table.rows.remove(row);
       }
+      return this;
+    }
         
 #foreach( $column in $model.columns )
 
 #if( $column.javaType.contains("Date") )
-      public ${rowmodify} set${column.javaName}(String dateString)
+    public ${rowmodify} set${column.javaName}(String dateString)
+    {
+      for(${rowbuilder} row : _rows) 
       {
-        for(${rowbuilder} row : _rows) {
-          row.set${column.javaName}(dateString);
-        }
-        return this;
+        row.set${column.javaName}(dateString);
       }
-      public ${rowmodify} set${column.javaName}(DateBuilder datum)
+      return this;
+    }
+    
+    public ${rowmodify} set${column.javaName}(DateBuilder date)
+    {
+      for(${rowbuilder} row : _rows) 
       {
-        for(${rowbuilder} row : _rows) {
-          row.set${column.javaName}(datum);
-        }
-        return this;
+        row.set${column.javaName}(date);
       }
+      return this;
+    }
 #end
 #if( $column.javaType.contains("Long") )
-      public ${rowmodify} set${column.javaName}(Integer intValue)
+      
+    public ${rowmodify} set${column.javaName}(Integer intValue)
+    {
+      for(${rowbuilder} row : _rows) 
       {
-        for(${rowbuilder} row : _rows) {
-          row.set${column.javaName}(intValue);
-        }
-        return this;
+        row.set${column.javaName}(intValue);
       }
-
+      return this;
+    }
 #end
-      public ${rowmodify} set${column.javaName}(${column.javaType} value)
+
+    public ${rowmodify} set${column.javaName}(${column.javaType} value)
+    {
+      for(${rowbuilder} row : _rows) 
       {
-        for(${rowbuilder} row : _rows) {
-          row.set${column.javaName}(value);
-        }
-        return this;
+        row.set${column.javaName}(value);
       }
-      public ${rowmodify} set${column.javaName}Raw(Object value)
+      return this;
+    }
+      
+    public ${rowmodify} set${column.javaName}Raw(Object value)
+    {
+      for(${rowbuilder} row : _rows)
       {
-        for(${rowbuilder} row : _rows) {
-          row.set${column.javaName}Raw(value);
-        }
-        return this;
+        row.set${column.javaName}Raw(value);
       }
-      public ${column.javaType} get${column.javaName}()
-      {
-        if(_rows.size()!=1) {
-          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
-        }
-        return _rows.get(0).get${column.javaName}();
-      }
+      return this;
+    }
+    
+    public ${column.javaType} get${column.javaName}()
+    {
+      assertSingleResult(); 
+      return _rows.get(0).get${column.javaName}();
+    }
 #end 
-      public Object getValue(String column)
+
+    public Object getValue(String column)
+    {
+      assertSingleResult();
+      return _rows.get(0).getValue(column);
+    }
+    
+    private void assertSingleResult()
+    {
+      if (_rows.size() != 1) 
       {
-        if(_rows.size()!=1) {
-          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
-        }
-        return _rows.get(0).getValue(column);
+        throw new RuntimeException("There where multiple Row in the result! " + _rows.size());
       }
+    }    
       
-      /** 
-       * Return the count of rows contained in this collection
-       */
-      public int getRowCount()
+    /** 
+     * Return the count of rows contained in this collection
+     */
+    public int getRowCount()
+    {
+      return _rows.size();
+    }
+      
+    @Override
+    public ${rowmodify} clone()
+    {
+      ${rowmodify} clone = new ${rowmodify}(table);
+      for(${rowbuilder} row:_rows) 
       {
-        return _rows.size();
+        clone._rows.add(row.clone());
       }
-      
-      @Override
-      public ${rowmodify} clone() {
-        ${rowmodify} clone = new ${rowmodify}(table);
-        for(${rowbuilder} row:_rows) {
-          clone._rows.add(row.clone());
-        }
-        return clone;
-      }
+      return clone;
+    }
 
   }
   
-  public static class ${rowcollection} extends ${rowmodify} {
+  public static class ${rowcollection} extends ${rowmodify} 
+  {
+    
     public $findWhereClass where = new $findWhereClass(table);
     
     public ${rowcollection}(${tableClass} theTable)
@@ -622,29 +658,35 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} next()
   {
-    if(_iterator == null) {
+    if(_iterator == null) 
+    {
       _iterator = rows.iterator();
     }
     return _iterator.next();
   }
   
-  public void resetIterator() {
+  public void resetIterator() 
+  {
     _iterator = null;
   }
 
-  public ITableMetaData getTableMetaData() {
-      return _metaData;
+  public ITableMetaData getTableMetaData() 
+  {
+    return _metaData;
   }
   
-  public int getRowCount() {
-      return rows.size();
+  public int getRowCount() 
+  {
+    return rows.size();
   }
    
-  public Object getValue(int row, String column) throws DataSetException {
-      if (row >= rows.size() || row < 0) {
-        throw new RowOutOfBoundsException();
-      }
-      return rows.get(row).getValue(column);
+  public Object getValue(int row, String column) throws DataSetException 
+  {
+    if (row >= rows.size() || row < 0) 
+    {
+      throw new RowOutOfBoundsException();
+    }
+    return rows.get(row).getValue(column);
   }
 
   static Date toDate(String dateString)
@@ -652,9 +694,9 @@ public class ${tableClass} implements ITable
     return asDate(dateString);
   }
   
-  static Date toDate(DateBuilder datum)
+  static Date toDate(DateBuilder date)
   {
-    return datum.asDate();
+    return date.asDate();
   }
  
 }
