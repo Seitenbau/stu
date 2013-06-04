@@ -5,8 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.LinkedList;
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.fest.assertions.Fail;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -189,7 +188,7 @@ public class ManualDatabaseTest
     // execute
     sut.removePerson(person);
     // verify
-    org.junit.Assert.fail();
+    Fail.fail();
   }
 
   // Jobs
@@ -283,7 +282,7 @@ public class ManualDatabaseTest
     // execute
     sut.removeTeam(team);
     // verify
-    org.junit.Assert.fail();
+    Fail.fail();
   }
 
   @Test(expected = DataIntegrityViolationException.class)
@@ -298,7 +297,7 @@ public class ManualDatabaseTest
     // execute
     sut.removeTeam(team);
     // verify
-    Assert.fail();
+    Fail.fail();
   }
 
   // Teams
@@ -394,7 +393,7 @@ public class ManualDatabaseTest
     // execute
     sut.removeJob(job);
     // verify
-    org.junit.Assert.fail();
+    Fail.fail();
   }
 
   @Test(expected = DataIntegrityViolationException.class)
@@ -409,6 +408,6 @@ public class ManualDatabaseTest
     // execute
     sut.removeJob(job);
     // verify
-    Assert.fail();
+    Fail.fail();
   }
 }
