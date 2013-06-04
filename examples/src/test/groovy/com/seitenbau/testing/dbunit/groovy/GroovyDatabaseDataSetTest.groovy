@@ -53,8 +53,7 @@ class GroovyDatabaseDataSetTest {
     def persons = sut.findPersons()
 
     // verify
-    //TODO access dataset when rowCount is implemented on tables
-    assertThat(persons).hasSize(dataSet.personsTable.findWhere.teamId(QA).getRowCount())
+    assertThat(persons).hasSize(dataSet.personsTable.getRowCount())
   }
 
   @Test
@@ -67,8 +66,7 @@ class GroovyDatabaseDataSetTest {
     def persons = sut.findPersons()
 
     // verify
-    //TODO access dataset when rowCount is implemented on tables
-    assertThat(persons).hasSize(0)
+    assertThat(persons).isEqualTo(expected)
   }
 
   @Test
@@ -142,7 +140,7 @@ class GroovyDatabaseDataSetTest {
     def jobs = sut.findJobs()
 
     // verify
-    assertThat(jobs).hasSize(3)
+    assertThat(jobs).hasSize(dataSet.jobsTable.getRowCount())
   }
 
   @Test
