@@ -21,10 +21,10 @@ public class Person
   String name;
 
   @Column(name = "job_id")
-  int job;
+  Long job;
 
   @Column(name = "team_id")
-  int team;
+  Long team;
 
   public int getId()
   {
@@ -58,32 +58,32 @@ public class Person
 
   public int getJob()
   {
-    return job;
+    return job.intValue();
   }
 
   public void setJob(int job)
   {
-    this.job = job;
+    this.job = Long.valueOf(job);
   }
   
   public void setJob(Long job)
   {
-    setJob(job.intValue());
+    this.job = job;
   }
 
   public int getTeam()
   {
-    return team;
+    return team.intValue();
   }
 
   public void setTeam(int team)
   {
-    this.team = team;
+    this.team = Long.valueOf(team);
   }
   
   public void setTeam(Long team)
   {
-    setTeam(team.intValue());
+    this.team = team;
   }
 
 }
