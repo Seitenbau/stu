@@ -27,8 +27,6 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
 
   private ColumnBinding<R, F> _idColumn;
 
-  Map<ColumnBinding<R, F>, Closure<?>> _closures;
-
   public TableParserCallback(ITableAdapter<R, F, D> tableAdapter)
   {
     _tableAdapter = tableAdapter;
@@ -39,7 +37,6 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
     _refColumn = null;
     _idColumnIndex = -1;
     _idColumn = null;
-    _closures = new HashMap<ColumnBinding<R, F>, Closure<?>>();
   }
 
   public void parsedRow(TableRowModel row)
@@ -55,7 +52,6 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
 
     R rowbuilder = new BuilderFinderOrCreator(row).getBuilder();
 
-    _closures.clear();
     for (int columnIndex = 0; columnIndex < _columns; columnIndex++)
     {
       if (columnIndex == _refColumnIndex || columnIndex == _idColumnIndex)
@@ -64,7 +60,6 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
       }
       handleColumn(columnIndex, row, rowbuilder);
     }
-    handleClosureColumns(rowbuilder);
   }
 
   private void handleColumn(int columnIndex, TableRowModel row, R rowbuilder)
@@ -85,21 +80,11 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
     else if (value instanceof Closure)
     {
       // call closure values after row has been built and registered
-      _closures.put(column, (Closure<?>) value);
+      LazyValueClosure lazyValue = new LazyValueClosure((Closure<?>)value);
+      column.setLazyValue(rowbuilder, lazyValue);
     }
     else
     {
-      column.set(rowbuilder, value);
-    }
-  }
-  
-  private void handleClosureColumns(R rowbuilder)
-  {
-    for (Entry<ColumnBinding<R, F>, Closure<?>> entry : _closures.entrySet())
-    {
-      ColumnBinding<R, F> column = entry.getKey();
-      Closure<?> closure = entry.getValue();
-      Object value = closure.call();
       column.set(rowbuilder, value);
     }
   }

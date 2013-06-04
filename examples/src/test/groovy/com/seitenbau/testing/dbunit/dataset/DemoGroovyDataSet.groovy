@@ -9,6 +9,11 @@ class DemoGroovyDataSet extends EmptyGroovyDataSet
   DemoGroovyDataSet() {
     tables {
       
+      teamsTable.rows {
+        REF           | id  | title                   | description         | membersize
+        QA            | 1   | "Quality Assurance"     | "Verifies software" | { personsTable.findWhere.teamId(QA).getRowCount() } 
+      }
+
       jobsTable.rows {
         REF           | id  | title                   | description
         SWD           | 1   | "Software Developer"    | "Creating software"
@@ -23,13 +28,6 @@ class DemoGroovyDataSet extends EmptyGroovyDataSet
         BARANOWSKI    | 3   | "Christian"             | "Baranowski"        | TM  | QA
       }
       
-      // Because of the query in column membersize, it is important that the persons table
-      // is defined before
-      teamsTable.rows {
-        REF           | id  | title                   | description         | membersize
-        QA            | 1   | "Quality Assurance"     | "Verifies software" | { personsTable.findWhere.teamId(QA).getRowCount() } 
-      }
-
     }
   }
 }

@@ -30,4 +30,9 @@ public abstract class ColumnBinding<R, G>
 
   public abstract DataType getDataType();
 
+  public void setLazyValue(R row, LazyValue value)
+  {
+    throw new RuntimeException("Setting a a lazy value is not supported for this column");
+  }
+
 }

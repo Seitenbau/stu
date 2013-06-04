@@ -16,7 +16,9 @@ package ${package};
 
 import com.google.common.base.Optional;
 
+import com.seitenbau.testing.dbunit.dsl.LazyValue;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.util.Filter;
 import com.seitenbau.testing.util.date.DateBuilder;
 
@@ -244,7 +246,13 @@ public class ${tableClass} implements ITable
 
     public ${column.javaType} get${column.javaName}()
     {
-      return (${column.javaType}) data[$foreach.index];
+      Object value = data[$foreach.index];
+      if (value instanceof LazyValue) {
+        LazyValue lazyValue = (LazyValue)value;
+        return (${column.javaType})CastUtil.cast(lazyValue.getValue(), 
+          com.seitenbau.testing.dbunit.generator.${column.type});
+      } 
+      return (${column.javaType})value;
     }
 
     public Object get${column.javaName}Raw()
