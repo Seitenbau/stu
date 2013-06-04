@@ -17,7 +17,7 @@ class DemoGroovyDataSet extends EmptyGroovyDataSet
       }
       
       personsTable.rows {
-        REF           | id  | first_name              | scopeIdentifier                | job | team
+        REF           | id  | first_name              | name                | job | team
         KAULBERSCH    | 1   | "Dennis"                | "Kaulbersch"        | SWD | QA
         GUITTON       | 2   | "Julien"                | "Guitton"           | SWT | QA
         BARANOWSKI    | 3   | "Christian"             | "Baranowski"        | TM  | QA

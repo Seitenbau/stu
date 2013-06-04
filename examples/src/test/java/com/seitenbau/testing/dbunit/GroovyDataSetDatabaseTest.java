@@ -108,7 +108,7 @@ public class GroovyDataSetDatabaseTest
     sut.removePerson(person);
     
     // verify
-    dataSet.personsTable.findWhere.id(KAULBERSCH.getId()).delete();
+    dataSet.personsTable.findWhere.id(KAULBERSCH).delete();
     dbTester.assertDataBase(dataSet);
   }
   
