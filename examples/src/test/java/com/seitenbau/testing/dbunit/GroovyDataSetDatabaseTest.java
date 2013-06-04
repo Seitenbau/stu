@@ -23,7 +23,9 @@ import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
 import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder;
+import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
+import com.seitenbau.testing.dbunit.rule.InjectDataSet;
 import com.seitenbau.testing.dbunit.services.PersonService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,19 +34,18 @@ public class GroovyDataSetDatabaseTest
 {
 
   @Rule
-  public DatabaseTesterRule dbTester = new DatabaseTesterRule(TestConfig.class);
+  public DatabaseTesterRule dbTester = 
+     new DatabaseTesterRule(TestConfig.class)
+         .useTruncateAsCleanInsert();
 
   @Autowired
   PersonService sut;
   
+  @InjectDataSet
   PersonDatabaseBuilder dataSet;
   
-  @Before
-  public void setup() throws Exception {
-    dataSet = prepareDatabaseWithDemoDataset();
-  }
-  
   @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void findPersons() throws Exception
   {
     // execute
@@ -56,11 +57,11 @@ public class GroovyDataSetDatabaseTest
   }
 
   @Test
+  @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
   public void findPersonsInEmptyDataset() throws Exception
   {
     // prepare
     List<Person> expected = new LinkedList<Person>();
-    dataSet = prepareDatabase(new EmptyGroovyDataSet());
     
     // execute
     List<Person> persons = sut.findPersons();
@@ -71,6 +72,7 @@ public class GroovyDataSetDatabaseTest
   }
   
   @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void addPerson() throws Exception {
     // prepare
     Person person = new Person();
@@ -118,9 +120,9 @@ public class GroovyDataSetDatabaseTest
   }
   
   @Test(expected=DataIntegrityViolationException.class)
+  @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
   public void removePersonThatDoesNotExist() throws Exception {
     // prepare
-    dataSet = prepareDatabase(new EmptyGroovyDataSet());
     
     Person person = new Person();
     person.setFirstName("John");
@@ -136,16 +138,4 @@ public class GroovyDataSetDatabaseTest
     Fail.fail();
   }
   
-  private PersonDatabaseBuilder prepareDatabaseWithDemoDataset() throws Exception
-  {
-    DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
-    return prepareDatabase(dataSet);
-  }
-
-  private PersonDatabaseBuilder prepareDatabase(PersonDatabaseBuilder dataSet) throws Exception
-  {
-    dbTester.truncate(dataSet);
-    dbTester.cleanInsert(dataSet);
-    return dataSet;
-  }
 }
