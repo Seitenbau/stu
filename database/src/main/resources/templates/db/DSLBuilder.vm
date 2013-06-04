@@ -133,9 +133,9 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
 #end
 
   @Override
-  public String getName()
+  public String getScopeIdentifier()
   {
-    return "${model.name}";
+    return "${model.package}.${model.name}";
   }
   
   /**

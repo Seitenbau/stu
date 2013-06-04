@@ -15,10 +15,10 @@ public final class ScopeRegistry
 
   public static void use(IScope scope)
   {
-    ThreadLocal<IScope> activeScope = activeScopes.get(scope.getName());
+    ThreadLocal<IScope> activeScope = activeScopes.get(scope.getScopeIdentifier());
     if (activeScope == null) {
       activeScope = new ThreadLocal<IScope>();
-      activeScopes.put(scope.getName(), activeScope);
+      activeScopes.put(scope.getScopeIdentifier(), activeScope);
     }
     activeScope.set(scope);
   }
