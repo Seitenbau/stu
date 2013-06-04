@@ -37,7 +37,7 @@ public class Model extends DatabaseModel
           .identifierColumn() //
         .column("first_name", DataType.VARCHAR) //
         .column("name", DataType.VARCHAR) //
-          .description("Actually this column represents tha last name of a person")
+          .description("Actually this column represents the last name of a person")
         .column("job_id", DataType.BIGINT) //
           .references(jobs.ref("id")) //
             .description("Assigns a job to the person")
