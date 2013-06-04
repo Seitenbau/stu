@@ -424,6 +424,19 @@ public class ${clsTable} {
   {
     return _table.find(filter);
   }
+
+  public ${clsRowcollection} find(Closure<Boolean> filter)
+  {
+    final Closure<Boolean> localFilter = filter;
+    return _table.find(new Filter<${clsRowbuilder}>()
+      {
+        @Override
+        public boolean accept(${clsRowbuilder} row)
+        {
+          return localFilter.call(row);
+        }
+      });
+  }
   
   public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);
 
