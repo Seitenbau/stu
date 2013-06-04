@@ -24,6 +24,7 @@ public class PersonTableDataSetDemo
     println("Job SWD member count", dataSet.personsTable.findWhere.jobId(SWD).getRowCount());
     println("Team QA member size", dataSet.teamsTable.findWhere.id(QA).getMembersize());
     println("Team QA member count", dataSet.personsTable.findWhere.teamId(QA).getRowCount());
+    println("Access Team with membersize",dataSet.teamsTable.findWhere.membersize(3).getTitle());
 
     use(dataSet);
     println("Dennis' last name", KAULBERSCH.getName());
