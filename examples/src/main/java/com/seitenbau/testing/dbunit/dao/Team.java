@@ -62,5 +62,10 @@ public class Team
   {
     this.membersize = membersize;
   }
+  
+  public void setMembersize(Long membersize)
+  {
+    setMembersize(membersize.intValue());
+  }
 
 }

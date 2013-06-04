@@ -43,8 +43,8 @@ class GroovyDatabaseDataSetTest
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
-    person.setJob(SWD.getId().intValue());
-    person.setTeam(QA.getId().intValue());
+    person.setJob(SWD);
+    person.setTeam(QA);
 
     // execute
     sut.addPerson(person);
