@@ -39,7 +39,6 @@ class GroovyDatabaseDataSetTest
   }
   
   @Test void savePerson() {
-    // TODO: Change the person class id fields to Long
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
