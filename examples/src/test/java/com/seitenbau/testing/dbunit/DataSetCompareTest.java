@@ -8,24 +8,18 @@ import org.dbunit.dataset.ITable;
 import org.junit.Test;
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
-import com.seitenbau.testing.dbunit.datasets.provider.impl.GroovyDataSetProvider;
-import com.seitenbau.testing.dbunit.datasets.provider.impl.JavaDataSetProvider;
-import com.seitenbau.testing.dbunit.datasets.provider.impl.STUDataSetProvider;
+import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
+import com.seitenbau.testing.dbunit.datasets.JavaDataSet;
 
 public class DataSetCompareTest
 {
-  JavaDataSetProvider javaDataSetProvider = new JavaDataSetProvider();
-
-  STUDataSetProvider stuDataSetProvider = new STUDataSetProvider();
-  
-  GroovyDataSetProvider groovyDataSetProvider = new GroovyDataSetProvider();
 
   @Test
   public void compareJavaDataSetWithSTUDataSet() throws DataSetException
   {
     // prepare
-    IDataSet javaDataSet = javaDataSetProvider.getDataSet();
-    IDataSet stuDataSet = stuDataSetProvider.getDataSet();
+    IDataSet javaDataSet = new JavaDataSet();
+    IDataSet stuDataSet = new DefaultDataSet().createDBUnitDataSet();
     
     // verify
     assertThat(javaDataSet.getTableNames()).isEqualTo(stuDataSet.getTableNames());
@@ -43,8 +37,8 @@ public class DataSetCompareTest
   public void compareJavaDataSetWithGroovyDataSet() throws DataSetException
   {
     // prepare
-    IDataSet javaDataSet = javaDataSetProvider.getDataSet();
-    IDataSet groovyDataSet = groovyDataSetProvider.getDataSet();
+    IDataSet javaDataSet = new JavaDataSet();
+    IDataSet groovyDataSet = new DemoGroovyDataSet().createDBUnitDataSet();
     
     // verify
     assertThat(javaDataSet.getTableNames()).isEqualTo(groovyDataSet.getTableNames());
@@ -52,8 +46,8 @@ public class DataSetCompareTest
     for (String tableName : javaDataSet.getTableNames())
     {
       ITable javaTable = javaDataSet.getTable(tableName);
-      ITable stuTable = groovyDataSet.getTable(tableName);
-      assertThat(javaTable.getRowCount()).isEqualTo(stuTable.getRowCount());
+      ITable groovyTable = groovyDataSet.getTable(tableName);
+      assertThat(javaTable.getRowCount()).isEqualTo(groovyTable.getRowCount());
       // TODO verify content
     }
   }
