@@ -19,6 +19,7 @@ import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dsl.LazyValue;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
+import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 import com.seitenbau.testing.util.date.DateBuilder;
 
@@ -320,7 +321,11 @@ public class ${tableClass} implements ITable
     }
   }
  
-  // TODO NM JavaDoc
+  /**
+   * Delivers a collection of rows matching to a filter
+   * @param filter The used filter
+   * @return The collection of rows, may return an empty list
+   */
   public ${rowcollection} find(Filter<${rowbuilder}> filter)
   {
     ${rowcollection} modifiers = new ${rowcollection}(this);
@@ -332,6 +337,14 @@ public class ${tableClass} implements ITable
       }
     }
     return modifiers;
+  }
+
+  public void foreach(Action<${rowbuilder}> action)
+  {
+    for (${rowbuilder} row : rows)
+    {
+      action.call(row);
+    }
   }
 
   public $findWhereClass findWhere = new $findWhereClass(this);
@@ -386,10 +399,11 @@ public class ${tableClass} implements ITable
 
     private void assertModifiersNotEmpty(${rowcollection} modifiers, String message)
     {
-      if (modifiers.isEmpty()) {
+      if (modifiers.isEmpty()) 
+      {
         throw new RuntimeException(message);
       }
-   }    
+    }    
   }
 
   public $getWhereClass getWhere = new $getWhereClass(this);

@@ -29,6 +29,7 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 import com.seitenbau.testing.util.date.DateBuilder;
+import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
 import groovy.lang.Closure;
@@ -197,8 +198,8 @@ public class ${clsTable} {
       }
     };
   }
-
 #foreach( $col in $model.columns )
+
   private ColumnBinding<${clsRowbuilder}, ${clsWhere}> create${col.javaName}Binding() 
   {
     return new ColumnBinding<${clsRowbuilder}, ${clsWhere}>()
@@ -419,12 +420,21 @@ public class ${clsTable} {
 
   }
 
-  // TODO NM JavaDoc  
+  /**
+   * Delivers a collection of rows matching to a filter
+   * @param filter The used filter
+   * @return The collection of rows, may return an empty list
+   */
   public ${clsRowcollection} find(Filter<${clsRowbuilder}> filter)
   {
     return _table.find(filter);
   }
 
+  /**
+   * Delivers a collection of rows matching to a filter
+   * @param filter A Groovy Closure with an argument of type ${clsRowbuilder}, returning a boolean
+   * @return The collection of rows, may return an empty list
+   */
   public ${clsRowcollection} find(Closure<Boolean> filter)
   {
     final Closure<Boolean> localFilter = filter;
@@ -437,6 +447,20 @@ public class ${clsTable} {
         }
       });
   }
+  
+  public void foreach(Closure<?> action)
+  {
+    final Closure<?> localAction = action;
+    _table.foreach(new Action<${clsRowbuilder}>()
+      {
+        @Override
+        public void call(${clsRowbuilder} row)
+        {
+          localAction.call(row);
+        }
+      });
+  }
+  
   
   public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);
 
