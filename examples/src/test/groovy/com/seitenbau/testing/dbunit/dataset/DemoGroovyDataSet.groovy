@@ -4,7 +4,7 @@ import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 
 import com.seitenbau.testing.dbunit.model.dsl.*
 
-class DemoGroovyDataSet extends PersonDatabaseBuilder
+class DemoGroovyDataSet extends EmptyGroovyDataSet
 {
   DemoGroovyDataSet() {
     tables {

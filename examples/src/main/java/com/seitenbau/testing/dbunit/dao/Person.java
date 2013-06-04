@@ -36,6 +36,11 @@ public class Person
     this.id = id;
   }
   
+  public void setId(Long id)
+  {
+    this.id = id.intValue();
+  }
+  
   public String getFirstName()
   {
     return firstName;
