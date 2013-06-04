@@ -6,9 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.seitenbau.testing.dbunit.model.dsl.JobsRef;
-import com.seitenbau.testing.dbunit.model.dsl.TeamsRef;
-
 @Entity
 @Table(name = "persons")
 public class Person
@@ -73,11 +70,6 @@ public class Person
   {
     setJob(job.intValue());
   }
-  
-  public void setJob(JobsRef job)
-  {
-    setJob(job.getId());
-  }
 
   public int getTeam()
   {
@@ -92,11 +84,6 @@ public class Person
   public void setTeam(Long team)
   {
     setTeam(team.intValue());
-  }
-  
-  public void setTeam(TeamsRef team)
-  {
-    setTeam(team.getId());
   }
 
 }

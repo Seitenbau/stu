@@ -3,11 +3,13 @@ package com.seitenbau.testing.dbunit;
 import static org.fest.assertions.Assertions.*;
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 
+import org.fest.assertions.Fail;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -44,13 +46,13 @@ public class GroovyDataSetDatabaseTest
   }
   
   @Test
-  public void savePerson() throws Exception {
+  public void addPerson() throws Exception {
     // prepare
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
-    person.setJob(SWD);
-    person.setTeam(QA);
+    person.setJob(SWD.getId());
+    person.setTeam(QA.getId());
 
     // execute
     sut.addPerson(person);
@@ -65,5 +67,43 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBase(dataSet.createDataSet());
   }
   
+  @Test
+  public void removePerson() throws Exception {
+    // prepare
+    Person person = new Person();
+    person.setFirstName("Dennis");
+    person.setName("Kaulbersch");
+    person.setJob(SWD.getId());
+    person.setTeam(QA.getId());
+
+    // execute
+    sut.removePerson(person);
+    
+    // verify
+    // TODO remove person
+//    dataSet.personsTable.insertRow()
+//      .setFirstName("Nikolaus")
+//      .setName("Moll")
+//      .setJobId(SWD)
+//      .setTeamId(QA);
+    
+    dbTester.assertDataBase(dataSet.createDataSet());
+  }
   
+  @Test(expected=DataIntegrityViolationException.class)
+  public void removePersonThatDoesNotExist() throws Exception {
+    // prepare
+    Person person = new Person();
+    person.setFirstName("John");
+    person.setId(23);
+    person.setJob(0);
+    person.setName("Doe");
+    person.setTeam(1899);
+
+    // execute
+    sut.removePerson(person);
+    
+    // verify
+    Fail.fail();
+  }
 }
