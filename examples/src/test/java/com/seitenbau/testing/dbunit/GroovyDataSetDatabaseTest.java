@@ -45,16 +45,17 @@ public class GroovyDataSetDatabaseTest
   
   @Test
   public void savePerson() throws Exception {
-    // TODO: Change the person class id fields to Long
+    // prepare
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
-    person.setJob(SWD.getId().intValue());
-    person.setTeam(QA.getId().intValue());
+    person.setJob(SWD);
+    person.setTeam(QA);
 
     // execute
     sut.addPerson(person);
     
+    // verify
     dataSet.personsTable.insertRow()
       .setFirstName("Nikolaus")
       .setName("Moll")
