@@ -93,44 +93,7 @@ public class ${clsTable} {
 
   private final Set<${clsRowbuilder}> _allRows;
 
-  private final ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}> _adapter = new ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}>()
-  {
-    public ${clsRowbuilder} insertRow() 
-    {
-      ${clsRowbuilder} result = _table.insertRow();
-      _allRows.add(result);
-      return result;
-    }
-  
-    public ${clsWhere} getWhere()
-    {
-      return _table.getWhere;
-    }
-    
-    public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
-    {
-      if (row != null)
-      {
-        reference.setBuilder(_scope, row);
-      }
-    }
-
-    public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
-    {
-      _scope.replace${clsRef}WithId(reference, row);
-    }    
-
-    public ${clsRowbuilder} getRowByReference(${clsRef} reference)
-    {
-      return reference.getBuilder(_scope);
-    }
-
-    public String getTableName()
-    {
-      return "${model.javaName}";
-    }
-    
-  };
+  private final ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}> _adapter = new TableAdapter();
     
   ${clsTable}(${clsScope} scope, ${model.package}.${clsTable} table)
   {
@@ -169,6 +132,12 @@ public class ${clsTable} {
         new TableParserCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
+  
+  public int getRowCount() 
+  {
+    return _table.getRowCount();
+  }
+  
 
   private boolean valueMustBeSetRaw(Object value)
   {
@@ -198,6 +167,46 @@ public class ${clsTable} {
       }
     };
   }
+  
+  private class TableAdapter implements ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}>
+  {
+    public ${clsRowbuilder} insertRow() 
+    {
+      ${clsRowbuilder} result = _table.insertRow();
+      _allRows.add(result);
+      return result;
+    }
+  
+    public ${clsWhere} getWhere()
+    {
+      return _table.getWhere;
+    }
+    
+    public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
+    {
+      if (row != null)
+      {
+        reference.setBuilder(_scope, row);
+      }
+    }
+
+    public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
+    {
+      _scope.replace${clsRef}WithId(reference, row);
+    }    
+
+    public ${clsRowbuilder} getRowByReference(${clsRef} reference)
+    {
+      return reference.getBuilder(_scope);
+    }
+
+    public String getTableName()
+    {
+      return "${model.javaName}";
+    }
+    
+  };  
+
 
 #foreach( $col in $model.columns )
   private ColumnBinding<${clsRowbuilder}, ${clsWhere}> create${col.javaName}Binding() 

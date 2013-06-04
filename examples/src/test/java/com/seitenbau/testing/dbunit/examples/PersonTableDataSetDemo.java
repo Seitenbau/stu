@@ -22,6 +22,8 @@ public class PersonTableDataSetDemo
 
     use(dataSet);
     println("Dennis' last name", KAULBERSCH.getName());
+    println("TM title", TM.getTitle());
+    println("Persons Row Count", dataSet.personsTable.getRowCount());
   }
 
   private static void println(String message, Object value)
