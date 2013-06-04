@@ -17,10 +17,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.mysql.jdbc.PreparedStatement;
 import com.seitenbau.testing.dbunit.config.TestConfig;
+import com.seitenbau.testing.dbunit.dao.Job;
 import com.seitenbau.testing.dbunit.dao.Person;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
+import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
@@ -30,51 +33,47 @@ import com.seitenbau.testing.dbunit.services.PersonService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(["/config/spring/context.xml", "/config/spring/test-context.xml"])
-class GroovyDatabaseDataSetTest
-{
+class GroovyDatabaseDataSetTest {
 
   @Rule
-  public DatabaseTesterRule dbTester = 
-     new DatabaseTesterRule(TestConfig.class)
-         .useTruncateAsCleanInsert();
+  public DatabaseTesterRule dbTester =
+  new DatabaseTesterRule(TestConfig.class)
+  .useTruncateAsCleanInsert();
 
   @Autowired
   PersonService sut
-  
+
   @InjectDataSet
   PersonDatabaseBuilder dataSet;
 
-  @Test 
+  @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
-  void findPersons()
-  {
+  void findPersons() {
     // execute
-    List<Person> persons = sut.findPersons()
-    
+    def persons = sut.findPersons()
+
     // verify
     //TODO access dataset when rowCount is implemented on tables
     assertThat(persons).hasSize(dataSet.personsTable.findWhere.teamId(QA).getRowCount())
   }
-  
-  @Test 
+
+  @Test
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
-  void findPersonsInEmptyDataSet()
-  {
+  void findPersonsInEmptyDataSet() {
     // prepare
     List<Person> expected = new LinkedList<Person>();
-    
+
     // execute
-    List<Person> persons = sut.findPersons()
-    
+    def persons = sut.findPersons()
+
     // verify
     //TODO access dataset when rowCount is implemented on tables
     assertThat(persons).hasSize(0)
   }
-  
-  @Test 
+
+  @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
-  void addPerson()
-  {
+  void addPerson() {
     // prepare
     Person person = new Person()
     person.setFirstName("Nikolaus")
@@ -84,17 +83,17 @@ class GroovyDatabaseDataSetTest
 
     // execute
     sut.addPerson(person)
-    
+
     // verify
     dataSet.personsTable.rows {
-      
+
       first_name | name   | job | team
       "Nikolaus" | "Moll" | SWD | QA
-      
+
     }
     dbTester.assertDataBase(dataSet)
   }
-  
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   void removePerson()
@@ -109,18 +108,18 @@ class GroovyDatabaseDataSetTest
 
     // execute
     sut.removePerson(person)
-    
+
     // verify
     dataSet.personsTable.findWhere.id(KAULBERSCH.getId()).delete()
     dbTester.assertDataBase(dataSet)
   }
-  
-  @Test(expected=DataIntegrityViolationException.class) 
+
+  @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
   void removePersonThatDoesNotExist()
   {
     // prepare
-    
+
     Person person = new Person()
     person.setFirstName("John")
     person.setId(23)
@@ -130,9 +129,78 @@ class GroovyDatabaseDataSetTest
 
     // execute
     sut.removePerson(person)
-    
+
     // verify
     Fail.fail()
   }
+
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void findAllJobs()
+  {
+    // execute
+    def jobs = sut.findJobs()
+
+    // verify
+    assertThat(jobs).hasSize(3)
+  }
+
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void addJob()
+  {
+    // prepare
+    Job job = new Job()
+    job.setTitle("Software Architect")
+    job.setDescription("Developing software architecture")
+
+    // execute
+    def result = sut.addJob(job)
+
+    // verify
+    dataSet.jobsTable.rows {
+      REF           | id  | title                   | description
+      SAT           | 4   | "Software Architect"    | "Developing software architecture"
+    }
+    dbTester.assertDataBase(dataSet)
+  }
+
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void removeJobWithoutExistingReference()
+  {
+    // prepare
+    Job job = new Job()
+    job.setTitle("Software Architect")
+    job.setDescription("Developing software architecture")
+    job.setId(4)
+    
+    // execute
+    sut.removeJob(job)
+
+    // verify
+    dataSet.jobsTable.rows {
+      REF           | id  | title                   | description
+      SAT           | 4   | "Software Architect"    | "Developing software architecture"
+    }
+    dataSet.jobsTable.findWhere.id(SAT.getId()).delete()
+    dbTester.assertDataBase(dataSet)
+  }
   
+  @Test(expected=DataIntegrityViolationException.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void removeJobWithExistingReference()
+  {
+    // prepare
+    Job job = new Job()
+    job.setDescription(SWD.getDescription())
+    job.setTitle(SWD.getTitle())
+    job.setId(SWD.getId())
+    
+    // execute
+    sut.removeJob(job)
+
+    // verify
+    Fail.fail()
+  }
 }
