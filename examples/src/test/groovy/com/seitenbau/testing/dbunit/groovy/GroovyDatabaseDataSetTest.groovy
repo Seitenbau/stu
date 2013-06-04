@@ -39,6 +39,7 @@ class GroovyDatabaseDataSetTest
   }
   
   @Test void savePerson() {
+    // prepare
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
