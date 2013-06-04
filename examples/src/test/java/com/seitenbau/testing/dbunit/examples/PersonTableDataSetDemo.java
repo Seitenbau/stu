@@ -7,7 +7,7 @@ import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.TM;
 import static com.seitenbau.testing.dbunit.dsl.ScopeRegistry.use;
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
-import com.seitenbau.testing.dbunit.model.dsl.PersonsTable.ExtendedRowBuilder_Persons;
+import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.util.Filter;
 
 public class PersonTableDataSetDemo
@@ -30,13 +30,13 @@ public class PersonTableDataSetDemo
     println("TM title", TM.getTitle());
     println("Persons Row Count", dataSet.personsTable.getRowCount());
     
-    println("Persons filtered by name length", dataSet.personsTable.find(LEN_FILTER).size());
+    println("Persons filtered by name length", dataSet.personsTable.find(LEN_FILTER).getRowCount());
   }
   
-  private static final Filter<ExtendedRowBuilder_Persons> LEN_FILTER = new Filter<ExtendedRowBuilder_Persons>() {
+  private static final Filter<RowBuilder_Persons> LEN_FILTER = new Filter<RowBuilder_Persons>() {
 
     @Override
-    public boolean accept(ExtendedRowBuilder_Persons value)
+    public boolean accept(RowBuilder_Persons value)
     {
       return (value.getFirstName().length() < 8);
     }
