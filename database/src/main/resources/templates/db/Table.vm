@@ -286,7 +286,13 @@ public class ${tableClass} implements ITable
 #foreach( $column in $model.columns )
       if(column.equalsIgnoreCase(Columns.${column.javaName}) )
       {
-        return data[$foreach.index];
+        Object value = data[$foreach.index];
+        if (value instanceof LazyValue)
+        {
+          LazyValue lazyValue = (LazyValue)value;
+          return lazyValue.getValue();
+        } 
+        return value;
       }
 #end
       throw new RuntimeException(NAME + " col = " + column);
