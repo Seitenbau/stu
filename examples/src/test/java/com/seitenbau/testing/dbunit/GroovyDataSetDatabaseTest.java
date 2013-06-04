@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.dao.Person;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.services.PersonService;
 
@@ -25,7 +24,7 @@ public class GroovyDataSetDatabaseTest
 
   @Rule
   public DatabaseTesterRule dbTester = new DatabaseTesterRule(TestConfig.class);
-
+  
   @Autowired
   PersonService sut;
   
@@ -33,9 +32,8 @@ public class GroovyDataSetDatabaseTest
   
   @Before
   public void setup() throws Exception {
-    ScopeRegistry.use(dataSet);
-    dbTester.truncate(dataSet.createDataSet());
-    dbTester.cleanInsert(dataSet.createDataSet());
+	dbTester.truncate(dataSet);
+    dbTester.cleanInsert(dataSet);
   }
   
   @Test
@@ -62,8 +60,7 @@ public class GroovyDataSetDatabaseTest
       .setJobId(SWD)
       .setTeamId(QA);
     
-    dbTester.assertDataBase(dataSet.createDataSet());
+    dbTester.assertDataBase(dataSet);
   }
-  
   
 }

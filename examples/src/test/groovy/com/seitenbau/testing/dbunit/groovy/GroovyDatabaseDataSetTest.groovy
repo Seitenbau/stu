@@ -32,10 +32,8 @@ class GroovyDatabaseDataSetTest
   DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
   
   @Before void setup() {
-    ScopeRegistry.use(dataSet);
-    
-    dbTester.truncate(dataSet.createDataSet());
-    dbTester.cleanInsert(dataSet.createDataSet());
+    dbTester.truncate(dataSet);
+    dbTester.cleanInsert(dataSet);
   }
   
   @Test void savePerson() {
@@ -56,7 +54,7 @@ class GroovyDatabaseDataSetTest
       "Nikolaus" | "Moll" | SWD | QA
       
     }
-    dbTester.assertDataBase(dataSet.createDataSet());
+    dbTester.assertDataBase(dataSet);
   }
   
 }
