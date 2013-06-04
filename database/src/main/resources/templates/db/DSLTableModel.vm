@@ -443,7 +443,7 @@ public class ${clsTable} {
       ${clsRowbuilder} builder = ref.getBuilder(table._scope);
       if (builder == null) 
       {
-        return new ${clsRowcollection}(table.getTableModel()); 
+        throw new IllegalArgumentException("Reference is not defined in this scope");
       }
       return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
     }
@@ -454,7 +454,7 @@ public class ${clsTable} {
       RowBuilder_${col.reference.column.table.javaName} builder = ref.getBuilder(table._scope);
       if (builder == null) 
       {
-        return new ${clsRowcollection}(table.getTableModel()); 
+        throw new IllegalArgumentException("Reference is not defined in this scope");
       }
       return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.reference.column.javaName}());
     }
@@ -492,7 +492,7 @@ public class ${clsTable} {
       ${clsRowbuilder} builder = ref.getBuilder(table._scope);
       if (builder == null) 
       {
-        return Optional.<${clsRowbuilder}> absent();
+        throw new IllegalArgumentException("Reference is not defined in this scope");
       }
       return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
     }
@@ -503,7 +503,7 @@ public class ${clsTable} {
       RowBuilder_${col.reference.column.table.javaName} builder = ref.getBuilder(table._scope);
       if (builder == null) 
       {
-        return Optional.<${clsRowbuilder}> absent();
+        throw new IllegalArgumentException("Reference is not defined in this scope");
       }
       return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.reference.column.javaName}());
     }
