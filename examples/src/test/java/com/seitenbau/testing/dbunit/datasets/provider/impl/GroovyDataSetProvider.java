@@ -18,7 +18,7 @@ public class GroovyDataSetProvider implements DataSetProvider
 
   private IDataSet createDataSet()
   {
-    return new DemoGroovyDataSet().createDataSet();
+    return new DemoGroovyDataSet().createDBUnitDataSet();
   }
 
   @Override

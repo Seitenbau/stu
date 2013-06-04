@@ -44,8 +44,8 @@ class GroovyDatabaseDataSetTest
     dataSet = prepareDatabaseWithDemoDataset()
     ScopeRegistry.use(dataSet);
     
-    dbTester.truncate(dataSet.createDataSet())
-    dbTester.cleanInsert(dataSet.createDataSet())
+    dbTester.truncate(dataSet)
+    dbTester.cleanInsert(dataSet)
   }
   
   @Test void findPersons()
@@ -91,7 +91,7 @@ class GroovyDatabaseDataSetTest
       "Nikolaus" | "Moll" | SWD | QA
       
     }
-    dbTester.assertDataBase(dataSet.createDataSet())
+    dbTester.assertDataBase(dataSet)
   }
   
   @Ignore("Must run when the removeRow function is implemented")
@@ -116,7 +116,7 @@ class GroovyDatabaseDataSetTest
 //      "Nikolaus" | "Moll" | SWD | QA
 //      
 //    }
-    dbTester.assertDataBase(dataSet.createDataSet())
+    dbTester.assertDataBase(dataSet)
   }
   
   @Test(expected=DataIntegrityViolationException.class) void removePersonThatDoesNotExist()
@@ -147,8 +147,8 @@ class GroovyDatabaseDataSetTest
   private PersonDatabaseBuilder prepareDatabase(PersonDatabaseBuilder dataSet) throws Exception
   {
     ScopeRegistry.use(dataSet)
-    dbTester.truncate(dataSet.createDataSet())
-    dbTester.cleanInsert(dataSet.createDataSet())
+    dbTester.truncate(dataSet)
+    dbTester.cleanInsert(dataSet)
     return dataSet
   }
   

@@ -9,6 +9,7 @@
 #set($referenceMethod = "ref")
 package ${package};
 
+import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
 import com.seitenbau.testing.dbunit.dsl.IScope;
 import org.dbunit.dataset.IDataSet;
 
@@ -25,7 +26,7 @@ import groovy.lang.Closure;
  * Represents a ${model.name} Data Set Scope. Parses the DSL and builds
  * the datasets
  */
-public class ${clsScope} implements IScope
+public class ${clsScope} implements IScope, DbUnitDatasetFactory
 {
 
   private final ${clsDataSet} dataset;
@@ -157,11 +158,13 @@ public class ${clsScope} implements IScope
   }
   
   /**
-   * Creates a DbUnit dataset
+   * Create a DBUnit dataset.
    * @return The Dbunit dataset
    */
-  public IDataSet createDataSet() 
+  @Override
+  public IDataSet createDBUnitDataSet() 
   {
     return dataset.createDBUnitDataSet();
   }
+  
 }
