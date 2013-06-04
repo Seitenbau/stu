@@ -307,17 +307,17 @@ public class ${tableClass} implements ITable
   }
  
   // TODO NM JavaDoc
-  public List<${rowbuilder}> find(Filter<${rowbuilder}> filter)
+  public ${rowcollection} find(Filter<${rowbuilder}> filter)
   {
-    List<${rowbuilder}> result = new ArrayList<${rowbuilder}>();
+    ${rowcollection} modifiers = new ${rowcollection}(this);
     for (${rowbuilder} row : rows)
     {
       if (filter.accept(row))
       {
-        result.add(row);
+        modifiers.add(row);
       }
     }
-    return result;
+    return modifiers;
   }
 
   public $findWhereClass findWhere = new $findWhereClass(this);
@@ -343,6 +343,7 @@ public class ${tableClass} implements ITable
           modifiers.add(row);
         }
       }
+      assertModifiersNotEmpty(modifiers, "No Row with ${column.name} = " + toSearch);
       return modifiers;
     }
 #foreach( $column in $model.columns )  
@@ -357,6 +358,7 @@ public class ${tableClass} implements ITable
           modifiers.add(row);
         }
       }
+      assertModifiersNotEmpty(modifiers, "No Row with ${column.name} = " + toSearch);
       return modifiers;
     }
 #if( $column.javaType.contains("Long") )
@@ -367,6 +369,13 @@ public class ${tableClass} implements ITable
     }
 #end
 #end
+
+    private void assertModifiersNotEmpty(${rowcollection} modifiers, String message)
+    {
+      if (modifiers.isEmpty()) {
+        throw new RuntimeException(message);
+      }
+   }    
   }
 
   public $getWhereClass getWhere = new $getWhereClass(this);

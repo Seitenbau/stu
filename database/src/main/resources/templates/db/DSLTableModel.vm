@@ -32,9 +32,7 @@ import com.seitenbau.testing.util.Filter;
 
 import groovy.lang.Closure;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -414,18 +412,9 @@ public class ${clsTable} {
   }
 
   // TODO NM JavaDoc  
-  public List<${clsExtRowbuilder}> find(Filter<${clsExtRowbuilder}> filter)
+  public ${clsRowcollection} find(Filter<${clsRowbuilder}> filter)
   {
-    List<${clsExtRowbuilder}> result = new ArrayList<${clsExtRowbuilder}>();
-    for (${clsRowbuilder} row : _table.rows)
-    {
-      ${clsExtRowbuilder} builder = new ${clsExtRowbuilder}(this, row);
-      if (filter.accept(builder))
-      {
-        result.add(builder);
-      }
-    }
-    return result;
+    return _table.find(filter);
   }
   
   public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);
