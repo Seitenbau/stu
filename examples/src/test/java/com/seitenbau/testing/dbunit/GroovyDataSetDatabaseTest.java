@@ -1,14 +1,14 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.fest.assertions.Fail;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,6 @@ import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.dao.Person;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
@@ -94,8 +93,8 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBase(dataSet);
   }
   
-  @Ignore("Must run when the removeRow function is implemented")
   @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void removePerson() throws Exception {
     // prepare
     Person person = new Person();
@@ -103,19 +102,13 @@ public class GroovyDataSetDatabaseTest
     person.setName("Kaulbersch");
     person.setJob(SWD.getId());
     person.setTeam(QA.getId());
-    person.setId(dataSet.personsTable.findWhere.name(KAULBERSCH).getId());
+    person.setId(KAULBERSCH.getId());
 
     // execute
     sut.removePerson(person);
     
     // verify
-    // TODO remove person / remove row
-//    dataSet.personsTable.insertRow()
-//      .setFirstName("Nikolaus")
-//      .setName("Moll")
-//      .setJobId(SWD)
-//      .setTeamId(QA);
-    
+    dataSet.personsTable.findWhere.id(KAULBERSCH.getId()).delete();
     dbTester.assertDataBase(dataSet);
   }
   

@@ -95,8 +95,9 @@ class GroovyDatabaseDataSetTest
     dbTester.assertDataBase(dataSet)
   }
   
-  @Ignore("Must run when the removeRow function is implemented")
-  @Test void removePerson()
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void removePerson()
   {
     // prepare
     Person person = new Person()
@@ -104,19 +105,13 @@ class GroovyDatabaseDataSetTest
     person.setName("Kaulbersch")
     person.setJob(SWD.getId())
     person.setTeam(QA.getId())
-    person.setId(dataSet.personsTable.findWhere.name(KAULBERSCH).getId())
+    person.setId(KAULBERSCH.getId())
 
     // execute
     sut.removePerson(person)
     
     // verify
-    // TODO remove person / remove row
-//    dataSet.personsTable.delete {
-//      
-//      first_name | name   | job | team
-//      "Nikolaus" | "Moll" | SWD | QA
-//      
-//    }
+    dataSet.personsTable.findWhere.id(KAULBERSCH.getId()).delete()
     dbTester.assertDataBase(dataSet)
   }
   
