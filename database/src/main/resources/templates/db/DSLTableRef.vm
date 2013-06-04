@@ -10,6 +10,9 @@
 #set($privateListPrefix = "private_")
 package ${package};
 
+import com.seitenbau.testing.dbunit.dsl.IScope;
+import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
+
 import java.util.Iterator;
 #if ( !${model.isAssociativeTable()} )
 import java.util.List;
@@ -28,8 +31,6 @@ public class ${clsRef} extends DatabaseReference {
 
   private final Map<${clsScope}, ${clsRowbuilder}> builders;
   
-  private static final ThreadLocal<${clsScope}> threadScope = new ThreadLocal<${clsScope}>();
-
   public ${clsRef}()
   {
     builders = new HashMap<${clsScope}, ${clsRowbuilder}>();
@@ -38,11 +39,7 @@ public class ${clsRef} extends DatabaseReference {
 
   public ${col.javaType} get${col.javaName}()
   {
-    final ${clsScope} scope = threadScope.get();
-    if (scope == null)
-    {
-      throw new IllegalStateException("No active context to query ${col.javaName} in ${model.javaName}Ref");
-    } 
+    final ${clsScope} scope = getScope();
     final ${clsRowbuilder} row = builders.get(scope);
     if (row == null)
     {
@@ -51,16 +48,6 @@ public class ${clsRef} extends DatabaseReference {
     return row.get${col.javaName}();
   } 
 #end
-  
-  static void setThreadLocalScope(${clsScope} scope) 
-  {
-    threadScope.set(scope);    
-  }
-  
-  static void unsetThreadLocalScope() 
-  {
-    threadScope.remove();
-  }
   
   void setBuilder(${clsScope} scope, ${clsRowbuilder} builder)
   {
@@ -72,7 +59,7 @@ public class ${clsRef} extends DatabaseReference {
 #macro( setBuilderHandlerHead $refTable $verb )
 #set($refClsRef = ${refTable.javaName} + "Ref")
 
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, threadScope);
+    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, getScope());
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
       ${refClsRef} ref = it.next();
@@ -101,7 +88,7 @@ public class ${clsRef} extends DatabaseReference {
 #set($verb = ${col.reference.localName})
 #setBuilderHandlerHead(${col.reference.table} $verb)
       builder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, threadScope);
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, getScope());
 #setBuilderHandlerFooter()
 #end
 ##
@@ -143,7 +130,7 @@ public class ${clsRef} extends DatabaseReference {
 #else
       otherBuilder.set${refColumn.javaName}(builder.get${remoteKey}());
 #end      
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, threadScope);
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, getScope());
 #setBuilderHandlerFooter()
 #end
 #end
@@ -170,7 +157,7 @@ public class ${clsRef} extends DatabaseReference {
    */
   public void ${verb}(${refClsRef} ... refs) 
   {
-    ${clsScope} scope = threadScope.get();
+    ${clsScope} scope = getScope();
     ${clsRowbuilder} thisBuilder = getBuilder(scope);
     
     for (${refClsRef} ref : refs) 
@@ -188,11 +175,11 @@ public class ${clsRef} extends DatabaseReference {
         // to the Refs where no builder exist.
         if (thisBuilder == null)
         {
-          getOrCreateList(${privateListPrefix}${verb}Map, threadScope).add(ref);
+          getOrCreateList(${privateListPrefix}${verb}Map, getScope()).add(ref);
         }
         if (otherBuilder == null) 
         {
-          getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, threadScope).add(this);
+          getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, getScope()).add(this);
         }
       }
     }
@@ -230,4 +217,16 @@ public class ${clsRef} extends DatabaseReference {
 #end
 #end
 #end
+
+  private ${clsScope} getScope() 
+  {
+    // TODO NM use model.name
+    IScope scope = ScopeRegistry.getCurrentScope("${model.package}.${model.dataSet.name}");
+    if (scope == null)
+    {
+      throw new IllegalStateException("No active context set in ${model.javaName}Ref");
+    }
+    return ($clsScope)scope;
+  }
+
 }

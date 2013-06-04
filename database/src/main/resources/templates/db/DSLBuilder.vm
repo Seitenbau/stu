@@ -10,6 +10,7 @@
 package ${package};
 
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
+import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.dsl.IScope;
 import org.dbunit.dataset.IDataSet;
 
@@ -72,11 +73,10 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    */
   public void tables(Closure<?> table)
   {
-    setReferencesContext();
+    ScopeRegistry.use(this);
     table.setDelegate(this);
     table.setResolveStrategy(Closure.DELEGATE_FIRST);
     table.call();
-    unsetReferencesContext();
   }
   
   /**
@@ -85,27 +85,8 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    */
   public void relations(Closure<?> relations)
   {
-    setReferencesContext();
+    ScopeRegistry.use(this);
     relations.call();
-    unsetReferencesContext();
-  }
-  
-  private void setReferencesContext()
-  {
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-    ${table.javaName}Ref.setThreadLocalScope(this);
-#end
-#end
-  }
-  
-  private void unsetReferencesContext()
-  {
-#foreach( $table in $model.tables )
-#if ( !${table.isAssociativeTable()} )
-    ${table.javaName}Ref.unsetThreadLocalScope();
-#end
-#end
   }
  
 #foreach( $reftable in $model.tables )
@@ -122,7 +103,7 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
 #if ($col.reference && $col.reference.table == $reftable)
 ### $col in $table refers on reference
     // Ref: ${table.javaName} on ${col.javaName}
-    for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getAllRowBuilders()) {
+    for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getTableModel().rows) {
       if (builder.get${col.javaName}Raw() == reference)
       {
         builder.set${col.javaName}(row.get${col.reference.column.javaName}());
@@ -152,9 +133,9 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
 #end
 
   @Override
-  public void bindRefs()
+  public String getScopeIdentifier()
   {
-    setReferencesContext();
+    return "${model.package}.${model.name}";
   }
   
   /**

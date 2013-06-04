@@ -1,9 +1,14 @@
 package com.seitenbau.testing.dbunit.examples;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.TM;
 import static com.seitenbau.testing.dbunit.dsl.ScopeRegistry.use;
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
+import com.seitenbau.testing.dbunit.model.dsl.PersonsTable.ExtendedRowBuilder_Persons;
+import com.seitenbau.testing.util.Filter;
 
 public class PersonTableDataSetDemo
 {
@@ -22,7 +27,21 @@ public class PersonTableDataSetDemo
 
     use(dataSet);
     println("Dennis' last name", KAULBERSCH.getName());
+    println("TM title", TM.getTitle());
+    println("Persons Row Count", dataSet.personsTable.getRowCount());
+    
+    println("Persons filtered by name length", dataSet.personsTable.find(LEN_FILTER).size());
   }
+  
+  private static final Filter<ExtendedRowBuilder_Persons> LEN_FILTER = new Filter<ExtendedRowBuilder_Persons>() {
+
+    @Override
+    public boolean accept(ExtendedRowBuilder_Persons value)
+    {
+      return (value.getFirstName().length() < 8);
+    }
+    
+  };
 
   private static void println(String message, Object value)
   {
