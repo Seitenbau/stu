@@ -51,8 +51,7 @@ public class GroovyDataSetDatabaseTest
     List<Person> persons = sut.findPersons();
 
     // verify
-  //TODO access dataset when rowCount is implemented on tables
-    assertThat(persons).hasSize(dataSet.personsTable.findWhere.teamId(QA).getRowCount());
+    assertThat(persons).hasSize(dataSet.personsTable.getRowCount());
   }
 
   @Test
@@ -66,7 +65,6 @@ public class GroovyDataSetDatabaseTest
     List<Person> persons = sut.findPersons();
 
     // verify
-    //TODO access dataset when rowCount is implemented on tables
     assertThat(persons).isEqualTo(expected);
   }
   
