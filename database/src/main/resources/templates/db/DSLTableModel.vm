@@ -17,10 +17,26 @@ package ${package};
 
 import com.google.common.base.Optional;
 
+import com.seitenbau.testing.dbunit.dsl.CastUtil;
+import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
+import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
+import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
+import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
+import com.seitenbau.testing.dbunit.dsl.NoValue;
+import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.generator.DataType;
+import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
+import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
+import com.seitenbau.testing.util.date.DateBuilder;
+import com.seitenbau.testing.util.Filter;
+
 import groovy.lang.Closure;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 
 ###if( $model.package && $model.package.length() != 0 )
 ##import ${model.package}.${model.dataSet.name}DataSet;
@@ -32,17 +48,6 @@ import ${model.package}.${model.javaName}Model;
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 import ${model.package}.${table.javaName}Table.RowGetters_${table.javaName};
 #end
-import com.seitenbau.testing.dbunit.dsl.CastUtil;
-import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
-import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
-import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
-import com.seitenbau.testing.dbunit.dsl.NoValue;
-import com.seitenbau.testing.dbunit.dsl.TableParser;
-import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
-import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
-import com.seitenbau.testing.dbunit.generator.DataType;
-import com.seitenbau.testing.util.date.DateBuilder;
 
 public class ${clsTable} {
 
@@ -91,20 +96,12 @@ public class ${clsTable} {
 
   private final ${model.package}.${clsTable} _table;
 
-  private final Set<${clsRowbuilder}> _allRows;
-
   private final ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}> _adapter = new TableAdapter();
     
   ${clsTable}(${clsScope} scope, ${model.package}.${clsTable} table)
   {
     _scope = scope;
     _table = table;
-    _allRows = new HashSet<${clsRowbuilder}>();
-  }
-  
-  Set<${clsRowbuilder}> getAllRowBuilders()
-  {
-    return _allRows;
   }
   
   ${model.package}.${clsTable} getTableModel()
@@ -172,9 +169,7 @@ public class ${clsTable} {
   {
     public ${clsRowbuilder} insertRow() 
     {
-      ${clsRowbuilder} result = _table.insertRow();
-      _allRows.add(result);
-      return result;
+      return _table.insertRow();
     }
   
     public ${clsWhere} getWhere()
@@ -184,10 +179,7 @@ public class ${clsTable} {
     
     public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
     {
-      if (row != null)
-      {
-        reference.setBuilder(_scope, row);
-      }
+      reference.setBuilder(_scope, row);
     }
 
     public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
@@ -419,6 +411,21 @@ public class ${clsTable} {
       return clone;
     }
 
+  }
+
+  // TODO NM JavaDoc  
+  public List<${clsExtRowbuilder}> find(Filter<${clsExtRowbuilder}> filter)
+  {
+    List<${clsExtRowbuilder}> result = new ArrayList<${clsExtRowbuilder}>();
+    for (${clsRowbuilder} row : _table.rows)
+    {
+      ${clsExtRowbuilder} builder = new ${clsExtRowbuilder}(this, row);
+      if (filter.accept(builder))
+      {
+        result.add(builder);
+      }
+    }
+    return result;
   }
   
   public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);

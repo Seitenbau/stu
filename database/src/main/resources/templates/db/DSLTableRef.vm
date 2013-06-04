@@ -221,7 +221,7 @@ public class ${clsRef} extends DatabaseReference {
   private ${clsScope} getScope() 
   {
     // TODO NM use model.name
-    IScope scope = ScopeRegistry.getCurrentScope("${model.dataSet.name}");
+    IScope scope = ScopeRegistry.getCurrentScope("${model.package}.${model.dataSet.name}");
     if (scope == null)
     {
       throw new IllegalStateException("No active context set in ${model.javaName}Ref");

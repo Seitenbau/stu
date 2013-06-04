@@ -103,7 +103,7 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
 #if ($col.reference && $col.reference.table == $reftable)
 ### $col in $table refers on reference
     // Ref: ${table.javaName} on ${col.javaName}
-    for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getAllRowBuilders()) {
+    for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getTableModel().rows) {
       if (builder.get${col.javaName}Raw() == reference)
       {
         builder.set${col.javaName}(row.get${col.reference.column.javaName}());

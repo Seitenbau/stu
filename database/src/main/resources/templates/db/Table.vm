@@ -16,6 +16,10 @@ package ${package};
 
 import com.google.common.base.Optional;
 
+import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.testing.util.Filter;
+import com.seitenbau.testing.util.date.DateBuilder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -36,8 +40,6 @@ import org.dbunit.dataset.NoSuchColumnException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
-import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
-import com.seitenbau.testing.util.date.DateBuilder;
 
 #foreach( $otab in $model.dataSet.tables )
 #set($otherGetter  = "RowGetters_" + ${otab.javaName} )
@@ -303,14 +305,27 @@ public class ${tableClass} implements ITable
       return clone;
     }
   }
-  
+ 
+  // TODO NM JavaDoc
+  public List<${rowbuilder}> find(Filter<${rowbuilder}> filter)
+  {
+    List<${rowbuilder}> result = new ArrayList<${rowbuilder}>();
+    for (${rowbuilder} row : rows)
+    {
+      if (filter.accept(row))
+      {
+        result.add(row);
+      }
+    }
+    return result;
+  }
+
   public $findWhereClass findWhere = new $findWhereClass(this);
 
   public static class $findWhereClass
   {
-    // TODO NM/CB/RW must this field be public?
-    public final List<${rowbuilder}> rows;
-    final ${tableClass} table;
+    private final List<${rowbuilder}> rows;
+    private final ${tableClass} table;
     
     public $findWhereClass(${tableClass} theTable)
     {
@@ -323,7 +338,7 @@ public class ${tableClass} implements ITable
       ${rowcollection} modifiers = new ${rowcollection}(table);
       for (${rowbuilder} row : rows) 
       {
-        if (toSearch.compareTo( row ) == 0) 
+        if (toSearch.compareTo(row) == 0) 
         {
           modifiers.add(row);
         }
@@ -358,9 +373,8 @@ public class ${tableClass} implements ITable
 
   public static class $getWhereClass
   {
-    // TODO NM/CB/RW must this field be public?
-    public final List<${rowbuilder}> rows;
-    final ${tableClass} table;
+    private final List<${rowbuilder}> rows;
+    private final ${tableClass} table;
     
     public $getWhereClass(${tableClass} theTable) 
     {
