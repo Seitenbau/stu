@@ -1,14 +1,13 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.fest.assertions.Fail;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.seitenbau.testing.dbunit.config.TestConfig;
+import com.seitenbau.testing.dbunit.dao.Job;
 import com.seitenbau.testing.dbunit.dao.Person;
+import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
 import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder;
@@ -52,6 +53,7 @@ public class GroovyDataSetDatabaseTest
 
     // verify
     assertThat(persons).hasSize(dataSet.personsTable.getRowCount());
+    dbTester.assertDataBase(dataSet);
   }
 
   @Test
@@ -125,6 +127,150 @@ public class GroovyDataSetDatabaseTest
     // execute
     sut.removePerson(person);
     
+    // verify
+    Fail.fail();
+  }
+  
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void findAllJobs() throws Exception
+  {
+    // execute
+    List<Job> jobs = sut.findJobs();
+
+    // verify
+    dbTester.assertDataBase(dataSet);
+    assertThat(jobs).hasSize(dataSet.jobsTable.getRowCount());
+  }
+
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void addJob() throws Exception
+  {
+    // prepare
+    Job job = new Job();
+    job.setTitle("Software Architect");
+    job.setDescription("Developing software architecture");
+
+    // execute
+    sut.addJob(job);
+
+    // verify
+    dataSet.jobsTable.insertRow() //
+        .setTitle("Software Architect") //
+        .setDescription("Developing software architecture");
+    dbTester.assertDataBase(dataSet);
+  }
+
+  @Ignore
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void removeJobWithoutExistingReference() throws Exception
+  {
+    // prepare
+    Job job = new Job();
+    job.setTitle("Software Architect");
+    job.setDescription("Developing software architecture");
+
+    // execute
+    sut.removeJob(job);
+
+    // verify
+    dataSet.jobsTable.insertRow() //
+        .setTitle("Software Architect") //
+        .setDescription("Developing software architecture");
+    dataSet.jobsTable.findWhere.id(SAT).delete();
+    dbTester.assertDataBase(dataSet);
+  }
+  
+  @Test(expected=DataIntegrityViolationException.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void removeJobWithExistingReference () throws Exception
+  {
+    // prepare
+    Job job = new Job();
+    job.setDescription(SWD.getDescription());
+    job.setTitle(SWD.getTitle());
+    job.setId(SWD.getId());
+    
+    // execute
+    sut.removeJob(job);
+
+    // verify
+    Fail.fail();
+  }
+  
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void findAllTeams() throws Exception
+  {
+    // execute
+    List<Team> teams = sut.findTeams();
+
+    // verify
+    assertThat(teams).hasSize(dataSet.teamsTable.getRowCount());
+  }
+
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void addTeam() throws Exception
+  {
+    // prepare
+    Team team = new Team();
+    team.setTitle("Human Resources");
+    team.setDescription("Make up workforce of an organzation");
+    team.setMembersize(0);
+
+    // execute
+    sut.addTeam(team);
+
+    // verify
+    dataSet.teamsTable.insertRow() //
+        .setTitle("Human Resources") //
+        .setDescription("Make up workforce of an organzation") //
+        .setMembersize(0);
+    dbTester.assertDataBase(dataSet);
+  }
+
+  @Ignore
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void removeTeamWithoutExistingReference() throws Exception
+  {
+    // prepare
+    Team team = new Team();
+    team.setTitle("Human Resources");
+    team.setDescription("Make up workforce of an organzation");
+    team.setMembersize(0);
+    team.setId(2);
+    
+    // execute
+    sut.removeTeam(team);
+
+    // verify
+    dataSet.teamsTable.insertRow() //
+        .setTitle("Human Resources") //
+        .setDescription("Make up workforce of an organzation") //
+        .setMembersize(0) //
+        .setId(HR.getId());
+    dataSet.teamsTable.findWhere.id(HR).delete();
+    dbTester.assertDataBase(dataSet);
+  }
+  
+  @Test(expected=DataIntegrityViolationException.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void removeTeamWithExistingReference() throws Exception
+  {
+    // prepare
+    Team team = new Team();
+    team.setTitle("Quality Assurance");
+    team.setDescription("Verifies software");
+    team.setMembersize(0);
+    team.setId(1);
+   
+    // execute
+    sut.removeTeam(team);
+
     // verify
     Fail.fail();
   }
