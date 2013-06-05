@@ -21,6 +21,7 @@ import com.mysql.jdbc.PreparedStatement;
 import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.dao.Job;
 import com.seitenbau.testing.dbunit.dao.Person;
+import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
@@ -38,7 +39,7 @@ class GroovyDatabaseDataSetTest {
   @Rule
   public DatabaseTesterRule dbTester =
   new DatabaseTesterRule(TestConfig.class)
-  .useTruncateAsCleanInsert();
+    .useTruncateAsCleanInsert();
 
   @Autowired
   PersonService sut
@@ -197,6 +198,79 @@ class GroovyDatabaseDataSetTest {
     
     // execute
     sut.removeJob(job)
+
+    // verify
+    Fail.fail()
+  }
+  
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void findAllTeams()
+  {
+    // execute
+    def teams = sut.findTeams()
+
+    // verify
+    assertThat(teams).hasSize(dataSet.teamsTable.getRowCount())
+  }
+
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void addTeam()
+  {
+    // prepare
+    Team team = new Team()
+    team.setTitle("Human Resources")
+    team.setDescription("Make up workforce of an organzation")
+    team.setMembersize(0)
+
+    // execute
+    def result = sut.addTeam(team)
+
+    // verify
+    dataSet.teamsTable.rows {
+      REF           | id  | title                   | description                           | membersize
+      HR            | 2   | "Human Resources"       | "Make up workforce of an organzation" | 0
+    }
+    dbTester.assertDataBase(dataSet)
+  }
+
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void removeTeamWithoutExistingReference()
+  {
+    // prepare
+    Team team = new Team()
+    team.setTitle("Human Resources")
+    team.setDescription("Make up workforce of an organzation")
+    team.setMembersize(0)
+    team.setId(2)
+    
+    // execute
+    sut.removeTeam(team)
+
+    // verify
+   dataSet.teamsTable.rows {
+      REF           | id  | title                   | description                           | membersize
+      HR            | 2   | "Human Resources"       | "Make up workforce of an organzation" | 0
+    }
+    dataSet.teamsTable.findWhere.id(HR.getId()).delete()
+    dbTester.assertDataBase(dataSet)
+  }
+  
+  @Test(expected=DataIntegrityViolationException.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  void removeTeamWithExistingReference()
+  {
+    // prepare
+    Team team = new Team()
+    team.setTitle("Quality Assurance")
+    team.setDescription("Verifies software")
+    team.setMembersize(0)
+    team.setId(1)
+   
+    // execute
+    sut.removeTeam(team)
 
     // verify
     Fail.fail()
