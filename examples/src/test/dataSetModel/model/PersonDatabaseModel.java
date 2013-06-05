@@ -1,16 +1,14 @@
-package com.seitenbau.testing.dbunit.model;
+package model;
 
-import com.seitenbau.testing.dbunit.generator.DataType;
-import com.seitenbau.testing.dbunit.generator.DatabaseModel;
-import com.seitenbau.testing.dbunit.generator.Table;
+import com.seitenbau.testing.dbunit.generator.*;
 
-public class Model extends DatabaseModel
+public class PersonDatabaseModel extends DatabaseModel
 {
-  public Model()
+  public PersonDatabaseModel()
   {
     database("PersonDatabase");
     packageName("com.seitenbau.testing.dbunit.model");
-
+    
     Table jobs = table("jobs") //
         .description("The table containing the jobs of a great company")
         .column("id", DataType.BIGINT) //
@@ -32,7 +30,7 @@ public class Model extends DatabaseModel
         .column("membersize", DataType.BIGINT) //
       .build();
 
-    Table persons = table("persons") //
+    table("persons") //
         .description("The table containing the staff of a great company")
         .column("id", DataType.BIGINT) //
           .autoIdHandling() //

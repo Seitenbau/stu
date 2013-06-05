@@ -104,16 +104,32 @@ project("examples") {
   }
   
   sourceSets {
-    test {
+    dataSetModel {
       java {
-        srcDir 'src/test/java'
-        srcDir 'src/main/java'
-        srcDir 'src/test/groovy'
-        srcDir 'src/main/groovy'
-        srcDir 'src/test/generated-java'
+        srcDir 'src/test/dataSetModel'
       }
+      compileClasspath += configurations.compile
+      runtimeClasspath += configurations.runtime
+    }
+    dataSetDsl {
+      java {
+        srcDir 'build/src/dataSetDsl'
+      }
+      compileClasspath = configurations.compile
+    }
+    test {
+      compileClasspath += sourceSets.dataSetDsl.output
     }
   }
+
+  task generateBuilderDslClasses(dependsOn: 'dataSetModelClasses', type: JavaExec) {
+    main = 'model.Generator'
+    args = [sourceSets.dataSetDsl.java.srcDirs.toList()[0]]
+    classpath = sourceSets.dataSetModel.runtimeClasspath
+  }
+
+  compileDataSetDslJava.dependsOn("generateBuilderDslClasses")
+  compileTestGroovy.dependsOn("compileDataSetDslJava")
 }
 
 configure(rootProject) {
