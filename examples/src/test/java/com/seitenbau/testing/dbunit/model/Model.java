@@ -17,7 +17,9 @@ public class Model extends DatabaseModel
           .autoIdHandling() //
           .identifierColumn() //
         .column("title", DataType.VARCHAR) //
+          .description("The job title")
         .column("description", DataType.VARCHAR) //
+          .description("The description of the job")
       .build();
 
     Table teams = table("teams") //

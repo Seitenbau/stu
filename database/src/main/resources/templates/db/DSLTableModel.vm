@@ -347,11 +347,23 @@ public class ${clsTable} {
     }
 #end
 
+#if( ${column.description} )
+    /**
+     * ${column.description}
+     * @return The value
+     */
+#end
     public ${column.javaType} get${column.javaName}()
     {
       return _delegate.get${column.javaName}();
     }
 
+#if( ${col.description} )
+    /**
+     * ${col.description}
+     * @return The value as raw object
+     */
+#end
     public Object get${column.javaName}Raw()
     {
       return _delegate.get${column.javaName}Raw();
@@ -446,6 +458,11 @@ public class ${clsTable} {
           return localFilter.call(row);
         }
       });
+  }
+  
+  public void foreach(Action<${clsRowbuilder}> action)
+  {
+    _table.foreach(action);
   }
   
   public void foreach(Closure<?> action)
