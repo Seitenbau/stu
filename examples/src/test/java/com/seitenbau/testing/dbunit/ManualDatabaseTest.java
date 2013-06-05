@@ -353,8 +353,8 @@ public class ManualDatabaseTest
     dbTesterRule.cleanInsert(defaultDataSet);
 
     Team team = new Team();
-    team.setTitle("Quality Assurance");
-    team.setDescription("Verifies that requirments for a product is fulfilled");
+    team.setTitle("Human Resources");
+    team.setDescription("Make up workforce of an organzation");
     team.setMembersize(0);
     int expectedId = team.getId();
     // execute

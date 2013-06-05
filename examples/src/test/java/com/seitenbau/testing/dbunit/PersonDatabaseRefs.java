@@ -13,6 +13,7 @@ public class PersonDatabaseRefs
   public static JobsRef SAT = RefFactory.createJobsRef();
   
   public static TeamsRef QA = RefFactory.createTeamsRef();
+  public static TeamsRef HR = RefFactory.createTeamsRef();
   
   public static PersonsRef KAULBERSCH = RefFactory.createPersonsRef();
   public static PersonsRef GUITTON = RefFactory.createPersonsRef();
