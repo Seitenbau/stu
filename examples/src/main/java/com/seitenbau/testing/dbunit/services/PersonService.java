@@ -45,12 +45,20 @@ public class PersonService
 
   public Person addPerson(Person person)
   {
-    return personRepo.saveAndFlush(person);
+    Person addedPerson = personRepo.saveAndFlush(person);
+    int teamId = addedPerson.getTeam();
+    
+    incrementMembersizeOfTeam(teamId);
+
+    return addedPerson;
   }
 
   public void removePerson(Person person)
   {
     personRepo.delete(person);
+    
+    int teamId = person.getTeam();
+    decrementMembersizeOfTeam(teamId);
   }
 
   public List<Job> findJobs()
@@ -82,7 +90,7 @@ public class PersonService
   {
     teamRepo.delete(team);
   }
-
+  
   public void setPersonRepo(PersonRepo personRepo)
   {
     this.personRepo = personRepo;
@@ -96,5 +104,39 @@ public class PersonService
   public void setTeamRepo(TeamRepo teamRepo)
   {
     this.teamRepo = teamRepo;
+  }
+  
+  private void updateMembersizeOfTeam(int teamId, int amount)
+  {
+    Team team = findTeamForTeamId(teamId);
+
+    if (team != null)
+    {
+      int oldMembersize = team.getMembersize();
+      team.setMembersize(oldMembersize + amount);
+      teamRepo.saveAndFlush(team);
+    }
+  }
+
+  private Team findTeamForTeamId(int teamId)
+  {
+    for (Team team : teamRepo.findAll())
+    {
+      if (teamId == team.getId())
+      {
+        return team;
+      }
+    }
+    return null;
+  }
+  
+  private void incrementMembersizeOfTeam(int teamId)
+  {
+    updateMembersizeOfTeam(teamId, 1);
+  }
+  
+  private void decrementMembersizeOfTeam(int teamId)
+  {
+    updateMembersizeOfTeam(teamId, -1);
   }
 }
