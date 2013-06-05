@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.fest.assertions.Fail;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +21,7 @@ import com.seitenbau.testing.dbunit.dao.Person;
 import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
+import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
@@ -162,23 +162,20 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBase(dataSet);
   }
 
-  @Ignore
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = ExtendedDemoGroovyDataSet.class)
   public void removeJobWithoutExistingReference() throws Exception
   {
     // prepare
     Job job = new Job();
     job.setTitle("Software Architect");
     job.setDescription("Developing software architecture");
+    job.setId(SAT.getId());
 
     // execute
     sut.removeJob(job);
 
     // verify
-    dataSet.jobsTable.insertRow() //
-        .setTitle("Software Architect") //
-        .setDescription("Developing software architecture");
     dataSet.jobsTable.findWhere.id(SAT).delete();
     dbTester.assertDataBase(dataSet);
   }
@@ -232,9 +229,8 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBase(dataSet);
   }
 
-  @Ignore
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = ExtendedDemoGroovyDataSet.class)
   public void removeTeamWithoutExistingReference() throws Exception
   {
     // prepare
@@ -242,17 +238,12 @@ public class GroovyDataSetDatabaseTest
     team.setTitle("Human Resources");
     team.setDescription("Make up workforce of an organzation");
     team.setMembersize(0);
-    team.setId(2);
+    team.setId(HR.getId());
     
     // execute
     sut.removeTeam(team);
 
     // verify
-    dataSet.teamsTable.insertRow() //
-        .setTitle("Human Resources") //
-        .setDescription("Make up workforce of an organzation") //
-        .setMembersize(0) //
-        .setId(HR.getId());
     dataSet.teamsTable.findWhere.id(HR).delete();
     dbTester.assertDataBase(dataSet);
   }
