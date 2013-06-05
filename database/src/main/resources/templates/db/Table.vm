@@ -189,7 +189,7 @@ public class ${tableClass} implements ITable
     /**
     * Insert a row at the end of the table
     * <code><pre>
-    * ds.table_${model.javaName}.insertRow(baseUser);
+    * ds.table_${model.javaName}.insertRow(someRow);
     * </pre></code>
     */
     ${rowbuilder} insertRow(${rowbuilder} theRow);
