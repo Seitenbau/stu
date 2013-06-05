@@ -13,6 +13,7 @@
 #set($clsTableFindWhere = ${model.javaName} + "TableFindWhere")
 #set($clsTableGetWhere = ${model.javaName} + "TableGetWhere")
 #set($clsRowcollection= "RowCollection_" + ${model.javaName} )
+#set($javaDocSep = "#")
 package ${package};
 
 import com.google.common.base.Optional;
@@ -433,9 +434,12 @@ public class ${clsTable} {
   }
 
   /**
-   * Delivers a collection of rows matching to a filter
+   * Delivers a collection of rows matching to a filter.
    * @param filter The used filter
    * @return The collection of rows, may return an empty list
+   * @see ${javaDocSep}find(Closure)
+   * @see ${javaDocSep}findWhere
+   * @see ${javaDocSep}getWhere
    */
   public ${clsRowcollection} find(Filter<${clsRowbuilder}> filter)
   {
@@ -443,9 +447,12 @@ public class ${clsTable} {
   }
 
   /**
-   * Delivers a collection of rows matching to a filter
+   * Delivers a collection of rows matching to a filter.
    * @param filter A Groovy Closure with an argument of type ${clsRowbuilder}, returning a boolean
    * @return The collection of rows, may return an empty list
+   * @see ${javaDocSep}find(Filter)
+   * @see ${javaDocSep}findWhere
+   * @see ${javaDocSep}getWhere
    */
   public ${clsRowcollection} find(Closure<Boolean> filter)
   {
@@ -479,6 +486,15 @@ public class ${clsTable} {
   }
   
   
+  /**
+   * Allows searching for one or more rows specified by a column value.
+   * findWhere assumes that it is used to search for existing rows. An
+   * exception will be thrown if no matching row was found. Use getWhere
+   * or find to avoid this behavior.
+   * @see ${javaDocSep}getWhere
+   * @see ${javaDocSep}find(Closure)
+   * @see ${javaDocSep}find(Filter)
+   */
   public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);
 
   public static class ${clsTableFindWhere}
@@ -528,6 +544,14 @@ public class ${clsTable} {
 #end
   }
   
+  /**
+   * Allows searching for a row specified by a column value.
+   * The first matching row is returned. Does not throw an
+   * exception, if no element is found.
+   * @see ${javaDocSep}findWhere
+   * @see ${javaDocSep}find(Closure)
+   * @see ${javaDocSep}find(Filter)
+   */
   public final ${clsTableGetWhere} getWhere = new ${clsTableGetWhere}(this);
 
   public static class ${clsTableGetWhere}

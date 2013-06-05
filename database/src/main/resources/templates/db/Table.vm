@@ -10,6 +10,7 @@
 #set($rowcollection= "RowCollection_" + ${model.javaName} )
 #set($tableClass   = ${model.javaName} + ${model.suffix} )
 #set($dataSetClass = ${model.dataSet.name} + ${model.dataSet.suffix} )
+#set($javaDocSep = "#")
 #if( $package && $package.length() != 0 )
 package ${package};
 #end
@@ -362,9 +363,11 @@ public class ${tableClass} implements ITable
   }
  
   /**
-   * Delivers a collection of rows matching to a filter
+   * Delivers a collection of rows matching to a filter.
    * @param filter The used filter
    * @return The collection of rows, may return an empty list
+   * @see ${javaDocSep}findWhere
+   * @see ${javaDocSep}getWhere
    */
   public ${rowcollection} find(Filter<${rowbuilder}> filter)
   {
@@ -387,6 +390,14 @@ public class ${tableClass} implements ITable
     }
   }
 
+  /**
+   * Allows searching for one or more rows specified by a column value.
+   * findWhere assumes that it is used to search for existing rows. An
+   * exception will be thrown if no matching row was found. Use getWhere
+   * or find to avoid this behavior.
+   * @see ${javaDocSep}getWhere
+   * @see ${javaDocSep}find(Filter)
+   */
   public $findWhereClass findWhere = new $findWhereClass(this);
 
   public static class $findWhereClass
@@ -446,6 +457,13 @@ public class ${tableClass} implements ITable
     }    
   }
 
+  /**
+   * Allows searching for a row specified by a column value.
+   * The first matching row is returned. Does not throw an
+   * exception, if no element is found.
+   * @see ${javaDocSep}findWhere
+   * @see ${javaDocSep}find(Filter)
+   */
   public $getWhereClass getWhere = new $getWhereClass(this);
 
   public static class $getWhereClass
