@@ -361,7 +361,7 @@ public class ExtendedFileAssert extends org.fest.assertions.FileAssert
     return this;
   }
 
-  public static interface ProvidesFile
+  public interface ProvidesFile
   {
     File getFile();
   }

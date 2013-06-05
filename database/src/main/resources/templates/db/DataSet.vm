@@ -208,7 +208,7 @@ public abstract class ${model.name}${model.suffix}
    * Interface for the double dispatch. Used by {@link #modify} to
    * extract creation logic into an external strategy.
    */ 
-  public static interface ${model.name}${model.suffix}Modifier
+  public interface ${model.name}${model.suffix}Modifier
   {
     void modify(${model.name}${model.suffix} dataset);
   }
