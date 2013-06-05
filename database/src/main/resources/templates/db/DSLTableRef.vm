@@ -26,6 +26,17 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 
 /**
  * Reference to an ${model.javaName} table row
+ * <p>
+ * Available fields:
+ * <ul>
+#foreach ($col in $model.columns)
+ *   <li>get${col.javaName}() - ${col.javaType}
+#if( ${col.description} )
+   *    <br>${col.description}
+#end
+ *   </li>
+#end
+ * </ul>
  */
 public class ${clsRef} extends DatabaseReference
 {
