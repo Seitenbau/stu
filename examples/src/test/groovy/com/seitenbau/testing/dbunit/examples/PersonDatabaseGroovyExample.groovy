@@ -21,3 +21,7 @@ println "TM title = " + TM.title
 println "Persons Row Count = " + dataSet.personsTable.rowCount
 
 println "Persons filtered by name length = " + dataSet.personsTable.find({ it.firstName.length() < 8 }).rowCount
+
+println "List of first names:"
+dataSet.personsTable.foreach({ println "- " + it.firstName })
+println "(end of list)"
