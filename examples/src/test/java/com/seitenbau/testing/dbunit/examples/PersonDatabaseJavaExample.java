@@ -10,7 +10,7 @@ import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.util.Filter;
 
-public class PersonTableDataSetDemo
+public class PersonDatabaseJavaExample
 {
 
   public static void main(String[] args)

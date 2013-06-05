@@ -108,7 +108,7 @@ class GroovyDatabaseDataSetTest {
     sut.removePerson(person)
 
     // verify
-    dataSet.personsTable.findWhere.id(KAULBERSCH.getId()).delete()
+    dataSet.personsTable.findWhere.id(KAULBERSCH).delete()
     dbTester.assertDataBase(dataSet)
   }
 
@@ -181,7 +181,7 @@ class GroovyDatabaseDataSetTest {
       REF           | id  | title                   | description
       SAT           | 4   | "Software Architect"    | "Developing software architecture"
     }
-    dataSet.jobsTable.findWhere.id(SAT.getId()).delete()
+    dataSet.jobsTable.findWhere.id(SAT).delete()
     dbTester.assertDataBase(dataSet)
   }
   
