@@ -115,6 +115,7 @@ class GroovyDatabaseDataSetTest {
 
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
+  @Ignore
   void removePersonThatDoesNotExist()
   {
     // prepare
@@ -188,6 +189,7 @@ class GroovyDatabaseDataSetTest {
   
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @Ignore
   void removeJobWithExistingReference()
   {
     // prepare
@@ -260,6 +262,7 @@ class GroovyDatabaseDataSetTest {
   
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @Ignore
   void removeTeamWithExistingReference()
   {
     // prepare

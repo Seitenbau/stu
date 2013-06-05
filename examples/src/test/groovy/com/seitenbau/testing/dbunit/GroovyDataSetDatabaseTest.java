@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.fest.assertions.Fail;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,6 +115,7 @@ public class GroovyDataSetDatabaseTest
   
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
+  @Ignore
   public void removePersonThatDoesNotExist() throws Exception {
     // prepare
     
@@ -182,6 +184,7 @@ public class GroovyDataSetDatabaseTest
   
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @Ignore
   public void removeJobWithExistingReference () throws Exception
   {
     // prepare
@@ -250,6 +253,7 @@ public class GroovyDataSetDatabaseTest
   
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @Ignore
   public void removeTeamWithExistingReference() throws Exception
   {
     // prepare
