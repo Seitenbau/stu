@@ -1,13 +1,16 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.HR;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SAT;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.fest.assertions.Fail;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -115,7 +118,6 @@ public class GroovyDataSetDatabaseTest
   
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
-  @Ignore
   public void removePersonThatDoesNotExist() throws Exception {
     // prepare
     
@@ -170,8 +172,8 @@ public class GroovyDataSetDatabaseTest
   {
     // prepare
     Job job = new Job();
-    job.setTitle("Software Architect");
-    job.setDescription("Developing software architecture");
+    job.setTitle(SAT.getTitle());
+    job.setDescription(SAT.getDescription());
     job.setId(SAT.getId());
 
     // execute
@@ -184,7 +186,6 @@ public class GroovyDataSetDatabaseTest
   
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
-  @Ignore
   public void removeJobWithExistingReference () throws Exception
   {
     // prepare
@@ -238,9 +239,9 @@ public class GroovyDataSetDatabaseTest
   {
     // prepare
     Team team = new Team();
-    team.setTitle("Human Resources");
-    team.setDescription("Make up workforce of an organzation");
-    team.setMembersize(0);
+    team.setTitle(HR.getTitle());
+    team.setDescription(HR.getDescription());
+    team.setMembersize(HR.getMembersize());
     team.setId(HR.getId());
     
     // execute
@@ -253,15 +254,14 @@ public class GroovyDataSetDatabaseTest
   
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
-  @Ignore
   public void removeTeamWithExistingReference() throws Exception
   {
     // prepare
     Team team = new Team();
-    team.setTitle("Quality Assurance");
-    team.setDescription("Verifies software");
-    team.setMembersize(0);
-    team.setId(1);
+    team.setTitle(QA.getTitle());
+    team.setDescription(QA.getDescription());
+    team.setMembersize(QA.getMembersize());
+    team.setId(QA.getId());
    
     // execute
     sut.removeTeam(team);
