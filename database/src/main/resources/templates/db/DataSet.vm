@@ -112,7 +112,10 @@ public abstract class ${model.name}${model.suffix}
    * Template Method, get's called after createDBUnitDataSet() method
    * Use this only if really needed.
    */
-  protected void afterDataSetCreation(DefaultDataSet dataSet) #if( $model.createException ) throws $model.createException#end
+  protected void afterDataSetCreation(DefaultDataSet dataSet) 
+#if( $model.createException ) 
+      throws $model.createException
+#end
   {
   }
 
@@ -270,4 +273,16 @@ public abstract class ${model.name}${model.suffix}
     return this;
   } 
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T getTable(Class<T> tableClass) 
+  {
+#foreach( $table in $model.tables )
+    if (tableClass.equals(${table.javaName}Table.class)) {
+      return (T)table_${table.javaName};
+    }
+#end
+    throw new RuntimeException("Table of class " + tableClass + " not found.");
+  }
+ 
 }

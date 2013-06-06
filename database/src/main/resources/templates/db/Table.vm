@@ -1,7 +1,6 @@
 #set($filename = ${model.javaName} + ${model.suffix} )
 #set($package  = ${model.package} )
 #set($rowbuilder   = "RowBuilder_" + ${model.javaName} )
-#set($rowbuilderImpl = "RowBuilder_" + ${model.javaName} + "Impl" )
 #set($rowsetters   = "RowSetters_" + ${model.javaName} )
 #set($rowsgetters  = "RowGetters_" + ${model.javaName} )
 #set($findWhereClass = ${model.javaName} + "FindWhere" ) 
@@ -29,13 +28,9 @@ import com.seitenbau.testing.util.date.DateBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Iterator;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.EnumSet;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -44,15 +39,15 @@ import org.dbunit.dataset.Column;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.DefaultTableMetaData;
 import org.dbunit.dataset.RowOutOfBoundsException;
-import org.dbunit.dataset.NoSuchColumnException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
-
-#foreach( $otab in $model.dataSet.tables )
+#foreach( $otab in $model.associatedTables )
+#if ($otab != $model)
 #set($otherGetter  = "RowGetters_" + ${otab.javaName} )
 #set($otherTable  = ${otab.javaName} + ${otab.suffix} )
 import ${model.package}.${otherTable}.${otherGetter};
+#end
 #end
 
 import static com.seitenbau.testing.util.DateUtil.*;
@@ -132,6 +127,7 @@ public class ${tableClass} implements ITable
 
   public List<${rowbuilder}> rows = new ArrayList<${rowbuilder}>();
   
+  @SuppressWarnings("rawtypes")
   public interface ${rowsetters}<T extends ${rowsetters}>
   {
 #foreach( $column in $model.columns )
@@ -158,6 +154,7 @@ public class ${tableClass} implements ITable
 #end 
   }
   
+  @SuppressWarnings("rawtypes")
   public interface ${rowsgetters}<T extends ${rowsgetters}>
   {
 #foreach( $column in $model.columns )
@@ -173,101 +170,23 @@ public class ${tableClass} implements ITable
 
   }
 
-  public interface ${rowbuilder} extends ${rowsetters}<${rowbuilder}>, ${rowsgetters}<${rowbuilder}>
-  {
-
-    /**
-     * Binds the row with the reference in this scope
-     */
-    ${rowbuilder} bindRef(${clsRef} ref);
-
-    /**
-     * Gets the value of a specified column.
-     * <p>
-     * Throws a RuntimeException, if row count is not equal to 1.
-     * @param column The column name (not case sensitive)
-     * @return The value
-     */
-    Object getValue(String column) throws RuntimeException;
-
-    ${rowbuilder} clone();
-
-    /**
-    * Insert a new Row at the end of the Table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow()
-#foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
-#end
-    *   ;
-    * </pre></code>
-    */
-    ${rowbuilder} insertRow();
-
-    /**
-    * Insert a new Row at the end of the Table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow()
-#foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
-#end
-    *   ;
-    * </pre></code>
-    */
-    ${rowbuilder} insertRow(${model.javaName}Model row);
-    
-    /**
-    * Insert a new Row at the given position
-    * <code><pre>
-    * ds.table_${model.javaName}.this.insertRowAt(2)
-#foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
-#end
-    *   ;
-    * </pre></code>
-    */
-    ${rowbuilder} insertRowAt(int index);
-    
-    /**
-    * Insert a row at the end of the table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow(someRow);
-    * </pre></code>
-    */
-    ${rowbuilder} insertRow(${rowbuilder} theRow);
-
-#foreach( $column in $model.columns )
-
-#if( ${column.description} )
-    /**
-     * ${column.description}
-     * @return The value as raw object
-     */
-#end
-    Object get${column.javaName}Raw();
-#end
-#foreach( $column in $model.columns )
-#if( $column.reference )
-#set($otherGetter  = "RowGetters_" + ${column.reference.table.javaName} )
-
-    ${rowbuilder} ref${column.javaName}($otherGetter reference);
-#end
-#end
-  }
-
-  public static class ${rowbuilderImpl} implements ${rowbuilder}
+  public static class ${rowbuilder} implements
+    ${rowsetters}<${rowbuilder}>, ${rowsgetters}<${rowbuilder}>
   {
 
     Object[] data;
     
     ${tableClass} table;
     
-    ${rowbuilderImpl}(${tableClass} tableDelegate) 
+    ${rowbuilder}(${tableClass} tableDelegate) 
     {
       data = new Object[COLUMNS.length];
       table = tableDelegate;
     }
 
+    /**
+     * Binds the row with the reference in this scope
+     */
     public ${rowbuilder} bindRef(${clsRef} ref)
     {
       ref.setBuilder(table._dataSet, this);
@@ -379,21 +298,57 @@ public class ${tableClass} implements ITable
     }
 #end 
 
+    /**
+    * Insert a new Row at the end of the Table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow()
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
     public ${rowbuilder} insertRow()
     {
       return table.insertRow();
     }
     
+    /**
+    * Insert a new Row at the end of the Table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow()
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
     public ${rowbuilder} insertRow(${model.javaName}Model row)
     {
       return table.insertRow(row);
     }
     
+    /**
+    * Insert a new Row at the given position
+    * <code><pre>
+    * ds.table_${model.javaName}.this.insertRowAt(2)
+#foreach( $column in $model.columns )
+    *   .set${column.javaName}( null )
+#end
+    *   ;
+    * </pre></code>
+    */
     public ${rowbuilder} insertRowAt(int index)
     {
       return table.insertRowAt(index);
     }
 
+    /**
+    * Insert a row at the end of the table
+    * <code><pre>
+    * ds.table_${model.javaName}.insertRow(someRow);
+    * </pre></code>
+    */
     public ${rowbuilder} insertRow(${rowbuilder} theRow)
     {
       return table.insertRow(theRow);
@@ -456,7 +411,7 @@ public class ${tableClass} implements ITable
     @Override
     public ${rowbuilder} clone()
     {
-      ${rowbuilder} clone = new ${rowbuilderImpl}(table);
+      ${rowbuilder} clone = new ${rowbuilder}(table);
 #foreach( $column in $model.columns )
       clone.set${column.javaName}(get${column.javaName}());
 #end
@@ -636,7 +591,7 @@ public class ${tableClass} implements ITable
   }
   
   /** Inner class! Use ${rowcollection} in your code ! */
-  public static class ${rowmodify} extends ${rowbuilderImpl} 
+  public static class ${rowmodify} extends ${rowbuilder} 
   {
     
     List<${rowbuilder}> _rows;
@@ -797,7 +752,7 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} insertRow()
   {
-    ${rowbuilder} row = new ${rowbuilderImpl}(this);
+    ${rowbuilder} row = new ${rowbuilder}(this);
 #foreach( $column in $model.columns )
 #if( ${column.isAutoInvokeValueGeneration()} )
     row.next${column.javaName}();
@@ -814,7 +769,7 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} insertRow(${model.javaName}Model rowToAdd)
   {
-    ${rowbuilder} row = new ${rowbuilderImpl}(this);
+    ${rowbuilder} row = new ${rowbuilder}(this);
 #foreach( $column in $model.columns )
     row.set${column.javaName}Raw( rowToAdd.get${column.javaName}Raw() );
 #end
@@ -852,7 +807,7 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} insertRowAt(int index)
   {
-    ${rowbuilder} row = new ${rowbuilderImpl}(this);
+    ${rowbuilder} row = new ${rowbuilder}(this);
     rows.add(index, row);
     return row;
   }
@@ -895,7 +850,7 @@ public class ${tableClass} implements ITable
   */
   public ${rowbuilder} newRow()
   {
-    ${rowbuilder} row = new ${rowbuilderImpl}(this);
+    ${rowbuilder} row = new ${rowbuilder}(this);
     return row;
   }
   
@@ -952,5 +907,5 @@ public class ${tableClass} implements ITable
   {
     return date.asDate();
   }
- 
+
 }

@@ -156,5 +156,11 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
   {
     return dataset.createDBUnitDataSet();
   }
-    
+ 
+  @Override
+  public <T> T getTable(Class<T> tableClass) 
+  {
+    return dataset.getTable(tableClass);
+  }
+  
 }

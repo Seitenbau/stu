@@ -2,7 +2,9 @@ package com.seitenbau.testing.dbunit.generator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.seitenbau.testing.util.CamelCase;
 
@@ -163,5 +165,33 @@ public class Table
 
     return null;
     // throw new RuntimeException("No associating column found");
+  }
+  
+  
+  public Set<Table> getAssociatedTables()
+  {
+    Set<Table> result = new HashSet<Table>();
+    result.add(this);
+    for (Column col : getColumns())
+    {
+      if (col.getReference() != null)
+      {
+        result.add(col.getReference().getTable());
+      }
+    }
+    return result;
+  }
+
+  public Set<Table> getAssociatingTables()
+  {
+    Set<Table> result = new HashSet<Table>();
+    for (Column col : getColumns())
+    {
+      for (Column refCol : col.getReferencedByList())
+      {
+        result.add(refCol.getTable());
+      }
+    }
+    return result;
   }
 }

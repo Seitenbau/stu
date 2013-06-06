@@ -7,4 +7,6 @@ public interface IScope
   
   String getScopeIdentifier();
   
+  <T> T getTable(Class<T> tableClass);
+  
 }

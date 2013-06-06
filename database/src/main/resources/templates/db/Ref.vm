@@ -20,9 +20,17 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
+
+###foreach( $table in $model.associatedTables )
+##import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
+###end
+###foreach( $table in $model.associatingTables )
+##import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
+###end
 #foreach( $table in $model.dataSet.tables )
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 #end
+
 
 /**
  * Reference to an ${model.javaName} table row
@@ -145,7 +153,7 @@ public class ${clsRef} extends DatabaseReference
 #end
 #setBuilderHandlerHead($refTable $verb)
 #if($isAssociative)      
-      RowBuilder_${referencingTable.javaName} row = scope.${referencingTable.javaNameFirstLower}Table.getTableModel().insertRow();
+      RowBuilder_${referencingTable.javaName} row = scope.getTable(${referencingTable.javaName}Table.class).insertRow();
       row.set${thisMethod}(builder.get${thisKey}());
       row.set${refColumn.javaName}(otherBuilder.get${remoteKey}());
 #else
@@ -227,7 +235,7 @@ public class ${clsRef} extends DatabaseReference
 #set( $p_verb = ${referencingCol.reference.remoteName})
 #set( $p_remoteVerb = ${referencingCol.table.getAssociatedColumn($model).reference.remoteName})
 #set( $p_description = ${referencingCol.reference.remoteDescription} )
-#addToList($resolveCode "RowBuilder_${referencingCol.table.javaName} builder = scope.${referencingCol.table.javaNameFirstLower}Table.getTableModel().insertRow();")
+#addToList($resolveCode "RowBuilder_${referencingCol.table.javaName} builder = scope.getTable(${referencingCol.table.javaName}Table.class).insertRow();")
 #addToList($resolveCode "builder.set${referencingCol.javaName}(thisBuilder.get${col.javaName}());")
 #addToList($resolveCode "builder.set${assocColumn.javaName}(otherBuilder.get${assocColumn.reference.column.javaName}());")
 #addReference( $p_refTable $p_verb $p_remoteVerb $resolveCode $p_description)
