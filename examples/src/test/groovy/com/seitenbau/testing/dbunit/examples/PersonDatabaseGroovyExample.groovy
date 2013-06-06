@@ -1,9 +1,11 @@
 package com.seitenbau.testing.dbunit.examples
 
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry
+
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
+import com.seitenbau.testing.dbunit.dsl.ScopeRegistry
 import com.seitenbau.testing.dbunit.model.dsl.JobsTable;
+
 
 DemoGroovyDataSet dataSet = new DemoGroovyDataSet()
 println "Jobtitle for SWD = " + dataSet.jobsTable.findWhere.id(SWD).title

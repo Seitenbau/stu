@@ -10,6 +10,7 @@
 #set($rowcollection= "RowCollection_" + ${model.javaName} )
 #set($tableClass   = ${model.javaName} + ${model.suffix} )
 #set($dataSetClass = ${model.dataSet.name} + ${model.dataSet.suffix} )
+#set($clsRef       = ${model.javaName} + "Ref")
 #set($javaDocSep = "#")
 #if( $package && $package.length() != 0 )
 package ${package};
@@ -140,6 +141,9 @@ public class ${tableClass} implements ITable
 #end
 #if( $column.javaType.contains("Long") )
     T set${column.javaName}(Integer intValue);
+#end
+#if( $column.reference )
+    // T set${column.javaName}(${column.reference.column.table.javaName}Ref reference)
 #end
     T set${column.javaName}(${column.javaType} value);
     T set${column.javaName}Raw(Object value);

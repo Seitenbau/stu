@@ -1,8 +1,8 @@
 #set($filename = "RefFactory" )
 #if( $model.package && $model.package.length() != 0 )
-#set($package  = ${model.package} + ".dsl" )
+#set($package  = ${model.package} )
 #else
-#set($package  = "dsl" )
+#set($package  = "" )
 #end
 #set($clsFactory = "RefFactory")
 package ${package};

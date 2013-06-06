@@ -1,9 +1,9 @@
 package com.seitenbau.testing.dbunit;
 
-import com.seitenbau.testing.dbunit.model.dsl.JobsRef;
-import com.seitenbau.testing.dbunit.model.dsl.PersonsRef;
-import com.seitenbau.testing.dbunit.model.dsl.RefFactory;
-import com.seitenbau.testing.dbunit.model.dsl.TeamsRef;
+import com.seitenbau.testing.dbunit.model.JobsRef;
+import com.seitenbau.testing.dbunit.model.PersonsRef;
+import com.seitenbau.testing.dbunit.model.RefFactory;
+import com.seitenbau.testing.dbunit.model.TeamsRef;
 
 public class PersonDatabaseRefs
 {

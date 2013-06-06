@@ -48,6 +48,7 @@ import ${model.package}.${clsTable}.${clsWhere};
 import ${model.package}.${clsTable}.${clsRowcollection};
 import ${model.package}.${model.javaName}Model;
 #foreach( $table in $model.dataSet.tables )
+import ${model.package}.${table.javaName}Ref;
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 import ${model.package}.${table.javaName}Table.RowGetters_${table.javaName};
 #end

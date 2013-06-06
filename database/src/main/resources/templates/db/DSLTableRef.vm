@@ -1,8 +1,8 @@
 #set($filename = ${model.javaName} + "Ref" )
 #if( $model.package && $model.package.length() != 0 )
-#set($package  = ${model.package} + ".dsl" )
+#set($package  = ${model.package} + "")
 #else
-#set($package  = "dsl" )
+#set($package  = "" )
 #end
 #set($clsScope = ${model.dataSet.name} + "Builder")
 #set($clsRef = ${model.javaName} + "Ref")
@@ -41,11 +41,11 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 public class ${clsRef} extends DatabaseReference
 {
 
-  private final Map<${clsScope}, ${clsRowbuilder}> builders;
+  private final Map<IScope, ${clsRowbuilder}> builders;
   
   public ${clsRef}()
   {
-    builders = new HashMap<${clsScope}, ${clsRowbuilder}>();
+    builders = new HashMap<IScope, ${clsRowbuilder}>();
   }
 #foreach ($col in $model.columns)
 
@@ -57,7 +57,7 @@ public class ${clsRef} extends DatabaseReference
 #end
   public ${col.javaType} get${col.javaName}()
   {
-    final ${clsScope} scope = getScope();
+    final IScope scope = getScope();
     final ${clsRowbuilder} row = builders.get(scope);
     if (row == null)
     {
@@ -67,7 +67,10 @@ public class ${clsRef} extends DatabaseReference
   } 
 #end
   
-  void setBuilder(${clsScope} scope, ${clsRowbuilder} builder)
+  /**
+   * This method is considered package private
+   */
+  public void setBuilder(IScope scope, ${clsRowbuilder} builder)
   {
     ${clsRowbuilder} lastBuilder = builders.put(scope, builder);
     if (lastBuilder != null && lastBuilder != builder)
@@ -155,7 +158,10 @@ public class ${clsRef} extends DatabaseReference
 #end
   }
   
-  ${clsRowbuilder} getBuilder(${clsScope} scope)
+  /**
+   * This method is considered package private
+   */
+  public ${clsRowbuilder} getBuilder(IScope scope)
   {
     return builders.get(scope);
   }
@@ -166,7 +172,7 @@ public class ${clsRef} extends DatabaseReference
 #end
 #macro( addReference $refTable $verb $remoteVerb $resolveCode $description )
 #set($refClsRef = ${refTable.javaName} + "Ref" )
-  Map<${clsScope}, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<${clsScope}, List<${refClsRef}>>();
+  Map<IScope, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<IScope, List<${refClsRef}>>();
 
   // depending on relation type with or without ellipse (...)
   /**
@@ -175,7 +181,7 @@ public class ${clsRef} extends DatabaseReference
    */
   public void ${verb}(${refClsRef} ... refs) 
   {
-    ${clsScope} scope = getScope();
+    IScope scope = getScope();
     ${clsRowbuilder} thisBuilder = getBuilder(scope);
     
     for (${refClsRef} ref : refs) 
@@ -236,14 +242,14 @@ public class ${clsRef} extends DatabaseReference
 #end
 #end
 
-  private ${clsScope} getScope() 
+  private IScope getScope() 
   {
     IScope scope = ScopeRegistry.getCurrentScope("${model.package}.${model.dataSet.name}");
     if (scope == null)
     {
       throw new IllegalStateException("No active context set in ${model.javaName}Ref");
     }
-    return ($clsScope)scope;
+    return scope;
   }
 
 }
