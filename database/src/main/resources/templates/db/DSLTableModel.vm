@@ -26,6 +26,7 @@ import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 import com.seitenbau.testing.dbunit.dsl.LazyValue;
 import com.seitenbau.testing.dbunit.dsl.NoValue;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.DataType;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
@@ -36,6 +37,7 @@ import com.seitenbau.testing.util.Filter;
 import groovy.lang.Closure;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -339,7 +341,7 @@ public class ${clsTable} {
       _delegate.set${column.javaName}Raw(value);
       return this;
     }
-    #if( $column.isNextIdMethodGenerated() )
+    #if( $column.isNextValueMethodGenerated() )
 
     public ${clsExtRowbuilder} next${column.javaName}()
     {
@@ -600,5 +602,11 @@ public class ${clsTable} {
 #end
 #end
   }
+  
+  public static Map<String, ColumnMetaData> getColumnMetaData()
+  {
+    return ${model.package}.${clsTable}.getColumnMetaData();
+  }
+  
 }
 

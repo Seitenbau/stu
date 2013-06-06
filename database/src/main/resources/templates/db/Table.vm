@@ -18,14 +18,17 @@ package ${package};
 import com.google.common.base.Optional;
 
 import com.seitenbau.testing.dbunit.dsl.LazyValue;
-import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
+import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
+import com.seitenbau.testing.dbunit.generator.ColumnMetaDataBuilder;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 import com.seitenbau.testing.util.date.DateBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Iterator;
@@ -78,6 +81,26 @@ public class ${tableClass} implements ITable
 #end
   };
 
+  private static final Map<String, ColumnMetaData> GENERATOR_METADATA;
+  
+  public static Map<String, ColumnMetaData> getColumnMetaData()
+  {
+    return Collections.unmodifiableMap(GENERATOR_METADATA);
+  }
+  
+  static {
+    GENERATOR_METADATA = new HashMap<String, ColumnMetaData>();
+#foreach( $column in $model.columns )
+
+    ColumnMetaDataBuilder builder${column.javaName} = new ColumnMetaDataBuilder();
+#foreach ( $flag in ${column.metaData.flags})
+#if( ${column.metaData.hasFlag($flag)} )
+    builder${column.javaName}.setFlag("$flag");
+#end
+#end
+    GENERATOR_METADATA.put(Columns.${column.javaName}, builder${column.javaName}.build());
+#end
+  }
   // @formatter:on
 
   ITableMetaData _metaData;
@@ -115,7 +138,7 @@ public class ${tableClass} implements ITable
 #end
     T set${column.javaName}(${column.javaType} value);
     T set${column.javaName}Raw(Object value);
-#if( $column.isNextIdMethodGenerated() )
+#if( ${column.isNextValueMethodGenerated()} )
     T next${column.javaName}();
 #end
 #end 
@@ -260,7 +283,7 @@ public class ${tableClass} implements ITable
       data[${foreach.index}] = value;
       return this;
     }
-#if( $column.isNextIdMethodGenerated() )
+#if( ${column.isNextValueMethodGenerated()} )
 
     public ${rowbuilder} next${column.javaName}()
     {
@@ -556,10 +579,9 @@ public class ${tableClass} implements ITable
       }
       return this;
     }
-        
 #foreach( $column in $model.columns )
-
 #if( $column.javaType.contains("Date") )
+
     public ${rowmodify} set${column.javaName}(String dateString)
     {
       for(${rowbuilder} row : _rows) 
@@ -691,7 +713,7 @@ public class ${tableClass} implements ITable
   {
     ${rowbuilder} row = new ${rowbuilderImpl}(this);
 #foreach( $column in $model.columns )
-#if( $column.isIdGenerationAutoInvokeOnInsert() )
+#if( ${column.isAutoInvokeValueGeneration()} )
     row.next${column.javaName}();
 #end
 #end

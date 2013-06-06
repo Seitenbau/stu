@@ -245,7 +245,7 @@ public abstract class ${model.name}${model.suffix}
     ${rowmodel} model = new ${rowmodel}();
     model.setIdGenerator(getIdGenerator());
 #foreach( $column in $table.columns )
-#if( $column.isNextIdMethodGenerated() )
+#if( $column.isNextValueMethodGenerated() )
     model.next${column.javaName}();
 #end
 #end

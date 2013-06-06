@@ -1,12 +1,16 @@
 package com.seitenbau.testing.dbunit.generator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.seitenbau.testing.util.CamelCase;
 
 public class Column
 {
+
+  private static final String ID_SUFFIX = "_id";
 
   private final Table _table;
 
@@ -17,23 +21,17 @@ public class Column
   private final String _name;
 
   private final String _javaName;
-  
+
   private final String _description;
 
   private final Reference _reference;
 
-  private final boolean _isIdentifier;
-
-  private final boolean _enableAutoIdHandling;
-
-  private final boolean _isAutoIncrement;
-
-  private final boolean _isNextIdMethodGenerated;
+  private final ColumnMetaData _metaData;
 
   private final List<Column> _referencedBy;
 
-  Column(Table table, String name, String javaName, String description, String type, String javaType, Reference reference,
-      boolean isIdentifier, boolean isAutoIncrement, boolean addNextMethod, boolean enableAutoIdHandling)
+  Column(Table table, String name, String javaName, String description, String type, String javaType,
+      Reference reference, Set<String> flags)
   {
     _table = table;
     _name = name;
@@ -42,16 +40,13 @@ public class Column
     _type = type;
     _javaType = javaType;
     _reference = reference;
-    _isAutoIncrement = isAutoIncrement;
-    _isIdentifier = isIdentifier;
-    _enableAutoIdHandling = enableAutoIdHandling;
 
-    _isNextIdMethodGenerated = addNextMethod || isAutoIncrement || enableAutoIdHandling;
+    _metaData = new ColumnMetaData(flags);
 
     _referencedBy = new ArrayList<Column>();
     if (reference != null)
     {
-      reference.getColumn()._referencedBy.add(this);
+      _reference.getColumn()._referencedBy.add(this);
     }
   }
 
@@ -89,30 +84,15 @@ public class Column
   {
     return _description;
   }
-  
+
   public Reference getReference()
   {
     return _reference;
   }
 
-  public boolean isAutoIncrement()
+  public ColumnMetaData getMetaData()
   {
-    return _isAutoIncrement;
-  }
-
-  public boolean isIdGenerationAutoInvokeOnInsert()
-  {
-    return _enableAutoIdHandling;
-  }
-
-  public boolean isNextIdMethodGenerated()
-  {
-    return _isNextIdMethodGenerated;
-  }
-
-  public boolean isIdentifierColumn()
-  {
-    return _isIdentifier;
+    return _metaData;
   }
 
   public boolean isReferencingTable(Table table)
@@ -127,17 +107,17 @@ public class Column
 
   public List<Column> getReferencedByList()
   {
-    return _referencedBy;
+    return Collections.unmodifiableList(_referencedBy);
   }
 
   public String getTruncatedReferenceName()
   {
-    if (_reference == null || !_name.endsWith("_id"))
+    if (_reference == null || !_name.endsWith(ID_SUFFIX))
     {
       return null;
     }
 
-    final String result = _name.substring(0, _name.length() - 3);
+    final String result = _name.substring(0, _name.length() - ID_SUFFIX.length());
     for (Column column : _table.getColumns())
     {
       if (result.equals(column.getName()))
@@ -149,4 +129,20 @@ public class Column
 
     return result;
   }
+
+  public boolean isIdentifierColumn()
+  {
+    return _metaData.hasFlag(ColumnMetaData.IDENTIFIER);
+  }
+  
+  public boolean isNextValueMethodGenerated()
+  {
+    return _metaData.hasFlag(ColumnMetaData.ADD_NEXT_METHOD);
+  }
+  
+  public boolean isAutoInvokeValueGeneration()
+  {
+    return _metaData.hasFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
+  }
+  
 }

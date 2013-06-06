@@ -16,6 +16,7 @@ public class PersonDatabaseModel extends DatabaseModel
           .identifierColumn() //
         .column("title", DataType.VARCHAR) //
           .description("The job title")
+          .setFlag("any_custom_flag")
         .column("description", DataType.VARCHAR) //
           .description("The description of the job")
       .build();

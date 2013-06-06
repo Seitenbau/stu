@@ -1,5 +1,8 @@
 package com.seitenbau.testing.dbunit.generator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.seitenbau.testing.dbunit.extend.DatabaseTesterCleanAction;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.util.CamelCase;
@@ -18,25 +21,16 @@ public class ColumnBuilder
 
   private Reference reference;
 
-  private boolean enableAutoIdHandling;
-
-  private boolean isAutoIncrementColumn;
-
-  private boolean isIdentifierColumn;
-
-  private boolean addNextMethod;
+  private Set<String> flags;
 
   public ColumnBuilder(TableBuilder tableBuilder, String name, DataType dataType)
   {
+    this.flags = new HashSet<String>();
     this.tableBuilder = tableBuilder;
     this.name = name;
     this.description = null;
     this.javaName = null;
     this.dataType = dataType;
-    this.enableAutoIdHandling = false;
-    this.isIdentifierColumn = false;
-    this.isIdentifierColumn = false;
-    this.addNextMethod = false;
 
     tableBuilder.addColumnBuilder(this);
   }
@@ -55,7 +49,7 @@ public class ColumnBuilder
     }
     p_javaName = CamelCase.makeFirstUpperCase(p_javaName);
     return new Column(table, name, p_javaName, description, dataType.getDataType(), dataType.getJavaType(), reference,
-        isIdentifierColumn, isAutoIncrementColumn, addNextMethod, enableAutoIdHandling);
+        flags);
   }
 
   public ColumnBuilder column(String name, DataType dataType)
@@ -77,8 +71,7 @@ public class ColumnBuilder
 
   public ColumnBuilder autoIdHandling()
   {
-    this.enableAutoIdHandling = true;
-    return addNextMethod();
+    return setFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
   }
 
   /**
@@ -89,8 +82,7 @@ public class ColumnBuilder
    */
   public ColumnBuilder autoIncrement()
   {
-    this.isAutoIncrementColumn = true;
-    return addNextMethod();
+    return setFlag(ColumnMetaData.AUTO_INCREMENT);
   }
 
   /**
@@ -103,13 +95,17 @@ public class ColumnBuilder
    */
   public ColumnBuilder addNextMethod()
   {
-    this.addNextMethod = true;
-    return this;
+    return setFlag(ColumnMetaData.ADD_NEXT_METHOD);
   }
 
   public ColumnBuilder identifierColumn()
   {
-    this.isIdentifierColumn = true;
+    return setFlag(ColumnMetaData.IDENTIFIER);
+  }
+  
+  public ColumnBuilder setFlag(String flag)
+  {
+    flags.add(flag);
     return this;
   }
 
