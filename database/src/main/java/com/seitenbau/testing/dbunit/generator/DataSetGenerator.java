@@ -213,7 +213,7 @@ public class DataSetGenerator
   
   protected String getTemplatePathRefFactory()
   {
-    return "/templates/db/DSLRefFactory.vm";
+    return "/templates/db/RefFactory.vm";
   }
   
   protected String getTemplatePathDSLBuilder()
