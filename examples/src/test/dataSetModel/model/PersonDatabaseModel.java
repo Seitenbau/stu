@@ -12,8 +12,8 @@ public class PersonDatabaseModel extends DatabaseModel
     Table jobs = table("jobs") //
         .description("The table containing the jobs of a great company")
         .column("id", DataType.BIGINT) //
-          .autoIdHandling() //
           .identifierColumn() //
+          .autoInvokeNext() //
         .column("title", DataType.VARCHAR) //
           .description("The job title")
           .setFlag("any_custom_flag")
@@ -24,8 +24,8 @@ public class PersonDatabaseModel extends DatabaseModel
     Table teams = table("teams") //
         .description("The table containing the teams of a great company")
         .column("id", DataType.BIGINT) //
-          .autoIdHandling() //
           .identifierColumn() //
+          .autoInvokeNext() //
         .column("title", DataType.VARCHAR) //
         .column("description", DataType.VARCHAR) //
         .column("membersize", DataType.BIGINT) //
@@ -34,8 +34,8 @@ public class PersonDatabaseModel extends DatabaseModel
     table("persons") //
         .description("The table containing the staff of a great company")
         .column("id", DataType.BIGINT) //
-          .autoIdHandling() //
           .identifierColumn() //
+          .autoInvokeNext() //
         .column("first_name", DataType.VARCHAR) //
         .column("name", DataType.VARCHAR) //
           .description("Actually this column represents the last name of a person")

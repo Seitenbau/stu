@@ -69,7 +69,7 @@ public class ColumnBuilder
     return this;
   }
 
-  public ColumnBuilder autoIdHandling()
+  public ColumnBuilder autoInvokeNext()
   {
     return setFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
   }

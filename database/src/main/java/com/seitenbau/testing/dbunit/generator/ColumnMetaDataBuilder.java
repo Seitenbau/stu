@@ -33,7 +33,7 @@ public class ColumnMetaDataBuilder
     return setFlag(ColumnMetaData.ADD_NEXT_METHOD);
   }
 
-  public ColumnMetaDataBuilder enableAutoIdHandling()
+  public ColumnMetaDataBuilder autoInvokeNext()
   {
     setFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
     return addNextValueMethod();
