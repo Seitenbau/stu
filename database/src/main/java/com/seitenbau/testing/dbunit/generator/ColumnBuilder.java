@@ -75,23 +75,25 @@ public class ColumnBuilder
   }
 
   /**
-   * Erzeugt in der DBUnit Spalte eine AutoIncrement Flag. Sinnvoll
-   * falls Beispielsweise ein {@link DatabaseTesterCleanAction} diese
-   * Information benötigt. Gleichzeitig wird aber auch eine nextId()
-   * Methode für das Feld generiert. Gleich wie beim AddNextIdMethod.
+   * Enables the DBUnit AutoIncrement flag. Useful e.g., if a {@link DatabaseTesterCleanAction}
+   * requires the information. Enables the flag {@link ColumnMetaData#ADD_NEXT_METHOD} and
+   * therefore the generation of a next value method as well.
+   * <b>This flag requires DbUnit 2.4.3 or later</b>
    */
   public ColumnBuilder autoIncrement()
   {
-    return setFlag(ColumnMetaData.AUTO_INCREMENT);
+    setFlag(ColumnMetaData.AUTO_INCREMENT);
+    return setFlag(ColumnMetaData.ADD_NEXT_METHOD);
   }
 
   /**
-   * Erzeugt zusätzlich zu den setter Methoden der Spalte noch eine
-   * nextId Methode (Wobei Id = Spaltenname). Diese Methode erzeugt
-   * über einen {@link DatasetIdGenerator} aus dem DataSetModel beim
-   * Aufruf die nächste ID. Außerdem werden in der Builder Klasse des
-   * erzeugten DataSets bei einem create*() die nextMethoden
-   * automatisch gerufen.
+   * Enables the generation of a next value method (depending on the column name)
+   * on the RowBuilder. The next value method will use the {@link DatasetIdGenerator} 
+   * from the DataSetModel. 
+   * 
+   * // TODO NM translate comment
+   * Außerdem werden in der Builder Klasse des erzeugten DataSets bei einem create*() die
+   * nextMethoden automatisch gerufen.
    */
   public ColumnBuilder addNextMethod()
   {

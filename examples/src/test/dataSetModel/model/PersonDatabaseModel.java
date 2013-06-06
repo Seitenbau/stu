@@ -13,6 +13,7 @@ public class PersonDatabaseModel extends DatabaseModel
         .description("The table containing the jobs of a great company")
         .column("id", DataType.BIGINT) //
           .identifierColumn() //
+          // .autoIncrement() // requires DBUnit 2.4.3 or later
           .autoInvokeNext() //
         .column("title", DataType.VARCHAR) //
           .description("The job title")

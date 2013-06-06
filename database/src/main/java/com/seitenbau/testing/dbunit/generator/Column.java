@@ -144,5 +144,10 @@ public class Column
   {
     return _metaData.hasFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
   }
+
+  public boolean isAutoIncrement()
+  {
+    return _metaData.hasFlag(ColumnMetaData.AUTO_INCREMENT);
+  }
   
 }
