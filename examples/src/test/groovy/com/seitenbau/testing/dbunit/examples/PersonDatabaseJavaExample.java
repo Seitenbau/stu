@@ -36,8 +36,12 @@ public class PersonDatabaseJavaExample
     
     println("Persons with a first name of length 6", dataSet.personsTable.find(LEN_FILTER).getRowCount());
     
-    println("Is Flag any_custom_flag set on column title in JobsTable", JobsTable.getColumnMetaData().get("title").hasFlag("any_custom_flag"));
-    println("Is Flag no_custom_flag set on column title in JobsTable", JobsTable.getColumnMetaData().get("title").hasFlag("no_custom_flag"));
+    println("Is Flag any_custom_flag set on column title in JobsTable", JobsTable.getColumnMetaData("title").hasFlag("any_custom_flag"));
+    println("Is Flag no_custom_flag set on column title in JobsTable", JobsTable.getColumnMetaData("title").hasFlag("no_custom_flag"));
+    
+    for (String flag : JobsTable.getColumnMetaData("id").getFlags()) {
+      println("JobsTable.id has flag", flag);
+    }
   }
   
   private static final Filter<RowBuilder_Persons> LEN_FILTER = new Filter<RowBuilder_Persons>() 

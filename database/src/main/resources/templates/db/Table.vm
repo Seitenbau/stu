@@ -83,9 +83,14 @@ public class ${tableClass} implements ITable
 
   private static final Map<String, ColumnMetaData> GENERATOR_METADATA;
   
-  public static Map<String, ColumnMetaData> getColumnMetaData()
+  public static ColumnMetaData getColumnMetaData(String column)
   {
-    return Collections.unmodifiableMap(GENERATOR_METADATA);
+    if (!GENERATOR_METADATA.containsKey(column)) 
+    {
+      throw new RuntimeException("Column " + column + " does not exist, no meta data available.");
+    }
+    
+    return GENERATOR_METADATA.get(column);
   }
   
   static {

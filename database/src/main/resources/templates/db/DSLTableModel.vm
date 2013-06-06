@@ -603,9 +603,9 @@ public class ${clsTable} {
 #end
   }
   
-  public static Map<String, ColumnMetaData> getColumnMetaData()
+  public static ColumnMetaData getColumnMetaData(String column)
   {
-    return ${model.package}.${clsTable}.getColumnMetaData();
+    return ${model.package}.${clsTable}.getColumnMetaData(column);
   }
   
 }
