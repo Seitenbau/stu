@@ -8,10 +8,10 @@ import java.util.Map.Entry;
 
 import com.google.common.base.Optional;
 
-public class TableParserCallback<R, F, D extends DatabaseReference> implements IParsedTableRowCallback
+public class TableParserCallback<R, G, D extends DatabaseReference> implements IParsedTableRowCallback
 {
   
-  private final ITableAdapter<R, F, D> _tableAdapter;
+  private final ITableAdapter<R, G, D> _tableAdapter;
 
   private TableRowModel _head;
 
@@ -23,11 +23,11 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
 
   private int _idColumnIndex;
 
-  private ColumnBinding<R, F> _refColumn;
+  private ColumnBinding<R, G> _refColumn;
 
-  private ColumnBinding<R, F> _idColumn;
+  private ColumnBinding<R, G> _idColumn;
 
-  public TableParserCallback(ITableAdapter<R, F, D> tableAdapter)
+  public TableParserCallback(ITableAdapter<R, G, D> tableAdapter)
   {
     _tableAdapter = tableAdapter;
     _head = null;
@@ -65,7 +65,7 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
   private void handleColumn(int columnIndex, TableRowModel row, R rowbuilder)
   {
     @SuppressWarnings("unchecked")
-    ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(columnIndex);
+    ColumnBinding<R, G> column = (ColumnBinding<R, G>) _head.getValue(columnIndex);
     Object value = row.getValue(columnIndex);
     if (value instanceof NoValue)
     {
@@ -101,12 +101,12 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
 
     if (_idColumnIndex != -1)
     {
-      _idColumn = (ColumnBinding<R, F>) _head.getValue(_idColumnIndex);
+      _idColumn = (ColumnBinding<R, G>) _head.getValue(_idColumnIndex);
     }
 
     if (_refColumnIndex != -1)
     {
-      _refColumn = (ColumnBinding<R, F>) _head.getValue(_refColumnIndex);
+      _refColumn = (ColumnBinding<R, G>) _head.getValue(_refColumnIndex);
     }
   }
 
@@ -262,7 +262,7 @@ public class TableParserCallback<R, F, D extends DatabaseReference> implements I
       {
         // Set manual given ID
         @SuppressWarnings("unchecked")
-        ColumnBinding<R, F> column = (ColumnBinding<R, F>) _head.getValue(_idColumnIndex);
+        ColumnBinding<R, G> column = (ColumnBinding<R, G>) _head.getValue(_idColumnIndex);
         column.set(builder, id);
       }
     }
