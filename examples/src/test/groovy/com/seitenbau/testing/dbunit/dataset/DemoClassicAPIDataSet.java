@@ -11,6 +11,8 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
   @Override
   protected void initDataSet()
   {
+    QA.personsTo(KAULBERSCH, GUITTON, BARANOWSKI);
+    
     table_Teams
       .insertRow()
         .bindRef(QA)
@@ -51,21 +53,18 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
         .setFirstName("Dennis")
         .setName("Kaulbersch")
         .setJobId(SWD)
-        .setTeamId(QA)
       .insertRow()
         .bindRef(GUITTON)
         .setId(2)
         .setFirstName("Julien")
         .setName("Guitton")
         .setJobId(SWT)
-        .setTeamId(QA)
       .insertRow()
         .bindRef(BARANOWSKI)
         .setId(3)
         .setFirstName("Christian")
         .setName("Baranowski")
-        .setJobId(TM)
-        .setTeamId(QA);
+        .setJobId(TM);
   }
 
 }

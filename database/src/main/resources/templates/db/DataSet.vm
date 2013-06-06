@@ -9,6 +9,7 @@ package ${package};
 ## ************************************************************
 ##
 import com.seitenbau.testing.dbunit.util.DbCompare;
+import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.dsl.IScope;
 import com.seitenbau.testing.util.DateUtil;
 import com.seitenbau.testing.util.date.DateBuilder;
@@ -61,10 +62,12 @@ public abstract class ${model.name}${model.suffix}
    */
   public ${model.name}${model.suffix}() 
   {
+    IScope lastScope = ScopeRegistry.use(this);
     prepareTables();
     beforeInitDataSet();
     initDataSet();
     afterInitDataSet();
+    ScopeRegistry.use(lastScope);
   }
   
   /**
