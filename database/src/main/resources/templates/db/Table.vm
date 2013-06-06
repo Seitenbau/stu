@@ -225,15 +225,15 @@ public class ${tableClass} implements ITable
       data = new Object[COLUMNS.length];
       table = tableDelegate;
     }
-    
 #foreach( $column in $model.columns )
-
 #if( $column.javaType.contains("Date") )
+
     public ${rowbuilder} set${column.javaName}(String dateString)
     {
       data[${foreach.index}] = toDate(dateString);
       return this;
     }
+
     public ${rowbuilder} set${column.javaName}(DateBuilder date)
     {
       data[${foreach.index}] = toDate(date);
@@ -241,23 +241,27 @@ public class ${tableClass} implements ITable
     }
 #end
 #if( $column.javaType.contains("Long") )
+
     public ${rowbuilder} set${column.javaName}(Integer intValue)
     {
       data[${foreach.index}] = (intValue==null?null:Long.valueOf(intValue));
       return this;
     }
 #end
+
     public ${rowbuilder} set${column.javaName}(${column.javaType} value)
     {
       data[${foreach.index}] = value;
       return this;
     }
+
     public ${rowbuilder} set${column.javaName}Raw(Object value)
     {
       data[${foreach.index}] = value;
       return this;
     }
 #if( $column.isNextIdMethodGenerated() )
+
     public ${rowbuilder} next${column.javaName}()
     {
       DatasetIdGenerator generator = table.getDataset().getIdGenerator();
@@ -331,19 +335,26 @@ public class ${tableClass} implements ITable
 #foreach( $column in $model.columns )
       if(column.equalsIgnoreCase(Columns.${column.javaName}) )
       {
-        Object value = data[$foreach.index];
-#if( !(${column.reference}) )
+#if( ${column.reference} )
 ## reference value cannot be lazy
-        if (value instanceof LazyValue)
-        {
-          LazyValue lazyValue = (LazyValue)value;
-          return lazyValue.getValue();
-        } 
+        return data[$foreach.index];
+#else
+        return getColumnValue($foreach.index);        
 #end
-        return value;
       }
 #end
       throw new RuntimeException(NAME + " col = " + column);
+    }
+    
+    private Object getColumnValue(int index)
+    {
+      Object value = data[index];
+      if (value instanceof LazyValue)
+      {
+        LazyValue lazyValue = (LazyValue)value;
+        return lazyValue.getValue();
+      } 
+      return value;
     }
 #foreach( $column in $model.columns )
 #if( $column.reference )
