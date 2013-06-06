@@ -138,8 +138,14 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
   @Override
   public String getScopeIdentifier()
   {
-    return "${model.package}.${model.name}";
+    return dataset.getScopeIdentifier();
   }
+  
+  @Override
+  public Object getScopeInstance()
+  {
+    return dataset.getScopeInstance();
+  } 
   
   /**
    * Create a DBUnit dataset.
@@ -150,21 +156,5 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
   {
     return dataset.createDBUnitDataSet();
   }
-  
-  @Override
-  public boolean equals(Object o)
-  {
-    if (o instanceof ${clsScope})
-    {
-      return dataset.equals((${clsScope})o);
-    }  
-    return dataset.equals(o);
-  } 
-  
-  @Override
-  public int hashCode()
-  {
-    return dataset.hashCode();
-  }
-  
+    
 }

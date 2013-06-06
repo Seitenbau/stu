@@ -261,4 +261,10 @@ public abstract class ${model.name}${model.suffix}
     return "${model.package}.${model.name}";
   }
 
+  @Override
+  public Object getScopeInstance()
+  {
+    return this;
+  } 
+
 }

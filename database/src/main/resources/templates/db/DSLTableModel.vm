@@ -6,12 +6,10 @@
 #end
 #set($clsScope = ${model.dataSet.name} + "Builder")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
-#set($clsExtRowbuilder = "Extended" + ${clsRowbuilder})
-#set($clsWhere = ${model.javaName} + "GetWhere")
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsTable = ${model.javaName} + "Table")
-#set($clsTableFindWhere = ${model.javaName} + "TableFindWhere")
-#set($clsTableGetWhere = ${model.javaName} + "TableGetWhere")
+#set($clsTableFindWhere = ${model.javaName} + "FindWhere")
+#set($clsTableGetWhere = ${model.javaName} + "GetWhere")
 #set($clsRowcollection= "RowCollection_" + ${model.javaName} )
 #set($javaDocSep = "#")
 package ${package};
@@ -44,14 +42,15 @@ import java.util.Set;
 ###if( $model.package && $model.package.length() != 0 )
 ##import ${model.package}.${model.dataSet.name}DataSet;
 ###end
-import ${model.package}.${clsTable}.${clsWhere};
 import ${model.package}.${clsTable}.${clsRowcollection};
+import ${model.package}.${clsTable}.${clsTableFindWhere};
+import ${model.package}.${clsTable}.${clsTableGetWhere};
 import ${model.package}.${model.javaName}Model;
 #foreach( $table in $model.dataSet.tables )
 import ${model.package}.${table.javaName}Ref;
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
-import ${model.package}.${table.javaName}Table.RowGetters_${table.javaName};
 #end
+
 
 public class ${clsTable} {
 
@@ -65,7 +64,7 @@ public class ${clsTable} {
    * <p>
    * Data Type: ${model.javaName}Ref
    */
-  public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> REF = createREFBinding();
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> REF = createREFBinding();
 
 #foreach( $col in $model.columns )
 #macro( comments )
@@ -86,13 +85,13 @@ public class ${clsTable} {
    */
 #end
 #comments()   
-  public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${col.name} = create${col.javaName}Binding();
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.name} = create${col.javaName}Binding();
 
 ## check if column is an identifier
 #if ( ${col.truncatedReferenceName} )
 #set( $shortname  = ${col.truncatedReferenceName} )
 #comments()   
-  public final ColumnBinding<${clsRowbuilder}, ${clsWhere}> ${shortname} = ${col.name};
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${shortname} = ${col.name};
 
 #end
 #end
@@ -100,12 +99,37 @@ public class ${clsTable} {
 
   private final ${model.package}.${clsTable} _table;
 
-  private final ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}> _adapter = new TableAdapter();
+  private final ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> _adapter = new TableAdapter();
     
+
+  /**
+   * Allows searching for one or more rows specified by a column value.
+   * findWhere assumes that it is used to search for existing rows. An
+   * exception will be thrown if no matching row was found. Use getWhere
+   * or find to avoid this behavior.
+   * @see ${javaDocSep}getWhere
+   * @see ${javaDocSep}find(Closure)
+   * @see ${javaDocSep}find(Filter)
+   */
+  public final ${clsTableFindWhere} findWhere;
+
+    
+  /**
+   * Allows searching for a row specified by a column value.
+   * The first matching row is returned. Does not throw an
+   * exception, if no element is found.
+   * @see ${javaDocSep}findWhere
+   * @see ${javaDocSep}find(Closure)
+   * @see ${javaDocSep}find(Filter)
+   */
+  public final ${clsTableGetWhere} getWhere;
+
   ${clsTable}(${clsScope} scope, ${model.package}.${clsTable} table)
   {
     _scope = scope;
     _table = table;
+    findWhere = _table.findWhere;
+    getWhere = _table.getWhere;
   }
   
   ${model.package}.${clsTable} getTableModel()
@@ -129,8 +153,8 @@ public class ${clsTable} {
    */
   public void rows(Closure<?> rows)
   {
-    TableParserCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}> callback = 
-        new TableParserCallback<${clsRowbuilder}, ${clsWhere}, ${clsRef}>(_adapter);
+    TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> callback = 
+        new TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
   
@@ -145,14 +169,14 @@ public class ${clsTable} {
     return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
   }
   
-  private class TableAdapter implements ITableAdapter<${clsRowbuilder}, ${clsWhere}, ${clsRef}>
+  private class TableAdapter implements ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
   {
     public ${clsRowbuilder} insertRow() 
     {
       return _table.insertRow();
     }
   
-    public ${clsWhere} getWhere()
+    public ${clsTableGetWhere} getWhere()
     {
       return _table.getWhere;
     }
@@ -179,9 +203,9 @@ public class ${clsTable} {
     
   };  
 
-  private ColumnBinding<${clsRowbuilder}, ${clsWhere}> createREFBinding()
+  private ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> createREFBinding()
   {
-    return new ColumnBinding<${clsRowbuilder}, ${clsWhere}>()
+    return new ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>()
     { 
       @Override
       public void set(${clsRowbuilder} row, Object value)
@@ -204,9 +228,9 @@ public class ${clsTable} {
   }
 #foreach( $col in $model.columns )
 
-  private ColumnBinding<${clsRowbuilder}, ${clsWhere}> create${col.javaName}Binding() 
+  private ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> create${col.javaName}Binding() 
   {
-    return new ColumnBinding<${clsRowbuilder}, ${clsWhere}>()
+    return new ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>()
     {
       @Override
       public void set(${clsRowbuilder} row, Object value)
@@ -243,7 +267,7 @@ public class ${clsTable} {
 #if ( ${col.isIdentifierColumn()} )
 
       @Override
-      public Optional<${clsRowbuilder}> getWhere(${clsWhere} getWhere, Object value)
+      public Optional<${clsRowbuilder}> getWhere(${clsTableGetWhere} getWhere, Object value)
       {
         return getWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
       }
@@ -274,181 +298,24 @@ public class ${clsTable} {
   }
 #end
 
-  public ${clsExtRowbuilder} insertRow()
+  public ${clsRowbuilder} insertRow()
   {
-    return new ${clsExtRowbuilder}(this, _table.insertRow());
+    return _table.insertRow();
   }
 
-  public ${clsExtRowbuilder} insertRow(${model.javaName}Model row)
+  public ${clsRowbuilder} insertRow(${model.javaName}Model row)
   {
-    return new ${clsExtRowbuilder}(this, _table.insertRow(row));
+    return _table.insertRow(row);
   }
 
-  public ${clsExtRowbuilder} insertRowAt(int index)
+  public ${clsRowbuilder} insertRowAt(int index)
   {
-    return new ${clsExtRowbuilder}(this, _table.insertRowAt(index));
+    return _table.insertRowAt(index);
   }
 
-  public ${clsExtRowbuilder} insertRow(${clsRowbuilder} theRow)
+  public ${clsRowbuilder} insertRow(${clsRowbuilder} theRow)
   {
-    return new ${clsExtRowbuilder}(this, _table.insertRow(theRow));
-  }
-  
-  public static class ${clsExtRowbuilder} implements ${clsRowbuilder}
-  {
-  
-    private final ${clsTable} _parent;
-    
-    private final ${clsRowbuilder} _delegate;
-  
-    ${clsExtRowbuilder}(${clsTable} parent, ${clsRowbuilder} delegate)
-    {
-      _parent = parent;
-      _delegate = delegate;
-    }
-    
-    public ${clsExtRowbuilder} bindRef(${clsRef} ref)
-    {
-      // TODO throw exception?
-      return this; 
-    }
-#foreach( $column in $model.columns )
-#if( $column.javaType.contains("Date") )
-
-    public ${clsExtRowbuilder} set${column.javaName}(String dateString)
-    {
-      _delegate.set${column.javaName}(dateString);
-      return this;
-    }
-
-    public ${clsExtRowbuilder} set${column.javaName}(DateBuilder date)
-    {
-      _delegate.set${column.javaName}(date);
-      return this;
-    }
-#end
-#if( $column.javaType.contains("Long") )
-
-    public ${clsExtRowbuilder} set${column.javaName}(Integer intValue)
-    {
-      _delegate.set${column.javaName}(intValue);
-      return this;
-    }
-#end
-#if( !${column.isIdentifierColumn()} )
-#if( !${column.reference} )
-
-    public ${clsExtRowbuilder} set${column.javaName}(LazyValue value)
-    {
-      _delegate.set${column.javaName}(value);
-      return this;
-    }
-#end
-#end
-
-    public ${clsExtRowbuilder} set${column.javaName}(${column.javaType} value)
-    {
-      _delegate.set${column.javaName}(value);
-      return this;
-    }
-
-    public ${clsExtRowbuilder} set${column.javaName}Raw(Object value)
-    {
-      _delegate.set${column.javaName}Raw(value);
-      return this;
-    }
-    #if( $column.isNextValueMethodGenerated() )
-
-    public ${clsExtRowbuilder} next${column.javaName}()
-    {
-      _delegate.next${column.javaName}();
-      return this;
-    }
-#end
-
-#if( ${column.description} )
-    /**
-     * ${column.description}
-     * @return The value
-     */
-#end
-    public ${column.javaType} get${column.javaName}()
-    {
-      return _delegate.get${column.javaName}();
-    }
-
-#if( ${col.description} )
-    /**
-     * ${col.description}
-     * @return The value as raw object
-     */
-#end
-    public Object get${column.javaName}Raw()
-    {
-      return _delegate.get${column.javaName}Raw();
-    }
-#end     
-  
-#foreach( $column in $model.columns )
-#if( $column.reference )
-
-    public ${clsExtRowbuilder} set${column.javaName}(${column.reference.table.javaName}Ref reference)
-    {
-      // TODO _delegate.set${column.javaName}( ... ) 
-      RowBuilder_${column.reference.table.javaName} builder = reference.getBuilder(_parent._scope);
-      if (builder == null) 
-      {
-        throw new IllegalArgumentException("Reference is not defined in this scope");
-      }
-      _delegate.ref${column.javaName}(builder);
-      return this;
-    }
-#end
-#end
-
-    public ${clsExtRowbuilder} insertRow()
-    {
-      return _parent.insertRow();
-    }
-    
-    public ${clsExtRowbuilder} insertRow(${model.javaName}Model row)
-    {
-      return _parent.insertRow(row); 
-    }
-
-    public ${clsExtRowbuilder} insertRowAt(int index)
-    {
-      return _parent.insertRowAt(index);
-    }
-
-    public ${clsExtRowbuilder} insertRow(${clsRowbuilder} theRow)
-    {
-      return _parent.insertRow(theRow);
-    }
-    
-    public Object getValue(String column) throws RuntimeException {
-      return _delegate.getValue(column);
-    }
-
-#foreach( $column in $model.columns )
-#if( $column.reference )
-#set($otherGetter  = "RowGetters_" + ${column.reference.table.javaName} )
-
-    public ${clsExtRowbuilder} ref${column.javaName}($otherGetter reference)
-    {
-      _delegate.ref${column.javaName}(reference);
-      return this;
-    }
-#end
-#end
-    
-    @Override
-    public ${clsExtRowbuilder} clone() {
-      ${clsRowbuilder} cloneDelegate = _delegate.clone();
-      ${clsExtRowbuilder} clone = new ${clsExtRowbuilder}(_parent, cloneDelegate);
-      return clone;
-    }
-
+    return _table.insertRow(theRow);
   }
 
   /**
@@ -502,123 +369,7 @@ public class ${clsTable} {
         }
       });
   }
-  
-  
-  /**
-   * Allows searching for one or more rows specified by a column value.
-   * findWhere assumes that it is used to search for existing rows. An
-   * exception will be thrown if no matching row was found. Use getWhere
-   * or find to avoid this behavior.
-   * @see ${javaDocSep}getWhere
-   * @see ${javaDocSep}find(Closure)
-   * @see ${javaDocSep}find(Filter)
-   */
-  public final ${clsTableFindWhere} findWhere = new ${clsTableFindWhere}(this);
 
-  public static class ${clsTableFindWhere}
-  {
-   
-    private final ${clsTable} table;
-    
-    ${clsTableFindWhere}(${clsTable} table) 
-    {
-      this.table = table;
-    }
-#foreach( $col in $model.columns )
-
-    public ${clsRowcollection} ${col.javaNameFirstLower}(${clsRef} ref)
-    {
-      ${clsRowbuilder} builder = ref.getBuilder(table._scope);
-      if (builder == null) 
-      {
-        throw new IllegalArgumentException("Reference is not defined in this scope");
-      }
-      return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
-    }
-#if( $col.reference )
-
-    public ${clsRowcollection} ${col.javaNameFirstLower}(${col.reference.column.table.javaName}Ref ref)
-    {
-      RowBuilder_${col.reference.column.table.javaName} builder = ref.getBuilder(table._scope);
-      if (builder == null) 
-      {
-        throw new IllegalArgumentException("Reference is not defined in this scope");
-      }
-      return table.getTableModel().findWhere.${col.javaNameFirstLower}(builder.get${col.reference.column.javaName}());
-    }
-#end    
-    
-    public ${clsRowcollection} ${col.javaNameFirstLower}(${col.javaType} toSearch)
-    {
-      return table.getTableModel().findWhere.${col.javaNameFirstLower}(toSearch);
-    }
-#if( $col.javaType.contains("Long") )
-
-    public ${clsRowcollection} ${col.javaNameFirstLower}(Integer toSearch) 
-    {
-      return ${col.javaNameFirstLower}(Long.valueOf(toSearch));
-    }
-#end
-#end
-  }
-  
-  /**
-   * Allows searching for a row specified by a column value.
-   * The first matching row is returned. Does not throw an
-   * exception, if no element is found.
-   * @see ${javaDocSep}findWhere
-   * @see ${javaDocSep}find(Closure)
-   * @see ${javaDocSep}find(Filter)
-   */
-  public final ${clsTableGetWhere} getWhere = new ${clsTableGetWhere}(this);
-
-  public static class ${clsTableGetWhere}
-  {
-
-    private final ${clsTable} table;
-    
-    ${clsTableGetWhere}(${clsTable} table) 
-    {
-      this.table = table;
-    }
-#foreach( $col in $model.columns )
-
-    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${clsRef} ref)
-    {
-      ${clsRowbuilder} builder = ref.getBuilder(table._scope);
-      if (builder == null) 
-      {
-        throw new IllegalArgumentException("Reference is not defined in this scope");
-      }
-      return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.javaName}());
-    }
-#if( $col.reference )
-
-    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${col.reference.column.table.javaName}Ref ref)
-    {
-      RowBuilder_${col.reference.column.table.javaName} builder = ref.getBuilder(table._scope);
-      if (builder == null) 
-      {
-        throw new IllegalArgumentException("Reference is not defined in this scope");
-      }
-      return table.getTableModel().getWhere.${col.javaNameFirstLower}(builder.get${col.reference.column.javaName}());
-    }
-#end    
-
-    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(${col.javaType} toSearch)
-    {
-      return table.getTableModel().getWhere.${col.javaNameFirstLower}(toSearch);
-    }
-#if( $col.javaType.contains("Long") )
-
-    public Optional<${clsRowbuilder}> ${col.javaNameFirstLower}(Integer toSearch) 
-    {
-      return ${col.javaNameFirstLower}(Long.valueOf(toSearch));
-    }
-#end
-#end
-  }
-  
   public static ColumnMetaData getColumnMetaData(String column)
   {
     return ${model.package}.${clsTable}.getColumnMetaData(column);

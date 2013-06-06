@@ -18,7 +18,7 @@ public class DatabaseReference
    * @return The corresponding list for the key
    * @throws RuntimeException if key is null
    */
-  protected <K, T> List<T> getOrCreateList(Map<K, List<T>> map, K key)
+  protected <T> List<T> getOrCreateList(Map<Object, List<T>> map, Object key)
   {
     if (key == null)
     {

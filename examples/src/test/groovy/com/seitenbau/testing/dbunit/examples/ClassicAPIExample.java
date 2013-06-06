@@ -14,6 +14,7 @@ public class ClassicAPIExample
     ScopeRegistry.use(dataSet);
     
     System.out.println(QA.getMembersize());
+    System.out.println(dataSet.table_Persons.getWhere.id(BARANOWSKI).get().getFirstName());
   }
 
 }

@@ -413,7 +413,16 @@ public class ${tableClass} implements ITable
       {
 #if( ${column.reference} )
 ## reference value cannot be lazy
-        return data[$foreach.index];
+        Object value = data[$foreach.index];
+        if (value instanceof ${column.reference.column.table.javaName}Ref)
+        {
+          ${column.reference.column.table.javaName}Ref ref = (${column.reference.column.table.javaName}Ref)value;
+          ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.reference.column.javaName}();
+          // TODO NM/CB/RW think about storing the value
+          // data[$foreach.index] = refValue;
+          return refValue; 
+        }      
+        return value;
 #else
         return getColumnValue($foreach.index);        
 #end
@@ -592,6 +601,18 @@ public class ${tableClass} implements ITable
       return Optional.<${rowbuilder}> absent();
     }
 #foreach( $column in $model.columns )  
+
+    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${clsRef} ref)
+    {
+      return ${column.javaNameFirstLower}(ref.get${column.javaName}());
+    }
+#if( $column.reference )
+
+    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${column.reference.column.table.javaName}Ref ref)
+    {
+      return ${column.javaNameFirstLower}(ref.get${column.reference.column.javaName}());
+    }
+#end       
 
     public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${column.javaType} toSearch) 
     {

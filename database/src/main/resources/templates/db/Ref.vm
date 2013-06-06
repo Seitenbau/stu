@@ -41,11 +41,11 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 public class ${clsRef} extends DatabaseReference
 {
 
-  private final Map<IScope, ${clsRowbuilder}> builders;
+  private final Map<Object, ${clsRowbuilder}> builders;
   
   public ${clsRef}()
   {
-    builders = new HashMap<IScope, ${clsRowbuilder}>();
+    builders = new HashMap<Object, ${clsRowbuilder}>();
   }
 #foreach ($col in $model.columns)
 
@@ -58,7 +58,7 @@ public class ${clsRef} extends DatabaseReference
   public ${col.javaType} get${col.javaName}()
   {
     final IScope scope = getScope();
-    final ${clsRowbuilder} row = builders.get(scope);
+    final ${clsRowbuilder} row = builders.get(scope.getScopeInstance());
     if (row == null)
     {
       throw new IllegalStateException("No corresponding row to query ${col.javaName} in ${model.javaName}Ref");
@@ -72,7 +72,7 @@ public class ${clsRef} extends DatabaseReference
    */
   public void setBuilder(IScope scope, ${clsRowbuilder} builder)
   {
-    ${clsRowbuilder} lastBuilder = builders.put(scope, builder);
+    ${clsRowbuilder} lastBuilder = builders.put(scope.getScopeInstance(), builder);
     if (lastBuilder != null && lastBuilder != builder)
     {
       throw new RuntimeException("Builder cannot be redefined");
@@ -80,7 +80,7 @@ public class ${clsRef} extends DatabaseReference
 #macro( setBuilderHandlerHead $refTable $verb )
 #set($refClsRef = ${refTable.javaName} + "Ref")
 
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, scope);
+    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, scope.getScopeInstance());
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
       ${refClsRef} ref = it.next();
@@ -109,7 +109,7 @@ public class ${clsRef} extends DatabaseReference
 #set($verb = ${col.reference.localName})
 #setBuilderHandlerHead(${col.reference.table} $verb)
       builder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, getScope());
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, getScope().getScopeInstance());
 #setBuilderHandlerFooter()
 #end
 ##
@@ -151,7 +151,7 @@ public class ${clsRef} extends DatabaseReference
 #else
       otherBuilder.set${refColumn.javaName}(builder.get${remoteKey}());
 #end      
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, getScope());
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, getScope().getScopeInstance());
 #setBuilderHandlerFooter()
 #end
 #end
@@ -163,7 +163,7 @@ public class ${clsRef} extends DatabaseReference
    */
   public ${clsRowbuilder} getBuilder(IScope scope)
   {
-    return builders.get(scope);
+    return builders.get(scope.getScopeInstance());
   }
   
 #macro( addToList $list $item )
@@ -172,7 +172,7 @@ public class ${clsRef} extends DatabaseReference
 #end
 #macro( addReference $refTable $verb $remoteVerb $resolveCode $description )
 #set($refClsRef = ${refTable.javaName} + "Ref" )
-  Map<IScope, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<IScope, List<${refClsRef}>>();
+  Map<Object, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<Object, List<${refClsRef}>>();
 
   // depending on relation type with or without ellipse (...)
   /**
@@ -199,11 +199,11 @@ public class ${clsRef} extends DatabaseReference
         // to the Refs where no builder exist.
         if (thisBuilder == null)
         {
-          getOrCreateList(${privateListPrefix}${verb}Map, getScope()).add(ref);
+          getOrCreateList(${privateListPrefix}${verb}Map, getScope().getScopeInstance()).add(ref);
         }
         if (otherBuilder == null) 
         {
-          getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, getScope()).add(this);
+          getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, getScope().getScopeInstance()).add(this);
         }
       }
     }
