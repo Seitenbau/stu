@@ -73,10 +73,11 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    */
   public void tables(Closure<?> table)
   {
-    ScopeRegistry.use(this);
+    IScope lastScope = ScopeRegistry.use(this);
     table.setDelegate(this);
     table.setResolveStrategy(Closure.DELEGATE_FIRST);
     table.call();
+    ScopeRegistry.use(lastScope);
   }
   
   /**
@@ -85,8 +86,9 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    */
   public void relations(Closure<?> relations)
   {
-    ScopeRegistry.use(this);
+    IScope lastScope = ScopeRegistry.use(this);
     relations.call();
+    ScopeRegistry.use(lastScope);
   }
  
 #foreach( $reftable in $model.tables )

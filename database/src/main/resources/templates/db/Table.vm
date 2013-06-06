@@ -276,11 +276,14 @@ public class ${tableClass} implements ITable
     public ${column.javaType} get${column.javaName}()
     {
       Object value = data[$foreach.index];
+#if( !(${column.reference}) )
+## reference value cannot be lazy
       if (value instanceof LazyValue) {
         LazyValue lazyValue = (LazyValue)value;
         return (${column.javaType})CastUtil.cast(lazyValue.getValue(), 
           com.seitenbau.testing.dbunit.generator.${column.type});
-      } 
+      }
+#end
       return (${column.javaType})value;
     }
 
@@ -329,11 +332,14 @@ public class ${tableClass} implements ITable
       if(column.equalsIgnoreCase(Columns.${column.javaName}) )
       {
         Object value = data[$foreach.index];
+#if( !(${column.reference}) )
+## reference value cannot be lazy
         if (value instanceof LazyValue)
         {
           LazyValue lazyValue = (LazyValue)value;
           return lazyValue.getValue();
         } 
+#end
         return value;
       }
 #end
@@ -469,12 +475,10 @@ public class ${tableClass} implements ITable
   public static class $getWhereClass
   {
     private final List<${rowbuilder}> rows;
-    private final ${tableClass} table;
     
     public $getWhereClass(${tableClass} theTable) 
     {
        rows = theTable.rows;
-       table = theTable;
     }
     
     public Optional<${rowbuilder}> rowComparesTo(Comparable<${rowbuilder}> toSearch) 
