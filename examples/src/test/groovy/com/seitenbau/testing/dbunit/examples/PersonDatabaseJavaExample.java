@@ -5,6 +5,7 @@ import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
+import com.seitenbau.testing.dbunit.model.dsl.JobsTable;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
@@ -29,11 +30,14 @@ public class PersonDatabaseJavaExample
     println("TM title", TM.getTitle());
     println("Persons Row Count", dataSet.personsTable.getRowCount());
     
-    println("Persons filtered by name length", dataSet.personsTable.find(LEN_FILTER).getRowCount());
-    
-    System.out.println("List of first names");
+    System.out.println("List of all first names");
     dataSet.personsTable.foreach(FIRST_NAME_PRINTER);
     System.out.println("(end of list)");    
+    
+    println("Persons with a first name of length 6", dataSet.personsTable.find(LEN_FILTER).getRowCount());
+    
+    println("Is Flag any_custom_flag set on column title in JobsTable", JobsTable.getColumnMetaData().get("title").hasFlag("any_custom_flag"));
+    println("Is Flag no_custom_flag set on column title in JobsTable", JobsTable.getColumnMetaData().get("title").hasFlag("no_custom_flag"));
   }
   
   private static final Filter<RowBuilder_Persons> LEN_FILTER = new Filter<RowBuilder_Persons>() 
@@ -42,7 +46,7 @@ public class PersonDatabaseJavaExample
         @Override
         public boolean accept(RowBuilder_Persons value)
         {
-          return (value.getFirstName().length() < 8);
+          return (value.getFirstName().length() == 6);
         }
         
       };

@@ -3,6 +3,7 @@ package com.seitenbau.testing.dbunit.examples
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 import com.seitenbau.testing.dbunit.dsl.ScopeRegistry
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
+import com.seitenbau.testing.dbunit.model.dsl.JobsTable;
 
 DemoGroovyDataSet dataSet = new DemoGroovyDataSet()
 println "Jobtitle for SWD = " + dataSet.jobsTable.findWhere.id(SWD).title
@@ -20,8 +21,11 @@ println "Dennis' last name = " + KAULBERSCH.name
 println "TM title = " + TM.title
 println "Persons Row Count = " + dataSet.personsTable.rowCount
 
-println "Persons filtered by name length = " + dataSet.personsTable.find({ it.firstName.length() < 8 }).rowCount
-
-println "List of first names:"
+println "List of all first names"
 dataSet.personsTable.foreach({ println "- " + it.firstName })
 println "(end of list)"
+
+println "Persons with a first name of length 6 = " + dataSet.personsTable.find({ it.firstName.length() == 6 }).rowCount
+
+println "Is Flag any_custom_flag set on column title in JobsTable = " + JobsTable.getColumnMetaData().get("title").hasFlag("any_custom_flag")
+println "Is Flag no_custom_flag set on column title in JobsTable = " + JobsTable.getColumnMetaData().get("title").hasFlag("no_custom_flag")
