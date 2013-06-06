@@ -151,4 +151,20 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
     return dataset.createDBUnitDataSet();
   }
   
+  @Override
+  public boolean equals(Object o)
+  {
+    if (o instanceof ${clsScope})
+    {
+      return dataset.equals((${clsScope})o);
+    }  
+    return dataset.equals(o);
+  } 
+  
+  @Override
+  public int hashCode()
+  {
+    return dataset.hashCode();
+  }
+  
 }

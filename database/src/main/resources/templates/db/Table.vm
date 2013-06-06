@@ -143,7 +143,12 @@ public class ${tableClass} implements ITable
     T set${column.javaName}(Integer intValue);
 #end
 #if( $column.reference )
-    // T set${column.javaName}(${column.reference.column.table.javaName}Ref reference)
+    T set${column.javaName}(${column.reference.column.table.javaName}Ref reference);
+#end
+#if( !${column.isIdentifierColumn()} )
+#if( !${column.reference} )
+    T set${column.javaName}(LazyValue value);
+#end    
 #end
     T set${column.javaName}(${column.javaType} value);
     T set${column.javaName}Raw(Object value);
@@ -170,6 +175,11 @@ public class ${tableClass} implements ITable
 
   public interface ${rowbuilder} extends ${rowsetters}<${rowbuilder}>, ${rowsgetters}<${rowbuilder}>
   {
+
+    /**
+     * Binds the row with the reference in this scope
+     */
+    ${rowbuilder} bindRef(${clsRef} ref);
 
     /**
      * Gets the value of a specified column.
@@ -257,6 +267,12 @@ public class ${tableClass} implements ITable
       data = new Object[COLUMNS.length];
       table = tableDelegate;
     }
+
+    public ${rowbuilder} bindRef(${clsRef} ref)
+    {
+      ref.setBuilder(table._dataSet, this);
+      return this;
+    }
 #foreach( $column in $model.columns )
 #if( $column.javaType.contains("Date") )
 
@@ -280,12 +296,30 @@ public class ${tableClass} implements ITable
       return this;
     }
 #end
+#if( !${column.isIdentifierColumn()} )
+#if( !${column.reference} )
+
+    public ${rowbuilder} set${column.javaName}(LazyValue value)
+    {
+      data[${foreach.index}] = value;
+      return this;
+    }
+#end
+#end
 
     public ${rowbuilder} set${column.javaName}(${column.javaType} value)
     {
       data[${foreach.index}] = value;
       return this;
     }
+
+#if( $column.reference )
+    public ${rowbuilder} set${column.javaName}(${column.reference.column.table.javaName}Ref reference)
+    {
+      data[${foreach.index}] = reference;
+      return this;
+    }
+#end
 
     public ${rowbuilder} set${column.javaName}Raw(Object value)
     {
@@ -314,11 +348,21 @@ public class ${tableClass} implements ITable
       Object value = data[$foreach.index];
 #if( !(${column.reference}) )
 ## reference value cannot be lazy
-      if (value instanceof LazyValue) {
+      if (value instanceof LazyValue)
+      {
         LazyValue lazyValue = (LazyValue)value;
         return (${column.javaType})CastUtil.cast(lazyValue.getValue(), 
           com.seitenbau.testing.dbunit.generator.${column.type});
       }
+#else
+      if (value instanceof ${column.reference.column.table.javaName}Ref)
+      {
+        ${column.reference.column.table.javaName}Ref ref = (${column.reference.column.table.javaName}Ref)value;
+        ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.reference.column.javaName}();
+        // TODO NM/CB/RW think about storing the value
+        // data[$foreach.index] = refValue;
+        return refValue; 
+      }      
 #end
       return (${column.javaType})value;
     }
@@ -474,6 +518,18 @@ public class ${tableClass} implements ITable
       return modifiers;
     }
 #foreach( $column in $model.columns )  
+
+    public ${rowcollection} ${column.javaNameFirstLower}(${clsRef} ref)
+    {
+      return ${column.javaNameFirstLower}(ref.get${column.javaName}());
+    }
+#if( $column.reference )
+
+    public ${rowcollection} ${column.javaNameFirstLower}(${column.reference.column.table.javaName}Ref ref)
+    {
+      return ${column.javaNameFirstLower}(ref.get${column.reference.column.javaName}());
+    }
+#end       
 
     public ${rowcollection} ${column.javaNameFirstLower}(${column.javaType} toSearch) 
     {

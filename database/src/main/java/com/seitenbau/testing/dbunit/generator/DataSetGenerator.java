@@ -97,9 +97,8 @@ public class DataSetGenerator
       // DSL Additions
       generateDSL(targetPath + "/");
       generateDSLTableModel(targetPath + "/");
-      //generateDSLTableBinding(targetPath + "/");
-      generateDSLTableReferences(targetPath + "/");
-      generateDSLTableReferenceFactory(targetPath + "/");
+      generateReferenceClasses(targetPath + "/");
+      generateReferenceFactory(targetPath + "/");
     }
     finally
     {
@@ -166,28 +165,19 @@ public class DataSetGenerator
     logger.info("created " + _dataSet.getTables().size()  + " DSL Table Model");
   }
 
-  protected void generateDSLTableBinding(String into) throws Exception
+  protected void generateReferenceClasses(String into) throws Exception
   {
     for (Table table : _dataSet.getTables())
     {
-      templates.executeTemplate(table, getTemplatePathDSLTableBinding(), into);
+      templates.executeTemplate(table, getTemplatePathReference(), into);
     }
-    logger.info("created " + _dataSet.getTables().size()  + " DSL Table Bindings");
-  }
-
-  protected void generateDSLTableReferences(String into) throws Exception
-  {
-    for (Table table : _dataSet.getTables())
-    {
-      templates.executeTemplate(table, getTemplatePathTableReferences(), into);
-    }
-    logger.info("created " + _dataSet.getTables().size()  + " DSL Table References");
+    logger.info("created " + _dataSet.getTables().size()  + " Reference Classes");
   }
   
-  protected void generateDSLTableReferenceFactory(String into) throws Exception
+  protected void generateReferenceFactory(String into) throws Exception
   {
     templates.executeTemplate(_dataSet, getTemplatePathRefFactory(), into);
-    logger.info("created 1 RefFactory class");
+    logger.info("created 1 Reference Factory class");
   }
   
   protected void generateDSL(String into) throws Exception
@@ -201,14 +191,9 @@ public class DataSetGenerator
     return "/templates/db/DSLTableModel.vm";
   }
 
-  protected String getTemplatePathDSLTableBinding()
+  protected String getTemplatePathReference()
   {
-    return "/templates/db/DSLTableBinding.vm";
-  }
-
-  protected String getTemplatePathTableReferences()
-  {
-    return "/templates/db/DSLTableRef.vm";
+    return "/templates/db/Ref.vm";
   }
   
   protected String getTemplatePathRefFactory()

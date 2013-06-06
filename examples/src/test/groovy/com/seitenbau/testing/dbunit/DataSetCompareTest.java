@@ -2,11 +2,13 @@ package com.seitenbau.testing.dbunit;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.junit.Test;
 
+import com.seitenbau.testing.dbunit.dataset.DemoClassicAPIDataSet;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.JavaDataSet;
@@ -20,35 +22,56 @@ public class DataSetCompareTest
     // prepare
     IDataSet javaDataSet = new JavaDataSet();
     IDataSet stuDataSet = new DefaultDataSet().createDBUnitDataSet();
-    
-    // verify
-    assertThat(javaDataSet.getTableNames()).isEqualTo(stuDataSet.getTableNames());
 
-    for (String tableName : javaDataSet.getTableNames())
-    {
-      ITable javaTable = javaDataSet.getTable(tableName);
-      ITable stuTable = stuDataSet.getTable(tableName);
-      assertThat(javaTable.getRowCount()).isEqualTo(stuTable.getRowCount());
-      // TODO verify content
-    }
+    // verify
+    assertEquality(javaDataSet, stuDataSet);
   }
-  
+
   @Test
   public void compareJavaDataSetWithGroovyDataSet() throws DataSetException
   {
     // prepare
     IDataSet javaDataSet = new JavaDataSet();
     IDataSet groovyDataSet = new DemoGroovyDataSet().createDBUnitDataSet();
-    
-    // verify
-    assertThat(javaDataSet.getTableNames()).isEqualTo(groovyDataSet.getTableNames());
 
-    for (String tableName : javaDataSet.getTableNames())
+    // verify
+    assertEquality(javaDataSet, groovyDataSet);
+  }
+
+  @Test
+  public void compareJavaDataSetWithClassicAPIDataSet() throws DataSetException
+  {
+    // prepare
+    IDataSet javaDataSet = new JavaDataSet();
+    IDataSet classicAPIDataSet = new DemoClassicAPIDataSet().createDBUnitDataSet();
+
+    // verify
+    assertEquality(javaDataSet, classicAPIDataSet);
+  }
+
+  private void assertEquality(IDataSet first, IDataSet second) throws DataSetException
+  {
+    assertThat(first.getTableNames()).isEqualTo(second.getTableNames());
+
+    for (String tableName : first.getTableNames())
     {
-      ITable javaTable = javaDataSet.getTable(tableName);
-      ITable groovyTable = groovyDataSet.getTable(tableName);
-      assertThat(javaTable.getRowCount()).isEqualTo(groovyTable.getRowCount());
-      // TODO verify content
+      ITable firstTable = first.getTable(tableName);
+      ITable secondTable = second.getTable(tableName);
+      assertThat(firstTable.getRowCount()).isEqualTo(secondTable.getRowCount());
+
+      Column[] firstColumns = firstTable.getTableMetaData().getColumns();
+      Column[] secondColumns = secondTable.getTableMetaData().getColumns();
+      assertThat(firstColumns).isEqualTo(secondColumns);
+
+      for (int row = 0; row < firstTable.getRowCount(); row++)
+      {
+        for (Column column : firstColumns)
+        {
+          Object firstValue = firstTable.getValue(row, column.getColumnName());
+          Object secondValue = firstTable.getValue(row, column.getColumnName());
+          assertThat(firstValue).isEqualTo(secondValue);
+        }
+      }
     }
   }
 }

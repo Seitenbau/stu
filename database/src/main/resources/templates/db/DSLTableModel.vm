@@ -306,7 +306,12 @@ public class ${clsTable} {
       _parent = parent;
       _delegate = delegate;
     }
-
+    
+    public ${clsExtRowbuilder} bindRef(${clsRef} ref)
+    {
+      // TODO throw exception?
+      return this; 
+    }
 #foreach( $column in $model.columns )
 #if( $column.javaType.contains("Date") )
 
@@ -329,6 +334,16 @@ public class ${clsTable} {
       _delegate.set${column.javaName}(intValue);
       return this;
     }
+#end
+#if( !${column.isIdentifierColumn()} )
+#if( !${column.reference} )
+
+    public ${clsExtRowbuilder} set${column.javaName}(LazyValue value)
+    {
+      _delegate.set${column.javaName}(value);
+      return this;
+    }
+#end
 #end
 
     public ${clsExtRowbuilder} set${column.javaName}(${column.javaType} value)

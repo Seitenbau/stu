@@ -80,7 +80,7 @@ public class ${clsRef} extends DatabaseReference
 #macro( setBuilderHandlerHead $refTable $verb )
 #set($refClsRef = ${refTable.javaName} + "Ref")
 
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, getScope());
+    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, scope);
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
       ${refClsRef} ref = it.next();
