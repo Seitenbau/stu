@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.dsl;
 
+import java.math.BigDecimal;
+
 import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class CastUtil
@@ -20,14 +22,34 @@ public class CastUtil
       {
         return ((Long) value).intValue();
       }
+      if (value instanceof BigDecimal)
+      {
+        BigDecimal v = (BigDecimal) value;
+        return v.intValueExact();
+      }
       break;
     case BIGINT:
       if (value instanceof Integer)
       {
         return Long.valueOf((Integer) value);
       }
+      if (value instanceof BigDecimal)
+      {
+        BigDecimal v = (BigDecimal) value;
+        return v.longValueExact();
+      }
       break;
     case REAL:
+      if (value instanceof Double)
+      {
+        Double d = (Double)value;
+        return d.floatValue();
+      }
+      if (value instanceof BigDecimal)
+      {
+        BigDecimal v = (BigDecimal) value;
+        return v.floatValue();
+      }
       break;
     case DOUBLE:
     case FLOAT:
@@ -42,6 +64,11 @@ public class CastUtil
       if (value instanceof Long)
       {
         return Double.valueOf((Long) value);
+      }
+      if (value instanceof BigDecimal)
+      {
+        BigDecimal v = (BigDecimal) value;
+        return v.doubleValue();
       }
       if (value instanceof String)
       {
