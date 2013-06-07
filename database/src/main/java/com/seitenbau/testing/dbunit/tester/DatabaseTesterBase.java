@@ -532,7 +532,7 @@ public class DatabaseTesterBase<MY_TYPE>
    */
   public void cleanInsert(DbUnitDatasetFactory datasetFactory, IDataSetModifier... modifiers) throws Exception
   {
-    if(datasetFactory instanceof IScope) 
+    if (datasetFactory instanceof IScope)
     {
       IScope scope = (IScope) datasetFactory;
       ScopeRegistry.use(scope);
@@ -659,18 +659,17 @@ public class DatabaseTesterBase<MY_TYPE>
 
   public IDatabaseConnection setConnection(DataSource dataSource)
   {
-    if (!(dataSource instanceof BasicDataSource))
-    {
-      throw new IllegalArgumentException("DataSource is not of type " + BasicDataSource.class.getCanonicalName()
-          + " value " + dataSource);
-    }
     try
     {
-      ((BasicDataSource) dataSource).setAccessToUnderlyingConnectionAllowed(true);
-      Connection dconn = ((DelegatingConnection) dataSource.getConnection()).getInnermostDelegate();
-      if (null == dconn)
+      Connection dconn = null;
+      if (dataSource instanceof BasicDataSource)
       {
-        dconn = ((DelegatingConnection) dataSource.getConnection()).getDelegate();
+        ((BasicDataSource) dataSource).setAccessToUnderlyingConnectionAllowed(true);
+        dconn = ((DelegatingConnection) dataSource.getConnection()).getInnermostDelegate();
+        if (null == dconn)
+        {
+          dconn = ((DelegatingConnection) dataSource.getConnection()).getDelegate();
+        }
       }
       if (null == dconn)
       {

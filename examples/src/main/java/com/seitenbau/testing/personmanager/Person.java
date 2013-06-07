@@ -3,7 +3,9 @@ package com.seitenbau.testing.personmanager;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -11,36 +13,32 @@ import javax.persistence.Table;
 public class Person
 {
   @Id
-  @GeneratedValue
-  int id;
+  @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "persons_seq")
+  @SequenceGenerator(name="persons_seq", sequenceName = "persons_seq")
+  private Integer id;
 
   @Column(name = "first_name")
-  String firstName;
+  private String firstName;
 
   @Column
-  String name;
+  private String name;
 
   @Column(name = "job_id")
-  Long job;
+  private Integer job;
 
   @Column(name = "team_id")
-  Long team;
+  private Integer team;
 
-  public int getId()
+  public Integer getId()
   {
     return id;
   }
 
-  public void setId(int id)
+  public void setId(Integer id)
   {
     this.id = id;
   }
-  
-  public void setId(Long id)
-  {
-    this.id = id.intValue();
-  }
-  
+
   public String getFirstName()
   {
     return firstName;
@@ -66,27 +64,17 @@ public class Person
     return job.intValue();
   }
 
-  public void setJob(int job)
-  {
-    this.job = Long.valueOf(job);
-  }
-  
-  public void setJob(Long job)
+  public void setJob(Integer job)
   {
     this.job = job;
   }
 
-  public int getTeam()
+  public Integer getTeam()
   {
-    return team.intValue();
+    return team;
   }
 
-  public void setTeam(int team)
-  {
-    this.team = Long.valueOf(team);
-  }
-  
-  public void setTeam(Long team)
+  public void setTeam(Integer team)
   {
     this.team = team;
   }

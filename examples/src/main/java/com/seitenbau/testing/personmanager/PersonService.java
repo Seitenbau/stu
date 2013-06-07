@@ -44,9 +44,7 @@ public class PersonService
   {
     Person addedPerson = personRepo.saveAndFlush(person);
     int teamId = addedPerson.getTeam();
-    
     incrementMembersizeOfTeam(teamId);
-
     return addedPerson;
   }
 

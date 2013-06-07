@@ -5,6 +5,8 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.fest.assertions.Fail;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -15,24 +17,37 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.EmptyDataSet;
+import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
 import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.personmanager.Job;
 import com.seitenbau.testing.personmanager.Person;
+import com.seitenbau.testing.personmanager.PersonManagerContext;
 import com.seitenbau.testing.personmanager.PersonService;
 import com.seitenbau.testing.personmanager.Team;
+import com.seitenbau.testing.util.Future;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
+@ContextConfiguration(classes=PersonManagerContext.class)
 public class ManualDatabaseTest
 {
+  
+  @Autowired
+  DataSource dataSource;
+  
   @Rule
-  public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);
+  public DatabaseTesterRule dbTesterRule = 
+     new DatabaseTesterRule(new Future<DataSource>(){
+       @Override
+       public DataSource getFuture()
+       {
+         return dataSource;
+       }
+     }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"));
 
   @Autowired
   PersonService sut;
@@ -135,13 +150,11 @@ public class ManualDatabaseTest
     person.setJob(job.getId().intValue());
     person.setTeam(team.getId().intValue());
 
-    int initialId = person.getId();
-
     // execute
     Person result = sut.addPerson(person);
     // verify
     assertThat(result.getFirstName()).isEqualTo(person.getFirstName());
-    assertThat(result.getId()).isNotEqualTo(initialId);
+    assertThat(result.getId()).isNotNull();
   }
 
   @Test

@@ -3,6 +3,8 @@ package com.seitenbau.testing.dbunit.groovy
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 import static org.fest.assertions.Assertions.*
 
+import javax.sql.DataSource;
+
 import org.fest.assertions.Fail
 import org.junit.Ignore;
 import org.junit.Rule
@@ -14,23 +16,32 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 import com.seitenbau.testing.personmanager.*
+import com.seitenbau.testing.util.Future;
 
-import com.seitenbau.testing.dbunit.config.TestConfig
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet
+import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
 import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule
 import com.seitenbau.testing.dbunit.rule.InjectDataSet
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(["/config/spring/context.xml", "/config/spring/test-context.xml"])
+@ContextConfiguration(classes=[PersonManagerContext])
 class GroovyDatabaseDataSetTest {
 
+  @Autowired
+  DataSource dataSource;
+  
   @Rule
   public DatabaseTesterRule dbTester =
-  new DatabaseTesterRule(TestConfig.class)
-    .useTruncateAsCleanInsert();
+    new DatabaseTesterRule(new Future<DataSource>(){
+       @Override
+       public DataSource getFuture()
+       {
+         return dataSource;
+       }
+     }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"));
 
   @Autowired
   PersonService sut
@@ -68,17 +79,17 @@ class GroovyDatabaseDataSetTest {
     Person person = new Person()
     person.setFirstName("Nikolaus")
     person.setName("Moll")
-    person.setJob(SWD.id)
-    person.setTeam(QA.id)
+    person.setJob(SWD.id.intValue())
+    person.setTeam(QA.id.intValue())
 
     // execute
-    sut.addPerson(person)
+    def savedPerson = sut.addPerson(person)
 
     // verify
     dataSet.personsTable.rows {
 
-      first_name | name   | job | team
-      "Nikolaus" | "Moll" | SWD | QA
+      id             | first_name | name   | job | team
+      savedPerson.id | "Nikolaus" | "Moll" | SWD | QA
 
     }
     dbTester.assertDataBase(dataSet)
@@ -92,9 +103,9 @@ class GroovyDatabaseDataSetTest {
     Person person = new Person()
     person.setFirstName("Dennis")
     person.setName("Kaulbersch")
-    person.setJob(SWD.id)
-    person.setTeam(QA.id)
-    person.setId(KAULBERSCH.id)
+    person.setJob(SWD.id.intValue())
+    person.setTeam(QA.id.intValue())
+    person.setId(KAULBERSCH.id.intValue())
 
     // execute
     sut.removePerson(person)
@@ -146,12 +157,12 @@ class GroovyDatabaseDataSetTest {
     job.setDescription("Developing software architecture")
 
     // execute
-    def result = sut.addJob(job)
+    def savedJob = sut.addJob(job)
 
     // verify
     dataSet.jobsTable.rows {
-      REF           | id  | title                   | description
-      SAT           | 4   | "Software Architect"    | "Developing software architecture"
+      REF           | id            | title                   | description
+      SAT           | savedJob.id   | "Software Architect"    | "Developing software architecture"
     }
     dbTester.assertDataBase(dataSet)
   }
@@ -218,12 +229,12 @@ class GroovyDatabaseDataSetTest {
     team.setMembersize(0)
 
     // execute
-    def result = sut.addTeam(team)
+    def savedTeam = sut.addTeam(team)
 
     // verify
     dataSet.teamsTable.rows {
-      REF           | id  | title                   | description                           | membersize
-      HR            | 2   | "Human Resources"       | "Make up workforce of an organzation" | 0
+      REF           | id             | title                   | description                           | membersize
+      HR            | savedTeam.id   | "Human Resources"       | "Make up workforce of an organzation" | 0
     }
     dbTester.assertDataBase(dataSet)
   }

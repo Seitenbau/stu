@@ -10,6 +10,8 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.fest.assertions.Fail;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -20,28 +22,38 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet;
+import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
 import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.rule.InjectDataSet;
 import com.seitenbau.testing.personmanager.Job;
 import com.seitenbau.testing.personmanager.Person;
+import com.seitenbau.testing.personmanager.PersonManagerContext;
 import com.seitenbau.testing.personmanager.PersonService;
 import com.seitenbau.testing.personmanager.Team;
+import com.seitenbau.testing.util.Future;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
+@ContextConfiguration(classes=PersonManagerContext.class)
 public class GroovyDataSetDatabaseTest
 {
 
+  @Autowired
+  DataSource dataSource;
+  
   @Rule
   public DatabaseTesterRule dbTester = 
-     new DatabaseTesterRule(TestConfig.class)
-         .useTruncateAsCleanInsert();
+     new DatabaseTesterRule(new Future<DataSource>(){
+       @Override
+       public DataSource getFuture()
+       {
+         return dataSource;
+       }
+     }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"));
 
   @Autowired
   PersonService sut;
@@ -82,14 +94,15 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
-    person.setJob(SWD.getId());
-    person.setTeam(QA.getId());
+    person.setJob(SWD.getId().intValue());
+    person.setTeam(QA.getId().intValue());
 
     // execute
     sut.addPerson(person);
     
     // verify
     dataSet.personsTable.insertRow()
+      .setId(person.getId())
       .setFirstName("Nikolaus")
       .setName("Moll")
       .setJobId(SWD)
@@ -105,9 +118,9 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("Dennis");
     person.setName("Kaulbersch");
-    person.setJob(SWD.getId());
-    person.setTeam(QA.getId());
-    person.setId(KAULBERSCH.getId());
+    person.setJob(SWD.getId().intValue());
+    person.setTeam(QA.getId().intValue());
+    person.setId(KAULBERSCH.getId().intValue());
 
     // execute
     sut.removePerson(person);
@@ -159,10 +172,11 @@ public class GroovyDataSetDatabaseTest
     job.setDescription("Developing software architecture");
 
     // execute
-    sut.addJob(job);
+    Job savedJob = sut.addJob(job);
 
     // verify
     dataSet.jobsTable.insertRow() //
+        .setId(savedJob.getId())
         .setTitle("Software Architect") //
         .setDescription("Developing software architecture");
     dbTester.assertDataBase(dataSet);
@@ -226,10 +240,11 @@ public class GroovyDataSetDatabaseTest
     team.setMembersize(0);
 
     // execute
-    sut.addTeam(team);
+    Team savedTeam = sut.addTeam(team);
 
     // verify
     dataSet.teamsTable.insertRow() //
+        .setId(savedTeam.getId())
         .setTitle("Human Resources") //
         .setDescription("Make up workforce of an organzation") //
         .setMembersize(0);

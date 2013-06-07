@@ -2,6 +2,8 @@ package com.seitenbau.testing.dbunit;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.fest.assertions.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.seitenbau.testing.dbunit.config.TestConfig;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.SampleDataSet;
 import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
@@ -20,18 +21,30 @@ import com.seitenbau.testing.dbunit.rule.DatabasePrepare;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.personmanager.Person;
+import com.seitenbau.testing.personmanager.PersonManagerContext;
 import com.seitenbau.testing.personmanager.PersonService;
+import com.seitenbau.testing.util.Future;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})
+@ContextConfiguration(classes=PersonManagerContext.class)
 @DatabaseSetup(prepare = DefaultDataSet.class, assertNoModification = false)
 public class AnnotationBasedDatabaseTest
 {
-  @Rule
-  public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(TestConfig.class);
-
+  
   @Autowired
   PersonService sut;
+  
+  @Autowired
+  DataSource dataSource;
+  
+  @Rule
+  public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(new Future<DataSource>(){
+    @Override
+    public DataSource getFuture()
+    {
+      return dataSource;
+    }
+  });
 
   @Test
   public void allPersonsFromDefaultDataset() throws Exception
