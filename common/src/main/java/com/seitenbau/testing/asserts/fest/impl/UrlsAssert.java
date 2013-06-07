@@ -31,7 +31,7 @@ public abstract class UrlsAssert<MY_TYPE> extends Assert
   }
   
   /**
-   * Check if the given URI is null.
+   * Check if the given Url is null.
    */
   public MY_TYPE isNull()
   {
@@ -40,7 +40,7 @@ public abstract class UrlsAssert<MY_TYPE> extends Assert
   }
 
   /**
-   * Check if the given URI is not null.
+   * Check if the given Url is not null.
    */
   public MY_TYPE isNotNull()
   {

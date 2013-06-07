@@ -5,7 +5,7 @@ import java.lang.annotation.Annotation;
 import org.junit.runners.model.FrameworkMethod;
 
 /**
- * Base rule to extract a annotation from a testmethod.
+ * Base rule to extract an annotation from a test method.
  * 
  * To process the annotation overwrite
  * {@link #processAnnotation(Object)}
@@ -27,7 +27,7 @@ public class RecordAnnotationRule<T extends Annotation> extends BeforeAfterRule
   /**
    * @param toRecord The Annotation Class
    * @param tryClass Set to true ( default) if you want to fallback to
-   *        a annotation on the Test Class
+   *        an annotation on the test Class
    */
   public RecordAnnotationRule(Class<T> toRecord, boolean tryClass)
   {
@@ -130,18 +130,11 @@ public class RecordAnnotationRule<T extends Annotation> extends BeforeAfterRule
    * 
    * Overwrite this method to process your annotation.
    * 
-   * @param annotation The Annotation on the testclass, or
+   * @param annotation The Annotation on the test class, or
    *        {@code null} if no annotation type had been found.
    */
   protected void processClassAnnotation(T value)
   {
-  }
-
-  @Deprecated
-  // Use getAnnotation() instead
-  public T getValue()
-  {
-    return _value;
   }
 
   /**

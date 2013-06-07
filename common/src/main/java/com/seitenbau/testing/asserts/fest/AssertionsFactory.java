@@ -47,19 +47,19 @@ public class AssertionsFactory
     return new ExtendedFileAssert(file);
   }
 
-  public DateAssert create(Calendar datum)
+  public DateAssert create(Calendar calendar)
   {
-    return new DateAssert(datum);
+    return new DateAssert(calendar);
   }
 
-  public DateAssert create(DateBuilder datum)
+  public DateAssert create(DateBuilder dateBuilder)
   {
-    return new DateAssert(datum.asCalendar());
+    return new DateAssert(dateBuilder.asCalendar());
   }
 
-  public DateAssert create(Date datum)
+  public DateAssert create(Date date)
   {
-    return new DateAssert(datum);
+    return new DateAssert(date);
   }
 
   public ExtendedStringAssert create(String text)

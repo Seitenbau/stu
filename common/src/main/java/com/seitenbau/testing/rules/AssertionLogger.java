@@ -5,22 +5,19 @@ import java.util.List;
 
 /**
  * Lazy Console Logging on verify. <br/>
- * Einfach in der Testklasse diese Rule einh�ngen:
+ * To make use of it, just add the following Rule to your Test class.
  * 
  * <pre>
  * &#064;Rule
  * public AssertionLogger assertLog = new AssertionLogger();
  * </pre>
  * 
- * Nun kann jederzeit �ber die {@link #log(Object...)} Methode eine
- * Loggausgabe auf die Konsole erfolgen. Anders als via {@link System.out} wird
- * die Ausgabe allerdings zwischengespeichert und nur bei einem Test Fehlschlag
- * ausgegeben.
+ * Now it is possible to log to the system console via the method
+ * {@link #log(Object...)}. In difference to {@link System.out} the
+ * output is buffered and only displayed if a Test fails.
  * 
  * <br/>
- * N�tzlich f�r debug Ausgaben die zum Finden von Fehlern praktisch sind,
- * aber sonst eigentlich recht wertlost sind. Z.b. URLs, oder RAW HTTP Response
- * Bodies.
+ * Useful to enable debug messages that can help to track down errors but have no other benefit, e.g. URLs or raw HTTP repsonse bodies.
  * 
  */
 public class AssertionLogger extends BeforeAfterRule
@@ -83,11 +80,11 @@ public class AssertionLogger extends BeforeAfterRule
     }
 
     /**
-     * Gibt die uebergebenen Objekte im Fehlerfall aus. Der String wird
-     * ebenfalls erst dann zusammengefuegt.! Alle Aenderungen bist
-     * dorthin werden also noch reflektiert!
+     * Loggs the given objects if a failure occurs. The String is build
+     * when the call is executed. Changes done until the call is
+     * executed are reflected.
      * 
-     * @param messages
+     * @param messages varargs of objects.
      */
     static public void logLater(Object... messages)
     {
@@ -95,15 +92,10 @@ public class AssertionLogger extends BeforeAfterRule
     }
 
     /**
-     * Speichert alle �bergebenen Objekte in eine Liste, welche im Falle nur
-     * im Falle eines Testfehlschlages ausgegeben wird. ( Hierzu muss eine
-     * Instanz als JUnit Rule im Test aktiv sein )
-     * 
-     * Per default wird intern das Ergebnis der toString() Methode abgelegt.
-     * Alle �bergebenen Objekte werden als ein zusammenh�ngende Zeichenfolge
-     * gespeichert/ausgegeben.
-     * 
-     * 
+     * Stores given obejcts into a List. The List is only printed out if
+     * a Test fails and the AssertionLogger rule is used. By default the
+     * result of the toString() method is stored. All given objects are
+     * stored/printed out as one coherent String.
      * 
      * <pre>
      *   AssertionLogger.log("url  : ", "http://localhost","/suffix");
@@ -112,8 +104,7 @@ public class AssertionLogger extends BeforeAfterRule
      *   url  : http://localhost/suffix
      * </pre>
      * 
-     * @param message
-     *            Vararg von Objects.
+     * @param message varargs of objects.
      */
     static public void log(Object... message)
     {
@@ -124,19 +115,19 @@ public class AssertionLogger extends BeforeAfterRule
             {
                 if (msg == null)
                 {
-                    sb.append("null");
+                  sb.append("null");
                 }
                 else if (msg instanceof Throwable)
                 {
-                    _messages.add(msg);
+                  _messages.add(msg);
                 }
                 else
                 {
-                    sb.append(msg.toString());
+                  sb.append(msg.toString());
                 }
             }
             _messages.add(sb.toString());
-        }
+          }
     }
 
     static class LogLater

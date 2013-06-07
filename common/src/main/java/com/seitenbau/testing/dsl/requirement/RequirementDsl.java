@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * 
  * <ul>
  *   <li>notImp:feature-id or notImplemented:feature-id 
- *   <li>Impemented:feature-id or impl:feature-id 
+ *   <li>Implemented:feature-id or impl:feature-id 
  *   <li>custom:factory-clazz:parameters
  * </ul>
  * 

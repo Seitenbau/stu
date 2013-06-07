@@ -52,7 +52,7 @@ public abstract class AbstractParameterDescriptor implements
     }
     catch (IllegalAccessException e)
     {
-      throw new CantInjectValueException(getName());
+      throw new CanNotInjectValueException(getName());
     }
   }
 

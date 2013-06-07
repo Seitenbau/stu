@@ -3,7 +3,7 @@ package com.seitenbau.testing.dsl.requirement;
 import com.seitenbau.testing.config.TestConfiguration;
 
 /**
-*  Test if the given TestConfigurationProperty Is set.
+*  Test if the given TestConfigurationProperty is set.
  * 
  * Checks if 
  * <pre>custom:com.seitenbau.testing.dsl.requirement.TestPropertyIs:key=rainer</pre>
