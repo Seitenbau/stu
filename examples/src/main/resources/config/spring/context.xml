@@ -11,7 +11,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-    <context:component-scan base-package="com.seitenbau.testing.dbunit" />
+    <context:component-scan base-package="com.seitenbau.testing.personmanager" />
     
     <bean id="propertyPlaceholderConfigurer"
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -23,7 +23,7 @@
         </property>
     </bean>
     
-    <jpa:repositories base-package="com.seitenbau.testing.dbunit.dao" />
+    <jpa:repositories base-package="com.seitenbau.testing.personmanager" />
 
     <tx:annotation-driven proxy-target-class="true"
         transaction-manager="transactionManager" />
@@ -50,7 +50,7 @@
                 <property name="database" value="MYSQL" />
             </bean>
         </property>
-        <property name="packagesToScan" value="com.seitenbau.testing.dbunit.dao" />
+        <property name="packagesToScan" value="com.seitenbau.testing.personmanager" />
         <property name="dataSource" ref="dataSource"/>
     </bean> 
 

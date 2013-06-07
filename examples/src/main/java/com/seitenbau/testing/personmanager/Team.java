@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.dao;
+package com.seitenbau.testing.personmanager;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,8 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "jobs")
-public class Job
+@Table(name = "teams")
+public class Team
 {
   @Id
   @GeneratedValue
@@ -19,7 +19,10 @@ public class Job
 
   @Column
   String description;
-  
+
+  @Column
+  int membersize;
+
   public int getId()
   {
     return id;
@@ -53,6 +56,21 @@ public class Job
   public void setDescription(String description)
   {
     this.description = description;
+  }
+
+  public int getMembersize()
+  {
+    return membersize;
+  }
+
+  public void setMembersize(int membersize)
+  {
+    this.membersize = membersize;
+  }
+  
+  public void setMembersize(Long membersize)
+  {
+    setMembersize(membersize.intValue());
   }
 
 }

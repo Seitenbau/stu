@@ -16,16 +16,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.seitenbau.testing.dbunit.config.TestConfig;
-import com.seitenbau.testing.dbunit.dao.Job;
-import com.seitenbau.testing.dbunit.dao.Person;
-import com.seitenbau.testing.dbunit.dao.Team;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.EmptyDataSet;
 import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
-import com.seitenbau.testing.dbunit.services.PersonService;
+import com.seitenbau.testing.personmanager.Job;
+import com.seitenbau.testing.personmanager.Person;
+import com.seitenbau.testing.personmanager.PersonService;
+import com.seitenbau.testing.personmanager.Team;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/config/spring/context.xml", "/config/spring/test-context.xml"})

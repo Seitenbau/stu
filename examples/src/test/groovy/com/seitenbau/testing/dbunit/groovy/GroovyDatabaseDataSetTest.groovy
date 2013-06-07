@@ -13,17 +13,15 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
+import com.seitenbau.testing.personmanager.*
+
 import com.seitenbau.testing.dbunit.config.TestConfig
-import com.seitenbau.testing.dbunit.dao.Job
-import com.seitenbau.testing.dbunit.dao.Person
-import com.seitenbau.testing.dbunit.dao.Team
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet
 import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule
 import com.seitenbau.testing.dbunit.rule.InjectDataSet
-import com.seitenbau.testing.dbunit.services.PersonService
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(["/config/spring/context.xml", "/config/spring/test-context.xml"])

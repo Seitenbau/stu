@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.dao;
+package com.seitenbau.testing.personmanager;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
