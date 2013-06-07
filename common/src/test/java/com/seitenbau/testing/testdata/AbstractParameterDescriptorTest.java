@@ -10,7 +10,7 @@ public class AbstractParameterDescriptorTest
  
   public String field;
   
-  @Test(expected=CantInjectValueException.class)
+  @Test(expected=CanNotInjectValueException.class)
   public void testInjectValue_MapIllegalAccessToCantInjectValueException() throws Exception
   {
     Field javaFiled = getClass().getField("field");

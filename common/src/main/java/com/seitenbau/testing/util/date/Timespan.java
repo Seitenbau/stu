@@ -9,7 +9,7 @@ public class Timespan
     diffInMs = diff;
   }
 
-  public long inMS()
+  public long inMilliseconds()
   {
     return diffInMs;
   }

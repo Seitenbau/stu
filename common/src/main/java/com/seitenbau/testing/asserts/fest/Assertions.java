@@ -22,19 +22,23 @@ import com.seitenbau.testing.util.date.DateBuilder;
 public class Assertions extends org.fest.assertions.Assertions
 {
   /**
-   * Fluent assertions of the given date
+   * Fluent assertions of the given date Supports Dates:
+   * {@link #formats} "dd.MM.yyyy HH:mm:ss.SSS" and
+   * "yyyy-MM-dd HH:mm:ss.SSS" or only date or only time. </p> When
+   * only a Time is give, the Date will be 1.1.1970. When only a Date
+   * is given the time part will be 0:0:0.000
    */
-  public static ExtendedStringAssert assertThat(String text)
+  public static ExtendedStringAssert assertThat(String dateString)
   {
-    return AssertionsFactory.get().create(text);
+    return AssertionsFactory.get().create(dateString);
   }
 
   /**
    * Fluent assertions of the given date
    */
-  public static DateAssert assertThat(Date datum)
+  public static DateAssert assertThat(Date date)
   {
-    return AssertionsFactory.get().create(datum);
+    return AssertionsFactory.get().create(date);
   }
 
   /**
@@ -48,17 +52,17 @@ public class Assertions extends org.fest.assertions.Assertions
   /**
    * Fluent assertions of the given date
    */
-  public static DateAssert assertThat(DateBuilder datum)
+  public static DateAssert assertThat(DateBuilder dateBuilder)
   {
-    return AssertionsFactory.get().create(datum);
+    return AssertionsFactory.get().create(dateBuilder);
   }
 
   /**
    * Fluent assertions of the given date
    */
-  public static DateAssert assertThat(Calendar datum)
+  public static DateAssert assertThat(Calendar calendar)
   {
-    return AssertionsFactory.get().create(datum);
+    return AssertionsFactory.get().create(calendar);
   }
 
   /**
@@ -95,7 +99,7 @@ public class Assertions extends org.fest.assertions.Assertions
   }
 
   /**
-   * Fluent assertions of the given uri
+   * Fluent assertions of the given url
    */
   public static UrlAssert assertThat(URL url)
   {
@@ -103,7 +107,7 @@ public class Assertions extends org.fest.assertions.Assertions
   }
 
   /**
-   * Fluent assertions of the given uri
+   * Fluent assertions of the given number
    */
   public static AtomicIntegerAssert assertThat(AtomicInteger number)
   {

@@ -6,7 +6,7 @@ public class AnnotationUtils
 {
 
   /**
-   * Searches an annotation in the complete Hiearchy
+   * Searches an annotation in the complete hierarchy
    * @param startClass
    * @param annotation
    * @return

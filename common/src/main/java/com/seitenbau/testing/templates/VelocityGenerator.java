@@ -27,12 +27,12 @@ public class VelocityGenerator
    * output file.
    *  
    * @param model
-   *  Model objekt injected into the velocity context with var-name "model".
+   *  Model object injected into the velocity context with var-name "model".
    * @param templateInClassPath
-   *  Path to the actual templare resource in the classpath
+   *  Path to the actual template resource in the classpath
    * @param into
    *  Target prefix, e.g. "target/". for an actual filename and subfolder the 
-   *  templare needs so set the variabels "package" and "filename"
+   *  template needs so set the variables "package" and "filename"
    *  
    * @throws Exception
    */

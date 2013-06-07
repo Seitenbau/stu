@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 
-import org.fest.assertions.Assert;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.MapAssert;
 
@@ -17,10 +15,6 @@ import org.fest.assertions.MapAssert;
  */
 public class UriAssert extends UrlsAssert<UriAssert>
 {
-  private static final String IPv4PATTERN = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
-
-  private static final String IPv6PATTERN = "([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}";
-
   URI _uri;
 
   /**
@@ -32,35 +26,6 @@ public class UriAssert extends UrlsAssert<UriAssert>
   {
     _uri = uri;
   }
-
-  //
-  // /**
-  // * Check if the given URI contains a valid IPv4 address
-  // */
-  // public UriAssert isIPv4()
-  // {
-  // fail("feature not implemented");
-  // isNotNull();
-  // if (!Pattern.matches(IPv4PATTERN, urlAsString()))
-  // {
-  // fail("uri isn't a valid IPv4 address: " + urlAsString());
-  // }
-  // return this;
-  // }
-  //
-  // /**
-  // * Check if the given URI contains a valid IPv6 address
-  // */
-  // public UriAssert isIPv6()
-  // {
-  // fail("feature not implemented");
-  // isNotNull();
-  // if (!Pattern.matches(IPv6PATTERN, urlAsString()))
-  // {
-  // fail("uri isn't a valid IPv6 address: " + urlAsString());
-  // }
-  // return this;
-  // }
 
   /**
    * Check if the given URI has a port

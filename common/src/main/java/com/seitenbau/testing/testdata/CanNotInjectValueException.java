@@ -1,10 +1,10 @@
 package com.seitenbau.testing.testdata;
 
-public class CantInjectValueException extends RuntimeException
+public class CanNotInjectValueException extends RuntimeException
 {
   private static final long serialVersionUID = 1L;
 
-  public CantInjectValueException(String propertyName)
+  public CanNotInjectValueException(String propertyName)
   {
     super("Can not inject value in property " + propertyName);
   }

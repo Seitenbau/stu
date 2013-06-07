@@ -27,22 +27,22 @@ public class DateAssert extends Assert
     /**
      * Create new Assertion against actual date
      * 
-     * @param datum The actual Date
+     * @param date The actual Date
      */
-    public DateAssert(Date datum)
+    public DateAssert(Date date)
     {
-        _date = datum;
+        _date = date;
     }
 
-    public DateAssert(Calendar datum)
+    public DateAssert(Calendar calendar)
     {
-        if (datum == null)
+        if (calendar == null)
         {
             _date = null;
         }
         else
         {
-            _date = datum.getTime();
+            _date = calendar.getTime();
         }
     }
 
@@ -65,67 +65,72 @@ public class DateAssert extends Assert
     }
 
     /**
-     * Check if the given Date is equal to the date, with a delta of x (
+     * Check if the Date of the given Calendat is equal to the date, with a delta of x (
      * {@link #DEFAULT_DELTA_MS}).
      */
-    public DateAssert is(Calendar datum, int deltaInMs)
+    public DateAssert is(Calendar calendar, int deltaInMs)
     {
-        return is(datum.getTime(),deltaInMs);
+        return is(calendar.getTime(),deltaInMs);
     }
     
     /**
-     * Check if the given Date is equal to the date, with a delta of 15s (
+     * Check if the Date of the given calendar is equal to the date, with a delta of 15s (
      * {@link #DEFAULT_DELTA_MS}).
      */
-    public DateAssert is(Calendar datum)
+    public DateAssert is(Calendar calendar)
     {
-        return is(datum.getTime());
+        return is(calendar.getTime());
     }
     
     /**
-     * Check if the given Datum is equal to the date, with a delta of 15s (
+     * Check if the Date of the given Datebuilder is equal to the date, with a delta of 15s (
      * {@link #DEFAULT_DELTA_MS}).
      */
-    public DateAssert is(DateBuilder datum)
+    public DateAssert is(DateBuilder dateBuilder)
     {
-      return is(datum.asDate());
+      return is(dateBuilder.asDate());
     }
     
     /**
-     * Check if the given Datum is equal to the date, with a delta of x (
+     * Check if the Date of the given Datebuilder is equal to the date, with a delta of x (
      * {@link #DEFAULT_DELTA_MS}).
      */
-    public DateAssert is(DateBuilder datum, int deltaInMs)
+    public DateAssert is(DateBuilder dateBuilder, int deltaInMs)
     {
-      return is(datum.asDate(),deltaInMs);
+      return is(dateBuilder.asDate(),deltaInMs);
     }
     
     /**
      * Check if the given Date is equal to the given date, with a delta of 15s (
      * {@link #DEFAULT_DELTA_MS}).
      */
-    public DateAssert is(Date datum)
+    public DateAssert is(Date date)
     {
-        return is(datum, DEFAULT_DELTA_MS);
+        return is(date, DEFAULT_DELTA_MS);
     }
     
-    /**
-     * Check if the given Date is equal to the given date, with a delta of 15s
-     */
-    public DateAssert is(String date)
-    {
-      return is(DateUtil.asDate(date), DEFAULT_DELTA_MS);
-    }
+  /**
+   * Check if the given Date is equal to the given date, with a delta
+   * of 15s. Supports Dates: {@link #formats}
+   * "dd.MM.yyyy HH:mm:ss.SSS" and "yyyy-MM-dd HH:mm:ss.SSS" or only
+   * date or only time. </p> When only a Time is give, the Date will
+   * be 1.1.1970. When only a Date is given the time part will be
+   * 0:0:0.000
+   */
+  public DateAssert is(String dateString)
+  {
+    return is(DateUtil.asDate(dateString), DEFAULT_DELTA_MS);
+  }
 
     /**
      * Check if the given Date is equal to the given date, with a delta of n ms.
      * ( Meaning: + maxOffsetInMs or - maxOffsetInMs )
      */
-    public DateAssert is(Date datum, int deltaInMs)
+    public DateAssert is(Date date, int deltaInMs)
     {
         isNotNull();
         long actual = _date.getTime();
-        long expect = datum.getTime();
+        long expect = date.getTime();
         long diff = expect - actual;
         doAssert(diff, deltaInMs);
         return this;
@@ -147,7 +152,7 @@ public class DateAssert extends Assert
      */
     public DateAssert isNow(int deltaInMs)
     {
-        miliSecondsFromNow(0, deltaInMs);
+        milliSecondsFromNow(0, deltaInMs);
         return this;
     }
 
@@ -155,11 +160,11 @@ public class DateAssert extends Assert
      * Check if the given Date is equal to now() plus the given offset in ms.
      * The equals is tolerant wihin plus minus the given delta.
      */
-    public DateAssert miliSecondsFromNow(long offsetInMiliseconds, int deltaInMs)
+    public DateAssert milliSecondsFromNow(long offsetInMilliseconds, int deltaInMs)
     {
         isNotNull();
         long actual = _date.getTime();
-        long expect = getNow().getTime() + (offsetInMiliseconds);
+        long expect = getNow().getTime() + (offsetInMilliseconds);
         long diff = expect - actual;
         doAssert(diff, deltaInMs);
         return this;
@@ -167,11 +172,11 @@ public class DateAssert extends Assert
 
     private void doAssert(long diff, int deltaInMs)
     {
-        Long diff2 = Math.abs(diff);
+        Long absoluteDiff = Math.abs(diff);
         StringBuffer sb = new StringBuffer();
-        sb.append("Datum ");
+        sb.append("Date ");
         sb.append(_date);
-        sb.append(" liegt um ");
+        sb.append(" differs with ");
         if (diff > 4000)
         {
             if (diff / 1000 > 240)
@@ -188,8 +193,8 @@ public class DateAssert extends Assert
         sb.append("[");
         sb.append(diff);
         sb.append("ms]");
-        sb.append(" daneben");
-        Assertions.assertThat(diff2).overridingErrorMessage(sb.toString())
+        sb.append(" from compare date");
+        Assertions.assertThat(absoluteDiff).overridingErrorMessage(sb.toString())
                 .isLessThanOrEqualTo(deltaInMs);
     }
 
@@ -200,7 +205,7 @@ public class DateAssert extends Assert
 
     /**
      * Check if the given Date is equal to now() plus the given offset in
-     * Minutes. The equals is tolerant wihin plus minus the given delta.
+     * minutes. The equals is tolerant within plus/minus the given delta.
      */
     public DateAssert minutesFromNow(long offsetInMinutes, int deltaInMS)
     {
@@ -209,7 +214,7 @@ public class DateAssert extends Assert
 
     /**
      * Check if the given Date is equal to now() plus the given offset in
-     * Minutes. The equals is tolerant wihin plus minus the given delta.
+     * minutes. The equals is tolerant within plus/minus the given delta.
      */
     public DateAssert secondFromNow(long offsetInSeconds, int deltaInMS)
     {
@@ -222,7 +227,7 @@ public class DateAssert extends Assert
     }
 
     /**
-     * Fluent api: Test if Date is offset X away from now. With a detal of 15s
+     * Fluent api: Test if Date is offset X away from now. With a delta of 15s
      * {@link #DEFAULT_DELTA_MS}
      */
     public DateInAssert isIn(long offset)
@@ -231,17 +236,17 @@ public class DateAssert extends Assert
     }
 
     /**
-     * Checks if given Date is exclty the same
+     * Checks if given Date is exactly the same
      * 
-     * @param datum
+     * @param date
      */
-    public void isExactly(Date datum)
+    public void isExactly(Date date)
     {
-        long diff = _date.getTime() - datum.getTime();
+        long diff = _date.getTime() - date.getTime();
         if (diff != 0) {
             StringBuilder sb = new StringBuilder();
             sb.append("expected ");
-            sb.append(datum);
+            sb.append(date);
             sb.append(" but was ");
             sb.append(_date);
             sb.append(" diff=");
@@ -252,23 +257,23 @@ public class DateAssert extends Assert
     }
 
     /**
-     * Checks if given Calendar is exclty the same
+     * Checks if given Date of given Calendar is exactly the same
      * 
-     * @param datum
+     * @param calendar
      */
-    public void isExactly(Calendar datum)
+    public void isExactly(Calendar calendar)
     {
-        isExactly(datum.getTime());
+        isExactly(calendar.getTime());
     }
     
     /**
-     * Checks if given Datum is exclty the same
+     * Checks if Date of given DateBuilder is exactly the same
      * 
-     * @param datum
+     * @param dateBuilder
      */
-    public void isExactly(DateBuilder datum)
+    public void isExactly(DateBuilder dateBuilder)
     {
-      isExactly(datum.asDate());
+      isExactly(dateBuilder.asDate());
     }
 
     /**
@@ -276,11 +281,11 @@ public class DateAssert extends Assert
      * 
      * Uses DataString for String to Date transformation.
      * 
-     * @param datum "dd.MM.yyyy HH:mm:ss" and "yyyy-MM-dd HH:mm:ss"
+     * @param dateString "dd.MM.yyyy HH:mm:ss" and "yyyy-MM-dd HH:mm:ss"
      */
-    public void isExactly(String datum)
+    public void isExactly(String dateString)
     {
-      Date exp = DateUtil.asDate(datum);
+      Date exp = DateUtil.asDate(dateString);
       assertThat(_date.getTime())
           .as("expected '" + _date.toString() + "' to equal '"+ exp.toString() + "'")
           .isEqualTo(exp.getTime());
@@ -297,8 +302,8 @@ public class DateAssert extends Assert
     }
 
     /**
-     * From here on only check the Time Part ( Hour, minute, seconds ans
-     * miliseconds )
+     * From here on only check the Time Part ( Hour, minute, seconds and
+     * milliseconds )
      * 
      * @return
      */
@@ -310,7 +315,7 @@ public class DateAssert extends Assert
     /**
      * From here on only check the Time Part
      * 
-     * @param doCheckAlsoMilliseconds if {@code false} the miliseconds of the
+     * @param doCheckAlsoMilliseconds if {@code false} the milliseconds of the
      *        time part will also not be checked! * @return
      */
     public TimeOnlyAssert onTime(boolean doCheckAlsoMilliseconds)
@@ -343,7 +348,7 @@ public class DateAssert extends Assert
 
         public DateAssert miliSeconds()
         {
-            return _dateAssert.miliSecondsFromNow(_offset, DEFAULT_DELTA_MS);
+            return _dateAssert.milliSecondsFromNow(_offset, DEFAULT_DELTA_MS);
         }
 
     }
@@ -358,31 +363,31 @@ public class DateAssert extends Assert
             _date = createCopy(date);
         }
 
-        public DateOnlyAssert(Calendar date)
+        public DateOnlyAssert(Calendar calendar)
         {
-            _date = createCopy(date);
+            _date = createCopy(calendar);
         }
         
-        public DateOnlyAssert(DateBuilder date)
+        public DateOnlyAssert(DateBuilder dateBuilder)
         {
-          _date = createCopy(date.asCalendar());
+          _date = createCopy(dateBuilder.asCalendar());
         }
         
-        public DateOnlyAssert(XMLGregorianCalendar date)
+        public DateOnlyAssert(XMLGregorianCalendar xmlCalendar)
         {
-          if(date == null) 
+          if(xmlCalendar == null) 
           {
             _date = null;
           } 
           else 
           {
-            _date = createCopy(date.toGregorianCalendar());
+            _date = createCopy(xmlCalendar.toGregorianCalendar());
           }
         }
 
-        public DateOnlyAssert isExactly(String expect)
+        public DateOnlyAssert isExactly(String expectedDateString)
         {
-            isExactly(createCopy((DateUtil.asDate(expect))));
+            isExactly(createCopy((DateUtil.asDate(expectedDateString))));
             return this;
         }
 
@@ -392,21 +397,21 @@ public class DateAssert extends Assert
             return this;
         }
         
-        public DateOnlyAssert isExactly(DateBuilder expect)
+        public DateOnlyAssert isExactly(DateBuilder expectedDateBuilder)
         {
-          isExactly(expect.asCalendar());
+          isExactly(expectedDateBuilder.asCalendar());
           return this;
         }
         
-        public DateOnlyAssert isExactly(XMLGregorianCalendar expect)
+        public DateOnlyAssert isExactly(XMLGregorianCalendar expectedXmlCalendar)
         {
-          isExactly(expect.toGregorianCalendar());
+          isExactly(expectedXmlCalendar.toGregorianCalendar());
           return this;
         }
 
-        public DateOnlyAssert isExactly(Calendar expect)
+        public DateOnlyAssert isExactly(Calendar expectedCalendar)
         {
-            Calendar calExpect = createCopy(expect);
+            Calendar calExpect = createCopy(expectedCalendar);
             int ay = _date.get(Calendar.YEAR);
             int am = _date.get(Calendar.MONTH) + 1;
             int ad = _date.get(Calendar.DAY_OF_MONTH);
@@ -435,39 +440,39 @@ public class DateAssert extends Assert
             _checkMiliseconds = checkMiliseconds;
         }
 
-        public TimeOnlyAssert(Calendar date, boolean checkMiliseconds)
+        public TimeOnlyAssert(Calendar calendar, boolean checkMiliseconds)
         {
-            _date = createCopy(date);
+            _date = createCopy(calendar);
             _checkMiliseconds = checkMiliseconds;
         }
 
-        public TimeOnlyAssert isExactly(String expect)
+        public TimeOnlyAssert isExactly(String expectDateString)
         {
-            isExactly(DateUtil.asDate(expect));
+            isExactly(DateUtil.asDate(expectDateString));
             return this;
         }
 
-        public TimeOnlyAssert isExactly(Date expect)
+        public TimeOnlyAssert isExactly(Date expectedDate)
         {
-            isExactly(createCopy(expect));
+            isExactly(createCopy(expectedDate));
             return this;
         }
         
-        public TimeOnlyAssert isExactly(XMLGregorianCalendar expect)
+        public TimeOnlyAssert isExactly(XMLGregorianCalendar expectXmlCalendar)
         {
-          isExactly(expect.toGregorianCalendar());
+          isExactly(expectXmlCalendar.toGregorianCalendar());
           return this;
         }
         
-        public TimeOnlyAssert isExactly(DateBuilder expect)
+        public TimeOnlyAssert isExactly(DateBuilder expectedDateBuilder)
         {
-          isExactly(expect.asCalendar());
+          isExactly(expectedDateBuilder.asCalendar());
           return this;
         }
 
-        public TimeOnlyAssert isExactly(Calendar expect)
+        public TimeOnlyAssert isExactly(Calendar expectedCalendar)
         {
-            Calendar calExpect = createCopy(expect);
+            Calendar calExpect = createCopy(expectedCalendar);
             int ah = _date.get(Calendar.HOUR);
             int am = _date.get(Calendar.MINUTE);
             int as = _date.get(Calendar.SECOND);
@@ -489,6 +494,10 @@ public class DateAssert extends Assert
 
     }
 
+    /**
+     * Sets the description of the actual value, to be used in as message of any AssertionError thrown when an assertion fails.
+     * @param text - the description
+     */
     public DateAssert as(String text)
     {
         description(text);

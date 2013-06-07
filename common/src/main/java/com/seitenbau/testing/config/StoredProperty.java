@@ -8,7 +8,7 @@ public @interface StoredProperty {
 
   /**
    * Magic object Identity used to identify not set configuration values.
-   * If you see this in your code, you probably have a mising key in 
+   * If you see this in your code, you probably have a missing key in 
    * your test configuration .property file.
    */
   static final String NOT_SET_VALUE = 

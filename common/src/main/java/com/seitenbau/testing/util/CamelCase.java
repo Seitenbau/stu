@@ -143,8 +143,8 @@ public class CamelCase
   }
 
   /**
-   * Just appends the Strings. EachString will start with a uppercase
-   * Character an the rest will be lowercase.
+   * Just appends the Strings. Each String will start with an uppercase
+   * Character and the rest will be lowercase.
    */
   public static String implode(String[] items)
   {
@@ -161,8 +161,8 @@ public class CamelCase
   }
 
   /**
-   * Explodes the given Text and recreates amerged one.
-   * VERSION_ID ist then VersionId
+   * Explodes the given Text and recreates a merged one.
+   * VERSION_ID is transformed to VersionId
    * @param name
    * @return
    */

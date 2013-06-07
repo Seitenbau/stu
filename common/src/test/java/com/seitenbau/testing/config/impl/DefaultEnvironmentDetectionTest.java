@@ -1,6 +1,7 @@
 package com.seitenbau.testing.config.impl;
 
-import java.util.ArrayList;
+import static org.fest.assertions.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,8 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.seitenbau.testing.config.SystemTools;
-
-import static org.fest.assertions.Assertions.*;
 
 public class DefaultEnvironmentDetectionTest
 {

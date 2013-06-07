@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.Stack;
 
 import com.seitenbau.testing.config.ConfigInjector;
 import com.seitenbau.testing.config.StoredProperty;
@@ -93,14 +92,14 @@ public class BeanConfigInjector implements ConfigInjector {
       value = toMap(values, key);
       if(_failOnNotSet && value == null) 
       {
-        throw new MagicValueNotSetException("Unable to find a map for the property : " + key);
+        throw new RuntimeException("Unable to find a map for the property : " + key);
       }
     } else {
       String valueAsString = values.getString(key, defaultvalue);
       // TODO : NOT_SET_VALUE should actually be == not equals, the DSL parsing seems to be buggy
       if(_failOnNotSet && StoredProperty.NOT_SET_VALUE.equals(valueAsString)) 
       {
-        throw new MagicValueNotSetException("Unable to find a value for the property : " + key);
+        throw new RuntimeException("Unable to find a value for the property : " + key);
       }
       value = parseInputType(type, valueAsString, errorDetail);
   }
@@ -170,15 +169,6 @@ public class BeanConfigInjector implements ConfigInjector {
 	  
 	}
 	
-	/** don't use this to catch exceptions future Version will only throw an RuntimeException instead */
-	@Deprecated // don't use this to catch exceptions future Version will only throw an RuntimeException instead
-	public static class MagicValueNotSetException extends RuntimeException  {
-	    public MagicValueNotSetException(String message)
-	    {
-	      super(message);
-	    }
-	}
-
 	private boolean isStaticField(Field field) {
 		return (field.getModifiers() & Modifier.STATIC) != Modifier.STATIC;
 	}

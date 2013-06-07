@@ -235,16 +235,12 @@ public class ExtendedFileAssert extends org.fest.assertions.FileAssert
     StringBuffer act = new StringBuffer();
     for (LineDiff diff : diffs)
     {
-//      b.append(LINE_SEPARATOR).append("line:").append(inBrackets(diff.lineNumber))
-//          .append(", expected:").append(inBrackets(diff.expected)).append(" but was:")
-//          .append(inBrackets(diff.actual));
       exp.append("Line " + inBrackets(diff.lineNumber)).append(LINE_SEPARATOR);
       act.append("Line " + inBrackets(diff.lineNumber)).append(LINE_SEPARATOR);
       exp.append(diff.expected).append(LINE_SEPARATOR);
       act.append(diff.actual).append(LINE_SEPARATOR);
     }
     throw new ComparisonFailure("File content comparison failed",exp.toString(),act.toString());
-    // fail(b.toString());
   }
 
   protected void fail(LineDiff[] diffs)
@@ -276,7 +272,6 @@ public class ExtendedFileAssert extends org.fest.assertions.FileAssert
           .append(inBrackets(diff.actual));
     }
     throw new ComparisonFailure(b.toString(), e.toString(), a.toString());
-    // fail(b.toString());
   }
 
   protected void cannotCompareToExpectedFile(Object expected, Exception e)

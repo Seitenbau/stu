@@ -213,8 +213,8 @@ public class DateUtilTest
         .add(2).month()
         .add(5).years()
         .add(5).year()
-        .add(10).miliseconds()
-        .add(100).milisecond()
+        .add(10).milliseconds()
+        .add(100).millisecond()
         .asDate();
     assertThat(val).isExactly("2020-07-05 20:14:23.004");
   }
@@ -230,7 +230,7 @@ public class DateUtilTest
         .set(12).day()
         .set(4).month()
         .set(10).year()
-        .set(19).milisecond();
+        .set(19).millisecond();
     assertThat(builder.asDate()).isExactly("0010-04-12 13:14:15.019");
     assertThat(builder.asString("yyyy-dd SSS")).isEqualTo("0010-12 019");
   }
@@ -246,7 +246,7 @@ public class DateUtilTest
         .set(12).days()
         .set(4).months()
         .set(10).years()
-        .set(19).miliseconds();
+        .set(19).milliseconds();
     assertThat(builder.asDate()).isExactly("0010-04-12 13:14:15.019");
     assertThat(builder.asString("yyyy-dd SSS")).isEqualTo("0010-12 019");
   }

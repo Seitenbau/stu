@@ -83,7 +83,7 @@ abstract public class DateUtil
    * </p> When only a Time is given, the Date will be 1.1.1970! When
    * only a Date is given the time part will be 0:0:0.000
    */
-  public static DateBuilder asDatum(String dateString)
+  public static DateBuilder asDatebuilder(String dateString)
   {
     return new DateBuilder(asCalendar(dateString));
   }
@@ -91,7 +91,7 @@ abstract public class DateUtil
 
   /**
    * Tries to parse the given date-string with the given format. Does
-   * a not Linient parsing, and does return null when not able to
+   * a not lenient parsing, and does return null when not able to
    * parse.
    * @param format The format of the datestring.
    * @param dateString The Date coded as string.
@@ -147,46 +147,46 @@ abstract public class DateUtil
 
   /**
    * Format the given Date as String.
-   * @param datum The Date as Datum
+   * @param dateBuilder The Date as DateBuilder
    * @param format The Format of the given Date e.g.
    *        "dd.MM.yyyy HH:mm:ss.SSS" or "dd.MM.yyyy' 23:59'"
    * @return The formatted String
    */
-  public static String formatDate(DateBuilder datum, String format)
+  public static String formatDate(DateBuilder dateBuilder, String format)
   {
     SimpleDateFormat dateFormat = new SimpleDateFormat(format);
     dateFormat.setLenient(false);
-    String heute = dateFormat.format(datum.asDate());
+    String heute = dateFormat.format(dateBuilder.asDate());
     return heute;
   }
 
   /**
    * Format the given Date as String.
-   * @param datum The Date
+   * @param dateBuilder The DateBuilder
    * @param format The Format of the given Date e.g.
    *        "dd.MM.yyyy HH:mm:ss.SSS" or "dd.MM.yyyy' 23:59'"
    * @return The formatted String
    */
-  public static String formatDate(Date datum, String format)
+  public static String formatDate(Date dateBuilder, String format)
   {
     SimpleDateFormat dateFormat = new SimpleDateFormat(format);
     dateFormat.setLenient(false);
-    String heute = dateFormat.format(datum);
+    String heute = dateFormat.format(dateBuilder);
     return heute;
   }
 
   /**
    * Format the given Date as String.
-   * @param datum The Date, Not {@code null}
+   * @param calendar The Calendar, Not {@code null}
    * @param format The Format of the given Date e.g.
    *        "dd.MM.yyyy HH:mm:ss.SSS" or "dd.MM.yyyy' 23:59'"
    * @return The formatted String
    */
-  public static String formatDate(Calendar datum, String format)
+  public static String formatDate(Calendar calendar, String format)
   {
     SimpleDateFormat dateFormat = new SimpleDateFormat(format);
     dateFormat.setLenient(false);
-    String heute = dateFormat.format(datum.getTime());
+    String heute = dateFormat.format(calendar.getTime());
     return heute;
   }
 

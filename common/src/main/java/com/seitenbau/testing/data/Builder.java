@@ -151,10 +151,10 @@ public class Builder<T>
       List<TestPropertyValue> testData = new ArrayList<TestPropertyValue>();
       for (NameAndSpecGlue<?> propertyDescription : allPropertySpecifications)
       {
-        List<?> sucessRepresentations = propertyDescription.getSpec().getValidRepresentations();
-        if (sucessRepresentations != null && sucessRepresentations.size() > 0)
+        List<?> successRepresentations = propertyDescription.getSpec().getValidRepresentations();
+        if (successRepresentations != null && successRepresentations.size() > 0)
         {
-          List<Representant<?>> casted = (List<Representant<?>>) sucessRepresentations;
+          List<Representant<?>> casted = (List<Representant<?>>) successRepresentations;
           String name = propertyDescription.getName();
           Enum<?> marker = propertyDescription.getMarker();
           Representant<?> rep = getRepresentant(casted, i);
@@ -172,7 +172,7 @@ public class Builder<T>
   }
 
   /**
-   * The parameteriezd Tests will be passed an additional constructor
+   * The parameterized Tests will be passed an additional constructor
    * parameter of type TestDataDetail
    */
   public Collection<Object[]> getFailureCases(boolean withDetails)
@@ -233,16 +233,16 @@ public class Builder<T>
     return testData;
   }
 
-  protected Representant<?> getRepresentant(List<Representant<?>> sucessRepresentations, int index)
+  protected Representant<?> getRepresentant(List<Representant<?>> successRepresentations, int index)
   {
     Representant<?> value = null;
-    if (index >= sucessRepresentations.size())
+    if (index >= successRepresentations.size())
     {
-      value = sucessRepresentations.get(0);
+      value = successRepresentations.get(0);
     }
     else
     {
-      value = sucessRepresentations.get(index);
+      value = successRepresentations.get(index);
     }
     return value;
   }
@@ -269,7 +269,6 @@ public class Builder<T>
   protected Object makeObject(Specs specs, List<TestPropertyValue> val)
   {
     Object obj = newInstance(specs.getTargetType());
-    // for (Entry<String, Object> set : val.entrySet())
     for (TestPropertyValue rep : val)
     {
       String name = rep.getName();
@@ -294,9 +293,9 @@ public class Builder<T>
     {
       method.invoke(obj, value);
     }
-    catch (Exception e2)
+    catch (Exception e)
     {
-      throw new RuntimeException(e2);
+      throw new RuntimeException(e);
     }
   }
 
@@ -369,31 +368,31 @@ public class Builder<T>
     }
   }
 
-  private Method findMethod(Class<?> target, String mName)
+  private Method findMethod(Class<?> target, String name)
   {
-    for (Method m : target.getDeclaredMethods())
+    for (Method method : target.getDeclaredMethods())
     {
-      if (m.getName().equals(mName))
+      if (method.getName().equals(name))
       {
-        if (m.getParameterTypes().length == 1)
+        if (method.getParameterTypes().length == 1)
         {
-          return m;
+          return method;
         }
       }
     }
     if (!target.getSuperclass().equals(Object.class))
     {
-      return findMethod(target.getSuperclass(), mName);
+      return findMethod(target.getSuperclass(), name);
     }
     return null;
   }
 
   private Method findMethod(Class<?> target, Class<?> paramType, String prefix, String name)
   {
-    String mName = prefix + name.substring(0, 1).toUpperCase() + name.substring(1);
+    String methodName = prefix + name.substring(0, 1).toUpperCase() + name.substring(1);
     try
     {
-      return findMethod(target, paramType, mName);
+      return findMethod(target, paramType, methodName);
     }
     catch (Exception e)
     {
@@ -401,20 +400,20 @@ public class Builder<T>
     }
   }
 
-  private Method findMethod(Class<?> target, Class<?> paramType, String mName)
+  private Method findMethod(Class<?> target, Class<?> paramType, String methodName)
       throws SecurityException, NoSuchMethodException
   {
-    for (Method m : target.getDeclaredMethods())
+    for (Method method : target.getDeclaredMethods())
     {
-      if (m.getName().equals(mName))
+      if (method.getName().equals(methodName))
       {
-        if (m.getParameterTypes().length == 1)
+        if (method.getParameterTypes().length == 1)
         {
-          Class<?> type = m.getParameterTypes()[0];
+          Class<?> type = method.getParameterTypes()[0];
           try
           {
             paramType.asSubclass(type);
-            return m;
+            return method;
           }
           catch (ClassCastException e)
           {
@@ -424,7 +423,7 @@ public class Builder<T>
     }
     if (!target.getSuperclass().equals(Object.class))
     {
-      return findMethod(target.getSuperclass(), paramType, mName);
+      return findMethod(target.getSuperclass(), paramType, methodName);
     }
     return null;
   }

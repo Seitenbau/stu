@@ -7,11 +7,11 @@ import com.seitenbau.testing.util.DateUtil;
 
 public class DateBuilder
 {
-  Calendar _datum;
+  Calendar calendar;
 
   public DateBuilder(Calendar current)
   {
-    _datum = current;
+    calendar = current;
   }
 
   /**
@@ -20,7 +20,7 @@ public class DateBuilder
    */
   public Date asDate()
   {
-    return DateUtil.createCopy(_datum).getTime();
+    return DateUtil.createCopy(calendar).getTime();
   }
 
   /**
@@ -30,7 +30,7 @@ public class DateBuilder
    */
   public String asString(String format)
   {
-    return DateUtil.formatDate(_datum, format);
+    return DateUtil.formatDate(calendar, format);
   }
 
   /**
@@ -39,7 +39,7 @@ public class DateBuilder
    */
   public Calendar asCalendar()
   {
-    return DateUtil.createCopy(_datum);
+    return DateUtil.createCopy(calendar);
   }
   
   @Override
@@ -54,7 +54,7 @@ public class DateBuilder
    */
   public DateBuilder removeMS()
   {
-    Calendar datum = DateUtil.createCopy(_datum);
+    Calendar datum = DateUtil.createCopy(calendar);
     datum.set(Calendar.MILLISECOND, 0);
     return new DateBuilder(datum);
   }
@@ -66,7 +66,7 @@ public class DateBuilder
    */
   public DateBuilder removeTime()
   {
-    Calendar datum = DateUtil.createCopy(_datum);
+    Calendar datum = DateUtil.createCopy(calendar);
     datum.set(Calendar.HOUR, 0);
     datum.set(Calendar.MINUTE, 0);
     datum.set(Calendar.SECOND, 0);
@@ -80,7 +80,7 @@ public class DateBuilder
    */
   public DateBuilder removeDate()
   {
-    Calendar datum = DateUtil.createCopy(_datum);
+    Calendar datum = DateUtil.createCopy(calendar);
     datum.set(Calendar.YEAR, 1970);
     datum.set(Calendar.MONTH, 0);
     datum.set(Calendar.DATE, 1);
@@ -115,8 +115,8 @@ public class DateBuilder
    */
   public Timespan calcDifferencTo(DateBuilder datum) 
   {
-    long now = _datum.getTimeInMillis();
-    long then = datum._datum.getTimeInMillis();
+    long now = calendar.getTimeInMillis();
+    long then = datum.calendar.getTimeInMillis();
     long diff= now - then;
     return new Timespan(diff);
   }
@@ -129,12 +129,12 @@ public class DateBuilder
    */
   public Timespan calcDifferencTo(String datum) 
   {
-    return calcDifferencTo(DateUtil.asDatum(datum));
+    return calcDifferencTo(DateUtil.asDatebuilder(datum));
   }
 
   protected DateBuilder add(int field, int amount)
   {
-    Calendar datum = DateUtil.createCopy(_datum);
+    Calendar datum = DateUtil.createCopy(calendar);
     datum.add(field, amount);
     return new DateBuilder(datum);
   }
@@ -145,7 +145,7 @@ public class DateBuilder
    */
   protected DateBuilder set(int field, int amount)
   {
-    Calendar datum = DateUtil.createCopy(_datum);
+    Calendar datum = DateUtil.createCopy(calendar);
     if (field == Calendar.MONTH)
     {
       datum.set(field, amount - 1);
@@ -267,17 +267,17 @@ public class DateBuilder
     }
 
     /**
-     * Increment on field Milisecond
+     * Increment on field Millisecond
      */
-    public DateBuilder miliseconds()
+    public DateBuilder milliseconds()
     {
       return _builder.add(Calendar.MILLISECOND, _amount);
     }
 
     /**
-     * Increment on field Milisecond
+     * Increment on field Millisecond
      */
-    public DateBuilder milisecond()
+    public DateBuilder millisecond()
     {
       return _builder.add(Calendar.MILLISECOND, _amount);
     }
@@ -394,17 +394,17 @@ public class DateBuilder
     }
 
     /**
-     * set field Milisecond
+     * set field Millisecond
      */
-    public DateBuilder miliseconds()
+    public DateBuilder milliseconds()
     {
       return _builder.set(Calendar.MILLISECOND, _increment);
     }
 
     /**
-     * set field Milisecond
+     * set field Millisecond
      */
-    public DateBuilder milisecond()
+    public DateBuilder millisecond()
     {
       return _builder.set(Calendar.MILLISECOND, _increment);
     }

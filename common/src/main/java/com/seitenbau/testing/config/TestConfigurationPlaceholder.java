@@ -9,7 +9,7 @@ import org.springframework.util.CollectionUtils;
 import com.seitenbau.testing.config.impl.PersistentConfiguration;
 
 /**
- * Hilfsklasse. Merged die TestConfiguration in den Spring Context
+ * Util class that merges the TestConfiguration into the Spring Context.
  */
 public class TestConfigurationPlaceholder extends PropertyPlaceholderConfigurer
 {

@@ -1,20 +1,14 @@
 package com.seitenbau.testing.config;
 
-import java.util.List;
-import static org.fest.assertions.MapAssert.*;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.MapAssert.entry;
+
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.fest.assertions.Fail;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.seitenbau.testing.config.impl.PersistentConfiguration;
-import com.seitenbau.testing.config.impl.BeanConfigInjector.MagicValueNotSetException;
-import com.seitenbau.testing.logger.LoggerFactoryTest;
-import com.seitenbau.testing.logger.TestLoggerFactory;
-
-import static org.fest.assertions.Assertions.*;
 
 public class TestConfigurationCompatabilityTest
 {
