@@ -4,7 +4,7 @@
 #else
 #set($package  = "" )
 #end
-#set($clsScope = ${model.dataSet.name} + "Builder")
+#set($clsDataSet = ${model.dataSet.name} + "DataSet")
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
 #set($privateListPrefix = "private_")
@@ -65,8 +65,8 @@ public class ${clsRef} extends DatabaseReference
 #end
   public ${col.javaType} get${col.javaName}()
   {
-    final IScope scope = getScope();
-    final ${clsRowbuilder} row = builders.get(scope.getScopeInstance());
+    final ${clsDataSet} dataSet = getScopedDataSet();
+    final ${clsRowbuilder} row = builders.get(dataSet);
     if (row == null)
     {
       throw new IllegalStateException("No corresponding row to query ${col.javaName} in ${model.javaName}Ref");
@@ -80,7 +80,14 @@ public class ${clsRef} extends DatabaseReference
    */
   public void setBuilder(IScope scope, ${clsRowbuilder} builder)
   {
-    ${clsRowbuilder} lastBuilder = builders.put(scope.getScopeInstance(), builder);
+    if (!(scope.getDataSet() instanceof ${clsDataSet}))
+    {
+      throw new RuntimeException("Cannot bind ${clsRef} to " + scope.getDataSet().getClass().getName());
+    }
+    
+    ${clsDataSet} dataSet = (${clsDataSet})(scope.getDataSet());
+  
+    ${clsRowbuilder} lastBuilder = builders.put(dataSet, builder);
     if (lastBuilder != null && lastBuilder != builder)
     {
       throw new RuntimeException("Builder cannot be redefined");
@@ -88,12 +95,12 @@ public class ${clsRef} extends DatabaseReference
 #macro( setBuilderHandlerHead $refTable $verb )
 #set($refClsRef = ${refTable.javaName} + "Ref")
 
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, scope.getScopeInstance());
+    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, dataSet);
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
       ${refClsRef} ref = it.next();
       it.remove();	// remove iterator because if it will not resolve now, it will never
-      RowBuilder_${refTable.javaName} otherBuilder = ref.getBuilder(scope);
+      RowBuilder_${refTable.javaName} otherBuilder = ref.getBuilder(dataSet);
       if (otherBuilder == null) 
       {
         continue;
@@ -117,7 +124,7 @@ public class ${clsRef} extends DatabaseReference
 #set($verb = ${col.reference.localName})
 #setBuilderHandlerHead(${col.reference.table} $verb)
       builder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, getScope().getScopeInstance());
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, getScopedDataSet());
 #setBuilderHandlerFooter()
 #end
 ##
@@ -153,13 +160,13 @@ public class ${clsRef} extends DatabaseReference
 #end
 #setBuilderHandlerHead($refTable $verb)
 #if($isAssociative)      
-      RowBuilder_${referencingTable.javaName} row = scope.getTable(${referencingTable.javaName}Table.class).insertRow();
+      RowBuilder_${referencingTable.javaName} row = dataSet.table_${referencingTable.javaName}.insertRow();
       row.set${thisMethod}(builder.get${thisKey}());
       row.set${refColumn.javaName}(otherBuilder.get${remoteKey}());
 #else
       otherBuilder.set${refColumn.javaName}(builder.get${remoteKey}());
 #end      
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, getScope().getScopeInstance());
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, getScopedDataSet());
 #setBuilderHandlerFooter()
 #end
 #end
@@ -171,9 +178,9 @@ public class ${clsRef} extends DatabaseReference
    */
   public ${clsRowbuilder} getBuilder(IScope scope)
   {
-    return builders.get(scope.getScopeInstance());
+    return builders.get(scope.getDataSet());
   }
-  
+
 #macro( addToList $list $item )
 #if ($list.add($item))
 #end
@@ -189,12 +196,12 @@ public class ${clsRef} extends DatabaseReference
    */
   public void ${verb}(${refClsRef} ... refs) 
   {
-    IScope scope = getScope();
-    ${clsRowbuilder} thisBuilder = getBuilder(scope);
+    ${clsDataSet} dataSet = getScopedDataSet();
+    ${clsRowbuilder} thisBuilder = getBuilder(dataSet);
     
     for (${refClsRef} ref : refs) 
     {
-      RowBuilder_${refTable.javaName} otherBuilder = ref.getBuilder(scope);
+      RowBuilder_${refTable.javaName} otherBuilder = ref.getBuilder(dataSet);
       
       // check if both row builders exist to resolve relation
       if (thisBuilder != null && otherBuilder != null) 
@@ -207,11 +214,11 @@ public class ${clsRef} extends DatabaseReference
         // to the Refs where no builder exist.
         if (thisBuilder == null)
         {
-          getOrCreateList(${privateListPrefix}${verb}Map, getScope().getScopeInstance()).add(ref);
+          getOrCreateList(${privateListPrefix}${verb}Map, dataSet).add(ref);
         }
         if (otherBuilder == null) 
         {
-          getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, getScope().getScopeInstance()).add(this);
+          getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, dataSet).add(this);
         }
       }
     }
@@ -235,7 +242,7 @@ public class ${clsRef} extends DatabaseReference
 #set( $p_verb = ${referencingCol.reference.remoteName})
 #set( $p_remoteVerb = ${referencingCol.table.getAssociatedColumn($model).reference.remoteName})
 #set( $p_description = ${referencingCol.reference.remoteDescription} )
-#addToList($resolveCode "RowBuilder_${referencingCol.table.javaName} builder = scope.getTable(${referencingCol.table.javaName}Table.class).insertRow();")
+#addToList($resolveCode "RowBuilder_${referencingCol.table.javaName} builder = dataSet.table_${referencingCol.table.javaName}.insertRow();")
 #addToList($resolveCode "builder.set${referencingCol.javaName}(thisBuilder.get${col.javaName}());")
 #addToList($resolveCode "builder.set${assocColumn.javaName}(otherBuilder.get${assocColumn.reference.column.javaName}());")
 #addReference( $p_refTable $p_verb $p_remoteVerb $resolveCode $p_description)
@@ -250,14 +257,14 @@ public class ${clsRef} extends DatabaseReference
 #end
 #end
 
-  private IScope getScope() 
+  private ${clsDataSet} getScopedDataSet() 
   {
     IScope scope = ScopeRegistry.getCurrentScope("${model.package}.${model.dataSet.name}");
     if (scope == null)
     {
       throw new IllegalStateException("No active context set in ${model.javaName}Ref");
     }
-    return scope;
+    return (${clsDataSet})scope.getDataSet();
   }
 
 }

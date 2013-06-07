@@ -268,21 +268,9 @@ public abstract class ${model.name}${model.suffix}
   }
 
   @Override
-  public Object getScopeInstance()
+  public Object getDataSet()
   {
     return this;
   } 
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> T getTable(Class<T> tableClass) 
-  {
-#foreach( $table in $model.tables )
-    if (tableClass.equals(${table.javaName}Table.class)) {
-      return (T)table_${table.javaName};
-    }
-#end
-    throw new RuntimeException("Table of class " + tableClass + " not found.");
-  }
  
 }

@@ -142,9 +142,9 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
   }
   
   @Override
-  public Object getScopeInstance()
+  public Object getDataSet()
   {
-    return dataset.getScopeInstance();
+    return dataset.getDataSet();
   } 
   
   /**
@@ -155,12 +155,6 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
   public IDataSet createDBUnitDataSet() 
   {
     return dataset.createDBUnitDataSet();
-  }
- 
-  @Override
-  public <T> T getTable(Class<T> tableClass) 
-  {
-    return dataset.getTable(tableClass);
   }
   
 }
