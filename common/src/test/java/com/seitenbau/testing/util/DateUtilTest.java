@@ -167,7 +167,7 @@ public class DateUtilTest
   public void testBuilderOnlyDate()
   {
     Calendar datum = DateUtil.asCalendar("2010-02-23 10:04:12.894");
-    Date val = DateUtil.datum(datum).removeDate().asDate();
+    Date val = DateUtil.datum(datum).resetDate().asDate();
     assertThat(val).isExactly("1970-01-01 10:04:12.894");
   }
 
@@ -175,7 +175,7 @@ public class DateUtilTest
   public void testBuilderOnlyTimeAndNoMS()
   {
     Calendar datum = DateUtil.asCalendar("2010-02-23 10:04:12.894");
-    Date val = DateUtil.datum(datum).removeDate().removeMS().asDate();
+    Date val = DateUtil.datum(datum).resetDate().resetMilliseconds().asDate();
     assertThat(val).isExactly("1970-01-01 10:04:12.000");
   }
   
@@ -183,7 +183,7 @@ public class DateUtilTest
   public void testBuilderOnlyTime()
   {
     Calendar datum = DateUtil.asCalendar("2010-02-23 10:04:12.894");
-    Date val = DateUtil.datum(datum).removeTime().asDate();
+    Date val = DateUtil.datum(datum).resetTime().asDate();
     assertThat(val).isExactly("2010-02-23 00:00:00.000");
   }
   
@@ -191,7 +191,7 @@ public class DateUtilTest
   public void testBuilderRemoveAllIs1970()
   {
     Calendar datum = DateUtil.asCalendar("2010-02-23 10:04:12.894");
-    Date val = DateUtil.datum(datum).removeDate().removeTime().add(1).hour().asDate();
+    Date val = DateUtil.datum(datum).resetDate().resetTime().add(1).hour().asDate();
     Date ref = new Date(0);
     assertThat(val).isExactly(ref);
   }

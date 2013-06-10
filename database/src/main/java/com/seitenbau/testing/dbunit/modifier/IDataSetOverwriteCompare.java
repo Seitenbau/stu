@@ -1,9 +1,8 @@
 package com.seitenbau.testing.dbunit.modifier;
 
 /**
- * Hilfs Interface für die {@link DatabaseTesterAwareAssertion}
- * Methoden um das Vergleichen von speziellen Werten abzufangen und
- * manuell zu behandeln.
+ * Helping interface for {@link DatabaseTesterAwareAssertion} methods
+ * to enable manual handling for comparison of particular values.
  * 
  * @param <TYPE>
  */

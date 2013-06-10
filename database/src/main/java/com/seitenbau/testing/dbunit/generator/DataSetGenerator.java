@@ -65,7 +65,7 @@ public class DataSetGenerator
   {
     _sourceWriter = writer;
   }
-  
+
   public Table addTable(Table table)
   {
     _dataSet.addTable(table);
@@ -93,7 +93,7 @@ public class DataSetGenerator
       generateDataSet(targetPath + "/");
       generateTables(targetPath + "/");
       generateJavaClasses(targetPath + "/");
-      
+
       // DSL Additions
       generateDSL(targetPath + "/");
       generateDSLTableModel(targetPath + "/");
@@ -154,15 +154,15 @@ public class DataSetGenerator
   {
     return "/templates/db/JavaClass.vm";
   }
-  
-  //-------------- DSL Additions ------------------
+
+  // -------------- DSL Additions ------------------
   protected void generateDSLTableModel(String into) throws Exception
   {
     for (Table table : _dataSet.getTables())
     {
       templates.executeTemplate(table, getTemplatePathDSLTableModel(), into);
     }
-    logger.info("created " + _dataSet.getTables().size()  + " DSL Table Model");
+    logger.info("created " + _dataSet.getTables().size() + " DSL Table Model");
   }
 
   protected void generateReferenceClasses(String into) throws Exception
@@ -171,15 +171,15 @@ public class DataSetGenerator
     {
       templates.executeTemplate(table, getTemplatePathReference(), into);
     }
-    logger.info("created " + _dataSet.getTables().size()  + " Reference Classes");
+    logger.info("created " + _dataSet.getTables().size() + " Reference Classes");
   }
-  
+
   protected void generateReferenceFactory(String into) throws Exception
   {
     templates.executeTemplate(_dataSet, getTemplatePathRefFactory(), into);
     logger.info("created 1 Reference Factory class");
   }
-  
+
   protected void generateDSL(String into) throws Exception
   {
     templates.executeTemplate(_dataSet, getTemplatePathDSLBuilder(), into);
@@ -195,17 +195,18 @@ public class DataSetGenerator
   {
     return "/templates/db/Ref.vm";
   }
-  
+
   protected String getTemplatePathRefFactory()
   {
     return "/templates/db/RefFactory.vm";
   }
-  
+
   protected String getTemplatePathDSLBuilder()
   {
     return "/templates/db/DSLBuilder.vm";
   }
-  //-----------------------------------------------  
+
+  // -----------------------------------------------
 
   protected void generateDataSet(String into) throws Exception
   {
@@ -242,7 +243,7 @@ public class DataSetGenerator
       String tableJavaName = table.getJavaName();
       if (!JavaNameValidator.isValidIdentifier(tableJavaName))
       {
-        throw new Exception("Table Name \"" + tableJavaName + "\" ist nicht gültig.");
+        throw new Exception("Table Name \"" + tableJavaName + "\" in not valid.");
       }
 
       for (Column column : table.getColumns())
@@ -250,8 +251,7 @@ public class DataSetGenerator
         String columnJavaName = column.getJavaName();
         if (!JavaNameValidator.isValidIdentifier(columnJavaName))
         {
-          throw new Exception("Column Name \"" + columnJavaName + "\" of table \"" + tableJavaName
-              + "\" ist nicht gültig.");
+          throw new Exception("Column Name \"" + columnJavaName + "\" of table \"" + tableJavaName + "\" is not valid.");
         }
       }
     }
@@ -263,26 +263,27 @@ public class DataSetGenerator
 
     if (packageName == null)
     {
-      throw new Exception("Package name ist NULL oder leer. " + "Der Package Name muss gesetzt werden. "
-          + "Dazu die Methode \"packageName\" aufrufen.");
+
+      throw new Exception(
+          "The package name is NULL or empty. The package name must be set. To achieve this the method \"packageName\" must be called.");
     }
 
     if (!JavaNameValidator.isValidPackageName(packageName))
     {
-      throw new Exception("Der Package Name enthält ungültige Java Namen.");
+      throw new Exception("The package name contains an invalid Java name.");
     }
 
     String databaseName = getDataSet().getName();
 
     if (databaseName == null || databaseName.trim().length() == 0)
     {
-      throw new RuntimeException("Database Name ist NULL oder leer. " + "Der Database Name muss gesetzt werden. "
-          + "Dazu die Methode \"database\" aufrufen.");
+      throw new RuntimeException(
+          "The database name is NULL or empty. The database name must be set. To achieve this the method \"database\" must be called.");
     }
 
     if (!JavaNameValidator.isValidIdentifier(databaseName))
     {
-      throw new Exception("Der Database Name ist nicht gültig.");
+      throw new Exception("The database name is not valid.");
     }
   }
 

@@ -38,7 +38,7 @@ public class RemoveRowFromTable implements IDataSetFilter
     {
       return theDataSet;
     }
-    DefaultDataSet ds = new DefaultDataSet();
+    DefaultDataSet newDataSet = new DefaultDataSet();
     for (ITableIterator iter = theDataSet.iterator(); iter.next();)
     {
       String curName = iter.getTable().getTableMetaData().getTableName();
@@ -61,15 +61,15 @@ public class RemoveRowFromTable implements IDataSetFilter
             }
           }
         };
-        ds.addTable(new RowFilterTable(oldtable, rowFilter));
+        newDataSet.addTable(new RowFilterTable(oldtable, rowFilter));
         specialTreated = true;
         break;
       }
       if (!specialTreated)
       {
-        ds.addTable(iter.getTable());
+        newDataSet.addTable(iter.getTable());
       }
     }
-    return ds;
+    return newDataSet;
   }
 }

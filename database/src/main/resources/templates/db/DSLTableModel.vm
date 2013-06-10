@@ -21,11 +21,12 @@ import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 import com.seitenbau.testing.dbunit.dsl.LazyValue;
 import com.seitenbau.testing.dbunit.dsl.NoValue;
+import com.seitenbau.testing.dbunit.dsl.RefColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.DataType;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
@@ -67,7 +68,7 @@ public class ${clsTable} {
    * <p>
    * Data Type: ${model.javaName}Ref
    */
-  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> REF = createREFBinding();
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> REF = new RefColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>();
 
 #foreach( $col in $model.columns )
 #macro( comments )
@@ -103,7 +104,6 @@ public class ${clsTable} {
   private final ${model.package}.${clsTable} _table;
 
   private final ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> _adapter = new TableAdapter();
-    
 
   /**
    * Allows searching for one or more rows specified by a column value.
@@ -116,7 +116,6 @@ public class ${clsTable} {
    */
   public final ${clsTableFindWhere} findWhere;
 
-    
   /**
    * Allows searching for a row specified by a column value.
    * The first matching row is returned. Does not throw an
@@ -134,12 +133,12 @@ public class ${clsTable} {
     findWhere = _table.findWhere;
     getWhere = _table.getWhere;
   }
-  
-  ${model.package}.${clsTable} getTableModel()
+
+  public static ColumnMetaData getColumnMetaData(String column)
   {
-    return _table;
+    return ${model.package}.${clsTable}.getColumnMetaData(column);
   }
-  
+
   /**
    * Parses the rows of a ${model.javaName} table. Supported columns are:
    * <ul>
@@ -165,141 +164,6 @@ public class ${clsTable} {
   {
     return _table.getRowCount();
   }
-  
-
-  private boolean valueMustBeSetRaw(Object value)
-  {
-    return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
-  }
-  
-  private class TableAdapter implements ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
-  {
-    public ${clsRowbuilder} insertRow() 
-    {
-      return _table.insertRow();
-    }
-  
-    public ${clsTableGetWhere} getWhere()
-    {
-      return _table.getWhere;
-    }
-    
-    public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
-    {
-      reference.setBuilder(_scope, row);
-    }
-
-    public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
-    {
-      _scope.replace${clsRef}WithId(reference, row);
-    }    
-
-    public ${clsRowbuilder} getRowByReference(${clsRef} reference)
-    {
-      return reference.getBuilder(_scope);
-    }
-
-    public String getTableName()
-    {
-      return "${model.javaName}";
-    }
-    
-  };  
-
-  private ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> createREFBinding()
-  {
-    return new ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>()
-    { 
-      @Override
-      public void set(${clsRowbuilder} row, Object value)
-      {
-        throw new RuntimeException("Setting on REF is not allowed");
-      }
-    
-      @Override
-      public boolean isRefColumn() 
-      {
-        return true;
-      }
-
-      @Override
-      public DataType getDataType() 
-      {
-        return null;
-      }
-    };
-  }
-#foreach( $col in $model.columns )
-
-  private ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> create${col.javaName}Binding() 
-  {
-    return new ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>()
-    {
-      @Override
-      public void set(${clsRowbuilder} row, Object value)
-      {
-#if ( ${col.isIdentifierColumn()} )
-        if (definedIdsSet.contains(row) && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
-          throw new IllegalStateException("Cannot reset column id [" + row.get${col.javaName}() + " vs " + value + "]");
-        }
-        definedIdsSet.add(row);
-#end
-        if (valueMustBeSetRaw(value)) 
-        {
-          row.set${col.javaName}Raw(value);
-        } else {
-          row.set${col.javaName}((${col.javaType})CastUtil.cast(value, ${col.type}));
-        }
-      }
-#if ( ${col.reference} )
-
-      @Override
-      public void setReference(${clsRowbuilder} row, DatabaseReference ref)
-      {
-        ${col.reference.table.javaName}Ref reference = (${col.reference.table.javaName}Ref)ref;
-        RowBuilder_${col.reference.table.javaName} referenceBuilder = reference.getBuilder(_scope);
-        if (referenceBuilder != null)
-        {
-          final ${col.reference.column.javaType} value = referenceBuilder.get${col.reference.javaName}();
-          row.set${col.javaName}(value);
-        } else {
-          row.set${col.javaName}Raw(ref);
-        }
-      }
-#end
-#if ( ${col.isIdentifierColumn()} )
-
-      @Override
-      public Optional<${clsRowbuilder}> getWhere(${clsTableGetWhere} getWhere, Object value)
-      {
-        return getWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
-      }
-
-      @Override
-      public boolean isIdentifierColumn()
-      {
-        return true;
-      }
-    
-      private Set<${clsRowbuilder}> definedIdsSet = new HashSet<${clsRowbuilder}>();
-#else
-
-      @Override
-      public void setLazyValue(${clsRowbuilder} row, LazyValue lazyValue)
-      {
-        row.set${col.javaName}Raw(lazyValue);
-      }
-#end
-      
-      @Override
-      public DataType getDataType()
-      {
-        return ${col.type};
-      }
-
-    };
-  }
-#end
 
   public ${clsRowbuilder} insertRow()
   {
@@ -373,10 +237,117 @@ public class ${clsTable} {
       });
   }
 
-  public static ColumnMetaData getColumnMetaData(String column)
-  {
-    return ${model.package}.${clsTable}.getColumnMetaData(column);
-  }
   
+  private class TableAdapter implements ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
+  {
+    public ${clsRowbuilder} insertRow() 
+    {
+      return _table.insertRow();
+    }
+  
+    public ${clsTableGetWhere} getWhere()
+    {
+      return _table.getWhere;
+    }
+    
+    public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
+    {
+      reference.setBuilder(_scope, row);
+    }
+
+    public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
+    {
+      _scope.replace${clsRef}WithId(reference, row);
+    }    
+
+    public ${clsRowbuilder} getRowByReference(${clsRef} reference)
+    {
+      return reference.getBuilder(_scope);
+    }
+
+    public String getTableName()
+    {
+      return "${model.javaName}";
+    }
+    
+  };  
+
+#foreach( $col in $model.columns )
+
+  private ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> create${col.javaName}Binding() 
+  {
+    return new ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>()
+    {
+      @Override
+      public void set(${clsRowbuilder} row, Object value)
+      {
+#if ( ${col.isIdentifierColumn()} )
+        if (definedIdsSet.contains(row) && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
+          throw new IllegalStateException("Cannot reset column id [" + row.get${col.javaName}() + " vs " + value + "]");
+        }
+        definedIdsSet.add(row);
+#end
+        if (valueMustBeSetRaw(value)) 
+        {
+          row.set${col.javaName}Raw(value);
+        } else {
+          row.set${col.javaName}((${col.javaType})CastUtil.cast(value, ${col.type}));
+        }
+      }
+#if ( ${col.reference} )
+
+      @Override
+      public void setReference(${clsRowbuilder} row, DatabaseReference ref)
+      {
+        ${col.reference.table.javaName}Ref reference = (${col.reference.table.javaName}Ref)ref;
+        RowBuilder_${col.reference.table.javaName} referenceBuilder = reference.getBuilder(_scope);
+        if (referenceBuilder != null)
+        {
+          final ${col.reference.column.javaType} value = referenceBuilder.get${col.reference.javaName}();
+          row.set${col.javaName}(value);
+        } else {
+          row.set${col.javaName}Raw(ref);
+        }
+      }
+#end
+#if ( ${col.isIdentifierColumn()} )
+
+      @Override
+      public Optional<${clsRowbuilder}> getWhere(${clsTableGetWhere} getWhere, Object value)
+      {
+        return getWhere.${col.javaNameFirstLower}((${col.javaType})CastUtil.cast(value, ${col.type}));
+      }
+
+      @Override
+      public boolean isIdentifierColumn()
+      {
+        return true;
+      }
+    
+      private Set<${clsRowbuilder}> definedIdsSet = new HashSet<${clsRowbuilder}>();
+#else
+
+      @Override
+      public void setLazyValue(${clsRowbuilder} row, LazyValue lazyValue)
+      {
+        row.set${col.javaName}Raw(lazyValue);
+      }
+#end
+      
+      @Override
+      public DataType getDataType()
+      {
+        return ${col.type};
+      }
+
+    };
+  }
+#end
+
+  private boolean valueMustBeSetRaw(Object value)
+  {
+    return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
+  }
+
 }
 

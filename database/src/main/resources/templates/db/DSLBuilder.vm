@@ -12,6 +12,7 @@ package ${package};
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
 import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.dsl.IScope;
+import com.seitenbau.testing.util.Action;
 import org.dbunit.dataset.IDataSet;
 
 #if( $model.package && $model.package.length() != 0 )
@@ -99,19 +100,25 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    * @param reference The reference, which can be resolved now
    * @param row The row containing the represented values 
    */
-  void replace${reftable.javaName}RefWithId(${reftable.javaName}Ref reference, RowBuilder_${reftable.javaName} row)
+  void replace${reftable.javaName}RefWithId(final ${reftable.javaName}Ref reference, final RowBuilder_${reftable.javaName} row)
   {
 #foreach( $table in $model.tables )
 #foreach( $col in $table.columns )
 #if ($col.reference && $col.reference.table == $reftable)
 ### $col in $table refers on reference
     // Ref: ${table.javaName} on ${col.javaName}
-    for (RowBuilder_${table.javaName} builder : ${table.javaNameFirstLower}Table.getTableModel().rows) {
-      if (builder.get${col.javaName}Raw() == reference)
+    ${table.javaNameFirstLower}Table.foreach(new Action<RowBuilder_${table.javaName}>() {
+
+      @Override
+      public void call(RowBuilder_${table.javaName} builder)
       {
-        builder.set${col.javaName}(row.get${col.reference.column.javaName}());
+        if (builder.get${col.javaName}Raw() == reference)
+        {
+          builder.set${col.javaName}(row.get${col.reference.column.javaName}());
+        }
       }
-    }
+      
+    });
     
 #end
 #end

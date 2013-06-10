@@ -8,8 +8,8 @@ import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.TypeCastException;
 
 /**
- * Dimple DataType Delegator. Used as base class for convenience.
- * Which delegates all method to a given Delegate Instancen.
+ * Simple DataType Delegator. Used as base class for convenience.
+ * Which delegates all method to a given Delegate Instance.
  * 
  */
 public class DataTypeDecorator extends DataType

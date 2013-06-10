@@ -11,12 +11,11 @@ public class RemoveTableContent implements IDataSetFilter
   private String[] tableName = null;
 
   /**
-   * Entfernt alle Zeilen aus dem angebenen Tabellen. Convenient
-   * Klasse um
+   * Remove all rows from the given tables. Convenient class to
    * {@link DataSetUtil#filterOutTableRows(IDataSet, String...)}
    * 
-   * @param tablesToMakeEmpty Liste an Tabellen die geleert werden
-   *        sollen.
+   * @param tablesToMakeEmpty List of all tables that should be
+   *        cleared.
    */
   public RemoveTableContent(String... tablesToMakeEmpty)
   {
