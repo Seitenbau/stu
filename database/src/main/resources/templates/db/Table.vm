@@ -485,13 +485,24 @@ public class ${tableClass} implements ITable
 
     public ${rowcollection} ${column.javaNameFirstLower}(${clsRef} ref)
     {
-      return ${column.javaNameFirstLower}(ref.get${column.javaName}());
+      ${rowbuilder} row = ref.getBuilder(table._dataSet);
+      if (row == null)
+      {
+        throw new RuntimeException("Ref not defined in this scope");
+      }
+      return ${column.javaNameFirstLower}(row.get${column.javaName}());
     }
 #if( $column.reference )
+#set( $refTable = ${column.reference.column.table} )
 
-    public ${rowcollection} ${column.javaNameFirstLower}(${column.reference.column.table.javaName}Ref ref)
+    public ${rowcollection} ${column.javaNameFirstLower}(${refTable.javaName}Ref ref)
     {
-      return ${column.javaNameFirstLower}(ref.get${column.reference.column.javaName}());
+      ${model.package}.${refTable.javaName}Table.RowBuilder_${refTable.javaName} row = ref.getBuilder(table._dataSet);
+      if (row == null)
+      {
+        throw new RuntimeException("Ref not defined in this scope");
+      }
+      return ${column.javaNameFirstLower}(row.get${column.reference.column.javaName}());
     }
 #end       
 
@@ -538,9 +549,11 @@ public class ${tableClass} implements ITable
   public static class $getWhereClass
   {
     private final List<${rowbuilder}> rows;
+    private final ${tableClass} table;
     
     public $getWhereClass(${tableClass} theTable) 
     {
+       table = theTable;
        rows = theTable.rows;
     }
     
@@ -559,13 +572,24 @@ public class ${tableClass} implements ITable
 
     public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${clsRef} ref)
     {
-      return ${column.javaNameFirstLower}(ref.get${column.javaName}());
+      ${rowbuilder} row = ref.getBuilder(table._dataSet);
+      if (row == null)
+      {
+        throw new RuntimeException("Ref not defined in this scope");
+      }
+      return ${column.javaNameFirstLower}(row.get${column.javaName}());
     }
 #if( $column.reference )
+#set( $refTable = ${column.reference.column.table} )
 
-    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${column.reference.column.table.javaName}Ref ref)
+    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${refTable.javaName}Ref ref)
     {
-      return ${column.javaNameFirstLower}(ref.get${column.reference.column.javaName}());
+      ${model.package}.${refTable.javaName}Table.RowBuilder_${refTable.javaName} row = ref.getBuilder(table._dataSet);
+      if (row == null)
+      {
+        throw new RuntimeException("Ref not defined in this scope");
+      }
+      return ${column.javaNameFirstLower}(row.get${column.reference.column.javaName}());
     }
 #end       
 
