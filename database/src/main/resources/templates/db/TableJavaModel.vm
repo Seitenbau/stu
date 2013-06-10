@@ -5,9 +5,13 @@
 package ${package};
 #end
 
-import java.util.Date;
+#foreach( $column in $model.columns )
+#if( $column.javaType.contains("Date") )
 import com.seitenbau.testing.util.DateUtil;
 import com.seitenbau.testing.util.date.DateBuilder;
+#break
+#end
+#end
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 
 /* *******************************************************
@@ -16,23 +20,26 @@ import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 public class $tableClass
 {
 #foreach( $column in $model.columns )
+
   /** actual type : ${column.javaType} */
   protected java.lang.Object ${column.getJavaNameFirstLower()};
 #end
 
   DatasetIdGenerator _generator;
+
   public void setIdGenerator(DatasetIdGenerator generator) 
   {
     _generator=generator;
   }
-
 #foreach( $column in $model.columns )
 #if( $column.javaType.contains("Date") )
+
   public $tableClass set${column.javaName}(String dateString)
   {
     ${column.getJavaNameFirstLower()} = DateUtil.asDate(dateString);
     return this;
   }
+
   public $tableClass set${column.javaName}(DateBuilder datum)
   {
     ${column.getJavaNameFirstLower()} = datum.asDate();
@@ -40,31 +47,37 @@ public class $tableClass
   }
 #end
 #if( $column.javaType.contains("Long") )
+
   public $tableClass set${column.javaName}(Integer intValue)
   {
     ${column.getJavaNameFirstLower()} = (intValue==null?null:Long.valueOf(intValue));
     return this;
   }
 #end
+
   public $tableClass set${column.javaName}(${column.javaType} value)
   {
     ${column.getJavaNameFirstLower()} = value;
     return this;
   }
+
   public $tableClass set${column.javaName}Raw(Object value)
   {
     ${column.getJavaNameFirstLower()} =  value;
     return this;
   }
+
   public ${column.javaType} get${column.javaName}()
   {
     return (${column.javaType})  ${column.getJavaNameFirstLower()};
   }
+
   public java.lang.Object get${column.javaName}Raw()
   {
     return ${column.getJavaNameFirstLower()};
   }
 #if( $column.isNextValueMethodGenerated() )
+
   public $tableClass next${column.javaName}()
   {
     Long nextId = _generator.nextId("${model.name}","$column.name");

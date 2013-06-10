@@ -8,22 +8,22 @@ public class DefaultDataSet extends EmptyDataSet
   @Override
   protected void initDataSet()
   {
-    RowGetters_Jobs softwareDeveloper = //
+    RowGetters_Jobs<?> softwareDeveloper = //
     table_Jobs.insertRow() //
         .setTitle("Software Developer") //
         .setDescription("Creating software");
 
-    RowGetters_Jobs softwareTester = //
+    RowGetters_Jobs<?> softwareTester = //
     table_Jobs.insertRow() //
         .setTitle("Software Tester") //
         .setDescription("Testing software");
 
-    RowGetters_Jobs teamManager = //
+    RowGetters_Jobs<?> teamManager = //
     table_Jobs.insertRow() //
         .setTitle("Team Manager") //
         .setDescription("Makes the world go round");
 
-    RowGetters_Teams qualityAssurance = //
+    RowGetters_Teams<?> qualityAssurance = //
     table_Teams.insertRow() //
         .setTitle("Quality Assurance") //
         .setDescription("Verifies that requirements for a product are fulfilled").setMembersize(3);

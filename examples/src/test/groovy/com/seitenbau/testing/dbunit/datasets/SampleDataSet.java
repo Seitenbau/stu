@@ -8,12 +8,12 @@ public class SampleDataSet extends EmptyDataSet
   @Override
   protected void initDataSet()
   {
-    RowGetters_Jobs bakerman = //
+    RowGetters_Jobs<?> bakerman = //
     table_Jobs.insertRow() //
         .setTitle("Bakerman") //
         .setDescription("Baking bread");
 
-    RowGetters_Teams bakercrew = //
+    RowGetters_Teams<?> bakercrew = //
     table_Teams.insertRow() //
         .setTitle("Butter & Bread") //
         .setDescription("Creating good bread").setMembersize(3);
