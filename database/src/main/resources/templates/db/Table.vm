@@ -18,8 +18,10 @@ package ${package};
 import com.google.common.base.Optional;
 
 import com.seitenbau.testing.dbunit.dsl.LazyValue;
+#if( !${model.isAssociativeTable()} )
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+#end
 import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaDataBuilder;
 import com.seitenbau.testing.util.Action;
@@ -386,7 +388,8 @@ public class ${tableClass} implements ITable
       throw new RuntimeException(NAME + " col = " + column);
     }
     
-    private Object getColumnValue(int index)
+    // considered private, but possibly unused
+    Object getColumnValue(int index)
     {
       Object value = data[index];
       if (value instanceof LazyValue)
@@ -400,7 +403,7 @@ public class ${tableClass} implements ITable
 #if( $column.reference )
 #set($otherGetter  = "RowGetters_" + ${column.reference.table.javaName} )
 
-    public ${rowbuilder} ref${column.javaName}($otherGetter reference)
+    public ${rowbuilder} ref${column.javaName}(@SuppressWarnings("rawtypes") $otherGetter reference)
     {
       set${column.javaName}(reference.get${column.reference.javaName}());
       return this;
