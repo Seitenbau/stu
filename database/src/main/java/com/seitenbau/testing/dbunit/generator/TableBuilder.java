@@ -5,17 +5,17 @@ import java.util.List;
 
 public class TableBuilder
 {
-  
+
   private final DatabaseModel model;
-  
+
   private final String name;
 
   private String javaName;
-  
+
   private String description;
-  
+
   private final List<ColumnBuilder> columnBuilders;
-  
+
   public TableBuilder(DatabaseModel model, String name)
   {
     this.model = model;
@@ -30,17 +30,17 @@ public class TableBuilder
     model.addTable(result);
     return result;
   }
-  
+
   private String getTableDescription()
   {
     if (description != null)
     {
       return description;
     }
-    
+
     return "The " + name + " table";
   }
-  
+
   public String getName()
   {
     return name;
@@ -78,14 +78,4 @@ public class TableBuilder
     columnBuilders.add(columnBuilder);
   }
 
-
-//  public void addColumn(Column column)
-//  {
-//    table.addColumn(column);
-//  }
-
-//  Table getTable()
-//  {
-//    return table;
-//  }
-  }
+}

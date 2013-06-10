@@ -8,7 +8,7 @@ import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.datatype.UnknownDataType;
 
 /**
- * Helper class to Decoarate a TableDecorator so all Compares will be
+ * Helper class to decorate a TableDecorator so all Compares will be
  * handled by the {@link DataTypeCompareDecorator} class.
  */
 public class TableCompareDecorator extends TableDecorator
