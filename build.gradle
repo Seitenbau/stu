@@ -13,7 +13,6 @@ configure(allprojects) {
   ext.commonLangVersion             = "2.6"
   ext.commonsdbcpVersion            = "1.4"
   ext.dbunitVersion                 = "2.3.0"
-  ext.derbyVersion                  = "10.9.1.0"
   ext.easymockVersion               = "3.0"
   ext.festAssertVersion             = "1.4"
   ext.guavaVersion                  = "14.0.1"
@@ -94,7 +93,6 @@ project("database") {
 project("examples") {
   dependencies {
     compile project(':database')
-    compile("org.apache.derby:derby:$derbyVersion")
     runtime("org.hsqldb:hsqldb:$hsqldbVersion")
     compile("org.springframework:spring-context:$springVersion")
     compile("org.springframework:spring-orm:$springVersion")
