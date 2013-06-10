@@ -1,9 +1,5 @@
 #set($filename = ${model.javaName} + "TableGateway" )
-#if( $model.package && $model.package.length() != 0 )
 #set($package  = ${model.package} )
-#else
-#set($package  = "" )
-#end
 #set($clsBuilder = ${model.dataSet.name} + "Builder")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
 #set($clsRef = ${model.javaName} + "Ref")
@@ -13,7 +9,9 @@
 #set($clsTableGetWhere = ${model.javaName} + "GetWhere")
 #set($clsRowcollection= "RowCollection_" + ${model.javaName} )
 #set($javaDocSep = "#")
+#if( $package && $package.length() != 0 )
 package ${package};
+#end
 #if( !${model.isAssociativeTable()})
 
 import com.google.common.base.Optional;

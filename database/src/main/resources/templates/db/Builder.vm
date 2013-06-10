@@ -1,13 +1,11 @@
 #set($filename = ${model.name} + "Builder" )
-#if( $model.package && $model.package.length() != 0 )
 #set($package  = ${model.package} )
-#else
-#set($package  = "" )
-#end
 #set($clsBuilder = ${model.name} + "Builder")
 #set($clsDataSet = ${model.name} + "DataSet")
 #set($referenceMethod = "ref")
+#if( $package && $package.length() != 0 )
 package ${package};
+#end
 
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
 import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;

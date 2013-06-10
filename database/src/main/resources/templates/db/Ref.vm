@@ -1,14 +1,12 @@
 #set($filename = ${model.javaName} + "Ref" )
-#if( $model.package && $model.package.length() != 0 )
-#set($package  = ${model.package} + "")
-#else
-#set($package  = "" )
-#end
+#set($package  = ${model.package})
 #set($clsDataSet = ${model.dataSet.name} + "DataSet")
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
 #set($privateListPrefix = "private_")
+#if( $package && $package.length() != 0 )
 package ${package};
+#end
 
 import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;

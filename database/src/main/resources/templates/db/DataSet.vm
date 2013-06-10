@@ -5,7 +5,7 @@ package ${package};
 #end
 ##
 ## ************************************************************
-## *                   Begin of File                          * 
+## *                   Begin of File                          *
 ## ************************************************************
 ##
 import com.seitenbau.testing.dbunit.util.DbCompare;

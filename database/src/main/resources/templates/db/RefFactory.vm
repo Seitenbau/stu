@@ -1,11 +1,9 @@
 #set($filename = "RefFactory" )
-#if( $model.package && $model.package.length() != 0 )
 #set($package  = ${model.package} )
-#else
-#set($package  = "" )
-#end
 #set($clsFactory = "RefFactory")
+#if( $package && $package.length() != 0 )
 package ${package};
+#end
 
 public class ${clsFactory} 
 {
