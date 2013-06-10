@@ -7,7 +7,7 @@ package com.seitenbau.testing.dbunit.dsl;
  * @param <G> Table GetWhere class
  * @param <D> Table DatabaseReference class
  */
-public interface ITableAdapter<R, G, D extends DatabaseReference>
+public interface TableParserAdapter<R, G, D extends DatabaseReference>
 {
 
   /**
@@ -23,11 +23,11 @@ public interface ITableAdapter<R, G, D extends DatabaseReference>
   G getWhere();
   
   /**
-   * Binds the row to the reference under the table's scope
+   * Binds the row to the reference under the table's dataset
    * @param reference The reference
    * @param row The row which shall be bound
    */
-  void bindToScope(D reference, R row);
+  void bindToDataSet(D reference, R row);
 
   /**
    * Resolves all relations to the reference by the concrete value 

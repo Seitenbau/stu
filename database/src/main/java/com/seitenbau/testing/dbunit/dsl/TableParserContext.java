@@ -4,13 +4,21 @@ import java.math.BigDecimal;
 
 public class TableParserContext
 {
+  
+  public interface ParsedRowCallback
+  {
+    
+    void parsedRow(TableRowModel row);
+
+  }
+  
   private static class Context
   {
-    final IParsedTableRowCallback callback;
+    final ParsedRowCallback callback;
 
     TableRowModel activeRow;
 
-    Context(IParsedTableRowCallback callback)
+    Context(ParsedRowCallback callback)
     {
       this.callback = callback;
     }
@@ -34,7 +42,7 @@ public class TableParserContext
     return row.or(nextValue);
   }
 
-  public static void createContext(IParsedTableRowCallback callback)
+  public static void createContext(ParsedRowCallback callback)
   {
     Context currentContext = new Context(callback);
     context.set(currentContext);

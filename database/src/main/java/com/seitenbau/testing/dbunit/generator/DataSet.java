@@ -19,6 +19,10 @@ public class DataSet
 
   String _caller;
 
+  boolean _isTableDSLGeneration;
+
+  boolean _isModelClassGeneration;
+
   public String getPackage()
   {
     return _package;
@@ -28,10 +32,12 @@ public class DataSet
   {
   }
 
-  public DataSet(String thePackage, String name)
+  public DataSet(String thePackage, String name, boolean isTableDSLGeneration, boolean isModelClassGeneration)
   {
     _package = thePackage;
     _name = name;
+    _isTableDSLGeneration = isTableDSLGeneration;
+    _isModelClassGeneration = isModelClassGeneration;
   }
 
   public String getName()
@@ -97,6 +103,16 @@ public class DataSet
   public String getCaller()
   {
     return _caller;
+  }
+
+  public boolean isTableDSLGeneration()
+  {
+    return _isTableDSLGeneration;
+  }
+
+  public boolean isModelClassGeneration()
+  {
+    return _isModelClassGeneration;
   }
 
 }

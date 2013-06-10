@@ -3,11 +3,12 @@ package com.seitenbau.testing.dbunit.dsl;
 import groovy.lang.Closure;
 
 import com.google.common.base.Optional;
+import com.seitenbau.testing.dbunit.dsl.TableParserContext.ParsedRowCallback;
 
-public class TableParserCallback<R, G, D extends DatabaseReference> implements IParsedTableRowCallback
+public class TableParserCallback<R, G, D extends DatabaseReference> implements ParsedRowCallback
 {
   
-  private final ITableAdapter<R, G, D> _tableAdapter;
+  private final TableParserAdapter<R, G, D> _tableAdapter;
 
   private TableRowModel _head;
 
@@ -23,7 +24,7 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements I
 
   private ColumnBinding<R, G> _idColumn;
 
-  public TableParserCallback(ITableAdapter<R, G, D> tableAdapter)
+  public TableParserCallback(TableParserAdapter<R, G, D> tableAdapter)
   {
     _tableAdapter = tableAdapter;
     _head = null;
@@ -271,7 +272,7 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements I
     private void bindBuilderToScope()
     {
       if (ref != null) {
-        _tableAdapter.bindToScope(ref, builder);
+        _tableAdapter.bindToDataSet(ref, builder);
       }
     }
 

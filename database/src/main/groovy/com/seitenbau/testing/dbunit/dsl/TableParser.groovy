@@ -2,13 +2,13 @@ package com.seitenbau.testing.dbunit.dsl
 
 import java.util.List;
 
-import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 
 import groovy.lang.Closure;
 
 public class TableParser {
 
-	public static void parseTable(Closure rows, Object delegate, IParsedTableRowCallback callback) {
+	public static void parseTable(Closure rows, Object delegate, TableParserCallback callback) {
 		TableParserContext.createContext(callback);
     
     // TODO NM/CB Is it possible to achieve this Groovy feature in Java?

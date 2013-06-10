@@ -10,8 +10,8 @@
 #set($privateListPrefix = "private_")
 package ${package};
 
-import com.seitenbau.testing.dbunit.dsl.IScope;
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
+import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 
 #if ( !${model.isAssociativeTable()} )
 import java.util.Iterator;
@@ -57,7 +57,7 @@ public class ${clsRef} extends DatabaseReference
 #end
   public ${col.javaType} get${col.javaName}()
   {
-    final ${clsDataSet} dataSet = getScopedDataSet();
+    final ${clsDataSet} dataSet = getActiveDataSet();
     final ${clsRowbuilder} row = builders.get(dataSet);
     if (row == null)
     {
@@ -70,14 +70,14 @@ public class ${clsRef} extends DatabaseReference
   /**
    * This method is considered package private
    */
-  public void setBuilder(IScope scope, ${clsRowbuilder} builder)
+  public void setBuilder(DataSetIdentificator identificator, ${clsRowbuilder} builder)
   {
-    if (!(scope.getDataSet() instanceof ${clsDataSet}))
+    if (!(identificator.getDataSet() instanceof ${clsDataSet}))
     {
-      throw new RuntimeException("Cannot bind ${clsRef} to " + scope.getDataSet().getClass().getName());
+      throw new RuntimeException("Cannot bind ${clsRef} to " + identificator.getDataSet().getClass().getName());
     }
     
-    ${clsDataSet} dataSet = (${clsDataSet})(scope.getDataSet());
+    ${clsDataSet} dataSet = (${clsDataSet})(identificator.getDataSet());
   
     ${clsRowbuilder} lastBuilder = builders.put(dataSet, builder);
     if (lastBuilder != null && lastBuilder != builder)
@@ -117,7 +117,7 @@ public class ${clsRef} extends DatabaseReference
 #set($verb = ${col.reference.localName})
 #setBuilderHandlerHead(${col.reference.table} $verb)
       builder.set${col.javaName}(otherBuilder.get${col.reference.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, getScopedDataSet());
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.reference.remoteName}Map, getActiveDataSet());
 #setBuilderHandlerFooter()
 #end
 ##
@@ -159,19 +159,16 @@ public class ${clsRef} extends DatabaseReference
 #else
       otherBuilder.set${refColumn.javaName}(builder.get${remoteKey}());
 #end      
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, getScopedDataSet());
+      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, getActiveDataSet());
 #setBuilderHandlerFooter()
 #end
 #end
 #end
   }
   
-  /**
-   * This method is considered package private
-   */
-  public ${clsRowbuilder} getBuilder(IScope scope)
+  ${clsRowbuilder} getBuilder(DataSetIdentificator identificator)
   {
-    return builders.get(scope.getDataSet());
+    return builders.get(identificator.getDataSet());
   }
 
 #macro( addToList $list $item )
@@ -189,7 +186,7 @@ public class ${clsRef} extends DatabaseReference
    */
   public void ${verb}(${refClsRef} ... refs) 
   {
-    ${clsDataSet} dataSet = getScopedDataSet();
+    ${clsDataSet} dataSet = getActiveDataSet();
     ${clsRowbuilder} thisBuilder = getBuilder(dataSet);
     
     for (${refClsRef} ref : refs) 
@@ -250,14 +247,14 @@ public class ${clsRef} extends DatabaseReference
 #end
 #end
 
-  private ${clsDataSet} getScopedDataSet() 
+  private ${clsDataSet} getActiveDataSet() 
   {
-    IScope scope = ScopeRegistry.getCurrentScope("${model.package}.${model.dataSet.name}");
-    if (scope == null)
+    DataSetIdentificator identificator = DataSetRegistry.getCurrentDataSet("${model.package}.${model.dataSet.name}");
+    if (identificator == null)
     {
       throw new IllegalStateException("No active context set in ${model.javaName}Ref");
     }
-    return (${clsDataSet})scope.getDataSet();
+    return (${clsDataSet})identificator.getDataSet();
   }
 
 }

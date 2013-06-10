@@ -14,15 +14,26 @@ public abstract class DatabaseModel
 
   String targetPath = DataSetGenerator.DEFAULT_OUTPUT_FOLDER;
 
+  boolean isModelClassGeneration;
+
+  boolean isTableDSLGeneration;
+
   final List<Table> tables = new ArrayList<Table>();
 
   protected String __forceCaller;
+
+  public DatabaseModel()
+  {
+    isModelClassGeneration = false;
+    isTableDSLGeneration = true;
+  }
 
   public DataSetGenerator getDataSetGenInstance()
   {
     if (generator == null)
     {
-      generator = new DataSetGenerator(packageName, databaseName, targetPath);
+      generator = new DataSetGenerator(packageName, databaseName, targetPath, isTableDSLGeneration,
+          isModelClassGeneration);
     }
     return generator;
   }
@@ -58,7 +69,7 @@ public abstract class DatabaseModel
   {
     return new TableBuilder(this, name);
   }
-  
+
   /**
    * Adds a built table to the data set
    * @param table The Table built by a TableBuilder
@@ -71,8 +82,7 @@ public abstract class DatabaseModel
   public void generate() throws Exception
   {
     DataSetGenerator gen = getDataSetGenInstance();
-    
-    
+
     if (__forceCaller != null)
     {
       gen.setCaller(__forceCaller);
@@ -88,6 +98,16 @@ public abstract class DatabaseModel
       gen.setCaller(__forceCaller);
     }
     gen.generateInto(folder);
+  }
+
+  public void enableTableModelClassesGeneration()
+  {
+    isModelClassGeneration = true;
+  }
+
+  public void disbaleTableDSLGeneration()
+  {
+    isTableDSLGeneration = false;
   }
 
 }

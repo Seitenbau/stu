@@ -8,6 +8,8 @@ public class PersonDatabaseModel extends DatabaseModel
   {
     database("PersonDatabase");
     packageName("com.seitenbau.testing.dbunit.model");
+    enableTableModelClassesGeneration();
+    //disbaleTableDSLGeneration();
     
     Table jobs = table("jobs") //
         .description("The table containing the jobs of a great company")

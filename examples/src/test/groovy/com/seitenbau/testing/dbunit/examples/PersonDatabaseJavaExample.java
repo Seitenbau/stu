@@ -4,7 +4,7 @@ import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.datasets.EmptyDataSet;
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.util.Action;
@@ -18,7 +18,7 @@ public class PersonDatabaseJavaExample
     DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
     
     EmptyDataSet empty = new EmptyDataSet();
-    ScopeRegistry.use(empty);
+    DataSetRegistry.use(empty);
     
     println("Jobtitle for SWD", dataSet.jobsTable.findWhere.id(SWD).getTitle());
     println("Jobid for SWD", dataSet.jobsTable.findWhere.title(SWD).getId());
@@ -30,7 +30,7 @@ public class PersonDatabaseJavaExample
     println("Team QA member count", dataSet.personsTable.findWhere.teamId(QA).getRowCount());
     println("Access Team with membersize",dataSet.teamsTable.findWhere.membersize(3).getTitle());
 
-    ScopeRegistry.use(dataSet);
+    DataSetRegistry.use(dataSet);
     println("Dennis' last name", KAULBERSCH.getName());
     println("TM title", TM.getTitle());
     println("Persons Row Count", dataSet.personsTable.getRowCount());

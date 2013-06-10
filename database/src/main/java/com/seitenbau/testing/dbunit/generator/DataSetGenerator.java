@@ -43,12 +43,13 @@ public class DataSetGenerator
 
   public DataSetGenerator(String thePackage, String name)
   {
-    this(thePackage, name, DEFAULT_OUTPUT_FOLDER);
+    this(thePackage, name, DEFAULT_OUTPUT_FOLDER, true, false);
   }
 
-  public DataSetGenerator(String thePackage, String name, String targetPath)
+  public DataSetGenerator(String thePackage, String name, String targetPath, boolean isTableDSLGeneration,
+      boolean isModelClassGeneration)
   {
-    _dataSet = new DataSet(thePackage, name);
+    _dataSet = new DataSet(thePackage, name, isTableDSLGeneration, isModelClassGeneration);
     _targetPath = targetPath;
   }
 
@@ -92,13 +93,19 @@ public class DataSetGenerator
       _dataSet.setCaller(_caller);
       generateDataSet(targetPath + "/");
       generateTables(targetPath + "/");
-      generateJavaClasses(targetPath + "/");
+      if (_dataSet.isModelClassGeneration()) 
+      {
+        generateTableJavaModels(targetPath + "/");
+      }
 
-      // DSL Additions
-      generateDSL(targetPath + "/");
-      generateTableGateways(targetPath + "/");
       generateReferenceClasses(targetPath + "/");
       generateReferenceFactory(targetPath + "/");
+
+      if (_dataSet.isTableDSLGeneration()) 
+      {
+        generateDSL(targetPath + "/");
+        generateTableGateways(targetPath + "/");
+      }
     }
     finally
     {
@@ -130,7 +137,7 @@ public class DataSetGenerator
     logger.info("created " + _dataSet.getTables().size() + " Tables");
   }
 
-  protected void generateJavaClasses(String into) throws Exception
+  protected void generateTableJavaModels(String into) throws Exception
   {
     for (Table table : _dataSet.getTables())
     {
@@ -202,10 +209,8 @@ public class DataSetGenerator
 
   protected String getTemplatePathDSLBuilder()
   {
-    return "/templates/db/DSLBuilder.vm";
+    return "/templates/db/Builder.vm";
   }
-
-  // -----------------------------------------------
 
   protected void generateDataSet(String into) throws Exception
   {

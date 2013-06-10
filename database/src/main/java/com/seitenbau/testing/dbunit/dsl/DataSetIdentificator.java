@@ -1,10 +1,10 @@
 package com.seitenbau.testing.dbunit.dsl;
 
-public interface IScope
+public interface DataSetIdentificator
 {
   
   Object getDataSet();
   
-  String getScopeIdentifier();
+  String getDataSetClassName();
   
 }

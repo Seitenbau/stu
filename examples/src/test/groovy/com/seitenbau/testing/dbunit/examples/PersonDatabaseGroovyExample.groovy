@@ -3,7 +3,7 @@ package com.seitenbau.testing.dbunit.examples
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry
 import com.seitenbau.testing.dbunit.model.JobsTable;
 
 
@@ -18,7 +18,7 @@ println "Team QA member size = " + dataSet.teamsTable.findWhere.id(QA).membersiz
 println "Team QA member count = " +  dataSet.personsTable.findWhere.teamId(QA).rowCount
 println "Access Team with membersize = " + dataSet.teamsTable.findWhere.membersize(3).title
 
-ScopeRegistry.use(dataSet)
+DataSetRegistry.use(dataSet)
 println "Dennis' last name = " + KAULBERSCH.name
 println "TM title = " + TM.title
 println "Persons Row Count = " + dataSet.personsTable.rowCount

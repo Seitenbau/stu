@@ -4,7 +4,7 @@
 #else
 #set($package  = "" )
 #end
-#set($clsScope = ${model.dataSet.name} + "Builder")
+#set($clsBuilder = ${model.dataSet.name} + "Builder")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsTable = ${model.javaName} + "Table")
@@ -22,11 +22,11 @@ import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 import com.seitenbau.testing.dbunit.dsl.LazyValue;
 import com.seitenbau.testing.dbunit.dsl.NoValue;
 import com.seitenbau.testing.dbunit.dsl.RefColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.dsl.TableParserAdapter;
 import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.DataType;
@@ -50,9 +50,7 @@ import java.util.Set;
 import ${model.package}.${clsTable}.${clsRowcollection};
 import ${model.package}.${clsTable}.${clsTableFindWhere};
 import ${model.package}.${clsTable}.${clsTableGetWhere};
-import ${model.package}.${model.javaName}Model;
 #foreach( $table in $model.associatedTables )
-import ${model.package}.${table.javaName}Ref;
 import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 #end
 
@@ -100,11 +98,11 @@ public class ${clsGateway} {
 
 #end
 #end
-  private final ${clsScope} _scope;
+  private final ${clsBuilder} _builder;
 
   private final ${clsTable} _table;
 
-  private final ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> _adapter = new TableAdapter();
+  private final TableParserAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> _adapter = new TableAdapter();
 
   /**
    * Allows searching for one or more rows specified by a column value.
@@ -127,9 +125,9 @@ public class ${clsGateway} {
    */
   public final ${clsTableGetWhere} getWhere;
 
-  ${clsGateway}(${clsScope} scope, ${clsTable} table)
+  ${clsGateway}(${clsBuilder} builder, ${clsTable} table)
   {
-    _scope = scope;
+    _builder = builder;
     _table = table;
     findWhere = _table.findWhere;
     getWhere = _table.getWhere;
@@ -170,11 +168,13 @@ public class ${clsGateway} {
   {
     return _table.insertRow();
   }
+#if( ${model.dataSet.isModelClassGeneration()} )
 
   public ${clsRowbuilder} insertRow(${model.javaName}Model row)
   {
     return _table.insertRow(row);
   }
+#end
 
   public ${clsRowbuilder} insertRowAt(int index)
   {
@@ -239,7 +239,7 @@ public class ${clsGateway} {
   }
 
   
-  private class TableAdapter implements ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
+  private class TableAdapter implements TableParserAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
   {
     public ${clsRowbuilder} insertRow() 
     {
@@ -251,19 +251,19 @@ public class ${clsGateway} {
       return _table.getWhere;
     }
     
-    public void bindToScope(${clsRef} reference, ${clsRowbuilder} row)
+    public void bindToDataSet(${clsRef} reference, ${clsRowbuilder} row)
     {
-      reference.setBuilder(_scope, row);
+      reference.setBuilder(_builder, row);
     }
 
     public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
     {
-      _scope.replace${clsRef}WithId(reference, row);
+      _builder.replace${clsRef}WithId(reference, row);
     }    
 
     public ${clsRowbuilder} getRowByReference(${clsRef} reference)
     {
-      return reference.getBuilder(_scope);
+      return reference.getBuilder(_builder);
     }
 
     public String getTableName()
@@ -301,7 +301,7 @@ public class ${clsGateway} {
       public void setReference(${clsRowbuilder} row, DatabaseReference ref)
       {
         ${col.reference.table.javaName}Ref reference = (${col.reference.table.javaName}Ref)ref;
-        RowBuilder_${col.reference.table.javaName} referenceBuilder = reference.getBuilder(_scope);
+        RowBuilder_${col.reference.table.javaName} referenceBuilder = reference.getBuilder(_builder);
         if (referenceBuilder != null)
         {
           final ${col.reference.column.javaType} value = referenceBuilder.get${col.reference.javaName}();

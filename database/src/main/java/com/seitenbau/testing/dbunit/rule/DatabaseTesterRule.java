@@ -16,8 +16,8 @@ import org.junit.runners.model.Statement;
 
 import com.seitenbau.testing.dbunit.SortConfig;
 import com.seitenbau.testing.dbunit.TestConfigDatabase;
-import com.seitenbau.testing.dbunit.dsl.IScope;
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
+import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.extend.DatabaseTesterCleanAction;
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
 import com.seitenbau.testing.dbunit.extend.impl.DatasetFactoryComposite;
@@ -460,10 +460,10 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
     }
     invokePrepareDatasetMethods(descriptor, factoryInstance);
   
-    if(factoryInstance instanceof IScope) 
+    if(factoryInstance instanceof DataSetIdentificator) 
     {
-      IScope scope = (IScope) factoryInstance;
-      ScopeRegistry.use(scope);
+      DataSetIdentificator scope = (DataSetIdentificator) factoryInstance;
+      DataSetRegistry.use(scope);
     }
     IDataSet dataset = factoryInstance.createDBUnitDataSet();
     doCleanInsert(dataset);

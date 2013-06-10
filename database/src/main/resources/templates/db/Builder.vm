@@ -4,14 +4,14 @@
 #else
 #set($package  = "" )
 #end
-#set($clsScope = ${model.name} + "Builder")
+#set($clsBuilder = ${model.name} + "Builder")
 #set($clsDataSet = ${model.name} + "DataSet")
 #set($referenceMethod = "ref")
 package ${package};
 
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
-import com.seitenbau.testing.dbunit.dsl.IScope;
+import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.util.Action;
 import org.dbunit.dataset.IDataSet;
 
@@ -29,7 +29,7 @@ import groovy.lang.Closure;
  * Represents a ${model.name} Data Set Scope. Parses the DSL and builds
  * the datasets
  */
-public class ${clsScope} implements IScope, DbUnitDatasetFactory
+public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
 {
 
   private final ${clsDataSet} dataset;
@@ -46,7 +46,7 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
     return ${table.javaNameFirstLower}Table;
   }
 #end
-  public ${clsScope}() {
+  public ${clsBuilder}() {
     this(new ${clsDataSet}() 
     {
       @Override
@@ -54,7 +54,7 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
     });
   }
   
-  public ${clsScope}($clsDataSet dataset)
+  public ${clsBuilder}($clsDataSet dataset)
   {
     this.dataset = dataset;
 #foreach( $table in $model.tables )
@@ -75,11 +75,11 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    */
   public void tables(Closure<?> table)
   {
-    IScope lastScope = ScopeRegistry.use(this);
+    DataSetIdentificator lastDataSet = DataSetRegistry.use(this);
     table.setDelegate(this);
     table.setResolveStrategy(Closure.DELEGATE_FIRST);
     table.call();
-    ScopeRegistry.use(lastScope);
+    DataSetRegistry.use(lastDataSet);
   }
   
   /**
@@ -88,9 +88,9 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
    */
   public void relations(Closure<?> relations)
   {
-    IScope lastScope = ScopeRegistry.use(this);
+    DataSetIdentificator lastDataSet = DataSetRegistry.use(this);
     relations.call();
-    ScopeRegistry.use(lastScope);
+    DataSetRegistry.use(lastDataSet);
   }
  
 #foreach( $reftable in $model.tables )
@@ -143,9 +143,9 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
 #end
 
   @Override
-  public String getScopeIdentifier()
+  public String getDataSetClassName()
   {
-    return dataset.getScopeIdentifier();
+    return dataset.getDataSetClassName();
   }
   
   @Override

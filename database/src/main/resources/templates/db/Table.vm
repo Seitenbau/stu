@@ -314,7 +314,8 @@ public class ${tableClass} implements ITable
     {
       return table.insertRow();
     }
-    
+#if( ${model.dataSet.isModelClassGeneration()} )
+
     /**
     * Insert a new Row at the end of the Table
     * <code><pre>
@@ -329,7 +330,8 @@ public class ${tableClass} implements ITable
     {
       return table.insertRow(row);
     }
-    
+#end
+
     /**
     * Insert a new Row at the given position
     * <code><pre>
@@ -788,7 +790,8 @@ public class ${tableClass} implements ITable
     rows.add(row);
     return row;
   }
-  
+#if( ${model.dataSet.isModelClassGeneration()} )
+
   /**
   * <code><pre>
   * ds.table_${model.javaName}.insertRow()
@@ -803,6 +806,7 @@ public class ${tableClass} implements ITable
     rows.add(row);
     return row;
   }
+#end
 
   /**
   * <code><pre>

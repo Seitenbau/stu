@@ -33,8 +33,8 @@ import com.seitenbau.testing.config.TestConfiguration;
 import com.seitenbau.testing.dbunit.DatabaseTester;
 import com.seitenbau.testing.dbunit.SortConfig;
 import com.seitenbau.testing.dbunit.TestConfigDatabase;
-import com.seitenbau.testing.dbunit.dsl.IScope;
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
+import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.extend.DatabaseOperationFactory;
 import com.seitenbau.testing.dbunit.extend.DatabaseTesterCleanAction;
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
@@ -532,10 +532,10 @@ public class DatabaseTesterBase<MY_TYPE>
    */
   public void cleanInsert(DbUnitDatasetFactory datasetFactory, IDataSetModifier... modifiers) throws Exception
   {
-    if (datasetFactory instanceof IScope)
+    if (datasetFactory instanceof DataSetIdentificator)
     {
-      IScope scope = (IScope) datasetFactory;
-      ScopeRegistry.use(scope);
+      DataSetIdentificator scope = (DataSetIdentificator) datasetFactory;
+      DataSetRegistry.use(scope);
     }
     cleanInsert(datasetFactory.createDBUnitDataSet(), modifiers);
     trySetAnnotatedField(datasetFactory);
