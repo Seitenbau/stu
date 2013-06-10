@@ -104,7 +104,6 @@ public class ${clsTable} {
   private final ${model.package}.${clsTable} _table;
 
   private final ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> _adapter = new TableAdapter();
-    
 
   /**
    * Allows searching for one or more rows specified by a column value.
@@ -117,7 +116,6 @@ public class ${clsTable} {
    */
   public final ${clsTableFindWhere} findWhere;
 
-    
   /**
    * Allows searching for a row specified by a column value.
    * The first matching row is returned. Does not throw an
@@ -135,12 +133,12 @@ public class ${clsTable} {
     findWhere = _table.findWhere;
     getWhere = _table.getWhere;
   }
-  
-  ${model.package}.${clsTable} getTableModel()
+
+  public static ColumnMetaData getColumnMetaData(String column)
   {
-    return _table;
+    return ${model.package}.${clsTable}.getColumnMetaData(column);
   }
-  
+
   /**
    * Parses the rows of a ${model.javaName} table. Supported columns are:
    * <ul>
@@ -166,12 +164,79 @@ public class ${clsTable} {
   {
     return _table.getRowCount();
   }
-  
 
-  private boolean valueMustBeSetRaw(Object value)
+  public ${clsRowbuilder} insertRow()
   {
-    return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
+    return _table.insertRow();
   }
+
+  public ${clsRowbuilder} insertRow(${model.javaName}Model row)
+  {
+    return _table.insertRow(row);
+  }
+
+  public ${clsRowbuilder} insertRowAt(int index)
+  {
+    return _table.insertRowAt(index);
+  }
+
+  public ${clsRowbuilder} insertRow(${clsRowbuilder} theRow)
+  {
+    return _table.insertRow(theRow);
+  }
+
+  /**
+   * Delivers a collection of rows matching to a filter.
+   * @param filter The used filter
+   * @return The collection of rows, may return an empty list
+   * @see ${javaDocSep}find(Closure)
+   * @see ${javaDocSep}findWhere
+   * @see ${javaDocSep}getWhere
+   */
+  public ${clsRowcollection} find(Filter<${clsRowbuilder}> filter)
+  {
+    return _table.find(filter);
+  }
+
+  /**
+   * Delivers a collection of rows matching to a filter.
+   * @param filter A Groovy Closure with an argument of type ${clsRowbuilder}, returning a boolean
+   * @return The collection of rows, may return an empty list
+   * @see ${javaDocSep}find(Filter)
+   * @see ${javaDocSep}findWhere
+   * @see ${javaDocSep}getWhere
+   */
+  public ${clsRowcollection} find(Closure<Boolean> filter)
+  {
+    final Closure<Boolean> localFilter = filter;
+    return _table.find(new Filter<${clsRowbuilder}>()
+      {
+        @Override
+        public boolean accept(${clsRowbuilder} row)
+        {
+          return localFilter.call(row);
+        }
+      });
+  }
+  
+  public void foreach(Action<${clsRowbuilder}> action)
+  {
+    _table.foreach(action);
+  }
+  
+  public void foreach(Closure<?> action)
+  {
+    final Closure<?> localAction = action;
+    _table.foreach(new Action<${clsRowbuilder}>()
+      {
+        @Override
+        public void call(${clsRowbuilder} row)
+        {
+          localAction.call(row);
+        }
+      });
+  }
+
   
   private class TableAdapter implements ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
   {
@@ -279,82 +344,10 @@ public class ${clsTable} {
   }
 #end
 
-  public ${clsRowbuilder} insertRow()
+  private boolean valueMustBeSetRaw(Object value)
   {
-    return _table.insertRow();
+    return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
   }
 
-  public ${clsRowbuilder} insertRow(${model.javaName}Model row)
-  {
-    return _table.insertRow(row);
-  }
-
-  public ${clsRowbuilder} insertRowAt(int index)
-  {
-    return _table.insertRowAt(index);
-  }
-
-  public ${clsRowbuilder} insertRow(${clsRowbuilder} theRow)
-  {
-    return _table.insertRow(theRow);
-  }
-
-  /**
-   * Delivers a collection of rows matching to a filter.
-   * @param filter The used filter
-   * @return The collection of rows, may return an empty list
-   * @see ${javaDocSep}find(Closure)
-   * @see ${javaDocSep}findWhere
-   * @see ${javaDocSep}getWhere
-   */
-  public ${clsRowcollection} find(Filter<${clsRowbuilder}> filter)
-  {
-    return _table.find(filter);
-  }
-
-  /**
-   * Delivers a collection of rows matching to a filter.
-   * @param filter A Groovy Closure with an argument of type ${clsRowbuilder}, returning a boolean
-   * @return The collection of rows, may return an empty list
-   * @see ${javaDocSep}find(Filter)
-   * @see ${javaDocSep}findWhere
-   * @see ${javaDocSep}getWhere
-   */
-  public ${clsRowcollection} find(Closure<Boolean> filter)
-  {
-    final Closure<Boolean> localFilter = filter;
-    return _table.find(new Filter<${clsRowbuilder}>()
-      {
-        @Override
-        public boolean accept(${clsRowbuilder} row)
-        {
-          return localFilter.call(row);
-        }
-      });
-  }
-  
-  public void foreach(Action<${clsRowbuilder}> action)
-  {
-    _table.foreach(action);
-  }
-  
-  public void foreach(Closure<?> action)
-  {
-    final Closure<?> localAction = action;
-    _table.foreach(new Action<${clsRowbuilder}>()
-      {
-        @Override
-        public void call(${clsRowbuilder} row)
-        {
-          localAction.call(row);
-        }
-      });
-  }
-
-  public static ColumnMetaData getColumnMetaData(String column)
-  {
-    return ${model.package}.${clsTable}.getColumnMetaData(column);
-  }
-  
 }
 
