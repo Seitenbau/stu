@@ -3,9 +3,10 @@ package com.seitenbau.testing.dbunit.examples;
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
+import com.seitenbau.testing.dbunit.datasets.EmptyDataSet;
 import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
-import com.seitenbau.testing.dbunit.model.dsl.JobsTable;
+import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
@@ -15,6 +16,10 @@ public class PersonDatabaseJavaExample
   public static void main(String[] args)
   {
     DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
+    
+    EmptyDataSet empty = new EmptyDataSet();
+    ScopeRegistry.use(empty);
+    
     println("Jobtitle for SWD", dataSet.jobsTable.findWhere.id(SWD).getTitle());
     println("Jobid for SWD", dataSet.jobsTable.findWhere.title(SWD).getId());
     println("Teamtitle for id QA", dataSet.teamsTable.findWhere.id(QA).getTitle());

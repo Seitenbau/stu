@@ -26,7 +26,7 @@ import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
-import com.seitenbau.testing.dbunit.model.dsl.PersonDatabaseBuilder;
+import com.seitenbau.testing.dbunit.model.PersonDatabaseBuilder;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.rule.InjectDataSet;

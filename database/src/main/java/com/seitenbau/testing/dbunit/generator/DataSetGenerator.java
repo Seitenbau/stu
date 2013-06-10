@@ -96,7 +96,7 @@ public class DataSetGenerator
 
       // DSL Additions
       generateDSL(targetPath + "/");
-      generateDSLTableModel(targetPath + "/");
+      generateTableGateways(targetPath + "/");
       generateReferenceClasses(targetPath + "/");
       generateReferenceFactory(targetPath + "/");
     }
@@ -134,7 +134,7 @@ public class DataSetGenerator
   {
     for (Table table : _dataSet.getTables())
     {
-      templates.executeTemplate(table, getTemplatePathJavaClass(), into);
+      templates.executeTemplate(table, getTemplatePathTableJavaModel(), into);
     }
     logger.debug("created " + _dataSet.getTables().size() + " Java Classes");
     logger.info("into : " + into);
@@ -150,19 +150,18 @@ public class DataSetGenerator
     return "/templates/db/DataSet.vm";
   }
 
-  protected String getTemplatePathJavaClass()
+  protected String getTemplatePathTableJavaModel()
   {
-    return "/templates/db/JavaClass.vm";
+    return "/templates/db/TableJavaModel.vm";
   }
 
-  // -------------- DSL Additions ------------------
-  protected void generateDSLTableModel(String into) throws Exception
+  protected void generateTableGateways(String into) throws Exception
   {
     for (Table table : _dataSet.getTables())
     {
-      templates.executeTemplate(table, getTemplatePathDSLTableModel(), into);
+      templates.executeTemplate(table, getTemplatePathTableGateway(), into);
     }
-    logger.info("created " + _dataSet.getTables().size() + " DSL Table Model");
+    logger.info("created " + _dataSet.getTables().size() + " Table Gateways");
   }
 
   protected void generateReferenceClasses(String into) throws Exception
@@ -186,9 +185,9 @@ public class DataSetGenerator
     logger.info("created 1 DSL class");
   }
 
-  protected String getTemplatePathDSLTableModel()
+  protected String getTemplatePathTableGateway()
   {
-    return "/templates/db/DSLTableModel.vm";
+    return "/templates/db/TableGateway.vm";
   }
 
   protected String getTemplatePathReference()

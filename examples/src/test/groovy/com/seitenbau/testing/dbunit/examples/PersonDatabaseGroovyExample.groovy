@@ -4,7 +4,7 @@ import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
 import com.seitenbau.testing.dbunit.dsl.ScopeRegistry
-import com.seitenbau.testing.dbunit.model.dsl.JobsTable;
+import com.seitenbau.testing.dbunit.model.JobsTable;
 
 
 DemoGroovyDataSet dataSet = new DemoGroovyDataSet()

@@ -1,13 +1,14 @@
-#set($filename = ${model.javaName} + "Table" )
+#set($filename = ${model.javaName} + "TableGateway" )
 #if( $model.package && $model.package.length() != 0 )
-#set($package  = ${model.package} + ".dsl" )
+#set($package  = ${model.package} )
 #else
-#set($package  = "dsl" )
+#set($package  = "" )
 #end
 #set($clsScope = ${model.dataSet.name} + "Builder")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsTable = ${model.javaName} + "Table")
+#set($clsGateway = ${clsTable} + "Gateway")
 #set($clsTableFindWhere = ${model.javaName} + "FindWhere")
 #set($clsTableGetWhere = ${model.javaName} + "GetWhere")
 #set($clsRowcollection= "RowCollection_" + ${model.javaName} )
@@ -56,7 +57,7 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 #end
 
 
-public class ${clsTable} {
+public class ${clsGateway} {
 
   /**
    * Do not set a value. (To remove a value use <i>null</i>)
@@ -101,7 +102,7 @@ public class ${clsTable} {
 #end
   private final ${clsScope} _scope;
 
-  private final ${model.package}.${clsTable} _table;
+  private final ${clsTable} _table;
 
   private final ITableAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> _adapter = new TableAdapter();
 
@@ -126,7 +127,7 @@ public class ${clsTable} {
    */
   public final ${clsTableGetWhere} getWhere;
 
-  ${clsTable}(${clsScope} scope, ${model.package}.${clsTable} table)
+  ${clsGateway}(${clsScope} scope, ${clsTable} table)
   {
     _scope = scope;
     _table = table;
@@ -136,7 +137,7 @@ public class ${clsTable} {
 
   public static ColumnMetaData getColumnMetaData(String column)
   {
-    return ${model.package}.${clsTable}.getColumnMetaData(column);
+    return ${model.package}.${clsGateway}.getColumnMetaData(column);
   }
 
   /**

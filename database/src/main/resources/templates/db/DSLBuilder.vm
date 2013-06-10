@@ -1,8 +1,8 @@
 #set($filename = ${model.name} + "Builder" )
 #if( $model.package && $model.package.length() != 0 )
-#set($package  = ${model.package} + ".dsl" )
+#set($package  = ${model.package} )
 #else
-#set($package  = "dsl" )
+#set($package  = "" )
 #end
 #set($clsScope = ${model.name} + "Builder")
 #set($clsDataSet = ${model.name} + "DataSet")
@@ -38,10 +38,10 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
   /**
    * ${table.description}
    */
-  public final ${table.javaName}Table ${table.javaNameFirstLower}Table;
+  public final ${table.javaName}TableGateway ${table.javaNameFirstLower}Table;
   
   // Getter for Groovy property access
-  protected ${table.javaName}Table get${table.javaName}Table()
+  protected ${table.javaName}TableGateway get${table.javaName}Table()
   {
     return ${table.javaNameFirstLower}Table;
   }
@@ -58,7 +58,7 @@ public class ${clsScope} implements IScope, DbUnitDatasetFactory
   {
     this.dataset = dataset;
 #foreach( $table in $model.tables )
-    ${table.javaNameFirstLower}Table = new ${table.javaName}Table(this, dataset.table_${table.javaName});
+    ${table.javaNameFirstLower}Table = new ${table.javaName}TableGateway(this, dataset.table_${table.javaName});
 #end  
   }
 
