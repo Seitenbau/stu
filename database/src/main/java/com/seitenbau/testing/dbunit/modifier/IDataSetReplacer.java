@@ -1,23 +1,23 @@
 package com.seitenbau.testing.dbunit.modifier;
 
 /**
- * Basis Interface zum Austaschen von Inhalten im DataSet zur Laufzeit
+ * Base Interface that enables manipulation of DataSet content during runtime.
  */
 public interface IDataSetReplacer extends IDataSetModifier
 {
   /**
-   * Getter
+   * Getter for the marker.
    * 
-   * @return Liefert das String Literal welches im DataSet ersetzt
-   *         werden soll.
+   * @return Returns the String literal of the dataSet that should be
+   *         replaced.
    */
   public String getMarkerString();
 
   /**
-   * Getter
+   * Getter for the replacement.
    * 
-   * @return Liefert das Objekt welches das String Lieteral im DataSet
-   *         austauscht.
+   * @return Returns the Object that replaces the String literal
+   *         inside the dataSet
    */
   public Object getReplacementObject();
 }

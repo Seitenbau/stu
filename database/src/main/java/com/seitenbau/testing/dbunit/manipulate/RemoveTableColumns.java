@@ -50,11 +50,11 @@ public class RemoveTableColumns implements IDataSetFilter
       {
         throw new IllegalArgumentException("at least one column needed");
       }
-      RemoveTableColumns neu = new RemoveTableColumns();
-      neu.fTableName = _name;
-      neu.fToIncludeColumns = columnToInclude;
-      neu._removeAll = true;
-      return neu;
+      RemoveTableColumns newRemoveTableColumns = new RemoveTableColumns();
+      newRemoveTableColumns.fTableName = _name;
+      newRemoveTableColumns.fToIncludeColumns = columnToInclude;
+      newRemoveTableColumns._removeAll = true;
+      return newRemoveTableColumns;
     }
 
     public IDataSetFilter exclude(String... columnToExclude)
@@ -63,11 +63,11 @@ public class RemoveTableColumns implements IDataSetFilter
       {
         throw new IllegalArgumentException("at least one column needed");
       }
-      RemoveTableColumns neu = new RemoveTableColumns();
-      neu.fTableName = _name;
-      neu.fToExcludeColumns = columnToExclude;
-      neu._removeAll = false;
-      return neu;
+      RemoveTableColumns newRemoveTableColumns = new RemoveTableColumns();
+      newRemoveTableColumns.fTableName = _name;
+      newRemoveTableColumns.fToExcludeColumns = columnToExclude;
+      newRemoveTableColumns._removeAll = false;
+      return newRemoveTableColumns;
     }
 
   }
@@ -79,7 +79,7 @@ public class RemoveTableColumns implements IDataSetFilter
 
   public IDataSet filterOutTableColumns(IDataSet theDataSet) throws Exception
   {
-    DefaultDataSet ds = new DefaultDataSet();
+    DefaultDataSet newDataSet = new DefaultDataSet();
     for (ITableIterator iter = theDataSet.iterator(); iter.next();)
     {
       ITable oldtable = iter.getTable();
@@ -130,9 +130,9 @@ public class RemoveTableColumns implements IDataSetFilter
           return !filterOut;
         }
       };
-      ds.addTable(new CompositeTable(new FilteredTableMetaData(oldtable.getTableMetaData(), rowFilter), oldtable));
+      newDataSet.addTable(new CompositeTable(new FilteredTableMetaData(oldtable.getTableMetaData(), rowFilter), oldtable));
     }
-    return ds;
+    return newDataSet;
   }
 
 }

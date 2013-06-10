@@ -3,19 +3,18 @@ package com.seitenbau.testing.dbunit.modifier;
 import org.dbunit.dataset.IDataSet;
 
 /**
- * Interface für alle Modifier die eigentlich einen Filter auf das
- * DataSet anwenden.
+ * Interface for all modifiers that should apply a filter to a dataset.
  */
 public interface IDataSetFilter extends IDataSetModifier
 {
   /**
-   * Führt eine Filterung auf dem übergeben DataSet aus.
+   * Executes the filtering on the given dataset.
    * 
-   * @param current Das aktuelle DataSet.
+   * @param current The current DataSet.
    * 
-   * @return Das gefilterte DataSet
+   * @return The filtered DataSet
    * 
-   * @throws Exception Fehler.
+   * @throws Exception Failure.
    */
   public IDataSet filter(IDataSet current) throws Exception;
 }

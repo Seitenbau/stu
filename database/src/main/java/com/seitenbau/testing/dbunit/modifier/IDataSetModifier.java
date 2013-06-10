@@ -1,7 +1,7 @@
 package com.seitenbau.testing.dbunit.modifier;
 
 /**
- * Marker bzw. Basis Interface für alle Modifikatoren von IDataSets
+ * Marker- Base-Interface for all modifiers for IDataSets.
  */
 public interface IDataSetModifier
 {
