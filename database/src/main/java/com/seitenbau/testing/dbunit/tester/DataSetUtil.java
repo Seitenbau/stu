@@ -253,8 +253,9 @@ public class DataSetUtil
   public static void printOrder(IDataSet dataset) throws DataSetException
   {
     int i = 1;
-    for (ITable tab : dataset.getTables())
+    for (String tabName : dataset.getTableNames())
     {
+      ITable tab = dataset.getTable(tabName);
       System.out.println(i++ + " " + tab.getTableMetaData().getTableName());
     }
   }
