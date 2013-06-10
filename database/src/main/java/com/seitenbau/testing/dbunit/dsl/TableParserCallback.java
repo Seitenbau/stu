@@ -2,10 +2,6 @@ package com.seitenbau.testing.dbunit.dsl;
 
 import groovy.lang.Closure;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.google.common.base.Optional;
 
 public class TableParserCallback<R, G, D extends DatabaseReference> implements IParsedTableRowCallback
