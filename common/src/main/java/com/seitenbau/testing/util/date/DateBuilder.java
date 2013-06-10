@@ -49,10 +49,10 @@ public class DateBuilder
   }
   
   /**
-   * Remove the Miliseconds part, e.g. set miliseconds to 0.
+   * Resets the Milliseconds part, e.g. set milliseconds to 0.
    * @return
    */
-  public DateBuilder removeMS()
+  public DateBuilder resetMilliseconds()
   {
     Calendar datum = DateUtil.createCopy(calendar);
     datum.set(Calendar.MILLISECOND, 0);
@@ -60,11 +60,11 @@ public class DateBuilder
   }
 
   /**
-   * Remove the Hour, Minute, Second and Miliseconds part, e.g. set
+   * Reset the Hour, Minute, Second and Milliseconds part, e.g. set
    * them to 0.
    * @return
    */
-  public DateBuilder removeTime()
+  public DateBuilder resetTime()
   {
     Calendar datum = DateUtil.createCopy(calendar);
     datum.set(Calendar.HOUR, 0);
@@ -75,10 +75,10 @@ public class DateBuilder
   }
 
   /**
-   * Remove the Year, Month and Date part, e.g. set them to 0.
+   * Reset the Year, Month and Date part, e.g. set them to 0.
    * @return
    */
-  public DateBuilder removeDate()
+  public DateBuilder resetDate()
   {
     Calendar datum = DateUtil.createCopy(calendar);
     datum.set(Calendar.YEAR, 1970);
@@ -88,7 +88,7 @@ public class DateBuilder
   }
 
   /**
-   * add the given increment to the datebuilder. ( Specify the field
+   * add the given increment to the Datebuilder. ( Specify the field
    * via the returned builder)
    * @return
    */
@@ -98,7 +98,7 @@ public class DateBuilder
   }
 
   /**
-   * set the given value to the datebuilder. ( Specify the field via
+   * set the given value to the Datebuilder. ( Specify the field via
    * the returned builder)
    * @return
    */
@@ -108,35 +108,35 @@ public class DateBuilder
   }
   
   /**
-   * Calculate the timespan between this an another  
+   * Calculate the timespan between this and another  
    * 
-   * @param datum the other date
+   * @param datebuilder the other date
    * @return a Timespan
    */
-  public Timespan calcDifferencTo(DateBuilder datum) 
+  public Timespan calcDifferencTo(DateBuilder datebuilder) 
   {
     long now = calendar.getTimeInMillis();
-    long then = datum.calendar.getTimeInMillis();
+    long then = datebuilder.calendar.getTimeInMillis();
     long diff= now - then;
     return new Timespan(diff);
   }
   
   /**
-   * Calculate the timespan between this an another  
+   * Calculate the timespan between this and another  
    * 
-   * @param datum the other date
+   * @param dateString the other date
    * @return a Timespan
    */
-  public Timespan calcDifferencTo(String datum) 
+  public Timespan calcDifferencTo(String dateString) 
   {
-    return calcDifferencTo(DateUtil.asDatebuilder(datum));
+    return calcDifferencTo(DateUtil.asDatebuilder(dateString));
   }
 
   protected DateBuilder add(int field, int amount)
   {
-    Calendar datum = DateUtil.createCopy(calendar);
-    datum.add(field, amount);
-    return new DateBuilder(datum);
+    Calendar newDate = DateUtil.createCopy(calendar);
+    newDate.add(field, amount);
+    return new DateBuilder(newDate);
   }
 
   /**
@@ -145,16 +145,16 @@ public class DateBuilder
    */
   protected DateBuilder set(int field, int amount)
   {
-    Calendar datum = DateUtil.createCopy(calendar);
+    Calendar newDate = DateUtil.createCopy(calendar);
     if (field == Calendar.MONTH)
     {
-      datum.set(field, amount - 1);
+      newDate.set(field, amount - 1);
     }
     else
     {
-      datum.set(field, amount);
+      newDate.set(field, amount);
     }
-    return new DateBuilder(datum);
+    return new DateBuilder(newDate);
   }
   
   public class Incrementer
