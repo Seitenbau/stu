@@ -125,8 +125,10 @@ project("examples") {
   }
 
   task generateDataSetDsl(dependsOn: 'dataSetModelClasses', type: JavaExec) {
-    main = 'model.Generator'
-    args = ["build/src/dataSetDsl"]
+    inputs.dir  file("src/test/dataSetModel/model")
+    outputs.dir file("$buildDir/src/dataSetDsl")
+    main      = 'model.Generator'
+    args      = ["build/src/dataSetDsl"]
     classpath = sourceSets.dataSetModel.runtimeClasspath
   }
 
