@@ -21,11 +21,12 @@ import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 import com.seitenbau.testing.dbunit.dsl.ITableAdapter;
 import com.seitenbau.testing.dbunit.dsl.LazyValue;
 import com.seitenbau.testing.dbunit.dsl.NoValue;
+import com.seitenbau.testing.dbunit.dsl.RefColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
+import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.DataType;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
@@ -67,7 +68,7 @@ public class ${clsTable} {
    * <p>
    * Data Type: ${model.javaName}Ref
    */
-  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> REF = createREFBinding();
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> REF = new RefColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>();
 
 #foreach( $col in $model.columns )
 #macro( comments )
@@ -206,29 +207,6 @@ public class ${clsTable} {
     
   };  
 
-  private ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> createREFBinding()
-  {
-    return new ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>()
-    { 
-      @Override
-      public void set(${clsRowbuilder} row, Object value)
-      {
-        throw new RuntimeException("Setting on REF is not allowed");
-      }
-    
-      @Override
-      public boolean isRefColumn() 
-      {
-        return true;
-      }
-
-      @Override
-      public DataType getDataType() 
-      {
-        return null;
-      }
-    };
-  }
 #foreach( $col in $model.columns )
 
   private ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> create${col.javaName}Binding() 
