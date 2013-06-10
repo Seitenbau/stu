@@ -107,7 +107,7 @@ public class GroovyDataSetDatabaseTest
       .setName("Moll")
       .setJobId(SWD)
       .setTeamId(QA);
-    
+
     dbTester.assertDataBase(dataSet);
   }
   

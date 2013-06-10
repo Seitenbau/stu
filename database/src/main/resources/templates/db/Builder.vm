@@ -58,6 +58,24 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
 #foreach( $table in $model.tables )
     ${table.javaNameFirstLower}Table = new ${table.javaName}TableGateway(this, dataset.table_${table.javaName});
 #end  
+    DataSetIdentificator lastDataSet = DataSetRegistry.use(this);
+    tables();
+    relations();
+    DataSetRegistry.use(lastDataSet);
+  }
+  
+  /**
+   * Template method to define the tables test data.
+   */
+  protected Object tables() {
+    return null;
+  }
+  
+  /**
+   * Template method to define the relations.
+   */
+  protected Object relations() {
+    return null;
   }
 
   /**
