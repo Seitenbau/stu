@@ -65,10 +65,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
     return true;
   }
   
-  /**
-   *
-   */
-  static ${clsBuilder} getWorkingInstance(${clsBuilder} current)
+  private static ${clsBuilder} getWorkingInstance(${clsBuilder} current)
   {
     if (activeParents.get() != null)
     {
@@ -88,15 +85,16 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   
   public ${clsBuilder}($clsDataSet dataset)
   {
-    this.dataset = dataset;
     ${clsBuilder} instance = getWorkingInstance(null);
     if (getWorkingInstance(null) == null) {
       // no other parent active, create tables
+      this.dataset = dataset;
 #foreach( $table in $model.tables )
       ${table.javaNameFirstLower}Table = new ${table.javaName}TableAdapter(this, dataset.table_${table.javaName});
 #end
     } else {
       // use parent's tables
+      this.dataset = instance.dataset;
 #foreach( $table in $model.tables )
       ${table.javaNameFirstLower}Table = instance.${table.javaNameFirstLower}Table;
 #end

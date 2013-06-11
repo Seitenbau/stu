@@ -154,7 +154,7 @@ public class ${clsAdapter} {
   {
     TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> callback = 
         new TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>(_adapter);
-    TableParser.parseTable(rows, ${clsBuilder}.getWorkingInstance(_builder).${model.javaNameFirstLower}Table, callback);
+    TableParser.parseTable(rows, this, callback);
   }
   
   public int getRowCount() 
@@ -241,27 +241,27 @@ public class ${clsAdapter} {
   {
     public ${clsRowbuilder} insertRow() 
     {
-      return ${clsBuilder}.getWorkingInstance(_builder).${model.javaNameFirstLower}Table.insertRow();
+      return _table.insertRow();
     }
   
     public ${clsTableGetWhere} getWhere()
     {
-      return ${clsBuilder}.getWorkingInstance(_builder).${model.javaNameFirstLower}Table.getWhere;
+      return _table.getWhere;
     }
     
     public void bindToDataSet(${clsRef} reference, ${clsRowbuilder} row)
     {
-      reference.setBuilder(${clsBuilder}.getWorkingInstance(_builder), row);
+      reference.setBuilder(_builder, row);
     }
 
     public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
     {
-      ${clsBuilder}.getWorkingInstance(_builder).replace${clsRef}WithId(reference, row);
+     _builder.replace${clsRef}WithId(reference, row);
     }    
 
     public ${clsRowbuilder} getRowByReference(${clsRef} reference)
     {
-      return reference.getBuilder(${clsBuilder}.getWorkingInstance(_builder));
+      return reference.getBuilder(_builder);
     }
 
     public String getTableName()

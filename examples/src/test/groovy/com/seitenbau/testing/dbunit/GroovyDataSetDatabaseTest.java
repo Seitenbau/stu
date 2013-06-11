@@ -1,10 +1,6 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.HR;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SAT;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.LinkedList;
@@ -17,7 +13,6 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.spockframework.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
