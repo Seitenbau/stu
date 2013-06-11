@@ -47,29 +47,32 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   }
 #end
 
-  private static ThreadLocal<${clsBuilder}> activeInstance = new ThreadLocal<${clsBuilder}>();
+  private static ThreadLocal<${clsBuilder}> activeParents = new ThreadLocal<${clsBuilder}>();
 
-  private static void unsetActiveInstance()
+  private static void unsetActiveParent()
   {
-    activeInstance.remove();
+    activeParents.remove();
   }
   
-  private static boolean trySetActiveInstance(${clsBuilder} instance)
+  private static boolean trySetActiveParent(${clsBuilder} instance)
   {
-    // only set if nothing is set
-    if (activeInstance.get() != null) {
+    // there is a thread local active parent, so do not allow to overwrite it
+    if (activeParents.get() != null) {
       return false;
     }
     
-    activeInstance.set(instance);
+    activeParents.set(instance);
     return true;
   }
   
-  static ${clsBuilder} getActiveInstance(${clsBuilder} current)
+  /**
+   *
+   */
+  static ${clsBuilder} getWorkingInstance(${clsBuilder} current)
   {
-    if (activeInstance.get() != null)
+    if (activeParents.get() != null)
     {
-      return activeInstance.get();
+      return activeParents.get();
     }
     
     return current;
@@ -86,18 +89,20 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   public ${clsBuilder}($clsDataSet dataset)
   {
     this.dataset = dataset;
-    ${clsBuilder} instance = getActiveInstance(null);
-    if (getActiveInstance(null) == null) {
+    ${clsBuilder} instance = getWorkingInstance(null);
+    if (getWorkingInstance(null) == null) {
+      // no other parent active, create tables
 #foreach( $table in $model.tables )
       ${table.javaNameFirstLower}Table = new ${table.javaName}TableAdapter(this, dataset.table_${table.javaName});
 #end
     } else {
+      // use parent's tables
 #foreach( $table in $model.tables )
       ${table.javaNameFirstLower}Table = instance.${table.javaNameFirstLower}Table;
 #end
     }
 
-    buildDataSet(getActiveInstance(this));
+    buildDataSet(getWorkingInstance(this));
   }
   
   private void buildDataSet(${clsBuilder} instance)
@@ -140,10 +145,10 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   
     try
     {
-      boolean hasSet = trySetActiveInstance(this);
+      boolean hasSet = trySetActiveParent(this);
       clazz.newInstance();
       if (hasSet) {
-        unsetActiveInstance();
+        unsetActiveParent();
       }
     }
     catch (Exception e)
@@ -205,7 +210,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
    */
   public void tables(Closure<?> table)
   {
-    tables(getActiveInstance(this), table);
+    tables(getWorkingInstance(this), table);
   }
   
   /**
@@ -234,7 +239,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
    */
   public void relations(Closure<?> relations)
   {
-    this.relations(getActiveInstance(this), relations);
+    this.relations(getWorkingInstance(this), relations);
   }
  
   /**
