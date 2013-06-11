@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Ersetzt ein StringLiteral im DataSet durch das aktuelle oder ein
- * spezifisches Datum.
+ * Replaces the String literal inside the DataSet with the current or
+ * a given Date.
  */
 public class ReplacerTimeStamp extends Replacer
 {
@@ -16,10 +16,10 @@ public class ReplacerTimeStamp extends Replacer
   private Date fUsedDate;
 
   /**
-   * Initialisiert die Klasse mit dem zu ersetzenden StringLiteral.
-   * Das Datum wir auf die Aktuelle Zeit gesetzt.
+   * Initializes the class withe the String literal that should be
+   * replaced. The date is set to the current time.
    * 
-   * @param markerString Das zu ersetzende StringLiteral
+   * @param markerString The String literal that should be replaced.
    */
   public ReplacerTimeStamp(String markerString)
   {
@@ -27,18 +27,18 @@ public class ReplacerTimeStamp extends Replacer
   }
 
   /**
-   * Initialisiert die Klasse mit dem zu ersetzenden StringLiteral und
-   * manuell gesetztem Datum.
+   * Initializes the class withe the String literal that should be
+   * replaced. The date is set to the given Date.
    * 
-   * @param markerString Das zu ersetzende StringLiteral
+   * @param markerString The String literal that should be replaced.
    * 
-   * @param datum Das Datum welches eingesetzt wird.
+   * @param date The date should be used as replace date.
    */
-  public ReplacerTimeStamp(String markerString, Date datum)
+  public ReplacerTimeStamp(String markerString, Date date)
   {
     super(markerString, null);
-    setReplaceDate(datum);
-    fUsedDate = datum;
+    setReplaceDate(date);
+    fUsedDate = date;
   }
 
   /**
@@ -66,17 +66,13 @@ public class ReplacerTimeStamp extends Replacer
   }
 
   /**
-   * Setter
-   * <p>
-   * Das Muster wird erst bei einem Aufruf von
-   * {@link #setReplaceDate(Date)} angewandt!
-   * </p>
+   * Setter The pattern is applied not until the
+   * {@link #setReplaceDate(Date)} is called!
    * 
-   * @param datePattern Setzt das {@link SimpleDateFormat} Muster das
-   *        genutzt wird um das Datum in eine Zeichenfolge zu wandeln.
-   *        Wenn {@code null} übergeben wird, wird das Muster
-   *        zurückgesetzt auf den default Wert
-   *        {@link #DEFAULT_DATE_PATTERN}.
+   * @param datePattern Sets the {@link SimpleDateFormat} that should
+   *        be used to transform the Date into a date String. If the
+   *        provided pattern is {@code null}, the default pattern
+   *        {@link #DEFAULT_DATE_PATTERN} is used.
    */
   public void setDatePattern(String datePattern)
   {
@@ -86,16 +82,16 @@ public class ReplacerTimeStamp extends Replacer
   /**
    * Setter
    * 
-   * @param datum Setzt das Datum welches zum Ersetzen genutzt wird.
+   * @param date Sets the Date that is used as replacement.
    */
-  public void setReplaceDate(Date datum)
+  public void setReplaceDate(Date date)
   {
-    fUsedDate = datum;
-    setReplaceValue(makeDatum(datum));
+    fUsedDate = date;
+    setReplaceValue(makeDate(date));
   }
 
-  private String makeDatum(Date datum)
+  private String makeDate(Date date)
   {
-    return new SimpleDateFormat(getDatePattern()).format(datum);
+    return new SimpleDateFormat(getDatePattern()).format(date);
   }
 }

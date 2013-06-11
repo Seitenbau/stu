@@ -75,9 +75,6 @@ class GroovyDatabaseDataSetTest {
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void addPerson() {
-    
-    System.out.println(dataSet.jobsTable.getRowCount());
-    
     // prepare
     Person person = new Person()
     person.setFirstName("Nikolaus")
@@ -193,7 +190,7 @@ class GroovyDatabaseDataSetTest {
   }
   
   @Ignore // TODO Exception when removing is not thrown on every machine
-  @Test(expected=DataIntegrityViolationException.class)
+  @Test(expected=DataIntegrityViolationException)
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeJobWithExistingReference()
   {
@@ -257,7 +254,7 @@ class GroovyDatabaseDataSetTest {
     sut.removeTeam(team)
 
     // verify
-   dataSet.teamsTable.rows {
+    dataSet.teamsTable.rows {
       REF           | id  | title                   | description                           | membersize
       HR            | 2   | "Human Resources"       | "Make up workforce of an organzation" | 0
     }
@@ -266,7 +263,7 @@ class GroovyDatabaseDataSetTest {
   }
   
   @Ignore // TODO Exception when removing is not thrown on every machine
-  @Test(expected=DataIntegrityViolationException.class)
+  @Test(expected=DataIntegrityViolationException)
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeTeamWithExistingReference()
   {

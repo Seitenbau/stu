@@ -30,12 +30,7 @@ import com.seitenbau.testing.util.Future;
 import com.seitenbau.testing.util.ReflectionUtils;
 
 /**
- * <p>
- * JUnit Rule zum Einspielen und Vergleichen von Datensets.
- * <p/>
- * <p>
- * x
- * </p>
+ * JUnti rule that is used to insert and compare Datasets.
  */
 public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> implements MethodRule
 {
@@ -77,7 +72,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    *   db.driver=org.gjt.mm.mysql.Driver
    *   db.url=jdbc:mysql://192.168.0.x:3306/dbName
    *   db.username=admin
-   *   db.password=geheim
+   *   db.password=secret
    *   # optinal :
    *   db.schema=theSchema
    * </pre>
