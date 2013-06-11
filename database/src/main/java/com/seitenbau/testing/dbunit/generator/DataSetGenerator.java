@@ -104,7 +104,7 @@ public class DataSetGenerator
       if (_dataSet.isTableDSLGeneration()) 
       {
         generateDSL(targetPath + "/");
-        generateTableGateways(targetPath + "/");
+        generateTableAdapters(targetPath + "/");
       }
     }
     finally
@@ -162,13 +162,13 @@ public class DataSetGenerator
     return "/templates/db/TableJavaModel.vm";
   }
 
-  protected void generateTableGateways(String into) throws Exception
+  protected void generateTableAdapters(String into) throws Exception
   {
     for (Table table : _dataSet.getTables())
     {
-      templates.executeTemplate(table, getTemplatePathTableGateway(), into);
+      templates.executeTemplate(table, getTemplatePathTableAdapter(), into);
     }
-    logger.info("created " + _dataSet.getTables().size() + " Table Gateways");
+    logger.info("created " + _dataSet.getTables().size() + " Table Adapters");
   }
 
   protected void generateReferenceClasses(String into) throws Exception
@@ -192,9 +192,9 @@ public class DataSetGenerator
     logger.info("created 1 DSL class");
   }
 
-  protected String getTemplatePathTableGateway()
+  protected String getTemplatePathTableAdapter()
   {
-    return "/templates/db/TableGateway.vm";
+    return "/templates/db/TableAdapter.vm";
   }
 
   protected String getTemplatePathReference()

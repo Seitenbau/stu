@@ -1,10 +1,10 @@
-#set($filename = ${model.javaName} + "TableGateway" )
+#set($filename = ${model.javaName} + "TableAdapter" )
 #set($package  = ${model.package} )
 #set($clsBuilder = ${model.dataSet.name} + "Builder")
 #set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
 #set($clsRef = ${model.javaName} + "Ref")
 #set($clsTable = ${model.javaName} + "Table")
-#set($clsGateway = ${clsTable} + "Gateway")
+#set($clsAdapter = ${clsTable} + "Adapter")
 #set($clsTableFindWhere = ${model.javaName} + "FindWhere")
 #set($clsTableGetWhere = ${model.javaName} + "GetWhere")
 #set($clsRowcollection= "RowCollection_" + ${model.javaName} )
@@ -53,7 +53,7 @@ import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
 #end
 
 
-public class ${clsGateway} {
+public class ${clsAdapter} {
 
   /**
    * Do not set a value. (To remove a value use <i>null</i>)
@@ -123,7 +123,7 @@ public class ${clsGateway} {
    */
   public final ${clsTableGetWhere} getWhere;
 
-  ${clsGateway}(${clsBuilder} builder, ${clsTable} table)
+  ${clsAdapter}(${clsBuilder} builder, ${clsTable} table)
   {
     _builder = builder;
     _table = table;
@@ -133,7 +133,7 @@ public class ${clsGateway} {
 
   public static ColumnMetaData getColumnMetaData(String column)
   {
-    return ${model.package}.${clsGateway}.getColumnMetaData(column);
+    return ${model.package}.${clsAdapter}.getColumnMetaData(column);
   }
 
   /**
@@ -154,7 +154,7 @@ public class ${clsGateway} {
   {
     TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> callback = 
         new TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>(_adapter);
-    TableParser.parseTable(rows, this, callback);
+    TableParser.parseTable(rows, ${clsBuilder}.getActiveInstance(_builder).${model.javaNameFirstLower}Table, callback);
   }
   
   public int getRowCount() 
@@ -241,27 +241,27 @@ public class ${clsGateway} {
   {
     public ${clsRowbuilder} insertRow() 
     {
-      return _table.insertRow();
+      return ${clsBuilder}.getActiveInstance(_builder).${model.javaNameFirstLower}Table.insertRow();
     }
   
     public ${clsTableGetWhere} getWhere()
     {
-      return _table.getWhere;
+      return ${clsBuilder}.getActiveInstance(_builder).${model.javaNameFirstLower}Table.getWhere;
     }
     
     public void bindToDataSet(${clsRef} reference, ${clsRowbuilder} row)
     {
-      reference.setBuilder(_builder, row);
+      reference.setBuilder(${clsBuilder}.getActiveInstance(_builder), row);
     }
 
     public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
     {
-      _builder.replace${clsRef}WithId(reference, row);
+      ${clsBuilder}.getActiveInstance(_builder).replace${clsRef}WithId(reference, row);
     }    
 
     public ${clsRowbuilder} getRowByReference(${clsRef} reference)
     {
-      return reference.getBuilder(_builder);
+      return reference.getBuilder(${clsBuilder}.getActiveInstance(_builder));
     }
 
     public String getTableName()

@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.spockframework.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -191,10 +192,14 @@ public class GroovyDataSetDatabaseTest
     job.setTitle(SAT.getTitle());
     job.setDescription(SAT.getDescription());
     job.setId(SAT.getId());
+    
+    if (dataSet.jobsTable.getRowCount() != 4) {
+      throw new RuntimeException("DataSet defect");
+    }
 
     // execute
     sut.removeJob(job);
-
+    
     // verify
     dataSet.jobsTable.findWhere.id(SAT).delete();
     dbTester.assertDataBase(dataSet);

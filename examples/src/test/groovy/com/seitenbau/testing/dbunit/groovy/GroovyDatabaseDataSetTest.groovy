@@ -50,7 +50,7 @@ class GroovyDatabaseDataSetTest {
   PersonDatabaseBuilder dataSet;
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void findPersons() {
     // execute
     def persons = sut.findPersons()
@@ -60,7 +60,7 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
+  @DatabaseSetup(prepare = EmptyGroovyDataSet)
   void findPersonsInEmptyDataSet() {
     // prepare
     List<Person> expected = new LinkedList<Person>();
@@ -73,8 +73,11 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void addPerson() {
+    
+    System.out.println(dataSet.jobsTable.getRowCount());
+    
     // prepare
     Person person = new Person()
     person.setFirstName("Nikolaus")
@@ -96,7 +99,7 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removePerson()
   {
     // prepare
@@ -117,7 +120,7 @@ class GroovyDatabaseDataSetTest {
 
   @Ignore // TODO Exception when removing is not thrown on every machine
   @Test(expected=DataIntegrityViolationException.class)
-  @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
+  @DatabaseSetup(prepare = EmptyGroovyDataSet)
   void removePersonThatDoesNotExist()
   {
     // prepare
@@ -137,7 +140,7 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void findAllJobs()
   {
     // execute
@@ -148,7 +151,7 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void addJob()
   {
     // prepare
@@ -168,7 +171,7 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeJobWithoutExistingReference()
   {
     // prepare
@@ -191,7 +194,7 @@ class GroovyDatabaseDataSetTest {
   
   @Ignore // TODO Exception when removing is not thrown on every machine
   @Test(expected=DataIntegrityViolationException.class)
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeJobWithExistingReference()
   {
     // prepare
@@ -208,7 +211,7 @@ class GroovyDatabaseDataSetTest {
   }
   
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void findAllTeams()
   {
     // execute
@@ -219,7 +222,7 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void addTeam()
   {
     // prepare
@@ -240,7 +243,7 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeTeamWithoutExistingReference()
   {
     // prepare
@@ -264,7 +267,7 @@ class GroovyDatabaseDataSetTest {
   
   @Ignore // TODO Exception when removing is not thrown on every machine
   @Test(expected=DataIntegrityViolationException.class)
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeTeamWithExistingReference()
   {
     // prepare

@@ -17,6 +17,8 @@ package ${package};
 
 import com.google.common.base.Optional;
 
+import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.dsl.LazyValue;
 #if( !${model.isAssociativeTable()} )
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
@@ -271,9 +273,12 @@ public class ${tableClass} implements ITable
 ## reference value cannot be lazy
       if (value instanceof LazyValue)
       {
+        DataSetIdentificator last = DataSetRegistry.use(table._dataSet);
         LazyValue lazyValue = (LazyValue)value;
-        return (${column.javaType})CastUtil.cast(lazyValue.getValue(), 
+        ${column.javaType} result = (${column.javaType})CastUtil.cast(lazyValue.getValue(), 
           com.seitenbau.testing.dbunit.generator.${column.type});
+        DataSetRegistry.use(last);
+        return result;
       }
 #else
       if (value instanceof ${column.reference.column.table.javaName}Ref)
@@ -396,8 +401,11 @@ public class ${tableClass} implements ITable
       Object value = data[index];
       if (value instanceof LazyValue)
       {
+        DataSetIdentificator last = DataSetRegistry.use(table._dataSet);
         LazyValue lazyValue = (LazyValue)value;
-        return lazyValue.getValue();
+        Object result = lazyValue.getValue();
+        DataSetRegistry.use(last);
+        return result;
       } 
       return value;
     }
@@ -493,6 +501,14 @@ public class ${tableClass} implements ITable
       ${rowbuilder} row = ref.getBuilder(table._dataSet);
       if (row == null)
       {
+        DataSetIdentificator ds = DataSetRegistry.getCurrentDataSet(table.getDataset().getDataSetClassName());
+        if (ds != null)
+        {
+          row = ref.getBuilder(ds);
+        }
+      }
+      if (row == null)
+      {
         throw new RuntimeException("Ref not defined in this scope");
       }
       return ${column.javaNameFirstLower}(row.get${column.javaName}());
@@ -503,6 +519,14 @@ public class ${tableClass} implements ITable
     public ${rowcollection} ${column.javaNameFirstLower}(${refTable.javaName}Ref ref)
     {
       ${model.package}.${refTable.javaName}Table.RowBuilder_${refTable.javaName} row = ref.getBuilder(table._dataSet);
+      if (row == null)
+      {
+        DataSetIdentificator ds = DataSetRegistry.getCurrentDataSet(table.getDataset().getDataSetClassName());
+        if (ds != null)
+        {
+          row = ref.getBuilder(ds);
+        }
+      }
       if (row == null)
       {
         throw new RuntimeException("Ref not defined in this scope");
@@ -580,6 +604,14 @@ public class ${tableClass} implements ITable
       ${rowbuilder} row = ref.getBuilder(table._dataSet);
       if (row == null)
       {
+        DataSetIdentificator ds = DataSetRegistry.getCurrentDataSet(table.getDataset().getDataSetClassName());
+        if (ds != null)
+        {
+          row = ref.getBuilder(ds);
+        }
+      }
+      if (row == null)
+      {
         throw new RuntimeException("Ref not defined in this scope");
       }
       return ${column.javaNameFirstLower}(row.get${column.javaName}());
@@ -590,6 +622,14 @@ public class ${tableClass} implements ITable
     public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${refTable.javaName}Ref ref)
     {
       ${model.package}.${refTable.javaName}Table.RowBuilder_${refTable.javaName} row = ref.getBuilder(table._dataSet);
+      if (row == null)
+      {
+        DataSetIdentificator ds = DataSetRegistry.getCurrentDataSet(table.getDataset().getDataSetClassName());
+        if (ds != null)
+        {
+          row = ref.getBuilder(ds);
+        }
+      }
       if (row == null)
       {
         throw new RuntimeException("Ref not defined in this scope");
