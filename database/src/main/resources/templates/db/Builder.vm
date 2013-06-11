@@ -155,7 +155,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
     }
   }
   
-  private boolean hasSuperClass(Class<?> clazz, Class<PersonDatabaseBuilder> superClass)
+  private boolean hasSuperClass(Class<?> clazz, Class<?> superClass)
   {
     Class<?> c = clazz;
     while (c != null)
