@@ -61,12 +61,14 @@ public class DataSetGroovyAPITest
   @Test
   void getDennisLastName()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(KAULBERSCH.name).isEqualTo("Kaulbersch");
   }
 
   @Test
   void getTMTitle()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(TM.title).isEqualTo("Team Manager");
   }
 

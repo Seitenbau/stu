@@ -1,10 +1,13 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.BARANOWSKI;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
 import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 
 import com.seitenbau.testing.dbunit.dataset.DemoClassicAPIDataSet;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 ;
 
 public class DataSetClassicAPITest
@@ -14,6 +17,7 @@ public class DataSetClassicAPITest
   @Test
   public void testQAMemberSizeLazy()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(QA.getMembersize()).isEqualTo(3);
   }
 
@@ -26,6 +30,7 @@ public class DataSetClassicAPITest
   @Test
   public void testBaranowskiLastName()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(BARANOWSKI.getName()).isEqualTo("Baranowski");
   }
   
