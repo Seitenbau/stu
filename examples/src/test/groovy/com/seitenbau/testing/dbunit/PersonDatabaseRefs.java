@@ -1,6 +1,7 @@
 package com.seitenbau.testing.dbunit;
 
 import com.seitenbau.testing.dbunit.model.JobsRef;
+import com.seitenbau.testing.dbunit.model.PersonJobRef;
 import com.seitenbau.testing.dbunit.model.PersonsRef;
 import com.seitenbau.testing.dbunit.model.RefFactory;
 import com.seitenbau.testing.dbunit.model.TeamsRef;
@@ -18,4 +19,8 @@ public class PersonDatabaseRefs
   public static PersonsRef KAULBERSCH = RefFactory.createPersonsRef();
   public static PersonsRef GUITTON = RefFactory.createPersonsRef();
   public static PersonsRef BARANOWSKI = RefFactory.createPersonsRef();
+  
+  public static PersonJobRef KAULBERSCH_SWD = RefFactory.createPersonJobRef();
+  public static PersonJobRef GUITTON_SWT = RefFactory.createPersonJobRef();
+  public static PersonJobRef BARANOWSKI_TM = RefFactory.createPersonJobRef();
 }

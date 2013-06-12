@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.SampleDataSet;
 import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
+import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.rule.DatabaseBefore;
 import com.seitenbau.testing.dbunit.rule.DatabasePrepare;
@@ -79,8 +80,8 @@ public class AnnotationBasedDatabaseTest
     RowBuilder_Jobs job = defaultDataSet.table_Jobs.insertRow().setTitle("Agile Tester").setDescription("Just agile.");
     RowBuilder_Teams team = defaultDataSet.table_Teams.insertRow().setTitle("Agile Experts").setDescription("Agile only.")
         .setMembersize(1);
-    defaultDataSet.table_Persons.insertRow().setFirstName("Rainer").setName("Weinhold").setJobId(job.getId())
-        .setTeamId(team.getId());
+    RowBuilder_Persons person = defaultDataSet.table_Persons.insertRow().setFirstName("Rainer").setName("Weinhold").setTeamId(team.getId());
+    defaultDataSet.table_PersonJob.insertRow().setPersonId(person.getId()).setJobId(job.getId());
   }
 
   @Test

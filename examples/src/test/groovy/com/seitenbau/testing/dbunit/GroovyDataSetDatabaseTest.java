@@ -3,6 +3,7 @@ package com.seitenbau.testing.dbunit;
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
+import com.seitenbau.testing.dbunit.model.JobsRef;
 import com.seitenbau.testing.dbunit.model.PersonDatabaseBuilder;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
@@ -90,23 +92,37 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
-    person.setJob(SWD.getId().intValue());
+    List<Job> jobs = createJob(SWD);
+    person.setJobs(jobs);
     person.setTeam(QA.getId().intValue());
 
     // execute
-    sut.addPerson(person);
+    Person newPerson = sut.addPerson(person);
     
     // verify
     dataSet.personsTable.insertRow()
       .setId(person.getId())
       .setFirstName("Nikolaus")
       .setName("Moll")
-      .setJobId(SWD)
       .setTeamId(QA);
+    
+    dataSet.personJobTable.insertRow()
+      .setJobId(jobs.get(0).getId())
+      .setPersonId(newPerson.getId());
 
     dbTester.assertDataBase(dataSet);
   }
   
+  private List<Job> createJob(JobsRef jobsRef)
+  {
+    List<Job> jobs = new ArrayList<Job>();
+    Job job = new Job();
+    job.setId(jobsRef.getId());
+    job.setTitle(jobsRef.getTitle());
+    jobs.add(job);
+    return jobs;
+  }
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void removePerson() throws Exception {
@@ -114,7 +130,7 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("Dennis");
     person.setName("Kaulbersch");
-    person.setJob(SWD.getId().intValue());
+    person.setJobs(createJob(SWD));
     person.setTeam(QA.getId().intValue());
     person.setId(KAULBERSCH.getId().intValue());
 
@@ -123,6 +139,7 @@ public class GroovyDataSetDatabaseTest
     
     // verify
     dataSet.personsTable.findWhere.id(KAULBERSCH).delete();
+    dataSet.personJobTable.findWhere.personId(KAULBERSCH_SWD).delete();
     dbTester.assertDataBase(dataSet);
   }
   
@@ -135,7 +152,7 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("John");
     person.setId(23);
-    person.setJob(0);
+    person.setJobs(new Job());
     person.setName("Doe");
     person.setTeam(1899);
 

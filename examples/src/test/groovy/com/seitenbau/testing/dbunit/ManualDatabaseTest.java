@@ -75,8 +75,8 @@ public class ManualDatabaseTest
         .setDescription("Developing Software");
     RowBuilder_Teams team = emptyDataset.table_Teams.insertRow().setTitle("Quality Assurance")
         .setDescription("Just hanging around").setMembersize(1);
-    emptyDataset.table_Persons.insertRow().setFirstName("Dennis").setName("Kaulbersch").setJobId(job.getId())
-        .setTeamId(team.getId());
+    RowBuilder_Persons personRow = emptyDataset.table_Persons.insertRow().setFirstName("Dennis").setName("Kaulbersch").setTeamId(team.getId());
+    emptyDataset.table_PersonJob.insertRow().setPersonId(personRow.getId()).setJobId(job.getId());
 
     dbTesterRule.cleanInsert(emptyDataset);
 
@@ -147,7 +147,7 @@ public class ManualDatabaseTest
     Person person = new Person();
     person.setFirstName("Dennis");
     person.setName("Kaulbersch");
-    person.setJob(job.getId().intValue());
+    person.setJobs(createJob(job));
     person.setTeam(team.getId().intValue());
 
     // execute
@@ -155,6 +155,15 @@ public class ManualDatabaseTest
     // verify
     assertThat(result.getFirstName()).isEqualTo(person.getFirstName());
     assertThat(result.getId()).isNotNull();
+  }
+
+  private Job createJob(RowBuilder_Jobs jobRow)
+  {
+    Job job = new Job();
+    job.setId(jobRow.getId());
+    job.setTitle(jobRow.getTitle());
+    job.setDescription(jobRow.getDescription());
+    return job;
   }
 
   @Test
@@ -167,14 +176,15 @@ public class ManualDatabaseTest
     RowBuilder_Teams team = emptyDataset.table_Teams.insertRow().setTitle("Quality Assurance")
         .setDescription("Just hanging around").setMembersize(1);
     RowBuilder_Persons personRow = emptyDataset.table_Persons.insertRow().setFirstName("Dennis").setName("Kaulbersch")
-        .setJobId(job.getId()).setTeamId(team.getId());
+        .setTeamId(team.getId());
+    emptyDataset.table_PersonJob.insertRow().setPersonId(personRow.getId()).setJobId(job.getId());
 
     dbTesterRule.cleanInsert(emptyDataset);
 
     Person person = new Person();
     person.setFirstName(personRow.getFirstName());
     person.setId(personRow.getId().intValue());
-    person.setJob(personRow.getJobId().intValue());
+    person.setJobs(createJob(job));
     person.setName(personRow.getName());
     person.setTeam(personRow.getTeamId().intValue());
 
@@ -196,7 +206,7 @@ public class ManualDatabaseTest
     Person person = new Person();
     person.setFirstName("John");
     person.setId(23);
-    person.setJob(0);
+    person.setJobs(new Job());
     person.setName("Doe");
     person.setTeam(1899);
 

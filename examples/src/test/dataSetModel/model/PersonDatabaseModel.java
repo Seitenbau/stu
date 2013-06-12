@@ -42,13 +42,19 @@ public class PersonDatabaseModel extends DatabaseModel
         .column("first_name", DataType.VARCHAR) //
         .column("name", DataType.VARCHAR) //
           .description("Actually this column represents the last name of a person")
-        .column("job_id", DataType.BIGINT) //
-          .references(jobs.ref("id")) //
-            .description("Assigns a job to the person")
+//        .column("job_id", DataType.BIGINT) //
+//          .references(jobs.ref("id")) //
+//            .description("Assigns a job to the person")
         .column("team_id", DataType.BIGINT) //
           .references(teams.ref("id")) //
             .description("Assigns a team to the person")
       .build(); //
+    
+    table("person_job")
+      .description("The table that holds relations of persons to jobs")
+      .column("person_id", DataType.BIGINT)
+      .column("job_id", DataType.BIGINT)
+    .build();
   }
 
 }

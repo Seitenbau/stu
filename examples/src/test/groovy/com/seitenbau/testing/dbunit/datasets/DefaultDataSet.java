@@ -31,19 +31,19 @@ public class DefaultDataSet extends EmptyDataSet
     table_Persons.insertRow() //
         .setFirstName("Dennis") //
         .setName("Kaulbersch") //
-        .refJobId(softwareDeveloper) //
+//        .refJobId(softwareDeveloper) //
         .refTeamId(qualityAssurance);
 
     table_Persons.insertRow() //
         .setFirstName("Julien") //
         .setName("Guitton") //
-        .refJobId(softwareTester) //
+//        .refJobId(softwareTester) //
         .refTeamId(qualityAssurance);
 
     table_Persons.insertRow() //
         .setFirstName("Christian") //
         .setName("Baranowski") //
-        .refJobId(teamManager) //
+//        .refJobId(teamManager) //
         .refTeamId(qualityAssurance);
 
   }

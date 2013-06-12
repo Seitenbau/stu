@@ -21,6 +21,7 @@ import com.seitenbau.testing.util.Future;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet
 import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
+import com.seitenbau.testing.dbunit.model.JobsRef;
 import com.seitenbau.testing.dbunit.model.PersonDatabaseBuilder
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule
@@ -76,10 +77,17 @@ class GroovyDatabaseDataSetTest {
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void addPerson() {
     // prepare
+    List<Job> jobs = new ArrayList<Job>()
+    Job job = new Job()
+    job.id = SWD.id
+    job.title = SWD.title
+    job.description = SWD.description
+    jobs.add(job)
+    
     Person person = new Person()
     person.setFirstName("Nikolaus")
     person.setName("Moll")
-    person.setJob(SWD.id.intValue())
+    person.setJobs(jobs)
     person.setTeam(QA.id.intValue())
 
     // execute
@@ -88,9 +96,16 @@ class GroovyDatabaseDataSetTest {
     // verify
     dataSet.personsTable.rows {
 
-      id             | first_name | name   | job | team
-      savedPerson.id | "Nikolaus" | "Moll" | SWD | QA
+      id             | first_name | name   | team
+      savedPerson.id | "Nikolaus" | "Moll" | QA
 
+    }
+    
+    dataSet.personJobTable.rows {
+      
+      person_id       | job_id
+      savedPerson.id  | SWD.id
+      
     }
     dbTester.assertDataBase(dataSet)
   }
@@ -100,10 +115,17 @@ class GroovyDatabaseDataSetTest {
   void removePerson()
   {
     // prepare
+    List<Job> jobs = new ArrayList<Job>()
+    Job job = new Job()
+    job.id = SWD.id
+    job.title = SWD.title
+    job.description = SWD.description
+    jobs.add(job)
+    
     Person person = new Person()
     person.setFirstName("Dennis")
     person.setName("Kaulbersch")
-    person.setJob(SWD.id.intValue())
+    person.setJobs(jobs)
     person.setTeam(QA.id.intValue())
     person.setId(KAULBERSCH.id.intValue())
 
@@ -112,6 +134,7 @@ class GroovyDatabaseDataSetTest {
 
     // verify
     dataSet.personsTable.findWhere.id(KAULBERSCH).delete()
+    dataSet.personJobTable.findWhere.personId(KAULBERSCH_SWD).delete()
     dbTester.assertDataBase(dataSet)
   }
 
