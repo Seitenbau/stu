@@ -24,9 +24,9 @@ public class SampleDataSet extends EmptyDataSet
         .setName("Krankl") //
         .refTeamId(bakercrew);
 
-    table_PersonJob.insertRow() //
-        .refPersonId(krankl) //
-        .refJobId(bakerman);
+    //table_PersonJob.insertRow() //
+    //    .refPersonId(krankl) //
+    //    .refJobId(bakerman);
 
   }
 }
