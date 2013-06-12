@@ -1,6 +1,6 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SAT;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 import static org.fest.assertions.Assertions.assertThat;
 
 import org.dbunit.dataset.DataSetException;
@@ -25,7 +25,7 @@ public class DataSetCompositionTest
     assertThat(dataSet.jobsTable.getRowCount()).isEqualTo(4);
     assertThat(dataSet.personsTable.getRowCount()).isEqualTo(3);
   }
-
+  
   @Test
   public void checkValidRefUsage() throws DataSetException
   {
@@ -48,5 +48,6 @@ public class DataSetCompositionTest
 
     Fail.fail();
   }
+  
   
 }

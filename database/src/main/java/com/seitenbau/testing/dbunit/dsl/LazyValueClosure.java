@@ -5,7 +5,7 @@ import groovy.lang.Closure;
 public class LazyValueClosure implements LazyValue
 {
   
-  Closure<?> closure;
+  private final Closure<?> closure;
   
   public LazyValueClosure(Closure<?> closure)
   {
