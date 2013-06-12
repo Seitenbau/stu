@@ -58,6 +58,17 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
         .setFirstName("Christian")
         .setName("Baranowski");
 //        .setJobId(TM);
+    
+    table_PersonJob
+      .insertRow()
+        .setPersonId(KAULBERSCH.getId())
+        .setJobId(SWD.getId())
+      .insertRow()
+        .setPersonId(GUITTON.getId())
+        .setJobId(SWT.getId())
+      .insertRow()
+        .setPersonId(BARANOWSKI.getId())
+        .setJobId(TM.getId());
   }
 
 }

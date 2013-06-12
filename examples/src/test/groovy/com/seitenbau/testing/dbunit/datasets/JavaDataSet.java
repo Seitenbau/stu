@@ -75,7 +75,7 @@ public class JavaDataSet extends DefaultDataSet
             3, //
         });
     
-    DefaultTable personJobs = new DefaultTable("person_jobs", new Column[] { //
+    DefaultTable personJobs = new DefaultTable("person_job", new Column[] { //
         new Column("person_id", DataType.BIGINT), //
         new Column("job_id", DataType.BIGINT), //
         });
