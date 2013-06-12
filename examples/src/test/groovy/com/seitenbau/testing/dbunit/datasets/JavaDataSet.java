@@ -16,28 +16,24 @@ public class JavaDataSet extends DefaultDataSet
         new Column("id", DataType.BIGINT), //
             new Column("first_name", DataType.VARCHAR), //
             new Column("name", DataType.VARCHAR), //
-            new Column("job_id", DataType.BIGINT), //
             new Column("team_id", DataType.BIGINT), //
         });
     persons.addRow(new Object[] { //
         Parameters.Persons.DENNIS, //
             "Dennis", //
             "Kaulbersch", //
-            Parameters.Jobs.SOFTWARE_DEVELOPER, //
             Parameters.Teams.QUALITY_ASSURANCE, //
         });
     persons.addRow(new Object[] { //
         Parameters.Persons.JULIEN, //
             "Julien", //
             "Guitton", //
-            Parameters.Jobs.SOFTWARE_TESTER, //
             Parameters.Teams.QUALITY_ASSURANCE, //
         });
     persons.addRow(new Object[] { //
         Parameters.Persons.CHRISTIAN, //
             "Christian", //
             "Baranowski", //
-            Parameters.Jobs.TEAM_MANAGER, //
             Parameters.Teams.QUALITY_ASSURANCE, //
         });
 
@@ -78,10 +74,31 @@ public class JavaDataSet extends DefaultDataSet
             "Verifies that requirments for a product is fulfilled", //
             3, //
         });
+    
+    DefaultTable personJobs = new DefaultTable("person_job", new Column[] { //
+        new Column("person_id", DataType.BIGINT), //
+        new Column("job_id", DataType.BIGINT), //
+        });
+
+    personJobs.addRow(new Object[] { //
+        Parameters.Persons.DENNIS, //
+        Parameters.Jobs.SOFTWARE_DEVELOPER, //
+    });
+    
+    personJobs.addRow(new Object[] { //
+        Parameters.Persons.JULIEN, //
+        Parameters.Jobs.SOFTWARE_TESTER, //
+    });
+    
+    personJobs.addRow(new Object[] { //
+        Parameters.Persons.CHRISTIAN, //
+        Parameters.Jobs.TEAM_MANAGER, //
+    });
 
     addTable(jobs);
     addTable(teams);
     addTable(persons);
+    addTable(personJobs);
   }
 
 }

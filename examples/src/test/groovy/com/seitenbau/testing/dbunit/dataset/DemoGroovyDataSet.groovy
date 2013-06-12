@@ -21,10 +21,17 @@ class DemoGroovyDataSet extends PersonDatabaseBuilder
     }
 
     personsTable.rows {
-      REF         | first_name            | name                | job
-      KAULBERSCH  | "Dennis"              | "Kaulbersch"        | SWD
-      GUITTON     | "Julien"              | "Guitton"           | SWT
-      BARANOWSKI  | "Christian"           | "Baranowski"        | TM
+      REF         | first_name            | name
+      KAULBERSCH  | "Dennis"              | "Kaulbersch"
+      GUITTON     | "Julien"              | "Guitton"
+      BARANOWSKI  | "Christian"           | "Baranowski"
+    }
+    
+    personJobTable.rows {
+      REF             | person_id       | job_id
+      KAULBERSCH_SWD  | KAULBERSCH.id   | SWD.id
+      GUITTON_SWT     | GUITTON .id     | SWT.id
+      BARANOWSKI_TM   | BARANOWSKI.id   | TM.id
     }
 
   }

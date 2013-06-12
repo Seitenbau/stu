@@ -47,17 +47,25 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
         .bindRef(KAULBERSCH)
         .setFirstName("Dennis")
         .setName("Kaulbersch")
-        .setJobId(SWD)
       .insertRow()
         .bindRef(GUITTON)
         .setFirstName("Julien")
         .setName("Guitton")
-        .setJobId(SWT)
       .insertRow()
         .bindRef(BARANOWSKI)
         .setFirstName("Christian")
-        .setName("Baranowski")
-        .setJobId(TM);
+        .setName("Baranowski");
+    
+    table_PersonJob
+      .insertRow()
+        .setPersonId(KAULBERSCH.getId())
+        .setJobId(SWD.getId())
+      .insertRow()
+        .setPersonId(GUITTON.getId())
+        .setJobId(SWT.getId())
+      .insertRow()
+        .setPersonId(BARANOWSKI.getId())
+        .setJobId(TM.getId());
   }
 
 }

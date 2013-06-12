@@ -1,6 +1,7 @@
 package com.seitenbau.testing.dbunit.datasets;
 
 import com.seitenbau.testing.dbunit.model.JobsTable.RowGetters_Jobs;
+import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowGetters_Teams;
 
 public class DefaultDataSet extends EmptyDataSet
@@ -28,23 +29,32 @@ public class DefaultDataSet extends EmptyDataSet
         .setTitle("Quality Assurance") //
         .setDescription("Verifies that requirements for a product are fulfilled").setMembersize(3);
 
-    table_Persons.insertRow() //
+    RowBuilder_Persons dennis = table_Persons.insertRow() //
         .setFirstName("Dennis") //
         .setName("Kaulbersch") //
-        .refJobId(softwareDeveloper) //
         .refTeamId(qualityAssurance);
 
-    table_Persons.insertRow() //
+    RowBuilder_Persons julien = table_Persons.insertRow() //
         .setFirstName("Julien") //
         .setName("Guitton") //
-        .refJobId(softwareTester) //
         .refTeamId(qualityAssurance);
 
-    table_Persons.insertRow() //
+    RowBuilder_Persons christian = table_Persons.insertRow() //
         .setFirstName("Christian") //
         .setName("Baranowski") //
-        .refJobId(teamManager) //
         .refTeamId(qualityAssurance);
+    
+    table_PersonJob.insertRow() //
+        .setPersonId(dennis.getId()) //
+        .setJobId(softwareDeveloper.getId());
+    
+    table_PersonJob.insertRow() //
+    .setPersonId(julien.getId()) //
+    .setJobId(softwareTester.getId());
+    
+    table_PersonJob.insertRow() //
+    .setPersonId(christian.getId()) //
+    .setJobId(teamManager.getId());
 
   }
 }

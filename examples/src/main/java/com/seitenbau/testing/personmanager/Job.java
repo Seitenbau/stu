@@ -1,10 +1,13 @@
 package com.seitenbau.testing.personmanager;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -15,6 +18,7 @@ public class Job
   @Id
   @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "jobs_seq")
   @SequenceGenerator(name="jobs_seq", sequenceName = "jobs_seq")
+  @Column(name="id")
   int id;
 
   @Column
@@ -22,6 +26,9 @@ public class Job
 
   @Column
   String description;
+  
+  @ManyToMany(mappedBy="jobs")
+  private List<Person> persons;
   
   public int getId()
   {
@@ -58,4 +65,13 @@ public class Job
     this.description = description;
   }
 
+  public List<Person> getPersons()
+  {
+    return persons;
+  }
+
+  public void setPersons(List<Person> persons)
+  {
+    this.persons = persons;
+  }
 }
