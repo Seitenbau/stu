@@ -921,7 +921,7 @@ public class ${tableClass} implements ITable
 #set( $col2 = ${model.columns.get(1)} )
 #set( $tab2 = ${model.columns.get(1).reference.table} )
 
-  public ${rowbuilder} deleteRow(${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref, ${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref)
+  public ${rowbuilder} deleteAssociation(${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref, ${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref)
   {
     for (${rowbuilder} row : rows) {
       if (row.get${col1.javaName}() == ${tab1.javaNameFirstLower}Ref.get${col1.reference.column.javaName}() &&
@@ -935,9 +935,9 @@ public class ${tableClass} implements ITable
     throw new RuntimeException("No row found with specified IDs");
   }
 
-  public ${rowbuilder} deleteRow(${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref, ${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref)
+  public ${rowbuilder} deleteAssociation(${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref, ${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref)
   {
-    return deleteRow(${tab1.javaNameFirstLower}Ref, ${tab2.javaNameFirstLower}Ref);
+    return deleteAssociation(${tab1.javaNameFirstLower}Ref, ${tab2.javaNameFirstLower}Ref);
   }
 #end
 
