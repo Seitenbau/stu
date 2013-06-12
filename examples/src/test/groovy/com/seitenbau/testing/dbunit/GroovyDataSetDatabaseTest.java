@@ -139,7 +139,7 @@ public class GroovyDataSetDatabaseTest
     
     // verify
     dataSet.personsTable.findWhere.id(KAULBERSCH).delete();
-    dataSet.personJobTable.findWhere.personId(KAULBERSCH_SWD).delete();
+//    TODO
     dbTester.assertDataBase(dataSet);
   }
   
@@ -148,7 +148,6 @@ public class GroovyDataSetDatabaseTest
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
   public void removePersonThatDoesNotExist() throws Exception {
     // prepare
-    
     Person person = new Person();
     person.setFirstName("John");
     person.setId(23);

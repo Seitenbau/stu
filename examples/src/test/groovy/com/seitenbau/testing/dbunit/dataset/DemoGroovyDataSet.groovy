@@ -27,17 +27,13 @@ class DemoGroovyDataSet extends PersonDatabaseBuilder
       BARANOWSKI  | "Christian"           | "Baranowski"
     }
     
-    personJobTable.rows {
-      REF             | person_id       | job_id
-      KAULBERSCH_SWD  | KAULBERSCH.id   | SWD.id
-      GUITTON_SWT     | GUITTON .id     | SWT.id
-      BARANOWSKI_TM   | BARANOWSKI.id   | TM.id
-    }
-
   }
   
   def relations() {
-    QA.personsTo(KAULBERSCH, GUITTON, BARANOWSKI);
+    QA.personsTo(KAULBERSCH, GUITTON, BARANOWSKI)
+    KAULBERSCH.hasJob(SWD)
+    GUITTON.hasJob(SWT)
+    BARANOWSKI.hasJob(TM)
   }
   
   def "QA Size"() {
