@@ -152,7 +152,7 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("John");
     person.setId(23);
-    person.setJobs(new Job());
+    person.addJob(new Job());
     person.setName("Doe");
     person.setTeam(1899);
 

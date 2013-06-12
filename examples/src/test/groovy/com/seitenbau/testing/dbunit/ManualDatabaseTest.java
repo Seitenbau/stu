@@ -147,7 +147,7 @@ public class ManualDatabaseTest
     Person person = new Person();
     person.setFirstName("Dennis");
     person.setName("Kaulbersch");
-    person.setJobs(createJob(job));
+    person.addJob(createJob(job));
     person.setTeam(team.getId().intValue());
 
     // execute
@@ -184,7 +184,7 @@ public class ManualDatabaseTest
     Person person = new Person();
     person.setFirstName(personRow.getFirstName());
     person.setId(personRow.getId().intValue());
-    person.setJobs(createJob(job));
+    person.addJob(createJob(job));
     person.setName(personRow.getName());
     person.setTeam(personRow.getTeamId().intValue());
 
@@ -206,7 +206,7 @@ public class ManualDatabaseTest
     Person person = new Person();
     person.setFirstName("John");
     person.setId(23);
-    person.setJobs(new Job());
+    person.addJob(new Job());
     person.setName("Doe");
     person.setTeam(1899);
 

@@ -81,11 +81,12 @@ public class Person
     this.jobs = jobs;
   }
   
-  public void setJobs(Job job)
+  public void addJob(Job job)
   {
-    ArrayList<Job> jobs = new ArrayList<Job>();
-    jobs.add(job);
-    setJobs(jobs);
+    if(this.jobs == null) {
+      this.jobs = new ArrayList<Job>();
+    }
+    this.jobs.add(job);
   }
 
   public Integer getTeam()
