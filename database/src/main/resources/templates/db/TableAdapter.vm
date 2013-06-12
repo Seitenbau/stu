@@ -183,6 +183,25 @@ public class ${clsAdapter} {
   {
     return _table.insertRow(theRow);
   }
+
+  /**
+   * Remove a row from the builder by the given index.
+   *
+   * @return the deleted row
+   */ 
+  public ${clsRowbuilder} deleteRow(int index)
+  {
+    return _table.deleteRow(index);
+  }
+  
+  /**
+   * Remove a row from the builder
+   * @return the deleted row itself
+   */ 
+  public ${clsRowbuilder} deleteRow(${clsRowbuilder} rowToDelete)
+  {
+    return _table.deleteRow(rowToDelete);
+  }
 #if( ${model.isAssociativeTable()})
 #set( $tab1 = ${model.columns.get(0).reference.table} )
 #set( $tab2 = ${model.columns.get(1).reference.table} )
@@ -197,7 +216,14 @@ public class ${clsAdapter} {
     return _table.deleteRow(${tab2.javaNameFirstLower}Ref, ${tab1.javaNameFirstLower}Ref);
   }
 #end
-  
+
+  /**
+   * Creates a new row but does not add it to the table
+   */
+  public ${clsRowbuilder} newRow()
+  {
+    return _table.newRow();
+  }
 
   /**
    * Delivers a collection of rows matching to a filter.
@@ -251,7 +277,6 @@ public class ${clsAdapter} {
       });
   }
 
-  
   private class TableAdapter implements TableParserAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
   {
     public ${clsRowbuilder} insertRow() 
