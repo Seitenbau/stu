@@ -183,6 +183,21 @@ public class ${clsAdapter} {
   {
     return _table.insertRow(theRow);
   }
+#if( ${model.isAssociativeTable()})
+#set( $tab1 = ${model.columns.get(0).reference.table} )
+#set( $tab2 = ${model.columns.get(1).reference.table} )
+
+  public ${clsRowbuilder} deleteRow(${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref, ${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref)
+  {
+    return _table.deleteRow(${tab1.javaNameFirstLower}Ref, ${tab2.javaNameFirstLower}Ref);
+  }
+
+  public ${clsRowbuilder} deleteRow(${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref, ${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref)
+  {
+    return _table.deleteRow(${tab2.javaNameFirstLower}Ref, ${tab1.javaNameFirstLower}Ref);
+  }
+#end
+  
 
   /**
    * Delivers a collection of rows matching to a filter.

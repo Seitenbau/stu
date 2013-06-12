@@ -134,7 +134,7 @@ class GroovyDatabaseDataSetTest {
 
     // verify
     dataSet.personsTable.findWhere.id(KAULBERSCH).delete()
-    dataSet.personJobTable.findWhere.personId(KAULBERSCH_SWD).delete()
+    dataSet.personJobTable.deleteRow(KAULBERSCH, SWD)
     dbTester.assertDataBase(dataSet)
   }
 
