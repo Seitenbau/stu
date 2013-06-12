@@ -139,7 +139,7 @@ public class GroovyDataSetDatabaseTest
     
     // verify
     dataSet.personsTable.findWhere.id(KAULBERSCH).delete();
-//    TODO
+    dataSet.personJobTable.findWhere.personId(KAULBERSCH_SWD).delete();
     dbTester.assertDataBase(dataSet);
   }
   
