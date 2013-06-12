@@ -2,12 +2,15 @@ package com.seitenbau.testing.dbunit.dsl;
 
 import groovy.lang.Closure;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dsl.TableParserContext.ParsedRowCallback;
 
 public class TableParserCallback<R, G, D extends DatabaseReference> implements ParsedRowCallback
 {
-  
+
   private final TableParserAdapter<R, G, D> _tableAdapter;
 
   private TableRowModel _head;
@@ -16,13 +19,11 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
 
   private int _lineNr;
 
-  private int _refColumnIndex;
-
-  private int _idColumnIndex;
-
   private ColumnBinding<R, G> _refColumn;
 
   private ColumnBinding<R, G> _idColumn;
+  
+  private List<Integer> _traversedColumns;
 
   public TableParserCallback(TableParserAdapter<R, G, D> tableAdapter)
   {
@@ -30,12 +31,12 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
     _head = null;
     _columns = 0;
     _lineNr = 0;
-    _refColumnIndex = -1;
     _refColumn = null;
-    _idColumnIndex = -1;
     _idColumn = null;
+    _traversedColumns = Collections.<Integer>emptyList();
   }
 
+  @Override
   public void parsedRow(TableRowModel row)
   {
     _lineNr++;
@@ -49,12 +50,8 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
 
     R rowbuilder = new BuilderFinderOrCreator(row).getBuilder();
 
-    for (int columnIndex = 0; columnIndex < _columns; columnIndex++)
+    for (int columnIndex : _traversedColumns)
     {
-      if (columnIndex == _refColumnIndex || columnIndex == _idColumnIndex)
-      {
-        continue;
-      }
       handleColumn(columnIndex, row, rowbuilder);
     }
   }
@@ -91,19 +88,18 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
   {
     _head = row;
     _columns = _head.getColumnCount();
+    _traversedColumns = _head.getTraversableColumns();
     _refColumn = null;
     _idColumn = null;
-    _refColumnIndex = _head.getRefColumnIndex();
-    _idColumnIndex = _head.getIdentifierColumnIndex();
 
-    if (_idColumnIndex != -1)
+    if (_head.getIdentifierColumnIndex() != -1)
     {
-      _idColumn = (ColumnBinding<R, G>) _head.getValue(_idColumnIndex);
+      _idColumn = (ColumnBinding<R, G>) _head.getValue(_head.getIdentifierColumnIndex());
     }
 
-    if (_refColumnIndex != -1)
+    if (_head.getRefColumnIndex() != -1)
     {
-      _refColumn = (ColumnBinding<R, G>) _head.getValue(_refColumnIndex);
+      _refColumn = (ColumnBinding<R, G>) _head.getValue(_head.getRefColumnIndex());
     }
   }
 
@@ -140,18 +136,20 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
 
   private class BuilderFinderOrCreator
   {
+
     private final TableRowModel row;
 
-    private D ref;
+    private final D ref;
 
-    private Object id = null;
+    private final Object id;
 
     private R builder;
 
     public BuilderFinderOrCreator(TableRowModel row)
     {
       this.row = row;
-      readRow();
+      ref = getRefValue();
+      id = getIdValue();
 
       R builderByReference = getBuilderByReference();
       R builderById = getBuilderById();
@@ -161,7 +159,7 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
         builder = createRowBuilder();
       }
 
-      updateIdOnRowBuilder();
+      setManualIdOnRowBuilder();
       bindBuilderToScope();
       if (builderByReference == null && ref != null)
       {
@@ -201,27 +199,29 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
     }
 
     @SuppressWarnings("unchecked")
-    private void readRow()
+    private D getRefValue()
     {
-      ref = null;
-      if (_refColumn != null)
-      {
-        Object refValue = row.getValue(_refColumnIndex);
+      if (_refColumn != null) {
+        Object refValue = row.getValue(_head.getRefColumnIndex());
         if (!(refValue instanceof NoValue))
         {
-          ref = (D) refValue;
+          return (D) refValue;
         }
       }
-
-      id = null;
+      return null;
+    }
+    
+    private Object getIdValue()
+    {
       if (_idColumn != null)
       {
-        id = row.getValue(_idColumnIndex);
-        if (id instanceof NoValue)
+        Object value = row.getValue(_head.getIdentifierColumnIndex());
+        if (!(value instanceof NoValue))
         {
-          id = null;
+          return value;
         }
       }
+      return null;
     }
 
     private R getBuilderById()
@@ -231,8 +231,8 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
         return null;
       }
 
-      Optional<R> builderById = _idColumn
-          .getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, _idColumn.getDataType()));
+      Optional<R> builderById = _idColumn.getWhere(_tableAdapter.getWhere(), 
+          CastUtil.cast(id, _idColumn.getDataType()));
       if (builderById.isPresent())
       {
         return builderById.get();
@@ -242,7 +242,8 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
 
     private R getBuilderByReference()
     {
-      if (ref == null) {
+      if (ref == null)
+      {
         return null;
       }
       return _tableAdapter.getRowByReference(ref);
@@ -253,14 +254,11 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
       return _tableAdapter.insertRow();
     }
 
-    private void updateIdOnRowBuilder()
+    private void setManualIdOnRowBuilder()
     {
       if (id != null)
       {
-        // Set manual given ID
-        @SuppressWarnings("unchecked")
-        ColumnBinding<R, G> column = (ColumnBinding<R, G>) _head.getValue(_idColumnIndex);
-        column.set(builder, id);
+        _idColumn.set(builder, id);
       }
     }
 

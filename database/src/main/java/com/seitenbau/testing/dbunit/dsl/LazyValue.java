@@ -1,7 +1,7 @@
 package com.seitenbau.testing.dbunit.dsl;
 
 /**
- * A DataSet value which is evaluated when queried.
+ * Represents a DataSet value which is evaluated when queried.
  */
 public interface LazyValue
 {

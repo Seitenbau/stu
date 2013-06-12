@@ -6,6 +6,7 @@ import com.seitenbau.testing.dbunit.generator.DataType;
 
 public class CastUtil
 {
+
   public static Object cast(Object value, DataType type)
   {
     if (type == null || value == null || type.getJavaTypeClass().isInstance(value))
@@ -17,21 +18,21 @@ public class CastUtil
     {
     case UNKNOWN:
       return value;
-      
+
     case VARCHAR:
     case CHAR:
     case LONGVARCHAR:
     case CLOB:
       return castToString(value);
-      
+
     case NUMERIC:
     case DECIMAL:
       return castToBigDecimal(value);
-      
+
     case BOOLEAN:
     case BIT:
       return castToBoolean(value);
-      
+
     case INTEGER:
     case TINYINT:
     case SMALLINT:
@@ -46,18 +47,18 @@ public class CastUtil
     case DOUBLE:
     case FLOAT:
       return castToDouble(value);
-      
+
     case DATE:
     case TIME:
     case TIMESTAMP:
       return castToDate(value);
-      
+
     case VARBINARY:
     case BINARY:
     case LONGVARBINARY:
     case BLOB:    
       return castToByteArray(value);
-      
+
     default:
       throw new RuntimeException("Unhandled DataType in CastUtil: " + type.toString());
     }
@@ -68,19 +69,19 @@ public class CastUtil
     // TODO NM implement
     return value;
   }
-  
+
   static Object castToBigDecimal(Object value)
   {
     // TODO NM implement
     return value;
   }
-  
+
   static Object castToBoolean(Object value)
   {
     // TODO NM implement
     return value;
   }
-  
+
   static Object castToInteger(Object value)
   {
     if (value instanceof Long)
@@ -94,7 +95,7 @@ public class CastUtil
     }    
     return value;
   }
-  
+
   static Object castToLong(Object value)
   {
     if (value instanceof Integer)
@@ -108,7 +109,7 @@ public class CastUtil
     }
     return value;
   }
-  
+
   static Object castToFloat(Object value)
   {
     if (value instanceof Double)
@@ -150,7 +151,7 @@ public class CastUtil
     
     return value;
   }
-  
+
   static Object castToDate(Object value)
   {
     // TODO NM implement

@@ -1,21 +1,57 @@
 package com.seitenbau.testing.dbunit.dsl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TableRowModel
 {
+  
   private List<Object> values = new ArrayList<Object>();
+
+  private final boolean isHeadRow;
+
+  private int refColumnIndex;
+
+  private int idColumnIndex;
 
   public TableRowModel(Object value)
   {
-    values.add(value);
+    refColumnIndex = -1;
+    idColumnIndex = -1;
+    isHeadRow = value instanceof ColumnBinding;
+    addValue(value);
   }
 
   public TableRowModel or(Object arg)
   {
-    values.add(arg);
+    addValue(arg);
     return this;
+  }
+
+  private void addValue(Object value)
+  {
+    if (isHeadRow)
+    {
+      if (!(value instanceof ColumnBinding))
+      {
+        throw new RuntimeException("Cannot mix ColumnBindings and values within one row");
+      }
+      
+      if (values.contains(value))
+      {
+        throw new RuntimeException("Cannot use a column more than once in a table");
+      }
+
+      ColumnBinding<?, ?> column = (ColumnBinding<?, ?>) value;
+      if (column.isRefColumn()) {
+        refColumnIndex = values.size();
+      }
+      if (column.isIdentifierColumn()) {
+        idColumnIndex = values.size();
+      }
+    }
+    values.add(value);
   }
 
   public List<Object> getValues()
@@ -30,55 +66,48 @@ public class TableRowModel
 
   public boolean isHeadRow()
   {
-    if (values.size() == 0)
-    {
-      return false;
-    }
-
-    for (Object o : values)
-    {
-      if (!(o instanceof ColumnBinding))
-      {
-        return false;
-      }
-    }
-
-    return true;
+    return isHeadRow;
   }
 
   public int getRefColumnIndex()
   {
-    int index = 0;
-    for (Object o : values)
+    if (!isHeadRow)
     {
-      ColumnBinding<?, ?> column = (ColumnBinding<?, ?>) o;
-      if (column.isRefColumn())
-      {
-        return index;
-      }
-      index++;
+      throw new RuntimeException("Cannot query REF column index from non-head row");
     }
-    return -1;
+    return refColumnIndex;
   }
 
   public int getIdentifierColumnIndex()
   {
-    int index = 0;
-    for (Object o : values)
+    if (!isHeadRow)
     {
-      ColumnBinding<?, ?> column = (ColumnBinding<?, ?>) o;
-      if (column.isIdentifierColumn())
-      {
-        return index;
-      }
-      index++;
+      throw new RuntimeException("Cannot query ID column index from non-head row");
     }
-    return -1;
+    return idColumnIndex;
   }
 
   public Object getValue(int index)
   {
     return values.get(index);
   }
-
+  
+  public List<Integer> getTraversableColumns()
+  {
+    if (!isHeadRow)
+    {
+      throw new RuntimeException("Cannot query ID column index from non-head row");
+    }
+    List<Integer> result = new LinkedList<Integer>();
+    for (int i = 0; i < values.size(); i++) 
+    {
+      if (i == refColumnIndex || i == idColumnIndex)
+      {
+        continue;
+      }
+      
+      result.add(Integer.valueOf(i));
+    }
+    return result;
+  }
 }

@@ -2,6 +2,9 @@ package com.seitenbau.testing.dbunit.dsl;
 
 import com.seitenbau.testing.dbunit.generator.DataType;
 
+/**
+ * ColumnBinding for REF column
+ */
 public class RefColumnBinding<R, G> extends ColumnBinding<R, G>
 {
 

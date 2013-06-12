@@ -36,8 +36,18 @@ public interface TableParserAdapter<R, G, D extends DatabaseReference>
    */
   void handleReferences(D reference, R row);
 
+  /**
+   * Gets a row by a Database Reference. Returns null if no row is
+   * bound.
+   * @param reference The corresponding reference
+   * @return The corresponding rowbuilder or null if there is no match
+   */
   R getRowByReference(D reference);
 
+  /**
+   * Returns the name of the table (uses for error messages)
+   * @return The table's name
+   */
   String getTableName();
 
 }
