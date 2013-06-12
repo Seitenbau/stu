@@ -161,10 +161,6 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
 
       setManualIdOnRowBuilder();
       bindBuilderToScope();
-      if (builderByReference == null && ref != null)
-      {
-        updateExternalReferences();
-      }
     }
 
     /**
@@ -260,11 +256,6 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
       {
         _idColumn.set(builder, id);
       }
-    }
-
-    private void updateExternalReferences()
-    {
-      _tableAdapter.handleReferences(ref, builder);
     }
     
     private void bindBuilderToScope()

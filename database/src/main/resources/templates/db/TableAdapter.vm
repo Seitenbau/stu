@@ -279,37 +279,37 @@ public class ${clsAdapter} {
 
   private class TableAdapter implements TableParserAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
   {
+    @Override
     public ${clsRowbuilder} insertRow() 
     {
       return _table.insertRow();
     }
   
+    @Override
     public ${clsTableGetWhere} getWhere()
     {
       return _table.getWhere;
     }
     
+    @Override
     public void bindToDataSet(${clsRef} reference, ${clsRowbuilder} row)
     {
       reference.setBuilder(_builder, row);
     }
 
-    public void handleReferences(${clsRef} reference, ${clsRowbuilder} row)
-    {
-     _builder.replace${clsRef}WithId(reference, row);
-    }    
-
+    @Override
     public ${clsRowbuilder} getRowByReference(${clsRef} reference)
     {
       return reference.getBuilder(_builder);
     }
 
+    @Override
     public String getTableName()
     {
       return "${model.javaName}";
     }
     
-  };  
+  };
 
 #foreach( $col in $model.columns )
 

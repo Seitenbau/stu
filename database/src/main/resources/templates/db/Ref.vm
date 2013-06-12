@@ -65,10 +65,7 @@ public class ${clsRef} extends DatabaseReference
   } 
 #end
   
-  /**
-   * This method is considered package private
-   */
-  public void setBuilder(DataSetIdentificator identificator, ${clsRowbuilder} builder)
+  void setBuilder(DataSetIdentificator identificator, ${clsRowbuilder} builder)
   {
     if (!(identificator.getDataSet() instanceof ${clsDataSet}))
     {

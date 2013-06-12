@@ -10,7 +10,6 @@ package ${package};
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
 import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
-import com.seitenbau.testing.util.Action;
 import org.dbunit.dataset.IDataSet;
 
 #if( $model.package && $model.package.length() != 0 )
@@ -53,7 +52,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   {
     activeParents.remove();
   }
-  
+
   private static boolean trySetActiveParent(${clsBuilder} instance)
   {
     // there is a thread local active parent, so do not allow to overwrite it
@@ -64,7 +63,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
     activeParents.set(instance);
     return true;
   }
-  
+
   private static ${clsBuilder} getWorkingInstance(${clsBuilder} current)
   {
     if (activeParents.get() != null)
@@ -140,7 +139,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
     {
       throw new RuntimeException("Wrong type");
     }
-  
+
     try
     {
       boolean hasSet = trySetActiveParent(this);
@@ -154,7 +153,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
       throw new RuntimeException("Error extending builder", e);
     }
   }
-  
+
   private boolean hasSuperClass(Class<?> clazz, Class<?> superClass)
   {
     Class<?> c = clazz;
@@ -167,8 +166,8 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
       c = c.getSuperclass();
     }
     return false;
-  }  
-  
+  }
+
   /**
    * Template method to define the tables test data.
    */
@@ -176,7 +175,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   {
     return null;
   }
-  
+
   /**
    * Template method to define the relations.
    */
@@ -184,7 +183,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   {
     return null;
   }
-  
+
   protected Object extendsDataSet() 
   {
     return null;
@@ -210,7 +209,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   {
     tables(getWorkingInstance(this), table);
   }
-  
+
   /**
    * Parses and integrates the tables to a given data set
    * Supported tables:
@@ -219,7 +218,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
    *   <li>{@code ${table.javaNameFirstLower}Table} - ${table.description}</li>
 #end
    * </ul>
-   *  
+   *
    * @param table Table data
    */
   public void tables(${clsBuilder} dataSet, Closure<?> table)
@@ -230,7 +229,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
     table.call();
     DataSetRegistry.use(lastDataSet);
   }
-  
+
   /**
    * Parses the defined relations and integrates them into the data set
    * @param relations The relations data
@@ -239,7 +238,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   {
     this.relations(getWorkingInstance(this), relations);
   }
- 
+
   /**
    * Parses the defined relations and integrates them into a given data set
    * @param relations The relations data
@@ -250,39 +249,6 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
     relations.call();
     DataSetRegistry.use(lastDataSet);
   }
- 
-#foreach( $reftable in $model.tables )
-  
-  /**
-   * Replaces all occurrences of a ${reftable.javaName} reference with the represented value
-   * @param reference The reference, which can be resolved now
-   * @param row The row containing the represented values 
-   */
-  void replace${reftable.javaName}RefWithId(final ${reftable.javaName}Ref reference, final RowBuilder_${reftable.javaName} row)
-  {
-#foreach( $table in $model.tables )
-#foreach( $col in $table.columns )
-#if ($col.reference && $col.reference.table == $reftable)
-### $col in $table refers on reference
-    // Ref: ${table.javaName} on ${col.javaName}
-    ${table.javaNameFirstLower}Table.foreach(new Action<RowBuilder_${table.javaName}>() {
-
-      @Override
-      public void call(RowBuilder_${table.javaName} builder)
-      {
-        if (builder.get${col.javaName}Raw() == reference)
-        {
-          builder.set${col.javaName}(row.get${col.reference.column.javaName}());
-        }
-      }
-      
-    });
-    
-#end
-#end
-#end  
-  }
-#end
 
 #foreach( $table in $model.tables )
 #set($clsRef = ${table.javaName} + "Ref")
@@ -311,7 +277,7 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   {
     return dataset.getDataSet();
   } 
-  
+
   /**
    * Create a DBUnit dataset.
    * @return The Dbunit dataset
@@ -321,5 +287,5 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   {
     return dataset.createDBUnitDataSet();
   }
-  
+
 }

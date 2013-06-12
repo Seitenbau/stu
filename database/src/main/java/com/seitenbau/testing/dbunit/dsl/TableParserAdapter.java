@@ -30,13 +30,6 @@ public interface TableParserAdapter<R, G, D extends DatabaseReference>
   void bindToDataSet(D reference, R row);
 
   /**
-   * Resolves all relations to the reference by the concrete value 
-   * @param reference The reference, which can be resolved now
-   * @param row The row corresponding to the reference
-   */
-  void handleReferences(D reference, R row);
-
-  /**
    * Gets a row by a Database Reference. Returns null if no row is
    * bound.
    * @param reference The corresponding reference
