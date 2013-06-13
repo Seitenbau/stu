@@ -27,9 +27,7 @@ class ExtendedDemoGroovyDataSet extends PersonDatabaseBuilder
   }
   
   def relations() {
-    QA.personsTo(KAULBERSCH, GUITTON, BARANOWSKI, HOCHLEITER)
-    HOCHLEITER.hasJob(SWD)
-    HOCHLEITER.hasJob(SWT)
+    HOCHLEITER.teamIdTo(QA).hasJob(SWD, SWT)
   }
   
 }

@@ -179,7 +179,7 @@ public class ${clsRef} extends DatabaseReference
    * ${description}
    * @param refs The references to associate with this one
    */
-  public void ${verb}(${refClsRef} ... refs) 
+  public ${clsRef} ${verb}(${refClsRef} ... refs) 
   {
     ${clsDataSet} dataSet = getActiveDataSet();
     ${clsRowbuilder} thisBuilder = getBuilder(dataSet);
@@ -207,6 +207,7 @@ public class ${clsRef} extends DatabaseReference
         }
       }
     }
+    return this;
   }
 
 #end  
