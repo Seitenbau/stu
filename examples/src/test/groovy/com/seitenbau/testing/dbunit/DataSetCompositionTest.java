@@ -23,7 +23,7 @@ public class DataSetCompositionTest
     // verify
     assertThat(dataSet.teamsTable.getRowCount()).isEqualTo(2);
     assertThat(dataSet.jobsTable.getRowCount()).isEqualTo(4);
-    assertThat(dataSet.personsTable.getRowCount()).isEqualTo(3);
+    assertThat(dataSet.personsTable.getRowCount()).isEqualTo(4);
   }
   
   @Test
