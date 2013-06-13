@@ -130,5 +130,29 @@ public class DataSetJavaAPITest
   {
     assertThat(JobsTable.getColumnMetaData("title").hasFlag("no_custom_flag")).isEqualTo(false);
   }
+  
+  @Test
+  public void testInsertRow()
+  {
+    // execute
+    dataSet.personsTable.insertRow() //
+      .setId(23)
+      .setFirstName("Michael")
+      .setName("Knight")
+      .setTeamId(QA);
+    
+    // verify
+    assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(4);
+  }
+  
+  @Test
+  public void testDeleteRow()
+  {
+    // execute
+    dataSet.personsTable.findWhere.name(KAULBERSCH).delete();
+    
+    // verify
+    assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(2);
+  }
 
 }
