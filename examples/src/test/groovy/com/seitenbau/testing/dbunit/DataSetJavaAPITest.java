@@ -10,17 +10,25 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.fest.assertions.Fail;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
+import com.seitenbau.testing.dbunit.model.PersonsTable.RowCollection_Persons;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
 
 public class DataSetJavaAPITest 
 {
+  
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
   
   private final DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
   
@@ -153,6 +161,24 @@ public class DataSetJavaAPITest
     
     // verify
     assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(2);
+  }
+  
+  @Test
+  public void testFindWhereWithNonExistingArgument()
+  {
+    // prepare
+    exception.expect(RuntimeException.class);
+    // execute
+    dataSet.personsTable.findWhere.name("Majors");
+    //verify
+    Fail.fail();
+  }
+  
+  @Test
+  public void testGetWhereWithNonExistingArgument()
+  {
+    // execute
+    dataSet.personsTable.getWhere.name("Majors");
   }
 
 }
