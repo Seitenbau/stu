@@ -45,16 +45,18 @@ public class PersonDatabaseModel extends DatabaseModel
         .column("team_id", DataType.BIGINT) //
           .references(teams.ref("id")) //
             .description("Assigns a team to the person")
+            .local("belongsTo")
+            .remote("hasMembers")
       .build(); //
     
     table("person_job")
       .description("The table that holds relations of persons to jobs")
       .column("person_id", DataType.BIGINT)
         .references(persons)
-          .remote("hasJob")
+          .remote("performs")
       .column("job_id", DataType.BIGINT)
         .references(jobs)
-          .remote("hasMember")
+          .remote("performedBy")
     .build();
   }
 
