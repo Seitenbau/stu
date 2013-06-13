@@ -15,11 +15,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
-import com.seitenbau.testing.dbunit.model.PersonsTable.RowCollection_Persons;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
@@ -54,46 +52,42 @@ public class DataSetJavaAPITest
   public void findWhereRowCount()
   {
     assertThat(dataSet.personJobTable.findWhere.jobId(SWD).getRowCount()).isEqualTo(1);
+    // let Dennis decide which test to take...
+    //assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(3);
   }
 
   @Test
-  public void QAMemberSizeLazy()
+  public void lazyQAMemberSize()
   {
     assertThat(QA.getMembersize()).isEqualTo(3);
   }
 
   @Test
-  public void QARowCount()
-  {
-    assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(3);
-  }
-
-  @Test
-  public void QAMemberSizeLazyAccess()
+  public void findWhereOnLazyValue()
   {
     assertThat(dataSet.teamsTable.findWhere.membersize(3).getTitle()).isEqualTo("Quality Assurance");
   }
 
   @Test
-  public void getDennisLastName()
+  public void refPersonLastName()
   {
     assertThat(KAULBERSCH.getName()).isEqualTo("Kaulbersch");
   }
 
   @Test
-  public void getTMTitle()
+  public void refJobTitle()
   {
     assertThat(TM.getTitle()).isEqualTo("Team Manager");
   }
 
   @Test
-  public void getTableRowCount()
+  public void tableRowCount()
   {
     assertThat(dataSet.personsTable.getRowCount()).isEqualTo(3);
   }
   
   @Test
-  public void testForEach()
+  public void forEach()
   {
     // linked list because other list would be immutable
     final List<String> names = new LinkedList<String>(Arrays.asList(new String[] { "Christian", "Dennis", "Julien" })); 
@@ -102,7 +96,6 @@ public class DataSetJavaAPITest
       @Override
       public void call(RowBuilder_Persons value)
       {
-        System.out.println("removing " + value.getFirstName());
         names.remove(value.getFirstName());
       }
 
@@ -111,7 +104,7 @@ public class DataSetJavaAPITest
   }
 
   @Test
-  public void testFilter()
+  public void findWithFilter()
   {
     final Filter<RowBuilder_Persons> LEN_FILTER = new Filter<RowBuilder_Persons>() 
         {
@@ -128,19 +121,19 @@ public class DataSetJavaAPITest
   }
 
   @Test
-  public void testExistingFlag()
+  public void queryExistingFlag()
   {
     assertThat(JobsTable.getColumnMetaData("title").hasFlag("any_custom_flag")).isEqualTo(true);
   }
 
   @Test
-  public void testMissingFlag()
+  public void queryMissingFlag()
   {
     assertThat(JobsTable.getColumnMetaData("title").hasFlag("no_custom_flag")).isEqualTo(false);
   }
   
   @Test
-  public void testInsertRow()
+  public void tableInsertRow()
   {
     // execute
     dataSet.personsTable.insertRow() //
@@ -154,7 +147,7 @@ public class DataSetJavaAPITest
   }
   
   @Test
-  public void testDeleteRow()
+  public void tableDeleteRow()
   {
     // execute
     dataSet.personsTable.findWhere.name(KAULBERSCH).delete();
@@ -164,7 +157,7 @@ public class DataSetJavaAPITest
   }
   
   @Test
-  public void testFindWhereWithNonExistingArgument()
+  public void findWhereWithNonExistingArgument()
   {
     // prepare
     exception.expect(RuntimeException.class);
@@ -175,7 +168,7 @@ public class DataSetJavaAPITest
   }
   
   @Test
-  public void testGetWhereWithNonExistingArgument()
+  public void getWhereWithNonExistingArgument()
   {
     // execute
     dataSet.personsTable.getWhere.name("Majors");
