@@ -1,9 +1,6 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.TM;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -69,13 +66,13 @@ public class DataSetJavaAPITest
   }
 
   @Test
-  public void refPersonLastName()
+  public void personRefLastName()
   {
     assertThat(KAULBERSCH.getName()).isEqualTo("Kaulbersch");
   }
 
   @Test
-  public void refJobTitle()
+  public void jobRefTitle()
   {
     assertThat(TM.getTitle()).isEqualTo("Team Manager");
   }
