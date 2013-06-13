@@ -19,6 +19,7 @@ import com.seitenbau.testing.personmanager.*
 import com.seitenbau.testing.util.Future;
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
+import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet
 import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
 import com.seitenbau.testing.dbunit.model.JobsRef;
@@ -71,6 +72,36 @@ class GroovyDatabaseDataSetTest {
 
     // verify
     assertThat(persons).isEqualTo(expected)
+  }
+  
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet)
+  void findPersonsForTeam() {
+    Team team = new Team()
+    team.setId(QA.id)
+    team.setTitle(QA.title)
+    team.setDescription(QA.description)
+    team.setMembersize(QA.membersize)
+    // execute
+    def persons = sut.findPersons(team)
+
+    // verify
+    assertThat(persons).hasSize(dataSet.personsTable.getRowCount())
+  }
+  
+  @Test
+  @DatabaseSetup(prepare = ExtendedDemoGroovyDataSet)
+  void findPersonsForTeamInExtendedDataSet() {
+    Team team = new Team()
+    team.setId(QA.id)
+    team.setTitle(QA.title)
+    team.setDescription(QA.description)
+    team.setMembersize(QA.membersize)
+    // execute
+    def persons = sut.findPersons(team)
+
+    // verify
+    assertThat(persons).hasSize(dataSet.personsTable.getRowCount())
   }
 
   @Test

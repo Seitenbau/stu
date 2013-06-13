@@ -1,6 +1,10 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.HR;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SAT;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -87,6 +91,45 @@ public class GroovyDataSetDatabaseTest
   
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void findAllPersonsByTeam() throws Exception
+  {
+    // prepare
+    Team team = new Team();
+    team.setId(QA.getId());
+    team.setTitle(QA.getTitle());
+    team.setDescription(QA.getDescription());
+    team.setMembersize(QA.getMembersize());
+    
+    // execute
+    List<Person> result = sut.findPersons(team);
+
+    // verify
+    assertThat(result).hasSize(3);
+    dbTester.assertDataBase(dataSet);
+  }
+
+  @Test
+  @DatabaseSetup(prepare = ExtendedDemoGroovyDataSet.class)
+  public void findAllPersonsByTeamForExtendedDataset() throws Exception
+  {
+    // prepare
+    Team team = new Team();
+    team.setId(QA.getId());
+    team.setTitle(QA.getTitle());
+    team.setDescription(QA.getDescription());
+    team.setMembersize(QA.getMembersize());
+    
+    // execute
+    List<Person> result = sut.findPersons(team);
+
+    // verify
+    assertThat(result).hasSize(4);
+    dbTester.assertDataBase(dataSet);
+  }
+
+  
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void addPerson() throws Exception {
     // prepare
     Person person = new Person();
@@ -143,8 +186,7 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBase(dataSet);
   }
   
-  @Ignore // TODO Exception when removing is not thrown on every machine
-  @Test(expected=DataIntegrityViolationException.class)
+  @Test
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
   public void removePersonThatDoesNotExist() throws Exception {
     // prepare
@@ -157,9 +199,6 @@ public class GroovyDataSetDatabaseTest
 
     // execute
     sut.removePerson(person);
-    
-    // verify
-    Fail.fail();
   }
   
   @Test
