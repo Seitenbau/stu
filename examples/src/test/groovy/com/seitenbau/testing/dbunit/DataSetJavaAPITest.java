@@ -49,8 +49,7 @@ public class DataSetJavaAPITest
   public void findWhereRowCount()
   {
     assertThat(dataSet.personJobTable.findWhere.jobId(SWD).getRowCount()).isEqualTo(1);
-    // let Dennis decide which test to take...
-    //assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(3);
+    assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(3);
   }
 
   @Test
