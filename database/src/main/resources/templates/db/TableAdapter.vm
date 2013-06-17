@@ -223,6 +223,17 @@ public class ${clsAdapter} {
   {
     return _table.deleteAssociation(${tab2.javaNameFirstLower}Ref, ${tab1.javaNameFirstLower}Ref);
   }
+  
+  public ${clsRowbuilder} deleteAllAssociations(${tab1.javaName}Ref ref)
+  {
+    return _table.deleteAllAssociations(ref);
+  }
+
+  public ${clsRowbuilder} deleteAllAssociations(${tab2.javaName}Ref ref)
+  {
+    return _table.deleteAllAssociations(ref);
+  }
+  
 #end
 
   /**

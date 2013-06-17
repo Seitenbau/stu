@@ -182,7 +182,7 @@ public class GroovyDataSetDatabaseTest
 
     // verify
     dataSet.personsTable.deleteRow(KAULBERSCH);
-    dataSet.personJobTable.deleteAssociation(KAULBERSCH, SWD);
+    dataSet.personJobTable.deleteAllAssociations(KAULBERSCH);
     dbTester.assertDataBase(dataSet);
   }
 

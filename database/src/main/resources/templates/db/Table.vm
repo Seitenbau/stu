@@ -947,6 +947,34 @@ public class ${tableClass} implements ITable
   {
     return deleteAssociation(${tab1.javaNameFirstLower}Ref, ${tab2.javaNameFirstLower}Ref);
   }
+
+  public ${rowbuilder} deleteAllAssociations(${tab1.javaName}Ref ref)
+  {
+    for (${rowbuilder} row : rows) 
+    {
+      if (row.get${col1.javaName}() == ref.get${col1.reference.column.javaName}())
+      {
+        rows.remove(row);
+        return row;
+      }
+    }
+    
+    throw new RuntimeException("No row found with specified IDs");
+  }
+
+  public ${rowbuilder} deleteAllAssociations(${tab2.javaName}Ref ref)
+  {
+    for (${rowbuilder} row : rows)
+    {
+      if (row.get${col2.javaName}() == ref.get${col2.reference.column.javaName}())
+      {
+        rows.remove(row);
+        return row;
+      }
+    }
+    
+    throw new RuntimeException("No row found with specified IDs");
+  }
 #end
 
   /**
