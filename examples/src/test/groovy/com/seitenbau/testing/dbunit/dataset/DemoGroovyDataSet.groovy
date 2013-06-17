@@ -31,9 +31,9 @@ class DemoGroovyDataSet extends PersonDatabaseBuilder
   
   def relations() {
     QA.hasMembers(KAULBERSCH, GUITTON, BARANOWSKI)
-    KAULBERSCH.performs(SWD)
-    GUITTON.performs(SWT)
-    BARANOWSKI.performs(TM)
+    KAULBERSCH.worksAs(SWD)
+    GUITTON.worksAs(SWT)
+    BARANOWSKI.worksAs(TM)
   }
   
   def "QA Size"() {

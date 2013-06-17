@@ -53,7 +53,7 @@ public class PersonDatabaseModel extends DatabaseModel
       .description("The table that holds relations of persons to jobs")
       .column("person_id", DataType.BIGINT)
         .references(persons)
-          .remote("performs")
+          .remote("worksAs")
       .column("job_id", DataType.BIGINT)
         .references(jobs)
           .remote("performedBy")
