@@ -906,9 +906,17 @@ public class ${tableClass} implements ITable
     rows.remove(rowBuilder);
     return rowBuilder;
   }
-  
+
   /**
-   * Remove a row from the builder
+   * Remove a row from the data set
+   */ 
+  public ${rowbuilder} deleteRow($clsRef ref)
+  {
+    return deleteRow(ref.getBuilder(_dataSet));
+  }
+
+  /**
+   * Remove a row from the data set
    */ 
   public ${rowbuilder} deleteRow(${rowbuilder} rowToDelete)
   {

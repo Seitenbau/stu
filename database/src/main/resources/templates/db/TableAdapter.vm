@@ -195,6 +195,14 @@ public class ${clsAdapter} {
   }
   
   /**
+   * Remove a row from the data set
+   */ 
+  public ${clsRowbuilder} deleteRow($clsRef ref)
+  {
+    return _table.deleteRow(ref);
+  }
+  
+  /**
    * Remove a row from the builder
    * @return the deleted row itself
    */ 

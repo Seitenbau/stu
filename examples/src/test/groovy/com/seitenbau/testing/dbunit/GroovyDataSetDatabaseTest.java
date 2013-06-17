@@ -46,9 +46,9 @@ public class GroovyDataSetDatabaseTest
 
   @Autowired
   DataSource dataSource;
-  
+
   @Rule
-  public DatabaseTesterRule dbTester = 
+  public DatabaseTesterRule dbTester =
      new DatabaseTesterRule(new Future<DataSource>(){
        @Override
        public DataSource getFuture()
@@ -59,10 +59,10 @@ public class GroovyDataSetDatabaseTest
 
   @Autowired
   PersonService sut;
-  
+
   @InjectDataSet
   PersonDatabaseBuilder dataSet;
-  
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void findPersons() throws Exception
@@ -81,14 +81,14 @@ public class GroovyDataSetDatabaseTest
   {
     // prepare
     List<Person> expected = new LinkedList<Person>();
-    
+
     // execute
     List<Person> persons = sut.findPersons();
 
     // verify
     assertThat(persons).isEqualTo(expected);
   }
-  
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void findAllPersonsByTeam() throws Exception
@@ -99,7 +99,7 @@ public class GroovyDataSetDatabaseTest
     team.setTitle(QA.getTitle());
     team.setDescription(QA.getDescription());
     team.setMembersize(QA.getMembersize());
-    
+
     // execute
     List<Person> result = sut.findPersons(team);
 
@@ -118,7 +118,7 @@ public class GroovyDataSetDatabaseTest
     team.setTitle(QA.getTitle());
     team.setDescription(QA.getDescription());
     team.setMembersize(QA.getMembersize());
-    
+
     // execute
     List<Person> result = sut.findPersons(team);
 
@@ -127,7 +127,7 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBase(dataSet);
   }
 
-  
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void addPerson() throws Exception {
@@ -141,21 +141,21 @@ public class GroovyDataSetDatabaseTest
 
     // execute
     Person newPerson = sut.addPerson(person);
-    
+
     // verify
     dataSet.personsTable.insertRow()
       .setId(person.getId())
       .setFirstName("Nikolaus")
       .setName("Moll")
       .setTeamId(QA);
-    
+
     dataSet.personJobTable.insertRow()
       .setJobId(jobs.get(0).getId())
       .setPersonId(newPerson.getId());
 
     dbTester.assertDataBase(dataSet);
   }
-  
+
   private List<Job> createJob(JobsRef jobsRef)
   {
     List<Job> jobs = new ArrayList<Job>();
@@ -179,13 +179,13 @@ public class GroovyDataSetDatabaseTest
 
     // execute
     sut.removePerson(person);
-    
+
     // verify
-    dataSet.personsTable.findWhere.id(KAULBERSCH).delete();
+    dataSet.personsTable.deleteRow(KAULBERSCH);
     dataSet.personJobTable.deleteAssociation(KAULBERSCH, SWD);
     dbTester.assertDataBase(dataSet);
   }
-  
+
   @Test
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
   public void removePersonThatDoesNotExist() throws Exception {
@@ -200,7 +200,7 @@ public class GroovyDataSetDatabaseTest
     // execute
     sut.removePerson(person);
   }
-  
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void findAllJobs() throws Exception
@@ -242,19 +242,19 @@ public class GroovyDataSetDatabaseTest
     job.setTitle(SAT.getTitle());
     job.setDescription(SAT.getDescription());
     job.setId(SAT.getId());
-    
+
     if (dataSet.jobsTable.getRowCount() != 4) {
       throw new RuntimeException("DataSet defect");
     }
 
     // execute
     sut.removeJob(job);
-    
+
     // verify
-    dataSet.jobsTable.findWhere.id(SAT).delete();
+    dataSet.jobsTable.deleteRow(SAT);
     dbTester.assertDataBase(dataSet);
   }
-  
+
   @Ignore // TODO Exception when removing is not thrown on every machine
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
@@ -265,14 +265,14 @@ public class GroovyDataSetDatabaseTest
     job.setDescription(SWD.getDescription());
     job.setTitle(SWD.getTitle());
     job.setId(SWD.getId());
-    
+
     // execute
     sut.removeJob(job);
 
     // verify
     Fail.fail();
   }
-  
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void findAllTeams() throws Exception
@@ -316,15 +316,15 @@ public class GroovyDataSetDatabaseTest
     team.setDescription(HR.getDescription());
     team.setMembersize(HR.getMembersize());
     team.setId(HR.getId());
-    
+
     // execute
     sut.removeTeam(team);
 
     // verify
-    dataSet.teamsTable.findWhere.id(HR).delete();
+    dataSet.teamsTable.deleteRow(HR);
     dbTester.assertDataBase(dataSet);
   }
-  
+
   @Ignore // TODO Exception when removing is not thrown on every machine
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
@@ -336,12 +336,12 @@ public class GroovyDataSetDatabaseTest
     team.setDescription(QA.getDescription());
     team.setMembersize(QA.getMembersize());
     team.setId(QA.getId());
-   
+
     // execute
     sut.removeTeam(team);
 
     // verify
     Fail.fail();
   }
-  
+
 }

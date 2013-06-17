@@ -3,10 +3,10 @@ package com.seitenbau.testing.dbunit.groovy
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 import static org.fest.assertions.Assertions.*
 
-import javax.sql.DataSource;
+import javax.sql.DataSource
 
 import org.fest.assertions.Fail
-import org.junit.Ignore;
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,18 +15,16 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
-import com.seitenbau.testing.personmanager.*
-import com.seitenbau.testing.util.Future;
-
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
-import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet
-import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
-import com.seitenbau.testing.dbunit.model.JobsRef;
+import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet
+import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset
 import com.seitenbau.testing.dbunit.model.PersonDatabaseBuilder
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule
 import com.seitenbau.testing.dbunit.rule.InjectDataSet
+import com.seitenbau.testing.personmanager.*
+import com.seitenbau.testing.util.Future
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=[PersonManagerContext])
@@ -34,7 +32,7 @@ class GroovyDatabaseDataSetTest {
 
   @Autowired
   DataSource dataSource;
-  
+
   @Rule
   public DatabaseTesterRule dbTester =
     new DatabaseTesterRule(new Future<DataSource>(){
@@ -73,7 +71,7 @@ class GroovyDatabaseDataSetTest {
     // verify
     assertThat(persons).isEqualTo(expected)
   }
-  
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void findPersonsForTeam() {
@@ -88,7 +86,7 @@ class GroovyDatabaseDataSetTest {
     // verify
     assertThat(persons).hasSize(dataSet.personsTable.getRowCount())
   }
-  
+
   @Test
   @DatabaseSetup(prepare = ExtendedDemoGroovyDataSet)
   void findPersonsForTeamInExtendedDataSet() {
@@ -114,7 +112,7 @@ class GroovyDatabaseDataSetTest {
     job.title = SWD.title
     job.description = SWD.description
     jobs.add(job)
-    
+
     Person person = new Person()
     person.setFirstName("Nikolaus")
     person.setName("Moll")
@@ -131,12 +129,12 @@ class GroovyDatabaseDataSetTest {
       savedPerson.id | "Nikolaus" | "Moll" | QA
 
     }
-    
+
     dataSet.personJobTable.rows {
-      
+
       person_id       | job_id
       savedPerson.id  | SWD.id
-      
+
     }
     dbTester.assertDataBase(dataSet)
   }
@@ -152,7 +150,7 @@ class GroovyDatabaseDataSetTest {
     job.title = SWD.title
     job.description = SWD.description
     jobs.add(job)
-    
+
     Person person = new Person()
     person.setFirstName("Dennis")
     person.setName("Kaulbersch")
@@ -164,7 +162,7 @@ class GroovyDatabaseDataSetTest {
     sut.removePerson(person)
 
     // verify
-    dataSet.personsTable.findWhere.id(KAULBERSCH).delete()
+    dataSet.personsTable.deleteRow(KAULBERSCH)
     dataSet.personJobTable.deleteAssociation(KAULBERSCH, SWD)
     dbTester.assertDataBase(dataSet)
   }
@@ -230,7 +228,7 @@ class GroovyDatabaseDataSetTest {
     job.setTitle("Software Architect")
     job.setDescription("Developing software architecture")
     job.setId(4)
-    
+
     // execute
     sut.removeJob(job)
 
@@ -239,10 +237,10 @@ class GroovyDatabaseDataSetTest {
       REF           | id  | title                   | description
       SAT           | 4   | "Software Architect"    | "Developing software architecture"
     }
-    dataSet.jobsTable.findWhere.id(SAT).delete()
+    dataSet.jobsTable.deleteRow(SAT)
     dbTester.assertDataBase(dataSet)
   }
-  
+
   @Ignore // TODO Exception when removing is not thrown on every machine
   @Test(expected=DataIntegrityViolationException)
   @DatabaseSetup(prepare = DemoGroovyDataSet)
@@ -253,14 +251,14 @@ class GroovyDatabaseDataSetTest {
     job.setDescription(SWD.description)
     job.setTitle(SWD.title)
     job.setId(SWD.id)
-    
+
     // execute
     sut.removeJob(job)
 
     // verify
     Fail.fail()
   }
-  
+
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void findAllTeams()
@@ -303,7 +301,7 @@ class GroovyDatabaseDataSetTest {
     team.setDescription("Make up workforce of an organzation")
     team.setMembersize(0)
     team.setId(2)
-    
+
     // execute
     sut.removeTeam(team)
 
@@ -312,10 +310,10 @@ class GroovyDatabaseDataSetTest {
       REF           | id  | title                   | description                           | membersize
       HR            | 2   | "Human Resources"       | "Make up workforce of an organzation" | 0
     }
-    dataSet.teamsTable.findWhere.id(HR.id).delete()
+    dataSet.teamsTable.deleteRow(HR)
     dbTester.assertDataBase(dataSet)
   }
-  
+
   @Ignore // TODO Exception when removing is not thrown on every machine
   @Test(expected=DataIntegrityViolationException)
   @DatabaseSetup(prepare = DemoGroovyDataSet)
@@ -327,7 +325,7 @@ class GroovyDatabaseDataSetTest {
     team.setDescription(QA.description)
     team.setMembersize(QA.membersize)
     team.setId(QA.id)
-   
+
     // execute
     sut.removeTeam(team)
 

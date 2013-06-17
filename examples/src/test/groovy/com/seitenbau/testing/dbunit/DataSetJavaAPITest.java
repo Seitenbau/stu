@@ -1,6 +1,9 @@
 package com.seitenbau.testing.dbunit;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.TM;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -19,14 +22,14 @@ import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
 
-public class DataSetJavaAPITest 
+public class DataSetJavaAPITest
 {
-  
+
   @Rule
   public ExpectedException exception = ExpectedException.none();
-  
+
   private final DemoGroovyDataSet dataSet = new DemoGroovyDataSet();
-  
+
   @Test
   public void findWhereSWD()
   {
@@ -81,12 +84,12 @@ public class DataSetJavaAPITest
   {
     assertThat(dataSet.personsTable.getRowCount()).isEqualTo(3);
   }
-  
+
   @Test
   public void forEach()
   {
     // linked list because other list would be immutable
-    final List<String> names = new LinkedList<String>(Arrays.asList(new String[] { "Christian", "Dennis", "Julien" })); 
+    final List<String> names = new LinkedList<String>(Arrays.asList(new String[] { "Christian", "Dennis", "Julien" }));
     dataSet.personsTable.foreach(new Action<RowBuilder_Persons>() {
 
       @Override
@@ -102,7 +105,7 @@ public class DataSetJavaAPITest
   @Test
   public void findWithFilter()
   {
-    final Filter<RowBuilder_Persons> LEN_FILTER = new Filter<RowBuilder_Persons>() 
+    final Filter<RowBuilder_Persons> LEN_FILTER = new Filter<RowBuilder_Persons>()
         {
 
           @Override
@@ -110,9 +113,9 @@ public class DataSetJavaAPITest
           {
             return (value.getFirstName().length() == 6);
           }
-          
+
         };
-        
+
     assertThat(dataSet.personsTable.find(LEN_FILTER).getRowCount()).isEqualTo(2);
   }
 
@@ -127,7 +130,7 @@ public class DataSetJavaAPITest
   {
     assertThat(JobsTable.getColumnMetaData("title").hasFlag("no_custom_flag")).isEqualTo(false);
   }
-  
+
   @Test
   public void tableInsertRow()
   {
@@ -137,21 +140,21 @@ public class DataSetJavaAPITest
       .setFirstName("Michael")
       .setName("Knight")
       .setTeamId(QA);
-    
+
     // verify
     assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(4);
   }
-  
+
   @Test
   public void tableDeleteRow()
   {
     // execute
-    dataSet.personsTable.findWhere.name(KAULBERSCH).delete();
-    
+    dataSet.personsTable.deleteRow(KAULBERSCH);
+
     // verify
     assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(2);
   }
-  
+
   @Test
   public void findWhereWithNonExistingArgument()
   {
@@ -162,7 +165,7 @@ public class DataSetJavaAPITest
     //verify
     Fail.fail();
   }
-  
+
   @Test
   public void getWhereWithNonExistingArgument()
   {
