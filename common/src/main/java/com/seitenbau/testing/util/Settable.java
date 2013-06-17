@@ -1,26 +1,35 @@
 package com.seitenbau.testing.util;
 
-public class Settable<T> {
-	T _value;
-	boolean _wasSet;
+public class Settable<T>
+{
 
-	public Settable() {
-	}
+  T _value;
 
-	public Settable(T value) {
-		setValue(value);
-	}
+  boolean _wasSet;
 
-	public void setValue(T value) {
-		_wasSet = true;
-		_value = value;
-	}
+  public Settable()
+  {
+  }
 
-	public boolean wasSet() {
-		return _wasSet;
-	}
+  public Settable(T value)
+  {
+    setValue(value);
+  }
 
-	public T getValue() {
-		return _value;
-	}
+  public void setValue(T value)
+  {
+    _wasSet = true;
+    _value = value;
+  }
+
+  public boolean wasSet()
+  {
+    return _wasSet;
+  }
+
+  public T getValue()
+  {
+    return _value;
+  }
+
 }

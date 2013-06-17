@@ -11,7 +11,7 @@ public class OfTypeString extends AbstractRangeDescription<String>
 {
   private boolean _nullIsAValue = true;
 
-  protected static final String NULL_STRING = (String) null;
+  protected static final String NULL_STRING = null;
 
   protected String _emptyString = "";
 
@@ -22,13 +22,13 @@ public class OfTypeString extends AbstractRangeDescription<String>
   private Boolean _WsIsAemptyString;
 
   private Boolean _emptyStringCheck;
-  
+
   private Boolean _trim = false;
 
   /**
    * If {@code true}, {@code null} is a possible return value
    * (default).
-   * 
+   *
    * If {@code false}, {@code null} is not returned in any of the
    * lists.
    */
@@ -62,13 +62,14 @@ public class OfTypeString extends AbstractRangeDescription<String>
     return this;
   }
 
+  @Override
   protected List<Representant<String>> getRepresentatives(RepresentantType type)
   {
     boolean nullIsAValue = safe(_nullIsAValue, true);
     RepresentativeList<String> rep = new RepresentativeList<String>(type);
     String fill = DEFAULT_FILL_STRING;
     @SuppressWarnings("unused")
-	boolean wsEqualsEmpty = safe(_WsIsAemptyString, false);
+    boolean wsEqualsEmpty = safe(_WsIsAemptyString, false);
     boolean emptyStringCheck = safe(_emptyStringCheck, true);
     boolean trim = safe(_trim, false);
 
@@ -129,7 +130,7 @@ public class OfTypeString extends AbstractRangeDescription<String>
   {
     _emptyStringCheck = false;
   }
-  
+
   public OfTypeString trim(boolean trim)
   {
     this._trim = trim;

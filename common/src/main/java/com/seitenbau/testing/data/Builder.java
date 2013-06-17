@@ -14,7 +14,7 @@ import com.seitenbau.testing.data.impl.NameAndSpecGlue;
 
 /**
  * Here a Sample Code:
- * 
+ *
  * <pre>
  * &#064;RunWith(Parameterized.class)
  * public class SampleBasarTest
@@ -39,32 +39,32 @@ import com.seitenbau.testing.data.impl.NameAndSpecGlue;
  *       });
  *     }
  *   });
- * 
+ *
  *   Basar _basar;
- * 
+ *
  *   public SampleBasarTest(Basar bazar)
  *   {
  *     _basar = bazar;
  *   }
- * 
+ *
  *   &#064;Parameters
  *   public static Collection&lt;Object[]&gt; getTestData()
  *   {
  *     return builder.getFailureCases();
  *   }
- * 
+ *
  *   &#064;Test
  *   public void bazarSaveTest() throws Exception
  *   {
  *     System.out.println(_basar);
  *   }
- * 
+ *
  *   static public class Basar
  *   {
  *     Integer nummer;
- * 
+ *
  *     String preis;
- * 
+ *
  *     String desc;
  *   }
  * }
@@ -73,7 +73,7 @@ import com.seitenbau.testing.data.impl.NameAndSpecGlue;
 public class Builder<T>
 {
 
-  private Specs _specs;
+  private final Specs _specs;
 
   public Builder(Specs specification)
   {
@@ -194,7 +194,7 @@ public class Builder<T>
       if (invalid != null)
       {
         @SuppressWarnings("unchecked")
-		List<Representant<?>> casted = (List<Representant<?>>) invalid;
+        List<Representant<?>> casted = (List<Representant<?>>) invalid;
         for (Representant<?> value : casted)
         {
           List<TestPropertyValue> invalidRepresentants = buildInvalidObject(validSpecs,
@@ -224,7 +224,7 @@ public class Builder<T>
         if (sucessRepresentations != null && sucessRepresentations.size() > 0)
         {
           @SuppressWarnings("unchecked")
-		List<Representant<?>> casted = (List<Representant<?>>) sucessRepresentations;
+          List<Representant<?>> casted = (List<Representant<?>>) sucessRepresentations;
           Representant<?> rep = getRepresentant(casted, 0);
           testData.add(new TestPropertyValue(name, invalidSpec.getMarker(), rep));
         }

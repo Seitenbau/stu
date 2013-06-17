@@ -7,11 +7,13 @@ public class TicketAsserts
 
     class TargetInvokeAssertion implements InvokeAssertion
     {
+        @Override
         public <T> T invoke(T obj)
         {
             return obj;
         }
 
+        @Override
         public void invoke(Verifier verifier) throws Exception
         {
             verifier.verify();
@@ -20,12 +22,14 @@ public class TicketAsserts
 
     class MockInvokeAssertion implements InvokeAssertion
     {
+        @Override
         @SuppressWarnings("unchecked")
-		public <T> T invoke(T obj)
+        public <T> T invoke(T obj)
         {
             return (T) EasyMock.createNiceMock(obj.getClass());
         }
 
+        @Override
         public void invoke(Verifier verifier) throws Exception
         {
         }

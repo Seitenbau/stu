@@ -14,7 +14,7 @@ import org.junit.runners.model.Statement;
  */
 public class CompositeRule implements MethodRule
 {
-  private List<MethodRule> _rules = new ArrayList<MethodRule>();
+  private final List<MethodRule> _rules = new ArrayList<MethodRule>();
 
   /**
    * Add a rule to get executed in order
@@ -25,6 +25,7 @@ public class CompositeRule implements MethodRule
     return this;
   }
 
+  @Override
   public Statement apply(Statement base, FrameworkMethod method, Object target)
   {
     Statement statement = base;
@@ -46,11 +47,15 @@ public class CompositeRule implements MethodRule
    * Add a rule to get executed in order.</br>
    * Workaround for : https://github.com/KentBeck/junit/issues/383
    */
-	public CompositeRule add(final org.junit.rules.TestRule rule) {
-		return add(new MethodRule() {
-			public Statement apply(Statement base, FrameworkMethod method, Object target) {
-				return rule.apply(base, Description.EMPTY);
-			}
-		});
-	}
+  public CompositeRule add(final org.junit.rules.TestRule rule)
+  {
+    return add(new MethodRule() {
+      @Override
+      public Statement apply(Statement base, FrameworkMethod method, Object target)
+      {
+        return rule.apply(base, Description.EMPTY);
+      }
+    });
+  }
+
 }

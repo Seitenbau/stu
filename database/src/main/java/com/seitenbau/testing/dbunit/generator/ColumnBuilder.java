@@ -71,7 +71,8 @@ public class ColumnBuilder
 
   public ColumnBuilder autoInvokeNext()
   {
-    return setFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
+    setFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
+    return addNextMethod();
   }
 
   /**
@@ -83,7 +84,7 @@ public class ColumnBuilder
   public ColumnBuilder autoIncrement()
   {
     setFlag(ColumnMetaData.AUTO_INCREMENT);
-    return setFlag(ColumnMetaData.ADD_NEXT_METHOD);
+    return addNextMethod();
   }
 
   /**

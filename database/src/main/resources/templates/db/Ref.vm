@@ -86,7 +86,7 @@ public class ${clsRef} extends DatabaseReference
     for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
     {
       ${refClsRef} ref = it.next();
-      it.remove();	// remove iterator because if it will not resolve now, it will never
+      it.remove();  // remove iterator because if it will not resolve now, it will never
 
       ${model.package}.${refTable.javaName}Table.RowBuilder_${refTable.javaName} otherBuilder = ref.getBuilder(dataSet);
       if (otherBuilder == null) 

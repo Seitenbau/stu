@@ -4,9 +4,9 @@ import com.seitenbau.testing.data.detail.Representant;
 
 public class RepresentantImpl<T> implements Representant<T>
 {
-  private RepresentantType _type;
+  private final RepresentantType _type;
 
-  private T _value;
+  private final T _value;
 
   public RepresentantImpl(RepresentantType type, T value)
   {
@@ -14,11 +14,13 @@ public class RepresentantImpl<T> implements Representant<T>
     _value = value;
   }
 
+  @Override
   public T getValue()
   {
     return _value;
   }
 
+  @Override
   public RepresentantType getType()
   {
     return _type;
@@ -56,7 +58,7 @@ public class RepresentantImpl<T> implements Representant<T>
       return false;
     }
     @SuppressWarnings("rawtypes")
-	RepresentantImpl other = (RepresentantImpl) obj;
+    RepresentantImpl other = (RepresentantImpl) obj;
     if (_type != other._type)
     {
       return false;
