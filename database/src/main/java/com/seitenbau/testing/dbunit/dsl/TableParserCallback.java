@@ -74,8 +74,8 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
     else if (value instanceof Closure)
     {
       // call closure values after row has been built and registered
-      LazyValueClosure lazyValue = new LazyValueClosure((Closure<?>)value);
-      column.setLazyValue(rowbuilder, lazyValue);
+      FutureClosure futureValue = new FutureClosure((Closure<?>)value);
+      column.setFutureValue(rowbuilder, futureValue);
     }
     else
     {

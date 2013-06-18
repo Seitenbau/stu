@@ -2,6 +2,7 @@ package com.seitenbau.testing.dbunit.dsl;
 
 import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.generator.DataType;
+import com.seitenbau.testing.util.Future;
 
 /**
  * Base class for ColumnBindings
@@ -28,7 +29,7 @@ public abstract class ColumnBinding<R, G>
    * @param value The lazy value to be set
    * @throws RuntimeException if the column does not support lazy values
    */
-  public void setLazyValue(R row, LazyValue value)
+  public void setFutureValue(R row, Future<Object> value)
   {
     throw new RuntimeException("Setting a a lazy value is not supported for this column");
   }

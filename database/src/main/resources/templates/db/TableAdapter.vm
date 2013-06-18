@@ -21,7 +21,6 @@ import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
-import com.seitenbau.testing.dbunit.dsl.LazyValue;
 import com.seitenbau.testing.dbunit.dsl.NoValue;
 import com.seitenbau.testing.dbunit.dsl.RefColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
@@ -35,6 +34,7 @@ import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 #end
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
+import com.seitenbau.testing.util.Future;
 
 import groovy.lang.Closure;
 #if( !${model.isAssociativeTable()})
@@ -390,9 +390,9 @@ public class ${clsAdapter} {
 #else
 
       @Override
-      public void setLazyValue(${clsRowbuilder} row, LazyValue lazyValue)
+      public void setFutureValue(${clsRowbuilder} row, Future<Object> futureValue)
       {
-        row.set${col.javaName}Raw(lazyValue);
+        row.set${col.javaName}Raw(futureValue);
       }
 #end
       

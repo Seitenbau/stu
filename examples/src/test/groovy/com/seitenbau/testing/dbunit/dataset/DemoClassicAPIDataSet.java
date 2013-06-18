@@ -1,9 +1,15 @@
 package com.seitenbau.testing.dbunit.dataset;
 
-import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.BARANOWSKI;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.GUITTON;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.KAULBERSCH;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.QA;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWT;
+import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.TM;
 
-import com.seitenbau.testing.dbunit.dsl.LazyValue;
 import com.seitenbau.testing.dbunit.model.PersonDatabaseDataSet;
+import com.seitenbau.testing.util.Future;
 
 public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
 {
@@ -18,14 +24,14 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
         .bind(QA)
         .setTitle("Quality Assurance")
         .setDescription("Verifies software")
-        .setMembersize(new LazyValue() {
+        .setMembersize(new Future<Object>() {
 
           @Override
-          public Object getValue()
+          public Object getFuture()
           {
             return table_Persons.findWhere.teamId(QA).getRowCount();
           }
-          
+
         });
 
     table_Jobs
@@ -55,7 +61,7 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
         .bind(BARANOWSKI)
         .setFirstName("Christian")
         .setName("Baranowski");
-    
+
     table_PersonJob
       .insertRow()
         .setPersonId(KAULBERSCH.getId())

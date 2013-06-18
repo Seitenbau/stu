@@ -20,7 +20,6 @@ import com.google.common.base.Optional;
 
 import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
-import com.seitenbau.testing.dbunit.dsl.LazyValue;
 #if( !${model.isAssociativeTable()} )
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
@@ -29,6 +28,7 @@ import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaDataBuilder;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
+import com.seitenbau.testing.util.Future;
 import com.seitenbau.testing.util.date.DateBuilder;
 
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ public class ${clsTable} implements ITable
 #end
 #if( !${column.isIdentifierColumn()} )
 #if( !${column.reference} )
-    T set${column.javaName}(LazyValue value);
+    T set${column.javaName}(Future<Object> value);
 #end    
 #end
     T set${column.javaName}(${column.javaType} value);
@@ -223,7 +223,7 @@ public class ${clsTable} implements ITable
 #if( !${column.isIdentifierColumn()} )
 #if( !${column.reference} )
 
-    public ${clsRowbuilder} set${column.javaName}(LazyValue value)
+    public ${clsRowbuilder} set${column.javaName}(Future<Object> value)
     {
       data[${foreach.index}] = value;
       return this;
@@ -272,11 +272,12 @@ public class ${clsTable} implements ITable
       Object value = data[$foreach.index];
 #if( !(${column.reference}) )
 ## reference value cannot be lazy
-      if (value instanceof LazyValue)
+      if (value instanceof Future<?>)
       {
         DataSetIdentificator last = DataSetRegistry.use(table._dataSet);
-        LazyValue lazyValue = (LazyValue)value;
-        ${column.javaType} result = (${column.javaType})CastUtil.cast(lazyValue.getValue(), 
+        @SuppressWarnings("unchecked")
+        Future<Object> futureValue = (Future<Object>)value;
+        ${column.javaType} result = (${column.javaType})CastUtil.cast(futureValue.getFuture(), 
           com.seitenbau.testing.dbunit.generator.${column.type});
         DataSetRegistry.use(last);
         return result;
@@ -402,11 +403,12 @@ public class ${clsTable} implements ITable
     Object getColumnValue(int index)
     {
       Object value = data[index];
-      if (value instanceof LazyValue)
+      if (value instanceof Future<?>)
       {
         DataSetIdentificator last = DataSetRegistry.use(table._dataSet);
-        LazyValue lazyValue = (LazyValue)value;
-        Object result = lazyValue.getValue();
+        @SuppressWarnings("unchecked")
+        Future<Object> futureValue = (Future<Object>)value;
+        Object result = futureValue.getFuture();
         DataSetRegistry.use(last);
         return result;
       } 
