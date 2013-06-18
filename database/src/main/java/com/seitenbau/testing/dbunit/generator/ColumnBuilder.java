@@ -35,6 +35,10 @@ public class ColumnBuilder
     tableBuilder.addColumnBuilder(this);
   }
 
+  /**
+   * Finalizes the creation of the table.
+   * @return The created table
+   */
   public Table build()
   {
     return tableBuilder.build();
@@ -52,23 +56,46 @@ public class ColumnBuilder
         flags);
   }
 
+  /**
+   * Adds a further column to the table.
+   * @param name The database name of the column.
+   * @param dataType The column's data type.
+   * @return A builder to configure the column
+   */
   public ColumnBuilder column(String name, DataType dataType)
   {
     return new ColumnBuilder(tableBuilder, name, dataType);
   }
 
+  /**
+   * Defines how the column is spelled in the Java source code.
+   * @param javaName The column name within the Java sources
+   * @return The builder to configure the column
+   */
   public ColumnBuilder javaName(String javaName)
   {
     this.javaName = javaName;
     return this;
   }
 
+  /**
+   * Adds a description to the current column. This description is used for JavaDoc comments
+   * in the generated classed
+   * @param description The column description
+   * @return The builder to configure the column
+   */
   public ColumnBuilder description(String description)
   {
     this.description = description;
     return this;
   }
 
+  /**
+   * The the corresponding {@code nextValue()} method is automatically
+   * called on insertRow. Enables the flag {@link ColumnMetaData#ADD_NEXT_METHOD} and
+   * therefore the generation of a next value method as well
+   * @return The builder to configure the column
+   */
   public ColumnBuilder autoInvokeNext()
   {
     setFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
@@ -79,7 +106,9 @@ public class ColumnBuilder
    * Enables the DBUnit AutoIncrement flag. Useful e.g., if a {@link DatabaseTesterCleanAction}
    * requires the information. Enables the flag {@link ColumnMetaData#ADD_NEXT_METHOD} and
    * therefore the generation of a next value method as well.
+   * <p>
    * <b>This flag requires DbUnit 2.4.3 or later</b>
+   * @return The builder to configure the column
    */
   public ColumnBuilder autoIncrement()
   {
@@ -91,6 +120,7 @@ public class ColumnBuilder
    * Enables the generation of a next value method (depending on the column name)
    * on the RowBuilder. The next value method will use the {@link DatasetIdGenerator}
    * from the DataSetModel.
+   * @return The builder to configure the column
    *
    * // TODO NM translate comment
    * Auﬂerdem werden in der Builder Klasse des erzeugten DataSets bei einem create*() die
@@ -101,6 +131,18 @@ public class ColumnBuilder
     return setFlag(ColumnMetaData.ADD_NEXT_METHOD);
   }
 
+  /**
+   * The column value is used to identify the entity (the whole table row). Although a database
+   * primary key column is an identifier column, there is no need for an identifier column to be
+   * explicit a primary key.
+   * <p>
+   * The value of an identifier column has to be set when a row is created (manually or
+   * automatically). It cannot be changed afterwards. Use autoInvokeNext() for automatic
+   * ID value generation.
+   * An identifier column cannot contain lazy evaluated Future values.
+   *
+   * @return The builder to configure the column
+   */
   public ColumnBuilder identifierColumn()
   {
     return setFlag(ColumnMetaData.IDENTIFIER);

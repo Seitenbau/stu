@@ -18,10 +18,10 @@ public class PersonDatabaseModel extends DatabaseModel
           // .autoIncrement() // requires DBUnit 2.4.3 or later
           .autoInvokeNext() //
         .column("title", DataType.VARCHAR) //
-          .description("The job title")
-          .setFlag("any_custom_flag")
+          .description("The job title") //
+          .setFlag("any_custom_flag") //
         .column("description", DataType.VARCHAR) //
-          .description("The description of the job")
+          .description("The description of the job") //
       .build();
 
     Table teams = table("teams") //

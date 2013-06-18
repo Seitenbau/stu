@@ -149,6 +149,17 @@ public class ${clsAdapter} {
    *   <li> <strong>{@code ${col.name}}</strong>$shortname: {@code ${col.javaType}}
 #end
    * </ul>
+   * The table has to start with a header row, but there can be more
+   * headers within one block.
+   *
+   * <p>Example usage:
+   * <pre>
+   * ${names.getTableAdapterVariable($model)}.rows {
+   *   REF #foreach( $col in $model.columns )| ${col.name} #end // header 
+   *   ...
+   * }
+   * </pre>
+   *
    * @param rows The table data
    */
   public void rows(Closure<?> rows)
@@ -189,24 +200,24 @@ public class ${clsAdapter} {
    * Remove a row from the builder by the given index.
    *
    * @return the deleted row
-   */ 
+   */
   public ${clsRowbuilder} deleteRow(int index)
   {
     return _table.deleteRow(index);
   }
-  
+
   /**
    * Remove a row from the data set
-   */ 
+   */
   public ${clsRowbuilder} deleteRow($clsRef ref)
   {
     return _table.deleteRow(ref);
   }
-  
+
   /**
    * Remove a row from the builder
    * @return the deleted row itself
-   */ 
+   */
   public ${clsRowbuilder} deleteRow(${clsRowbuilder} rowToDelete)
   {
     return _table.deleteRow(rowToDelete);
@@ -280,12 +291,12 @@ public class ${clsAdapter} {
         }
       });
   }
-  
+
   public void foreach(Action<${clsRowbuilder}> action)
   {
     _table.foreach(action);
   }
-  
+
   public void foreach(Closure<?> action)
   {
     final Closure<?> localAction = action;
@@ -312,7 +323,7 @@ public class ${clsAdapter} {
     {
       return _table.getWhere;
     }
-    
+
     @Override
     public void bindToDataSet(${clsRef} reference, ${clsRowbuilder} row)
     {

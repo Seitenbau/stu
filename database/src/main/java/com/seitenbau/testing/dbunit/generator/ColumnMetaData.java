@@ -9,7 +9,9 @@ public class ColumnMetaData
 {
 
   /**
-   * The column is a primary key column
+   * The column value is used to identify the entity (the whole table row). Although a database
+   * primary key column is an identifier column, there is no need for an identifier column to be
+   * explicit a primary key.
    */
   public static final String IDENTIFIER = "identifier";
 
@@ -36,14 +38,14 @@ public class ColumnMetaData
     {
       _values.put(flag, true);
     }
-    
+
     if (requiredNextMethod(flags))
     {
       _values.put(ADD_NEXT_METHOD, true);
     }
   }
-  
-  private static boolean requiredNextMethod(Set<String> flags) 
+
+  private static boolean requiredNextMethod(Set<String> flags)
   {
     return flags.contains(AUTO_INCREMENT) || flags.contains(AUTO_INVOKE_NEXT);
   }
@@ -57,7 +59,7 @@ public class ColumnMetaData
     }
     return value;
   }
-  
+
   public Set<String> getFlags()
   {
     return Collections.unmodifiableSet(_values.keySet());

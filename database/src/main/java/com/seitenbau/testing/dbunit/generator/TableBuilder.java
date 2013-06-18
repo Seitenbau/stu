@@ -52,7 +52,7 @@ public class TableBuilder
     return this;
   }
 
-  public String getJavaName()
+  String getJavaName()
   {
     return javaName;
   }

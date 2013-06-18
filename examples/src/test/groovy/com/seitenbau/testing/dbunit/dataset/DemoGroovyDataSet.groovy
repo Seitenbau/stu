@@ -1,12 +1,13 @@
 package com.seitenbau.testing.dbunit.dataset
 
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
+
 import com.seitenbau.testing.dbunit.model.*
 
 
 class DemoGroovyDataSet extends PersonDatabaseBuilder
 {
- 
+
   def tables() {
     teamsTable.rows {
       REF         | title                 | description         | membersize
@@ -26,16 +27,16 @@ class DemoGroovyDataSet extends PersonDatabaseBuilder
       GUITTON     | "Julien"              | "Guitton"
       BARANOWSKI  | "Christian"           | "Baranowski"
     }
-    
+
   }
-  
+
   def relations() {
     QA.hasMembers(KAULBERSCH, GUITTON, BARANOWSKI)
     KAULBERSCH.worksAs(SWD)
     GUITTON.worksAs(SWT)
     BARANOWSKI.worksAs(TM)
   }
-  
+
   def "QA Size"() {
     return { personsTable.findWhere.teamId(QA).getRowCount() }
   }
