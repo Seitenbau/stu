@@ -15,7 +15,7 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
 
     table_Teams
       .insertRow()
-        .bindRef(QA)
+        .bind(QA)
         .setTitle("Quality Assurance")
         .setDescription("Verifies software")
         .setMembersize(new LazyValue() {
@@ -30,29 +30,29 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
 
     table_Jobs
       .insertRow()
-        .bindRef(SWD)
+        .bind(SWD)
         .setTitle("Software Developer")
         .setDescription("Creating software")
       .insertRow()
-        .bindRef(SWT)
+        .bind(SWT)
         .setTitle("Software Tester")
         .setDescription("Testing software")
       .insertRow()
-        .bindRef(TM)
+        .bind(TM)
         .setTitle("Team Manager")
         .setDescription("Makes the world go round");
 
     table_Persons
       .insertRow()
-        .bindRef(KAULBERSCH)
+        .bind(KAULBERSCH)
         .setFirstName("Dennis")
         .setName("Kaulbersch")
       .insertRow()
-        .bindRef(GUITTON)
+        .bind(GUITTON)
         .setFirstName("Julien")
         .setName("Guitton")
       .insertRow()
-        .bindRef(BARANOWSKI)
+        .bind(BARANOWSKI)
         .setFirstName("Christian")
         .setName("Baranowski");
     

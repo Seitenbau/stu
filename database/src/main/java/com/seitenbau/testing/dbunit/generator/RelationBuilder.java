@@ -2,7 +2,7 @@ package com.seitenbau.testing.dbunit.generator;
 
 import com.seitenbau.testing.util.CamelCase;
 
-public class ReferenceBuilder
+public class RelationBuilder
 {
   private final ColumnBuilder columnBuilder;
 
@@ -10,19 +10,19 @@ public class ReferenceBuilder
 
   private LocalReferenceBuilder local;
 
-  private RemoteReferenceBuilder remote;
+  private TargetReferenceBuilder target;
   
   private String localName;
 
   private String localDescription;
 
-  private String remoteName;
+  private String targetName;
 
-  private String remoteDescription;
+  private String targetDescription;
 
-  private Integer remoteMin;
+  private Integer targetMin;
 
-  private Integer remoteMax;
+  private Integer targetMax;
 
   
   public Column getColumn()
@@ -35,12 +35,12 @@ public class ReferenceBuilder
     return local;
   }
 
-  public RemoteReferenceBuilder getRemote()
+  public TargetReferenceBuilder getTarget()
   {
-    return remote;
+    return target;
   }
 
-  public ReferenceBuilder(ColumnBuilder columnBuilder, Column reference)
+  public RelationBuilder(ColumnBuilder columnBuilder, Column reference)
   {
     this.columnBuilder = columnBuilder;
     this.column = reference;
@@ -70,20 +70,20 @@ public class ReferenceBuilder
   private void buildReference()
   {
     String p_localName = getUsedName(localName, columnBuilder.getColumnJavaName());
-    String p_remoteName = getUsedName(remoteName, columnBuilder.getTableBuilder().getJavaName());
+    String p_targetName = getUsedName(targetName, columnBuilder.getTableBuilder().getJavaName());
     
     // Avoid null pointer for Apache Velocity
     String p_localDescription = localDescription != null ? localDescription : "";
-    String p_remoteDescription = remoteDescription != null ? remoteDescription : "";
+    String p_targetDescription = targetDescription != null ? targetDescription : "";
 
-    columnBuilder.addReference(new Reference(column, p_localName, p_localDescription, p_remoteName, p_remoteDescription,
-        remoteMin, remoteMax));
+    columnBuilder.addRelation(new Relation(column, p_localName, p_localDescription, p_targetName, p_targetDescription,
+        targetMin, targetMax));
 
   }
   
-  public ReferenceBuilder description(String description)
+  public RelationBuilder description(String description)
   {
-    remoteDescription = description;
+    targetDescription = description;
     return this;
   }
 
@@ -97,21 +97,21 @@ public class ReferenceBuilder
     return local;
   }
 
-  public RemoteReferenceBuilder remote(String name)
+  public TargetReferenceBuilder target(String name)
   {
-    if (remote != null)
+    if (target != null)
     {
       throw new IllegalArgumentException("...");
     }
-    remote = new RemoteReferenceBuilder(this, name);
-    return remote;
+    target = new TargetReferenceBuilder(this, name);
+    return target;
   }
 
   public static class LocalReferenceBuilder
   {
-    private final ReferenceBuilder parent;
+    private final RelationBuilder parent;
 
-    public LocalReferenceBuilder(ReferenceBuilder parent, String name)
+    public LocalReferenceBuilder(RelationBuilder parent, String name)
     {
       this.parent = parent;
       parent.localName = name;
@@ -123,9 +123,9 @@ public class ReferenceBuilder
       return this;
     }
 
-    public RemoteReferenceBuilder remote(String name)
+    public TargetReferenceBuilder target(String name)
     {
-      return parent.remote(name);
+      return parent.target(name);
     }
 
     public ColumnBuilder column(String name, DataType dataType)
@@ -149,32 +149,32 @@ public class ReferenceBuilder
     }
   }
 
-  public static class RemoteReferenceBuilder
+  public static class TargetReferenceBuilder
   {
-    private final ReferenceBuilder parent;
+    private final RelationBuilder parent;
 
 
-    public RemoteReferenceBuilder(ReferenceBuilder parent, final String name)
+    public TargetReferenceBuilder(RelationBuilder parent, final String name)
     {
       this.parent = parent;
-      parent.remoteName = name;
+      parent.targetName = name;
     }
 
-    public RemoteReferenceBuilder description(String description)
+    public TargetReferenceBuilder description(String description)
     {
-      parent.remoteDescription = description;
+      parent.targetDescription = description;
       return this;
     }
 
-    public RemoteReferenceBuilder min(int min)
+    public TargetReferenceBuilder min(int min)
     {
-      parent.remoteMin = min;
+      parent.targetMin = min;
       return this;
     }
 
-    public RemoteReferenceBuilder max(int max)
+    public TargetReferenceBuilder max(int max)
     {
-      parent.remoteMax = max;
+      parent.targetMax = max;
       return this;
     }
 
@@ -195,22 +195,22 @@ public class ReferenceBuilder
 
     public String getName()
     {
-      return parent.remoteName;
+      return parent.targetName;
     }
 
     public String getDescription()
     {
-      return parent.remoteDescription;
+      return parent.targetDescription;
     }
 
     public Integer getMin()
     {
-      return parent.remoteMin;
+      return parent.targetMin;
     }
 
     public Integer getMax()
     {
-      return parent.remoteMax;
+      return parent.targetMax;
     }
   }
 

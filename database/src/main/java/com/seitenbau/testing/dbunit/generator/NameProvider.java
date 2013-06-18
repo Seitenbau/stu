@@ -79,6 +79,11 @@ public class NameProvider
     return "RowCollection_" + table.getJavaName();
   }
 
+  public String getRowModifyClass(Table table)
+  {
+    return "RowModify_" + table.getJavaName();
+  }
+
   public String getFindWhereClass(Table table)
   {
     return table.getJavaName() + "FindWhere";

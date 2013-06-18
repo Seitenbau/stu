@@ -129,7 +129,7 @@ public class Table
   {
     for (Column col : getColumns())
     {
-      final Reference reference = col.getReference();
+      final Relation reference = col.getReference();
       if (reference == null)
       {
         continue;
@@ -150,7 +150,7 @@ public class Table
   {
     for (Column col : getColumns())
     {
-      final Reference reference = col.getReference();
+      final Relation reference = col.getReference();
       if (reference == null)
       {
         continue;

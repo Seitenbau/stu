@@ -1,6 +1,6 @@
 package com.seitenbau.testing.dbunit.generator;
 
-public class Reference
+public class Relation
 {
   private final Column _column;
   
@@ -16,7 +16,7 @@ public class Reference
 
   private final Integer _remoteMax;
 
-  Reference(Column column, String localName, String localDescription, String remoteName, String remoteDescription, Integer remoteMin, Integer remoteMax)
+  Relation(Column column, String localName, String localDescription, String remoteName, String remoteDescription, Integer remoteMin, Integer remoteMax)
   {
     _column = column;
     _localName = localName;

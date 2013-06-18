@@ -24,14 +24,14 @@ public class Column
 
   private final String _description;
 
-  private final Reference _reference;
+  private final Relation _relation;
 
   private final ColumnMetaData _metaData;
 
   private final List<Column> _referencedBy;
 
   Column(Table table, String name, String javaName, String description, String type, String javaType,
-      Reference reference, Set<String> flags)
+      Relation relation, Set<String> flags)
   {
     _table = table;
     _name = name;
@@ -39,14 +39,14 @@ public class Column
     _description = description;
     _type = type;
     _javaType = javaType;
-    _reference = reference;
+    _relation = relation;
 
     _metaData = new ColumnMetaData(flags);
 
     _referencedBy = new ArrayList<Column>();
-    if (reference != null)
+    if (relation != null)
     {
-      _reference.getColumn()._referencedBy.add(this);
+      _relation.getColumn()._referencedBy.add(this);
     }
   }
 
@@ -85,24 +85,14 @@ public class Column
     return _description;
   }
 
-  public Reference getReference()
+  public Relation getReference()
   {
-    return _reference;
+    return _relation;
   }
 
   public ColumnMetaData getMetaData()
   {
     return _metaData;
-  }
-
-  public boolean isReferencingTable(Table table)
-  {
-    if (_reference == null)
-    {
-      return false;
-    }
-
-    return _reference.getColumn().getTable() == table;
   }
 
   public List<Column> getReferencedByList()
@@ -112,7 +102,7 @@ public class Column
 
   public String getTruncatedReferenceName()
   {
-    if (_reference == null || !_name.endsWith(ID_SUFFIX))
+    if (_relation == null || !_name.endsWith(ID_SUFFIX))
     {
       return null;
     }
@@ -134,12 +124,12 @@ public class Column
   {
     return _metaData.hasFlag(ColumnMetaData.IDENTIFIER);
   }
-  
+
   public boolean isNextValueMethodGenerated()
   {
     return _metaData.hasFlag(ColumnMetaData.ADD_NEXT_METHOD);
   }
-  
+
   public boolean isAutoInvokeValueGeneration()
   {
     return _metaData.hasFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
@@ -149,5 +139,5 @@ public class Column
   {
     return _metaData.hasFlag(ColumnMetaData.AUTO_INCREMENT);
   }
-  
+
 }

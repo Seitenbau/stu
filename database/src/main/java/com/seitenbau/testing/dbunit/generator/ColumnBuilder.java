@@ -19,9 +19,9 @@ public class ColumnBuilder
 
   private String description;
 
-  private Reference reference;
+  private Relation relation;
 
-  private Set<String> flags;
+  private final Set<String> flags;
 
   public ColumnBuilder(TableBuilder tableBuilder, String name, DataType dataType)
   {
@@ -48,7 +48,7 @@ public class ColumnBuilder
       p_javaName = CamelCase.makeFirstOfBlockUppercase(name);
     }
     p_javaName = CamelCase.makeFirstUpperCase(p_javaName);
-    return new Column(table, name, p_javaName, description, dataType.getDataType(), dataType.getJavaType(), reference,
+    return new Column(table, name, p_javaName, description, dataType.getDataType(), dataType.getJavaType(), relation,
         flags);
   }
 
@@ -62,7 +62,7 @@ public class ColumnBuilder
     this.javaName = javaName;
     return this;
   }
-  
+
   public ColumnBuilder description(String description)
   {
     this.description = description;
@@ -89,9 +89,9 @@ public class ColumnBuilder
 
   /**
    * Enables the generation of a next value method (depending on the column name)
-   * on the RowBuilder. The next value method will use the {@link DatasetIdGenerator} 
-   * from the DataSetModel. 
-   * 
+   * on the RowBuilder. The next value method will use the {@link DatasetIdGenerator}
+   * from the DataSetModel.
+   *
    * // TODO NM translate comment
    * Auﬂerdem werden in der Builder Klasse des erzeugten DataSets bei einem create*() die
    * nextMethoden automatisch gerufen.
@@ -105,30 +105,31 @@ public class ColumnBuilder
   {
     return setFlag(ColumnMetaData.IDENTIFIER);
   }
-  
+
   public ColumnBuilder setFlag(String flag)
   {
     flags.add(flag);
     return this;
   }
 
-  public ReferenceBuilder references(Column reference)
+  public RelationBuilder relationTo(Column targetColumn)
   {
-    return new ReferenceBuilder(this, reference);
+    return new RelationBuilder(this, targetColumn);
   }
 
-  public ReferenceBuilder references(Table reference)
+  public RelationBuilder relationTo(Table table)
   {
-    return new ReferenceBuilder(this, reference.getIdentifierColumn());
+    return new RelationBuilder(this, table.getIdentifierColumn());
   }
 
-  void addReference(Reference reference)
+  void addRelation(Relation relation)
   {
-    if (reference != null)
+    if (relation != null)
     {
+      // Relation is overwritten...
       // TODO NM/CB exception?
     }
-    this.reference = reference;
+    this.relation = relation;
   }
 
   String getColumnName()
