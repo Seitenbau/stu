@@ -1,14 +1,15 @@
-#set($filename = ${model.javaName} + "TableAdapter" )
-#set($package  = ${model.package} )
-#set($clsBuilder = ${model.dataSet.name} + "Builder")
-#set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
-#set($clsRef = ${model.javaName} + "Ref")
-#set($clsTable = ${model.javaName} + "Table")
-#set($clsAdapter = ${clsTable} + "Adapter")
-#set($clsTableFindWhere = ${model.javaName} + "FindWhere")
-#set($clsTableGetWhere = ${model.javaName} + "GetWhere")
-#set($clsRowcollection= "RowCollection_" + ${model.javaName} )
-#set($javaDocSep = "#")
+#set($names             = ${model.dataSet.names})
+#set($filename          = ${names.getTableAdapterClass($model)})
+#set($clsAdapter        = ${names.getTableAdapterClass($model)})
+#set($clsTable          = ${names.getTableClass($model)})
+#set($clsBuilder        = ${names.builderClass})
+#set($clsRowbuilder     = ${names.getRowBuilderClass($model)})
+#set($clsRef            = ${names.getRefClass($model)})
+#set($clsTableFindWhere = ${names.getFindWhereClass($model)})
+#set($clsTableGetWhere  = ${names.getGetWhereClass($model)})
+#set($clsRowcollection  = ${names.getRowCollectionClass($model)})
+#set($javaDocSep        = "#")
+#set($package           = ${model.package} )
 #if( $package && $package.length() != 0 )
 package ${package};
 #end
@@ -49,7 +50,7 @@ import ${model.package}.${clsTable}.${clsRowcollection};
 import ${model.package}.${clsTable}.${clsTableFindWhere};
 import ${model.package}.${clsTable}.${clsTableGetWhere};
 #foreach( $table in $model.associatedTables )
-import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
+import ${model.package}.${names.getTableClass($table)}.${names.getRowBuilderClass($table)};
 #end
 
 
@@ -63,7 +64,7 @@ public class ${clsAdapter} {
   /**
    * Column Header for ${model.javaName} table.
    * <p>
-   * Data Type: ${model.javaName}Ref
+   * Data Type: ${names.getRefClass($model)}
    */
   public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> REF = new RefColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>();
 
@@ -78,7 +79,7 @@ public class ${clsAdapter} {
    * <p>
    * Data Type: {@code ${col.javaType}}
 #if( ${col.reference} )
-   * or {@code ${col.reference.column.table.javaName}Ref}  
+   * or {@code ${names.getRefClass($col.reference.column.table)}
 #end
    * <br>   
    * Database Type: ${col.type}
@@ -139,7 +140,7 @@ public class ${clsAdapter} {
   /**
    * Parses the rows of a ${model.javaName} table. Supported columns are:
    * <ul>
-   *   <li><strong>{@code REF}</strong>: {@code ${model.javaName}Ref}</li>
+   *   <li><strong>{@code REF}</strong>: {@code ${names.getRefClass($model)}}</li>
 #foreach( $col in $model.columns )
 #set( $shortname  = "" )
 #if ( ${col.truncatedReferenceName} )
@@ -213,23 +214,25 @@ public class ${clsAdapter} {
 #if( ${model.isAssociativeTable()})
 #set( $tab1 = ${model.columns.get(0).reference.table} )
 #set( $tab2 = ${model.columns.get(1).reference.table} )
+#set( $ref1 = ${names.getRefVariable($tab1)} )
+#set( $ref2 = ${names.getRefVariable($tab2)} )
 
-  public ${clsRowbuilder} deleteAssociation(${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref, ${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref)
+  public ${clsRowbuilder} deleteAssociation(${names.getRefClass($tab1)} ${ref1}, ${names.getRefClass($tab2)} ${ref2})
   {
-    return _table.deleteAssociation(${tab1.javaNameFirstLower}Ref, ${tab2.javaNameFirstLower}Ref);
+    return _table.deleteAssociation(${ref1}, ${ref2});
   }
 
-  public ${clsRowbuilder} deleteAssociation(${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref, ${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref)
+  public ${clsRowbuilder} deleteAssociation(${names.getRefClass($tab2)} ${ref2}, ${names.getRefClass($tab1)} ${ref1})
   {
-    return _table.deleteAssociation(${tab2.javaNameFirstLower}Ref, ${tab1.javaNameFirstLower}Ref);
+    return _table.deleteAssociation(${ref2}, ${ref1});
   }
   
-  public ${clsRowbuilder} deleteAllAssociations(${tab1.javaName}Ref ref)
+  public ${clsRowbuilder} deleteAllAssociations(${names.getRefClass($tab1)} ref)
   {
     return _table.deleteAllAssociations(ref);
   }
 
-  public ${clsRowbuilder} deleteAllAssociations(${tab2.javaName}Ref ref)
+  public ${clsRowbuilder} deleteAllAssociations(${names.getRefClass($tab2)} ref)
   {
     return _table.deleteAllAssociations(ref);
   }
@@ -353,12 +356,13 @@ public class ${clsAdapter} {
         }
       }
 #if ( ${col.reference} )
+#set( $refTable = ${col.reference.table} )
 
       @Override
       public void setReference(${clsRowbuilder} row, DatabaseReference ref)
       {
-        ${col.reference.table.javaName}Ref reference = (${col.reference.table.javaName}Ref)ref;
-        RowBuilder_${col.reference.table.javaName} referenceBuilder = reference.getBuilder(_builder);
+        ${names.getRefClass($refTable)} reference = (${names.getRefClass($refTable)})ref;
+        ${names.getRowBuilderClass($refTable)} referenceBuilder = reference.getBuilder(_builder);
         if (referenceBuilder != null)
         {
           final ${col.reference.column.javaType} value = referenceBuilder.get${col.reference.javaName}();
