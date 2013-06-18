@@ -200,12 +200,33 @@ public class DataSetJavaAPITest
   {
     DataSetRegistry.use(dataSet);
 
+    // remember id because it cannot be used after removeFromDataSet
+    long id = KAULBERSCH.getId();
+
     // execute
     KAULBERSCH.removeFromDataSet();
 
     // verify
     assertThat(QA.getMembersize()).isEqualTo(2);
     assertThat(dataSet.personsTable.getRowCount()).isEqualTo(2);
+    assertThat(dataSet.personJobTable.getWhere.personId(id).isPresent()).isEqualTo(false);
+  }
+
+  @Test
+  public void removedReferenceAccess()
+  {
+    DataSetRegistry.use(dataSet);
+
+    // prepare
+    exception.expect(RuntimeException.class);
+
+    // execute
+    KAULBERSCH.removeFromDataSet();
+
+    // verify
+    KAULBERSCH.getId();  // access rowbuilder
+    Fail.fail();
+
   }
 
 }
