@@ -1,7 +1,8 @@
-#set($filename = ${model.name} + "Builder" )
+#set($names    = ${model.names})
+#set($filename = ${names.builderClass})
 #set($package  = ${model.package} )
-#set($clsBuilder = ${model.name} + "Builder")
-#set($clsDataSet = ${model.name} + "DataSet")
+#set($clsBuilder = ${names.builderClass})
+#set($clsDataSet = ${names.dataSetClass})
 #set($referenceMethod = "ref")
 #if( $package && $package.length() != 0 )
 package ${package};
@@ -16,8 +17,8 @@ import org.dbunit.dataset.IDataSet;
 import ${model.package}.${clsDataSet};
 #end
 #foreach( $table in $model.tables )
-import ${model.package}.${table.javaName}Ref;
-import ${model.package}.${table.javaName}Table.RowBuilder_${table.javaName};
+import ${model.package}.${names.getRefClass($table)};
+import ${model.package}.${names.getTableClass($table)}.${names.getRowBuilderClass($table)};
 #end
 
 import groovy.lang.Closure;
@@ -89,13 +90,13 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
       // no other parent active, create tables
       this.dataset = dataset;
 #foreach( $table in $model.tables )
-      ${table.javaNameFirstLower}Table = new ${table.javaName}TableAdapter(this, dataset.table_${table.javaName});
+      ${names.getTableAdapterVariable($table)} = new ${names.getTableAdapterClass($table)}(this, dataset.${names.getTableVariable($table)});
 #end
     } else {
       // use parent's tables
       this.dataset = instance.dataset;
 #foreach( $table in $model.tables )
-      ${table.javaNameFirstLower}Table = instance.${table.javaNameFirstLower}Table;
+      ${names.getTableAdapterVariable($table)} = instance.${names.getTableAdapterVariable($table)};
 #end
     }
 

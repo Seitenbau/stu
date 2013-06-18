@@ -135,7 +135,7 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
-    List<Job> jobs = createJob(SWD);
+    List<Job> jobs = createJobs(SWD);
     person.setJobs(jobs);
     person.setTeam(QA.getId().intValue());
 
@@ -156,13 +156,20 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBase(dataSet);
   }
 
-  private List<Job> createJob(JobsRef jobsRef)
+  private Job createJob(JobsRef jobsRef)
   {
-    List<Job> jobs = new ArrayList<Job>();
     Job job = new Job();
     job.setId(jobsRef.getId());
     job.setTitle(jobsRef.getTitle());
-    jobs.add(job);
+    return job;
+  }
+
+  private List<Job> createJobs(JobsRef ... jobsRefs)
+  {
+    List<Job> jobs = new ArrayList<Job>();
+    for (JobsRef jobsRef : jobsRefs) {
+      jobs.add(createJob(jobsRef));
+    }
     return jobs;
   }
 
@@ -173,7 +180,7 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("Dennis");
     person.setName("Kaulbersch");
-    person.setJobs(createJob(SWD));
+    person.setJobs(createJobs(SWD));
     person.setTeam(QA.getId().intValue());
     person.setId(KAULBERSCH.getId().intValue());
 
@@ -181,6 +188,7 @@ public class GroovyDataSetDatabaseTest
     sut.removePerson(person);
 
     // verify
+    //KAULBERSCH.removeFromDataSet();
     dataSet.personsTable.deleteRow(KAULBERSCH);
     dataSet.personJobTable.deleteAllAssociations(KAULBERSCH);
     dbTester.assertDataBase(dataSet);

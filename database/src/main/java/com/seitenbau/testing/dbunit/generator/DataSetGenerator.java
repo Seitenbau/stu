@@ -93,7 +93,7 @@ public class DataSetGenerator
       _dataSet.setCaller(_caller);
       generateDataSet(targetPath + "/");
       generateTables(targetPath + "/");
-      if (_dataSet.isModelClassGeneration()) 
+      if (_dataSet.isModelClassGeneration())
       {
         generateTableJavaModels(targetPath + "/");
       }
@@ -101,7 +101,7 @@ public class DataSetGenerator
       generateReferenceClasses(targetPath + "/");
       generateReferenceFactory(targetPath + "/");
 
-      if (_dataSet.isTableDSLGeneration()) 
+      if (_dataSet.isTableDSLGeneration())
       {
         generateDSL(targetPath + "/");
         generateTableAdapters(targetPath + "/");

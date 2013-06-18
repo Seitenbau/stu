@@ -16,8 +16,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
+import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
@@ -167,10 +169,24 @@ public class DataSetJavaAPITest
   }
 
   @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void getWhereWithNonExistingArgument()
   {
     // execute
     dataSet.personsTable.getWhere.name("Majors");
+  }
+
+  @Test
+  public void removeFromDataSet()
+  {
+    DataSetRegistry.use(dataSet);
+
+    // execute
+    KAULBERSCH.removeFromDataSet();
+
+    // verify
+    assertThat(QA.getMembersize()).isEqualTo(2);
+    assertThat(dataSet.personsTable.getRowCount()).isEqualTo(2);
   }
 
 }

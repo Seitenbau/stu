@@ -1,15 +1,16 @@
-#set($filename = ${model.javaName} + ${model.suffix} )
-#set($package  = ${model.package} )
-#set($rowbuilder   = "RowBuilder_" + ${model.javaName} )
+#set($names        = ${model.dataSet.names})
+#set($filename     = ${names.getTableClass($model)})
+#set($package      = ${model.package} )
+#set($rowbuilder   = ${names.getRowBuilderClass($model)})
 #set($rowsetters   = "RowSetters_" + ${model.javaName} )
 #set($rowsgetters  = "RowGetters_" + ${model.javaName} )
 #set($findWhereClass = ${model.javaName} + "FindWhere" ) 
 #set($getWhereClass  = ${model.javaName} + "GetWhere" ) 
-#set($rowmodify    = "RowModify_" + ${model.javaName} )
-#set($rowcollection= "RowCollection_" + ${model.javaName} )
-#set($tableClass   = ${model.javaName} + ${model.suffix} )
-#set($dataSetClass = ${model.dataSet.name} + ${model.dataSet.suffix} )
-#set($clsRef       = ${model.javaName} + "Ref")
+#set($rowmodify     = "RowModify_" + ${model.javaName} )
+#set($rowcollection = "RowCollection_" + ${model.javaName} )
+#set($clsTable      = ${names.getTableClass($model)} )
+#set($clsDataSet    = ${names.dataSetClass} )
+#set($clsRef        = ${names.getRefClass($model)})
 #set($javaDocSep = "#")
 #if( $package && $package.length() != 0 )
 package ${package};
@@ -48,8 +49,8 @@ import org.dbunit.dataset.datatype.DataType;
 
 #foreach( $otab in $model.associatedTables )
 #if ($otab != $model)
-#set($otherGetter  = "RowGetters_" + ${otab.javaName} )
-#set($otherTable  = ${otab.javaName} + ${otab.suffix} )
+#set($otherGetter = ${names.getRowGettersClass($otab)})
+#set($otherTable = ${names.getTableClass($otab)})
 import ${model.package}.${otherTable}.${otherGetter};
 #end
 #end
@@ -59,7 +60,7 @@ import static com.seitenbau.testing.util.DateUtil.*;
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
 **********************************************************/
-public class ${tableClass} implements ITable
+public class ${clsTable} implements ITable
 {
   public final static String NAME = "${model.name}";
 
@@ -110,21 +111,21 @@ public class ${tableClass} implements ITable
 
   ITableMetaData _metaData;
   
-  ${dataSetClass} _dataSet;
+  ${clsDataSet} _dataSet;
   
   Iterator<${rowbuilder}> _iterator;
   
-  public ${tableClass}()
+  public ${clsTable}()
   {
     _metaData = new DefaultTableMetaData(NAME, COLUMNS);
   }
 
-  public void setDataset(${dataSetClass} dataSet)
+  public void setDataset(${clsDataSet} dataSet)
   {
     _dataSet = dataSet;
   }
   
-  public ${dataSetClass} getDataset()
+  public ${clsDataSet} getDataset()
   {
     return _dataSet;
   }
@@ -143,7 +144,7 @@ public class ${tableClass} implements ITable
     T set${column.javaName}(Integer intValue);
 #end
 #if( $column.reference )
-    T set${column.javaName}(${column.reference.column.table.javaName}Ref reference);
+    T set${column.javaName}(${names.getRefClass($column.reference.column.table)} reference);
 #end
 #if( !${column.isIdentifierColumn()} )
 #if( !${column.reference} )
@@ -180,9 +181,9 @@ public class ${tableClass} implements ITable
 
     Object[] data;
     
-    ${tableClass} table;
+    ${clsTable} table;
     
-    ${rowbuilder}(${tableClass} tableDelegate) 
+    ${rowbuilder}(${clsTable} tableDelegate) 
     {
       data = new Object[COLUMNS.length];
       table = tableDelegate;
@@ -237,7 +238,7 @@ public class ${tableClass} implements ITable
     }
 
 #if( $column.reference )
-    public ${rowbuilder} set${column.javaName}(${column.reference.column.table.javaName}Ref reference)
+    public ${rowbuilder} set${column.javaName}(${names.getRefClass($column.reference.column.table)} reference)
     {
       data[${foreach.index}] = reference;
       return this;
@@ -254,7 +255,7 @@ public class ${tableClass} implements ITable
     public ${rowbuilder} next${column.javaName}()
     {
       DatasetIdGenerator generator = table.getDataset().getIdGenerator();
-      Long nextId = generator.nextId(${tableClass}.NAME,"$column.name");
+      Long nextId = generator.nextId(${clsTable}.NAME,"$column.name");
       set${column.javaName}(nextId);
       return this;
     }
@@ -281,9 +282,10 @@ public class ${tableClass} implements ITable
         return result;
       }
 #else
-      if (value instanceof ${column.reference.column.table.javaName}Ref)
+#set($refTable = $column.reference.column.table)
+      if (value instanceof ${names.getRefClass($refTable)})
       {
-        ${column.reference.column.table.javaName}Ref ref = (${column.reference.column.table.javaName}Ref)value;
+        ${names.getRefClass($refTable)} ref = (${names.getRefClass($refTable)})value;
         ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.reference.column.javaName}();
         // TODO NM/CB/RW think about storing the value
         // data[$foreach.index] = refValue;
@@ -377,10 +379,11 @@ public class ${tableClass} implements ITable
       {
 #if( ${column.reference} )
 ## reference value cannot be lazy
+#set($refTable = ${column.reference.column.table})
         Object value = data[$foreach.index];
-        if (value instanceof ${column.reference.column.table.javaName}Ref)
+        if (value instanceof ${names.getRefClass($refTable)})
         {
-          ${column.reference.column.table.javaName}Ref ref = (${column.reference.column.table.javaName}Ref)value;
+          ${names.getRefClass($refTable)} ref = (${names.getRefClass($refTable)})value;
           ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.reference.column.javaName}();
           // TODO NM/CB/RW think about storing the value
           // data[$foreach.index] = refValue;
@@ -473,9 +476,9 @@ public class ${tableClass} implements ITable
   public static class $findWhereClass
   {
     private final List<${rowbuilder}> rows;
-    private final ${tableClass} table;
+    private final ${clsTable} table;
     
-    public $findWhereClass(${tableClass} theTable)
+    public $findWhereClass(${clsTable} theTable)
     {
        rows = theTable.rows;
        table = theTable;
@@ -516,9 +519,9 @@ public class ${tableClass} implements ITable
 #if( $column.reference )
 #set( $refTable = ${column.reference.column.table} )
 
-    public ${rowcollection} ${column.javaNameFirstLower}(${refTable.javaName}Ref ref)
+    public ${rowcollection} ${column.javaNameFirstLower}(${names.getRefClass($refTable)} ref)
     {
-      ${model.package}.${refTable.javaName}Table.RowBuilder_${refTable.javaName} row = ref.getBuilder(table._dataSet);
+      ${model.package}.${names.getTableClass($refTable)}.${names.getRowBuilderClass($refTable)} row = ref.getBuilder(table._dataSet);
       if (row == null)
       {
         DataSetIdentificator ds = DataSetRegistry.getCurrentDataSet(table.getDataset().getDataSetClassName());
@@ -578,9 +581,9 @@ public class ${tableClass} implements ITable
   public static class $getWhereClass
   {
     private final List<${rowbuilder}> rows;
-    private final ${tableClass} table;
+    private final ${clsTable} table;
     
-    public $getWhereClass(${tableClass} theTable) 
+    public $getWhereClass(${clsTable} theTable) 
     {
        table = theTable;
        rows = theTable.rows;
@@ -619,9 +622,9 @@ public class ${tableClass} implements ITable
 #if( $column.reference )
 #set( $refTable = ${column.reference.column.table} )
 
-    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${refTable.javaName}Ref ref)
+    public Optional<${rowbuilder}> ${column.javaNameFirstLower}(${names.getRefClass($refTable)} ref)
     {
-      ${model.package}.${refTable.javaName}Table.RowBuilder_${refTable.javaName} row = ref.getBuilder(table._dataSet);
+      ${model.package}.${names.getTableClass($refTable)}.${names.getRowBuilderClass($refTable)} row = ref.getBuilder(table._dataSet);
       if (row == null)
       {
         DataSetIdentificator ds = DataSetRegistry.getCurrentDataSet(table.getDataset().getDataSetClassName());
@@ -665,7 +668,7 @@ public class ${tableClass} implements ITable
     
     List<${rowbuilder}> _rows;
 
-    public ${rowmodify}(${tableClass} theTable) 
+    public ${rowmodify}(${clsTable} theTable) 
     {
       super(theTable);
       _rows = new ArrayList<${rowbuilder}>();
@@ -802,7 +805,7 @@ public class ${tableClass} implements ITable
     
     public $findWhereClass where = new $findWhereClass(table);
     
-    public ${rowcollection}(${tableClass} theTable)
+    public ${rowcollection}(${clsTable} theTable)
     {
       super(theTable);
     }
@@ -928,12 +931,14 @@ public class ${tableClass} implements ITable
 #set( $tab1 = ${model.columns.get(0).reference.table} )
 #set( $col2 = ${model.columns.get(1)} )
 #set( $tab2 = ${model.columns.get(1).reference.table} )
+#set( $ref1 = ${names.getRefVariable($tab1)} )
+#set( $ref2 = ${names.getRefVariable($tab2)} )
 
-  public ${rowbuilder} deleteAssociation(${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref, ${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref)
+  public ${rowbuilder} deleteAssociation(${names.getRefClass($tab1)} ${ref1}, ${names.getRefClass($tab2)} ${ref2})
   {
     for (${rowbuilder} row : rows) {
-      if (row.get${col1.javaName}() == ${tab1.javaNameFirstLower}Ref.get${col1.reference.column.javaName}() &&
-          row.get${col2.javaName}() == ${tab2.javaNameFirstLower}Ref.get${col2.reference.column.javaName}())
+      if (row.get${col1.javaName}() == ${ref1}.get${col1.reference.column.javaName}() &&
+          row.get${col2.javaName}() == ${ref2}.get${col2.reference.column.javaName}())
       {
         rows.remove(row);
         return row;
@@ -943,12 +948,12 @@ public class ${tableClass} implements ITable
     throw new RuntimeException("No row found with specified IDs");
   }
 
-  public ${rowbuilder} deleteAssociation(${tab2.javaName}Ref ${tab2.javaNameFirstLower}Ref, ${tab1.javaName}Ref ${tab1.javaNameFirstLower}Ref)
+  public ${rowbuilder} deleteAssociation(${names.getRefClass($tab2)} ${ref2}, ${names.getRefClass($tab1)} ${ref1})
   {
-    return deleteAssociation(${tab1.javaNameFirstLower}Ref, ${tab2.javaNameFirstLower}Ref);
+    return deleteAssociation(${ref1}, ${ref2});
   }
 
-  public ${rowbuilder} deleteAllAssociations(${tab1.javaName}Ref ref)
+  public ${rowbuilder} deleteAllAssociations(${names.getRefClass($tab1)} ref)
   {
     for (${rowbuilder} row : rows) 
     {
@@ -962,7 +967,7 @@ public class ${tableClass} implements ITable
     throw new RuntimeException("No row found with specified IDs");
   }
 
-  public ${rowbuilder} deleteAllAssociations(${tab2.javaName}Ref ref)
+  public ${rowbuilder} deleteAllAssociations(${names.getRefClass($tab2)} ref)
   {
     for (${rowbuilder} row : rows)
     {

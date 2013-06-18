@@ -23,6 +23,8 @@ public class DataSet
 
   boolean _isModelClassGeneration;
 
+  NameProvider _names;
+
   public String getPackage()
   {
     return _package;
@@ -36,6 +38,7 @@ public class DataSet
   {
     _package = thePackage;
     _name = name;
+    _names = new NameProvider(name, thePackage);
     _isTableDSLGeneration = isTableDSLGeneration;
     _isModelClassGeneration = isModelClassGeneration;
   }
@@ -43,6 +46,11 @@ public class DataSet
   public String getName()
   {
     return _name;
+  }
+
+  public NameProvider getNames()
+  {
+    return _names;
   }
 
   public List<Table> getTables()

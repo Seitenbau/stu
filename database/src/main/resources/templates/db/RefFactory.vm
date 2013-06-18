@@ -1,5 +1,6 @@
-#set($filename = "RefFactory" )
-#set($package  = ${model.package} )
+#set($names    = ${model.names})
+#set($filename = "RefFactory")
+#set($package  = ${model.package})
 #set($clsFactory = "RefFactory")
 #if( $package && $package.length() != 0 )
 package ${package};
@@ -9,9 +10,10 @@ public class ${clsFactory}
 {
 #foreach( $table in $model.tables )
 
-  public static ${table.javaName}Ref create${table.javaName}Ref()
+  public static ${names.getRefClass($table)} create${names.getRefClass($table)}()
   {
-    return new ${table.javaName}Ref();
+    return new ${names.getRefClass($table)}();
   }
 #end
+
 }
