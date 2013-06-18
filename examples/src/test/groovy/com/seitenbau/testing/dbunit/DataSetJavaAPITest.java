@@ -19,7 +19,6 @@ import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
-import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
@@ -35,24 +34,28 @@ public class DataSetJavaAPITest
   @Test
   public void findWhereSWD()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(dataSet.jobsTable.findWhere.id(SWD).getTitle()).isEqualTo("Software Developer");
   }
 
   @Test
   public void findWhereQA()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(dataSet.teamsTable.findWhere.id(QA).getTitle()).isEqualTo("Quality Assurance");
   }
 
   @Test
   public void findWhereFirstName()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(dataSet.personsTable.findWhere.firstName("Dennis").getTeamId()).isEqualTo(1);
   }
 
   @Test
   public void findWhereRowCount()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(dataSet.personJobTable.findWhere.jobId(SWD).getRowCount()).isEqualTo(1);
     assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(3);
   }
@@ -60,36 +63,42 @@ public class DataSetJavaAPITest
   @Test
   public void lazyQAMemberSize()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(QA.getMembersize()).isEqualTo(3);
   }
 
   @Test
   public void findWhereOnLazyValue()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(dataSet.teamsTable.findWhere.membersize(3).getTitle()).isEqualTo("Quality Assurance");
   }
 
   @Test
   public void personRefLastName()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(KAULBERSCH.getName()).isEqualTo("Kaulbersch");
   }
 
   @Test
   public void jobRefTitle()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(TM.getTitle()).isEqualTo("Team Manager");
   }
 
   @Test
   public void tableRowCount()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(dataSet.personsTable.getRowCount()).isEqualTo(3);
   }
 
   @Test
   public void forEach()
   {
+    DataSetRegistry.use(dataSet);
     // linked list because other list would be immutable
     final List<String> names = new LinkedList<String>(Arrays.asList(new String[] { "Christian", "Dennis", "Julien" }));
     dataSet.personsTable.foreach(new Action<RowBuilder_Persons>() {
@@ -107,6 +116,7 @@ public class DataSetJavaAPITest
   @Test
   public void findWithFilter()
   {
+    DataSetRegistry.use(dataSet);
     final Filter<RowBuilder_Persons> LEN_FILTER = new Filter<RowBuilder_Persons>()
         {
 
@@ -124,18 +134,22 @@ public class DataSetJavaAPITest
   @Test
   public void queryExistingFlag()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(JobsTable.getColumnMetaData("title").hasFlag("any_custom_flag")).isEqualTo(true);
   }
 
   @Test
   public void queryMissingFlag()
   {
+    DataSetRegistry.use(dataSet);
     assertThat(JobsTable.getColumnMetaData("title").hasFlag("no_custom_flag")).isEqualTo(false);
   }
 
   @Test
   public void tableInsertRow()
   {
+    DataSetRegistry.use(dataSet);
+
     // execute
     dataSet.personsTable.insertRow() //
       .setId(23)
@@ -150,6 +164,8 @@ public class DataSetJavaAPITest
   @Test
   public void tableDeleteRow()
   {
+    DataSetRegistry.use(dataSet);
+
     // execute
     dataSet.personsTable.deleteRow(KAULBERSCH);
 
@@ -160,6 +176,8 @@ public class DataSetJavaAPITest
   @Test
   public void findWhereWithNonExistingArgument()
   {
+    DataSetRegistry.use(dataSet);
+
     // prepare
     exception.expect(RuntimeException.class);
     // execute
@@ -169,9 +187,10 @@ public class DataSetJavaAPITest
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void getWhereWithNonExistingArgument()
   {
+    DataSetRegistry.use(dataSet);
+
     // execute
     dataSet.personsTable.getWhere.name("Majors");
   }
