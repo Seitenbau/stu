@@ -180,11 +180,18 @@ public class ${clsTable} implements ITable
 
     Object[] data;
     
+    Boolean[] mutable;
+        
     ${clsTable} table;
     
     ${clsRowbuilder}(${clsTable} tableDelegate) 
     {
       data = new Object[COLUMNS.length];
+      mutable = new Boolean[COLUMNS.length];
+      for (int i = 0; i < COLUMNS.length; i++)
+      {
+        mutable[i] = true;
+      }
       table = tableDelegate;
     }
 
@@ -201,49 +208,50 @@ public class ${clsTable} implements ITable
 
     public ${clsRowbuilder} set${column.javaName}(String dateString)
     {
-      data[${foreach.index}] = toDate(dateString);
-      return this;
+      return set${column.javaName}Raw(toDate(dateString));
     }
 
     public ${clsRowbuilder} set${column.javaName}(DateBuilder date)
     {
-      data[${foreach.index}] = toDate(date);
-      return this;
+      return set${column.javaName}Raw(toDate(date));
     }
 #end
 #if( $column.javaType.contains("Long") )
 
     public ${clsRowbuilder} set${column.javaName}(Integer intValue)
     {
-      data[${foreach.index}] = (intValue==null?null:Long.valueOf(intValue));
-      return this;
+      return set${column.javaName}Raw(intValue == null ? null : Long.valueOf(intValue));
     }
 #end
 #if( ${column.isFutureValueSupported()} )
 
     public ${clsRowbuilder} set${column.javaName}(Future<Object> value)
     {
-      data[${foreach.index}] = value;
-      return this;
+      return set${column.javaName}Raw(value);
     }
 #end
 
     public ${clsRowbuilder} set${column.javaName}(${column.javaType} value)
     {
-      data[${foreach.index}] = value;
-      return this;
+      return set${column.javaName}Raw(value);
     }
 
 #if( $column.relation )
     public ${clsRowbuilder} set${column.javaName}(${names.getRefClass($column.relation.column.table)} reference)
     {
-      data[${foreach.index}] = reference;
-      return this;
+      return set${column.javaName}Raw(reference);
     }
 #end
 
     public ${clsRowbuilder} set${column.javaName}Raw(Object value)
     {
+#if( ${column.isImmutable()})
+      if (!mutable[${foreach.index}] && data[${foreach.index}] != value)
+      {
+        throw new RuntimeException("Value ${column.name} is immutable an cannot be changed (new value: " + value + ", old value: " + data[${foreach.index}] + ").");
+      }
+      mutable[${foreach.index}] = false;
+#end
       data[${foreach.index}] = value;
       return this;
     }
@@ -256,6 +264,12 @@ public class ${clsTable} implements ITable
       set${column.javaName}(nextId);
       return this;
     }
+
+    private void autoInvokeNext${column.javaName}()
+    {
+      next${column.javaName}();
+      mutable[${foreach.index}] = true;
+    }
 #end
 
 #if( ${column.description} )
@@ -267,8 +281,7 @@ public class ${clsTable} implements ITable
     public ${column.javaType} get${column.javaName}()
     {
       Object value = data[$foreach.index];
-#if( !(${column.relation}) )
-## reference value cannot be lazy
+#if( ${column.isFutureValueSupported()} )
       if (value instanceof Future<?>)
       {
         DataSetIdentificator last = DataSetRegistry.use(table._dataSet);
@@ -279,7 +292,8 @@ public class ${clsTable} implements ITable
         DataSetRegistry.use(last);
         return result;
       }
-#else
+#end
+#if( (${column.relation}) )
 #set($refTable = $column.relation.column.table)
       if (value instanceof ${names.getRefClass($refTable)})
       {
@@ -832,7 +846,7 @@ public class ${clsTable} implements ITable
     ${clsRowbuilder} row = new ${clsRowbuilder}(this);
 #foreach( $column in $model.columns )
 #if( ${column.isAutoInvokeValueGeneration()} )
-    row.next${column.javaName}();
+    row.autoInvokeNext${column.javaName}();
 #end
 #end
     rows.add(row);

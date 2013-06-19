@@ -162,7 +162,7 @@ public class Column
 
   public boolean isFutureValueSupported()
   {
-    return !isUnique() && _relation == null;
+    return !isImmutable() && _relation == null;
   }
 
 }

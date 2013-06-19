@@ -357,12 +357,6 @@ ${jd.createTableExample($model, "   ", "")}
       @Override
       public void set(${clsRowbuilder} row, Object value)
       {
-#if ( ${col.isImmutable()} )
-        if (definedValues.contains(row) && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
-          throw new IllegalStateException("Cannot reset column id [" + row.get${col.javaName}() + " vs " + value + "]");
-        }
-        definedValues.add(row);
-#end
         if (valueMustBeSetRaw(value)) 
         {
           row.set${col.javaName}Raw(value);
@@ -386,10 +380,6 @@ ${jd.createTableExample($model, "   ", "")}
           row.set${col.javaName}Raw(ref);
         }
       }
-#end
-#if ( ${col.isImmutable()} )
-
-      private Set<${clsRowbuilder}> definedValues = new HashSet<${clsRowbuilder}>();
 #end
 #if ( ${col.isUnique()} )
 
