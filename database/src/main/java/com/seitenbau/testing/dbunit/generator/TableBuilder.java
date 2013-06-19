@@ -41,11 +41,16 @@ public class TableBuilder
     return "The " + name + " table";
   }
 
-  public String getName()
+  String getName()
   {
     return name;
   }
 
+  /**
+   * Defines how the table is spelled in the Java source code.
+   * @param javaName The table  name within the Java sources
+   * @return The table builder
+   */
   public TableBuilder javaName(String javaName)
   {
     this.javaName = javaName;
@@ -57,17 +62,28 @@ public class TableBuilder
     return javaName;
   }
 
+  /**
+   * Adds a description text to the table used for JavaDoc in the generated Java classes.
+   * @param description The description for the table
+   * @return The table builder
+   */
   public TableBuilder description(String description)
   {
     this.description = description;
     return this;
   }
 
-  public String getDescription()
+  String getDescription()
   {
     return description;
   }
 
+  /**
+   * Adds a column to the table.
+   * @param name The database name of the column.
+   * @param dataType The column's data type.
+   * @return A builder to configure the column
+   */
   public ColumnBuilder column(String name, DataType dataType)
   {
     return new ColumnBuilder(this, name, dataType);

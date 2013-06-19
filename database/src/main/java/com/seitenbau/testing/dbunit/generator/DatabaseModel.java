@@ -65,6 +65,11 @@ public abstract class DatabaseModel
     getDataSetGenInstance().catchException(exception);
   }
 
+  /**
+   * Adds a table to the database model.
+   * @param name The name of the table
+   * @return The builder to configure the table.
+   */
   public TableBuilder table(String name)
   {
     return new TableBuilder(this, name);
@@ -79,6 +84,10 @@ public abstract class DatabaseModel
     getDataSetGenInstance().addTable(table);
   }
 
+  /**
+   * Starts the generation of the DSL model classes
+   * @throws Exception
+   */
   public void generate() throws Exception
   {
     DataSetGenerator gen = getDataSetGenInstance();
