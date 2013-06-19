@@ -80,8 +80,8 @@ public class ${clsAdapter} {
 #end
    * <p>
    * Data Type: {@code ${col.javaType}}
-#if( ${col.reference} )
-   * or {@code ${names.getRefClass($col.reference.column.table)}
+#if( ${col.relation} )
+   * or {@code ${names.getRefClass($col.relation.column.table)}
 #end
    * <br>   
    * Database Type: ${col.type}
@@ -156,7 +156,7 @@ public class ${clsAdapter} {
    *
    * <p>Example usage:
    * <pre>
-${jd.createTableExample($model, "   ")}
+${jd.createTableExample($model, "   ", "")}
    * </pre>
    *
    * @param rows The table data
@@ -222,8 +222,8 @@ ${jd.createTableExample($model, "   ")}
     return _table.deleteRow(rowToDelete);
   }
 #if( ${model.isAssociativeTable()})
-#set( $tab1 = ${model.columns.get(0).reference.table} )
-#set( $tab2 = ${model.columns.get(1).reference.table} )
+#set( $tab1 = ${model.columns.get(0).relation.table} )
+#set( $tab2 = ${model.columns.get(1).relation.table} )
 #set( $ref1 = ${names.getRefVariable($tab1)} )
 #set( $ref2 = ${names.getRefVariable($tab2)} )
 
@@ -370,8 +370,8 @@ ${jd.createTableExample($model, "   ")}
           row.set${col.javaName}((${col.javaType})CastUtil.cast(value, ${col.type}));
         }
       }
-#if ( ${col.reference} )
-#set( $refTable = ${col.reference.table} )
+#if ( ${col.relation} )
+#set( $refTable = ${col.relation.table} )
 
       @Override
       public void setReference(${clsRowbuilder} row, DatabaseReference ref)
@@ -380,7 +380,7 @@ ${jd.createTableExample($model, "   ")}
         ${names.getRowBuilderClass($refTable)} referenceBuilder = reference.getBuilder(_builder);
         if (referenceBuilder != null)
         {
-          final ${col.reference.column.javaType} value = referenceBuilder.get${col.reference.javaName}();
+          final ${col.relation.column.javaType} value = referenceBuilder.get${col.relation.javaName}();
           row.set${col.javaName}(value);
         } else {
           row.set${col.javaName}Raw(ref);

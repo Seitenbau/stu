@@ -95,7 +95,7 @@ public class Column
     return _description;
   }
 
-  public Relation getReference()
+  public Relation getRelation()
   {
     return _relation;
   }

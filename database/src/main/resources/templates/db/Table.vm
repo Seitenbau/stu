@@ -144,8 +144,8 @@ public class ${clsTable} implements ITable
 #if( $column.javaType.contains("Long") )
     T set${column.javaName}(Integer intValue);
 #end
-#if( $column.reference )
-    T set${column.javaName}(${names.getRefClass($column.reference.column.table)} reference);
+#if( $column.relation )
+    T set${column.javaName}(${names.getRefClass($column.relation.column.table)} reference);
 #end
 #if( ${column.isFutureValueSupported()} )
     T set${column.javaName}(Future<Object> value);
@@ -234,8 +234,8 @@ public class ${clsTable} implements ITable
       return this;
     }
 
-#if( $column.reference )
-    public ${clsRowbuilder} set${column.javaName}(${names.getRefClass($column.reference.column.table)} reference)
+#if( $column.relation )
+    public ${clsRowbuilder} set${column.javaName}(${names.getRefClass($column.relation.column.table)} reference)
     {
       data[${foreach.index}] = reference;
       return this;
@@ -267,7 +267,7 @@ public class ${clsTable} implements ITable
     public ${column.javaType} get${column.javaName}()
     {
       Object value = data[$foreach.index];
-#if( !(${column.reference}) )
+#if( !(${column.relation}) )
 ## reference value cannot be lazy
       if (value instanceof Future<?>)
       {
@@ -280,11 +280,11 @@ public class ${clsTable} implements ITable
         return result;
       }
 #else
-#set($refTable = $column.reference.column.table)
+#set($refTable = $column.relation.column.table)
       if (value instanceof ${names.getRefClass($refTable)})
       {
         ${names.getRefClass($refTable)} ref = (${names.getRefClass($refTable)})value;
-        ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.reference.column.javaName}();
+        ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.relation.column.javaName}();
         // TODO NM/CB/RW think about storing the value
         // data[$foreach.index] = refValue;
         return refValue; 
@@ -375,14 +375,14 @@ public class ${clsTable} implements ITable
 #foreach( $column in $model.columns )
       if(column.equalsIgnoreCase(Columns.${column.javaName}) )
       {
-#if( ${column.reference} )
+#if( ${column.relation} )
 ## reference value cannot be lazy
-#set($refTable = ${column.reference.column.table})
+#set($refTable = ${column.relation.column.table})
         Object value = data[$foreach.index];
         if (value instanceof ${names.getRefClass($refTable)})
         {
           ${names.getRefClass($refTable)} ref = (${names.getRefClass($refTable)})value;
-          ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.reference.column.javaName}();
+          ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.relation.column.javaName}();
           // TODO NM/CB/RW think about storing the value
           // data[$foreach.index] = refValue;
           return refValue; 
@@ -412,12 +412,12 @@ public class ${clsTable} implements ITable
       return value;
     }
 #foreach( $column in $model.columns )
-#if( $column.reference )
-#set($otherGetter  = "RowGetters_" + ${column.reference.table.javaName} )
+#if( $column.relation )
+#set($otherGetter  = "RowGetters_" + ${column.relation.table.javaName} )
 
     public ${clsRowbuilder} ref${column.javaName}(@SuppressWarnings("rawtypes") $otherGetter reference)
     {
-      set${column.javaName}(reference.get${column.reference.javaName}());
+      set${column.javaName}(reference.get${column.relation.javaName}());
       return this;
     }
 #end
@@ -521,8 +521,8 @@ public class ${clsTable} implements ITable
       }
       return ${column.javaNameFirstLower}(row.get${column.javaName}());
     }
-#if( $column.reference )
-#set( $refTable = ${column.reference.column.table} )
+#if( $column.relation )
+#set( $refTable = ${column.relation.column.table} )
 
     public ${rowcollection} ${column.javaNameFirstLower}(${names.getRefClass($refTable)} ref)
     {
@@ -539,7 +539,7 @@ public class ${clsTable} implements ITable
       {
         throw new RuntimeException("Ref not defined in this scope");
       }
-      return ${column.javaNameFirstLower}(row.get${column.reference.column.javaName}());
+      return ${column.javaNameFirstLower}(row.get${column.relation.column.javaName}());
     }
 #end       
 
@@ -624,8 +624,8 @@ public class ${clsTable} implements ITable
       }
       return ${column.javaNameFirstLower}(row.get${column.javaName}());
     }
-#if( $column.reference )
-#set( $refTable = ${column.reference.column.table} )
+#if( $column.relation )
+#set( $refTable = ${column.relation.column.table} )
 
     public Optional<${clsRowbuilder}> ${column.javaNameFirstLower}(${names.getRefClass($refTable)} ref)
     {
@@ -642,7 +642,7 @@ public class ${clsTable} implements ITable
       {
         throw new RuntimeException("Ref not defined in this scope");
       }
-      return ${column.javaNameFirstLower}(row.get${column.reference.column.javaName}());
+      return ${column.javaNameFirstLower}(row.get${column.relation.column.javaName}());
     }
 #end       
 
@@ -933,17 +933,17 @@ public class ${clsTable} implements ITable
   }
 #if( ${model.isAssociativeTable()})
 #set( $col1 = ${model.columns.get(0)} )
-#set( $tab1 = ${model.columns.get(0).reference.table} )
+#set( $tab1 = ${model.columns.get(0).relation.table} )
 #set( $col2 = ${model.columns.get(1)} )
-#set( $tab2 = ${model.columns.get(1).reference.table} )
+#set( $tab2 = ${model.columns.get(1).relation.table} )
 #set( $ref1 = ${names.getRefVariable($tab1)} )
 #set( $ref2 = ${names.getRefVariable($tab2)} )
 
   public ${clsRowbuilder} deleteAssociation(${names.getRefClass($tab1)} ${ref1}, ${names.getRefClass($tab2)} ${ref2})
   {
     for (${clsRowbuilder} row : rows) {
-      if (row.get${col1.javaName}() == ${ref1}.get${col1.reference.column.javaName}() &&
-          row.get${col2.javaName}() == ${ref2}.get${col2.reference.column.javaName}())
+      if (row.get${col1.javaName}() == ${ref1}.get${col1.relation.column.javaName}() &&
+          row.get${col2.javaName}() == ${ref2}.get${col2.relation.column.javaName}())
       {
         rows.remove(row);
         return row;
@@ -962,7 +962,7 @@ public class ${clsTable} implements ITable
   {
     for (${clsRowbuilder} row : rows) 
     {
-      if (row.get${col1.javaName}() == ref.get${col1.reference.column.javaName}())
+      if (row.get${col1.javaName}() == ref.get${col1.relation.column.javaName}())
       {
         rows.remove(row);
         return row;
@@ -976,7 +976,7 @@ public class ${clsTable} implements ITable
   {
     for (${clsRowbuilder} row : rows)
     {
-      if (row.get${col2.javaName}() == ref.get${col2.reference.column.javaName}())
+      if (row.get${col2.javaName}() == ref.get${col2.relation.column.javaName}())
       {
         rows.remove(row);
         return row;

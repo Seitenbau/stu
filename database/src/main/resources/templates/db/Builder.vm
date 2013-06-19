@@ -1,8 +1,9 @@
-#set($names    = ${model.names})
-#set($filename = ${names.builderClass})
-#set($package  = ${model.package} )
-#set($clsBuilder = ${names.builderClass})
-#set($clsDataSet = ${names.dataSetClass})
+#set($names           = ${model.names})
+#set($filename        = ${names.builderClass})
+#set($package         = ${model.package} )
+#set($clsBuilder      = ${names.builderClass})
+#set($clsDataSet      = ${names.dataSetClass})
+#set($jd              = ${model.javaDocBuilder})
 #set($referenceMethod = "ref")
 #if( $package && $package.length() != 0 )
 package ${package};
@@ -170,7 +171,17 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   }
 
   /**
-   * Template method to define the tables test data.
+   * Override this method to define the tables of the dataset.
+   * <p>Example usage:
+   * <pre>
+   * def tables() {
+#foreach( $table in $model.tables )
+${jd.createTableExample($table, "   ", "  ")}
+#end
+   * }
+   * </pre>
+   *
+   * @return Anything. The method returns an object to allow Groovy's def syntax.
    */
   protected Object tables()
   {
@@ -178,7 +189,15 @@ public class ${clsBuilder} implements DataSetIdentificator, DbUnitDatasetFactory
   }
 
   /**
-   * Template method to define the relations.
+   * Override this method to define relations in the dataset.
+   * <p>Example usage:
+   * <pre>
+   * def relations() {
+${jd.createRelationExamples($model, "   ", "  ")}
+   * }
+   * </pre>
+   *
+   * @return Anything. The method returns an object to allow Groovy's def syntax.
    */
   protected Object relations()
   {

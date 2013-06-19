@@ -118,7 +118,7 @@ public class Table
       {
         return false;
       }
-      if (col.getReference() != null)
+      if (col.getRelation() != null)
       {
         foreignKeys++;
       }
@@ -131,7 +131,7 @@ public class Table
   {
     for (Column col : getColumns())
     {
-      final Relation reference = col.getReference();
+      final Relation reference = col.getRelation();
       if (reference == null)
       {
         continue;
@@ -152,7 +152,7 @@ public class Table
   {
     for (Column col : getColumns())
     {
-      final Relation reference = col.getReference();
+      final Relation reference = col.getRelation();
       if (reference == null)
       {
         continue;
@@ -176,9 +176,9 @@ public class Table
     result.add(this);
     for (Column col : getColumns())
     {
-      if (col.getReference() != null)
+      if (col.getRelation() != null)
       {
-        result.add(col.getReference().getTable());
+        result.add(col.getRelation().getTable());
       }
     }
     return result;
