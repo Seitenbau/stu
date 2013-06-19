@@ -20,7 +20,7 @@ public class ColumnMetaDataBuilder
 
   public ColumnMetaDataBuilder identifier()
   {
-    return setFlag(ColumnMetaData.IDENTIFIER);
+    return setFlag(ColumnMetaData.UNIQUE);
   }
 
   public ColumnMetaDataBuilder autoIncrement()

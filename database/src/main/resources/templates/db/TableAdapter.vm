@@ -42,6 +42,7 @@ import groovy.lang.Closure;
 import java.util.HashSet;
 import java.util.Set;
 #end
+import java.util.List;
 
 ###if( $model.package && $model.package.length() != 0 )
 ##import ${model.package}.${model.dataSet.name}DataSet;
@@ -87,7 +88,7 @@ public class ${clsAdapter} {
    */
 #end
 #comments()   
-  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.name} = create${col.javaName}Binding();
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.groovyName} = create${col.javaName}Binding();
 
 ## check if column is an identifier
 #if ( ${col.truncatedReferenceName} )
@@ -310,6 +311,11 @@ public class ${clsAdapter} {
       });
   }
 
+  public List<${clsRowbuilder}> getRows()
+  {
+    return _table.getRows();
+  }
+
   private class TableAdapter implements TableParserAdapter<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>
   {
     @Override
@@ -353,11 +359,11 @@ public class ${clsAdapter} {
       @Override
       public void set(${clsRowbuilder} row, Object value)
       {
-#if ( ${col.isIdentifierColumn()} )
-        if (definedIdsSet.contains(row) && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
+#if ( ${col.isImmutable()} )
+        if (definedValues.contains(row) && !NullCompatibleEquivalence.equals(row.get${col.javaName}(), value)) {
           throw new IllegalStateException("Cannot reset column id [" + row.get${col.javaName}() + " vs " + value + "]");
         }
-        definedIdsSet.add(row);
+        definedValues.add(row);
 #end
         if (valueMustBeSetRaw(value)) 
         {
@@ -383,7 +389,11 @@ public class ${clsAdapter} {
         }
       }
 #end
-#if ( ${col.isIdentifierColumn()} )
+#if ( ${col.isImmutable()} )
+
+      private Set<${clsRowbuilder}> definedValues = new HashSet<${clsRowbuilder}>();
+#end
+#if ( ${col.isUnique()} )
 
       @Override
       public Optional<${clsRowbuilder}> getWhere(${clsTableGetWhere} getWhere, Object value)
@@ -392,12 +402,10 @@ public class ${clsAdapter} {
       }
 
       @Override
-      public boolean isIdentifierColumn()
+      public boolean isUnique()
       {
         return true;
       }
-    
-      private Set<${clsRowbuilder}> definedIdsSet = new HashSet<${clsRowbuilder}>();
 #else
 
       @Override

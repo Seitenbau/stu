@@ -33,6 +33,7 @@ import com.seitenbau.testing.util.date.DateBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Iterator;
@@ -146,10 +147,8 @@ public class ${clsTable} implements ITable
 #if( $column.reference )
     T set${column.javaName}(${names.getRefClass($column.reference.column.table)} reference);
 #end
-#if( !${column.isIdentifierColumn()} )
-#if( !${column.reference} )
+#if( ${column.isFutureValueSupported()} )
     T set${column.javaName}(Future<Object> value);
-#end    
 #end
     T set${column.javaName}(${column.javaType} value);
     T set${column.javaName}Raw(Object value);
@@ -220,15 +219,13 @@ public class ${clsTable} implements ITable
       return this;
     }
 #end
-#if( !${column.isIdentifierColumn()} )
-#if( !${column.reference} )
+#if( ${column.isFutureValueSupported()} )
 
     public ${clsRowbuilder} set${column.javaName}(Future<Object> value)
     {
       data[${foreach.index}] = value;
       return this;
     }
-#end
 #end
 
     public ${clsRowbuilder} set${column.javaName}(${column.javaType} value)
@@ -459,10 +456,16 @@ public class ${clsTable} implements ITable
 
   public void foreach(Action<${clsRowbuilder}> action)
   {
+    // TODO iterator instead
     for (${clsRowbuilder} row : rows)
     {
       action.call(row);
     }
+  }
+  
+  public List<${clsRowbuilder}> getRows()
+  {
+    return Collections.unmodifiableList(rows);
   }
 
   /**

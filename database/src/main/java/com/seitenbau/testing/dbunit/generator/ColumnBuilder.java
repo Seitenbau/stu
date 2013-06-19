@@ -17,6 +17,8 @@ public class ColumnBuilder
 
   private String javaName;
 
+  private String tableName;
+
   private String description;
 
   private Relation relation;
@@ -30,6 +32,7 @@ public class ColumnBuilder
     this.name = name;
     this.description = null;
     this.javaName = null;
+    this.tableName = null;
     this.dataType = dataType;
 
     tableBuilder.addColumnBuilder(this);
@@ -52,7 +55,14 @@ public class ColumnBuilder
       p_javaName = CamelCase.makeFirstOfBlockUppercase(name);
     }
     p_javaName = CamelCase.makeFirstUpperCase(p_javaName);
-    return new Column(table, name, p_javaName, description, dataType.getDataType(), dataType.getJavaType(), relation,
+
+    String p_tableName = tableName;
+    if (p_tableName == null)
+    {
+      p_tableName = name.toLowerCase();
+    }
+
+    return new Column(table, name, p_javaName, p_tableName, description, dataType.getDataType(), dataType.getJavaType(), relation,
         flags);
   }
 
@@ -75,6 +85,17 @@ public class ColumnBuilder
   public ColumnBuilder javaName(String javaName)
   {
     this.javaName = javaName;
+    return this;
+  }
+
+  /**
+   * Defines how the column is spelled in the Groovy Table Builder source codes.
+   * @param javaName The column name within the Groovy sources
+   * @return The builder to configure the column
+   */
+  public ColumnBuilder tableName(String tableName)
+  {
+    this.tableName = tableName;
     return this;
   }
 
@@ -132,20 +153,43 @@ public class ColumnBuilder
   }
 
   /**
-   * The column value is used to identify the entity (the whole table row). Although a database
-   * primary key column is an identifier column, there is no need for an identifier column to be
-   * explicit a primary key.
-   * <p>
-   * The value of an identifier column has to be set when a row is created (manually or
-   * automatically). It cannot be changed afterwards. Use autoInvokeNext() for automatic
-   * ID value generation.
-   * An identifier column cannot contain lazy evaluated Future values.
+   * The column is the default identification column for the table when used to build
+   * a relation to the table. Implicitly activates the Flags {@link ColumnMetaData#UNIQUE}
+   * and {@link ColumnMetaData#IMMUTABLE} as well.
    *
-   * @return The builder to configure the column
+   * @return The column builder
    */
   public ColumnBuilder identifierColumn()
   {
-    return setFlag(ColumnMetaData.IDENTIFIER);
+    setFlag(ColumnMetaData.IDENTIFIER);
+    setFlag(ColumnMetaData.UNIQUE);
+    return setFlag(ColumnMetaData.IMMUTABLE);
+  }
+
+
+  /**
+   * The column value is unique and so it can be used to identify the entity (the whole table row).
+   * Although a database primary key column is an identifier column, there is no need for an unique
+   * column to be explicit a primary key.
+   * <p>
+   * Implicitly activates the flag {@link ColumnMetaData#IMMUTABLE}.
+   * <p>
+   * The value of an unique column has to be set when a row is created (manually or
+   * automatically). It cannot be changed afterwards. Use autoInvokeNext() for automatic
+   * value generation.
+   * An unique value column cannot contain lazy evaluated Future values.
+   *
+   * @return The builder to configure the column
+   */
+  public ColumnBuilder unique()
+  {
+    setFlag(ColumnMetaData.UNIQUE);
+    return immutable();
+  }
+
+  public ColumnBuilder immutable()
+  {
+    return setFlag(ColumnMetaData.IMMUTABLE);
   }
 
   public ColumnBuilder setFlag(String flag)
@@ -168,16 +212,6 @@ public class ColumnBuilder
     return new RelationBuilder(this, targetColumn);
   }
 
-  /**
-   * Models a relation to the identifier column of another table. A relation will
-   * automatically add methods to model relations (e.g. setters on RowBuilders and
-   * methods on the Ref classes).
-   * <p>
-   * Although relations are mostly achieved by public key and foreign key columns in the
-   * actual database, a relation in STU does not require this.
-   * @param table The table (containing an identifier column), which the current column is related to
-   * @return The builder to configure the relation
-   */
   public RelationBuilder relationTo(Table table)
   {
     return new RelationBuilder(this, table.getIdentifierColumn());

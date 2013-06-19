@@ -6,19 +6,19 @@ import java.util.List;
 
 public class TableRowModel
 {
-  
-  private List<Object> values = new ArrayList<Object>();
+
+  private final List<Object> values = new ArrayList<Object>();
 
   private final boolean isHeadRow;
 
   private int refColumnIndex;
 
-  private int idColumnIndex;
+  private final List<Integer> uniqueColumnIndexes;
 
   public TableRowModel(Object value)
   {
     refColumnIndex = -1;
-    idColumnIndex = -1;
+    uniqueColumnIndexes = new LinkedList<Integer>();
     isHeadRow = value instanceof ColumnBinding;
     addValue(value);
   }
@@ -37,7 +37,7 @@ public class TableRowModel
       {
         throw new RuntimeException("Cannot mix ColumnBindings and values within one row");
       }
-      
+
       if (values.contains(value))
       {
         throw new RuntimeException("Cannot use a column more than once in a table");
@@ -47,8 +47,8 @@ public class TableRowModel
       if (column.isRefColumn()) {
         refColumnIndex = values.size();
       }
-      if (column.isIdentifierColumn()) {
-        idColumnIndex = values.size();
+      if (column.isUnique()) {
+        uniqueColumnIndexes.add(Integer.valueOf(values.size()));
       }
     }
     values.add(value);
@@ -78,20 +78,20 @@ public class TableRowModel
     return refColumnIndex;
   }
 
-  public int getIdentifierColumnIndex()
+  public List<Integer> getUniqueColumnIndexes()
   {
     if (!isHeadRow)
     {
-      throw new RuntimeException("Cannot query ID column index from non-head row");
+      throw new RuntimeException("Cannot query unique column index from non-head row");
     }
-    return idColumnIndex;
+    return uniqueColumnIndexes;
   }
 
   public Object getValue(int index)
   {
     return values.get(index);
   }
-  
+
   public List<Integer> getTraversableColumns()
   {
     if (!isHeadRow)
@@ -99,13 +99,13 @@ public class TableRowModel
       throw new RuntimeException("Cannot query ID column index from non-head row");
     }
     List<Integer> result = new LinkedList<Integer>();
-    for (int i = 0; i < values.size(); i++) 
+    for (int i = 0; i < values.size(); i++)
     {
-      if (i == refColumnIndex || i == idColumnIndex)
+      if (i == refColumnIndex || uniqueColumnIndexes.contains(Integer.valueOf(i)))
       {
         continue;
       }
-      
+
       result.add(Integer.valueOf(i));
     }
     return result;

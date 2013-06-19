@@ -96,6 +96,22 @@ public class DataSetJavaAPITest
   }
 
   @Test
+  public void getRows()
+  {
+    DataSetRegistry.use(dataSet);
+    // linked list because other list would be immutable
+    final List<String> names = new LinkedList<String>(Arrays.asList(new String[] { "Christian", "Dennis", "Julien" }));
+    for (RowBuilder_Persons row : dataSet.personsTable.getRows())
+    {
+      if (!names.remove(row.getFirstName()))
+      {
+        Fail.fail("Element not in list");
+      }
+    }
+    assertThat(names.size()).isEqualTo(0);
+  }
+
+  @Test
   public void forEach()
   {
     DataSetRegistry.use(dataSet);
@@ -106,7 +122,10 @@ public class DataSetJavaAPITest
       @Override
       public void call(RowBuilder_Persons value)
       {
-        names.remove(value.getFirstName());
+        if (!names.remove(value.getFirstName()))
+        {
+          Fail.fail("Element not in list");
+        }
       }
 
     });

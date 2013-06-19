@@ -50,7 +50,7 @@ public abstract class ColumnBinding<R, G>
     return false;
   }
 
-  public boolean isIdentifierColumn()
+  public boolean isUnique()
   {
     return false;
   }

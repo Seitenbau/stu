@@ -3,6 +3,7 @@ package com.seitenbau.testing.dbunit.generator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -16,9 +17,9 @@ public class Table
   private DataSet _dataSet;
 
   private final String _name;
-  
+
   private final String _javaName;
-  
+
   private final String _description;
 
   private final List<Column> _columns;
@@ -91,16 +92,17 @@ public class Table
     throw new RuntimeException("No column " + colName);
   }
 
-  public Column getIdentifierColumn()
+  public List<Column> getUniqueColumns()
   {
+    List<Column> result = new LinkedList<Column>();
     for (Column col : getColumns())
     {
-      if (col.isIdentifierColumn())
+      if (col.isUnique())
       {
-        return col;
+        result.add(col);
       }
     }
-    throw new RuntimeException("No Identifier column");
+    return result;
   }
 
   public boolean isAssociativeTable()
@@ -112,7 +114,7 @@ public class Table
     }
     for (Column col : getColumns())
     {
-      if (col.isIdentifierColumn())
+      if (col.isUnique())
       {
         return false;
       }
@@ -166,8 +168,8 @@ public class Table
     return null;
     // throw new RuntimeException("No associating column found");
   }
-  
-  
+
+
   public Set<Table> getAssociatedTables()
   {
     Set<Table> result = new HashSet<Table>();
@@ -193,5 +195,17 @@ public class Table
       }
     }
     return result;
+  }
+
+  public Column getIdentifierColumn()
+  {
+    for (Column col : getColumns())
+    {
+      if (col.isIdentifier())
+      {
+        return col;
+      }
+    }
+    throw new RuntimeException("No identifier column found");
   }
 }

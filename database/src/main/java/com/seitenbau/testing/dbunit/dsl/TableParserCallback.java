@@ -2,7 +2,9 @@ package com.seitenbau.testing.dbunit.dsl;
 
 import groovy.lang.Closure;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.base.Optional;
@@ -21,8 +23,8 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
 
   private ColumnBinding<R, G> _refColumn;
 
-  private ColumnBinding<R, G> _idColumn;
-  
+  private List<ColumnBinding<R, G>> _uniqueColumns;
+
   private List<Integer> _traversedColumns;
 
   public TableParserCallback(TableParserAdapter<R, G, D> tableAdapter)
@@ -32,7 +34,7 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
     _columns = 0;
     _lineNr = 0;
     _refColumn = null;
-    _idColumn = null;
+    _uniqueColumns = new LinkedList<ColumnBinding<R, G>>();
     _traversedColumns = Collections.<Integer>emptyList();
   }
 
@@ -82,7 +84,7 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
       column.set(rowbuilder, value);
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   private void readHeadRow(TableRowModel row)
   {
@@ -90,11 +92,11 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
     _columns = _head.getColumnCount();
     _traversedColumns = _head.getTraversableColumns();
     _refColumn = null;
-    _idColumn = null;
+    _uniqueColumns = new LinkedList<ColumnBinding<R, G>>();
 
-    if (_head.getIdentifierColumnIndex() != -1)
+    for (Integer i : _head.getUniqueColumnIndexes())
     {
-      _idColumn = (ColumnBinding<R, G>) _head.getValue(_head.getIdentifierColumnIndex());
+      _uniqueColumns.add((ColumnBinding<R, G>) _head.getValue(i));
     }
 
     if (_head.getRefColumnIndex() != -1)
@@ -141,7 +143,7 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
 
     private final D ref;
 
-    private final Object id;
+    private final List<Object> uniqueValues;
 
     private R builder;
 
@@ -149,7 +151,7 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
     {
       this.row = row;
       ref = getRefValue();
-      id = getIdValue();
+      uniqueValues = getIdValues();
 
       R builderByReference = getBuilderByReference();
       R builderById = getBuilderById();
@@ -159,7 +161,7 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
         builder = createRowBuilder();
       }
 
-      setManualIdOnRowBuilder();
+      setUniqueValuesOnRowBuilder();
       bindBuilderToScope();
     }
 
@@ -206,34 +208,49 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
       }
       return null;
     }
-    
-    private Object getIdValue()
+
+    private List<Object> getIdValues()
     {
-      if (_idColumn != null)
+      List<Object> result = new ArrayList<Object>();
+      for (Integer i : _head.getUniqueColumnIndexes())
       {
-        Object value = row.getValue(_head.getIdentifierColumnIndex());
-        if (!(value instanceof NoValue))
-        {
-          return value;
-        }
+        result.add(row.getValue(i));
       }
-      return null;
+      return result;
     }
 
     private R getBuilderById()
     {
-      if (id == null)
+      R result = null;
+
+      for (int index = 0; index < _uniqueColumns.size(); index++)
       {
-        return null;
+        Object id = uniqueValues.get(index);
+        if (id == null || id instanceof NoValue)
+        {
+          continue;
+        }
+
+        ColumnBinding<R, G> col = _uniqueColumns.get(index);
+        Optional<R> builderById = col.getWhere(_tableAdapter.getWhere(),
+            CastUtil.cast(id, col.getDataType()));
+        if (!builderById.isPresent())
+        {
+          continue;
+        }
+
+        if (result == null)
+        {
+          result = builderById.get();
+        }
+
+        if (builderById.get() != result)
+        {
+          throw new RuntimeException("Unique values differ in table data");
+        }
       }
 
-      Optional<R> builderById = _idColumn.getWhere(_tableAdapter.getWhere(), 
-          CastUtil.cast(id, _idColumn.getDataType()));
-      if (builderById.isPresent())
-      {
-        return builderById.get();
-      }
-      return null;
+      return result;
     }
 
     private R getBuilderByReference()
@@ -250,14 +267,21 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
       return _tableAdapter.insertRow();
     }
 
-    private void setManualIdOnRowBuilder()
+    private void setUniqueValuesOnRowBuilder()
     {
-      if (id != null)
+      for (int index = 0; index < _uniqueColumns.size(); index++)
       {
-        _idColumn.set(builder, id);
+        Object id = uniqueValues.get(index);
+        if (id == null || id instanceof NoValue)
+        {
+          continue;
+        }
+
+        ColumnBinding<R, G> col = _uniqueColumns.get(index);
+        col.set(builder, id);
       }
     }
-    
+
     private void bindBuilderToScope()
     {
       if (ref != null) {

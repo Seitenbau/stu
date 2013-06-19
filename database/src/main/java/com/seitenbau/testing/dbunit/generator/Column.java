@@ -22,6 +22,8 @@ public class Column
 
   private final String _javaName;
 
+  private final String _groovyName;
+
   private final String _description;
 
   private final Relation _relation;
@@ -30,12 +32,13 @@ public class Column
 
   private final List<Column> _referencedBy;
 
-  Column(Table table, String name, String javaName, String description, String type, String javaType,
+  Column(Table table, String name, String javaName, String groovyName, String description, String type, String javaType,
       Relation relation, Set<String> flags)
   {
     _table = table;
     _name = name;
     _javaName = javaName;
+    _groovyName = groovyName;
     _description = description;
     _type = type;
     _javaType = javaType;
@@ -80,6 +83,11 @@ public class Column
     return CamelCase.makeFirstLowerCase(getJavaName());
   }
 
+  public String getGroovyName()
+  {
+    return _groovyName;
+  }
+
   public String getDescription()
   {
     return _description;
@@ -102,12 +110,12 @@ public class Column
 
   public String getTruncatedReferenceName()
   {
-    if (_relation == null || !_name.endsWith(ID_SUFFIX))
+    if (_relation == null || !_groovyName.endsWith(ID_SUFFIX))
     {
       return null;
     }
 
-    final String result = _name.substring(0, _name.length() - ID_SUFFIX.length());
+    final String result = _groovyName.substring(0, _groovyName.length() - ID_SUFFIX.length());
     for (Column column : _table.getColumns())
     {
       if (result.equals(column.getName()))
@@ -120,9 +128,19 @@ public class Column
     return result;
   }
 
-  public boolean isIdentifierColumn()
+  public boolean isIdentifier()
   {
     return _metaData.hasFlag(ColumnMetaData.IDENTIFIER);
+  }
+
+  public boolean isUnique()
+  {
+    return _metaData.hasFlag(ColumnMetaData.UNIQUE);
+  }
+
+  public boolean isImmutable()
+  {
+    return _metaData.hasFlag(ColumnMetaData.IMMUTABLE);
   }
 
   public boolean isNextValueMethodGenerated()
@@ -138,6 +156,11 @@ public class Column
   public boolean isAutoIncrement()
   {
     return _metaData.hasFlag(ColumnMetaData.AUTO_INCREMENT);
+  }
+
+  public boolean isFutureValueSupported()
+  {
+    return !isUnique() && _relation == null;
   }
 
 }
