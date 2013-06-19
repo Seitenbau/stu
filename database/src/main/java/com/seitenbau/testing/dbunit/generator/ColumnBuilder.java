@@ -114,7 +114,7 @@ public class ColumnBuilder
   /**
    * The the corresponding {@code nextValue()} method is automatically
    * called on insertRow. Enables the flag {@link ColumnMetaData#ADD_NEXT_METHOD} and
-   * therefore the generation of a next value method as well
+   * therefore the generation of a next value method as well.
    * @return The builder to configure the column
    */
   public ColumnBuilder autoInvokeNext()
@@ -156,6 +156,9 @@ public class ColumnBuilder
    * The column is the default identification column for the table when used to build
    * a relation to the table. Implicitly activates the Flags {@link ColumnMetaData#UNIQUE}
    * and {@link ColumnMetaData#IMMUTABLE} as well.
+   * <p>
+   * To enable automatic value generation, the flag {@link ColumnMetaData#AUTO_INVOKE_NEXT}
+   * has to be enabled.
    *
    * @return The column builder
    */
