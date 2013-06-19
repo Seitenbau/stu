@@ -161,7 +161,7 @@ public class ${clsTable} implements ITable
 #end
 #end 
   }
-  
+
   @SuppressWarnings("rawtypes")
   public interface ${clsRowgetters}<T extends ${clsRowgetters}>
   {
@@ -848,15 +848,24 @@ public class ${clsTable} implements ITable
   }
 
   /**
-  * Insert a new empty Row.
-  * <code><pre>
-  * ds.table_${model.javaName}.insertRow()
+   * Clears the table. Simply removes all rows from the table. Does not any magic. 
+   */
+  public void clear()
+  {
+    // TODO: Think about unbinding all Refs from the rows...
+    rows.clear();
+  }
+
+  /**
+   * Insert a new empty Row.
+   * <code><pre>
+   * ds.table_${model.javaName}.insertRow()
 #foreach( $column in $model.columns )
-  *   .set${column.javaName}( null )
+   *   .set${column.javaName}( null )
 #end
-  *   ;
-  * </pre></code>
-  */
+   *   ;
+   * </pre></code>
+   */
   public ${clsRowbuilder} insertRow()
   {
     ${clsRowbuilder} row = new ${clsRowbuilder}(this);

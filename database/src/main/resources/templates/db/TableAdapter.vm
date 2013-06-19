@@ -161,6 +161,14 @@ ${jd.createTableExample($model, "   ", "")}
     return _table.getRowCount();
   }
 
+  /**
+   * Clears the table. Simply removes all rows from the table. Does not any magic. 
+   */
+  public void clear()
+  {
+    _table.clear();
+  }
+
   public ${clsRowbuilder} insertRow()
   {
     return _table.insertRow();
