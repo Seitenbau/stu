@@ -387,13 +387,6 @@ ${jd.createTableExample($model, "   ", "")}
       {
         return true;
       }
-#else
-
-      @Override
-      public void setFutureValue(${clsRowbuilder} row, Future<Object> futureValue)
-      {
-        row.set${col.javaName}Raw(futureValue);
-      }
 #end
       
       @Override
@@ -408,7 +401,9 @@ ${jd.createTableExample($model, "   ", "")}
 
   private boolean valueMustBeSetRaw(Object value)
   {
-    return (value instanceof DatabaseRef) || (value instanceof IDataSetModifier);
+    return (value instanceof DatabaseRef) || 
+           (value instanceof Future<?>) ||
+           (value instanceof IDataSetModifier);
   }
 
 }

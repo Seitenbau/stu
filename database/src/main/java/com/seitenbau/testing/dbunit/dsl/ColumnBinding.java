@@ -2,7 +2,6 @@ package com.seitenbau.testing.dbunit.dsl;
 
 import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.generator.DataType;
-import com.seitenbau.testing.util.Future;
 
 /**
  * Base class for ColumnBindings
@@ -16,23 +15,12 @@ public abstract class ColumnBinding<R, G>
   public abstract DataType getDataType();
 
   /**
-   * Allows to set a value for the corresponding column on a row
+   * Allows to set a value for the corresponding column on a row.
+   * Value may be a concrete value or a Future value, a Database Modifier, ...
    * @param row The row on which the value shall be set
    * @param value The value to be set
    */
   public abstract void set(R row, Object value);
-
-  /**
-   * Sets a lazy value on the corresponding column. Will be evaluated
-   * every time, the row column value is accessed.
-   * @param row The row on which the value shall be set
-   * @param value The lazy value to be set
-   * @throws RuntimeException if the column does not support lazy values
-   */
-  public void setFutureValue(R row, Future<Object> value)
-  {
-    throw new RuntimeException("Setting a a lazy value is not supported for this column");
-  }
 
   /**
    * Sets a reference to the corresponding column.

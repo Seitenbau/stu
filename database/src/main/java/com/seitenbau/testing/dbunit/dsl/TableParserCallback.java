@@ -77,7 +77,7 @@ public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedR
     {
       // call closure values after row has been built and registered
       FutureClosure futureValue = new FutureClosure((Closure<?>)value);
-      column.setFutureValue(rowbuilder, futureValue);
+      column.set(rowbuilder, futureValue);
     }
     else
     {
