@@ -41,12 +41,10 @@ import java.util.List;
 ###if( $model.package && $model.package.length() != 0 )
 ##import ${model.package}.${model.dataSet.name}DataSet;
 ###end
+import ${model.package}.${clsTable}.${clsRowbuilder};
 import ${model.package}.${clsTable}.${clsRowcollection};
 import ${model.package}.${clsTable}.${clsTableFindWhere};
 import ${model.package}.${clsTable}.${clsTableGetWhere};
-#foreach( $table in $model.associatedTables )
-import ${model.package}.${names.getTableClass($table)}.${names.getRowBuilderClass($table)};
-#end
 
 
 public class ${clsAdapter} {
