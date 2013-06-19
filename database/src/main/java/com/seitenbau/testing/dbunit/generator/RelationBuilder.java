@@ -37,11 +37,11 @@ public class RelationBuilder
   }
 
   /**
-   * Describes the relation regarding the entities in the current table. The Refs belonging to the
-   * current table will have a corresponding method to model this relation.
+   * Describes the relation regarding the entities in the current table. The generated Ref class
+   * belonging to the current table will have a corresponding method to model this relation.
    * <p>
    * When modeling associative tables, use {@link RelationBuilder#target(String)} to define the
-   * DSL features.
+   * generated methods on the involved Ref classes.
    * <p>
    * Example: A player belongs to a team
    * <pre>
@@ -64,10 +64,11 @@ public class RelationBuilder
   }
 
   /**
-   * Describes the relation regarding the entities in the target table. The Refs belonging to the
-   * target table will have a corresponding method to model this relation.
+   * Describes the relation regarding the entities in the target table. The generated Ref class
+   * belonging to the target table will have a corresponding method to model this relation.
    * <p>
-   * When modeling associative tables, use target to define the generated DSL (see Example 2).
+   * When modeling associative tables, only the target names will be used as method names
+   * for the involved Ref classes (see Example 2).
    * <p>
    * Example 1: Players are members of a team
    * <pre>
@@ -178,10 +179,11 @@ public class RelationBuilder
     }
 
     /**
-     * Describes the relation regarding the entities in the target table. The Refs belonging to the
-     * target table will have a corresponding method to model this relation.
+     * Describes the relation regarding the entities in the target table. The generated Ref class
+     * belonging to the target table will have a corresponding method to model this relation.
      * <p>
-     * When modeling associative tables, use target to define the generated DSL (see Example 2).
+     * When modeling associative tables, only the target names will be used as method names
+     * for the involved Ref classes (see Example 2).
      * <p>
      * Example 1: Players are members of a team
      * <pre>
@@ -262,11 +264,11 @@ public class RelationBuilder
     }
 
     /**
-     * Describes the relation regarding the entities in the current table. The Refs belonging to the
-     * current table will have a corresponding method to model this relation.
+     * Describes the relation regarding the entities in the current table. The generated Ref class
+     * belonging to the current table will have a corresponding method to model this relation.
      * <p>
      * When modeling associative tables, use {@link RelationBuilder#target(String)} to define the
-     * DSL features.
+     * generated methods on the involved Ref classes.
      * <p>
      * Example: A player belongs to a team
      * <pre>
