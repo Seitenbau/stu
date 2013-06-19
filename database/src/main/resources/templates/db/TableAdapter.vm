@@ -30,19 +30,12 @@ import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.DataType;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
-#if( !${model.isAssociativeTable()})
-import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
-#end
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 import com.seitenbau.testing.util.Future;
 
 import groovy.lang.Closure;
-#if( !${model.isAssociativeTable()})
 
-import java.util.HashSet;
-import java.util.Set;
-#end
 import java.util.List;
 
 ###if( $model.package && $model.package.length() != 0 )
