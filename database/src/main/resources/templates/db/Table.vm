@@ -249,12 +249,17 @@ public class ${clsTable} implements ITable
 
     public ${clsRowbuilder} set${column.javaName}Raw(Object value)
     {
-#if( !${column.relation} )
       if (value instanceof DatabaseRef)
       {
+#if( ${column.relation} )
+        if (!(value instanceof ${names.getRefClass($column.relation.table)}))
+        {
+          throw new RuntimeException("Column ${column.name} can not contain the Ref type (class: " + value.getClass().getName() + ")");
+        }
+#else
         throw new RuntimeException("Column ${column.name} can not contain a Ref type (class: " + value.getClass().getName() + ")");
-      }
 #end
+      }
 #if( ${column.isImmutable()})
       if (!mutable[${foreach.index}] && NullCompatibleEquivalence.equals(data[${foreach.index}], value))
       {

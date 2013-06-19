@@ -261,4 +261,17 @@ public class DataSetJavaAPITest
     Fail.fail();
   }
 
+  @Test
+  public void setIllegalRef()
+  {
+    DataSetRegistry.use(dataSet);
+
+    // prepare
+    exception.expect(RuntimeException.class);
+
+    // verify
+    dataSet.personsTable.insertRow().setTeamIdRaw(KAULBERSCH);
+
+    Fail.fail();
+  }
 }
