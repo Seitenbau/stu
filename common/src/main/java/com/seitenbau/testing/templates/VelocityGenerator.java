@@ -25,15 +25,15 @@ public class VelocityGenerator
   /**
    * Merge the given model with a velocity template from the classpath into an
    * output file.
-   *  
+   *
    * @param model
    *  Model object injected into the velocity context with var-name "model".
    * @param templateInClassPath
    *  Path to the actual template resource in the classpath
    * @param into
-   *  Target prefix, e.g. "target/". for an actual filename and subfolder the 
+   *  Target prefix, e.g. "target/". for an actual filename and subfolder the
    *  template needs so set the variables "package" and "filename"
-   *  
+   *
    * @throws Exception
    */
   public void executeTemplate(Object model, String templateInClassPath,
@@ -80,7 +80,7 @@ public class VelocityGenerator
       new File(path).mkdirs();
     }
     String fn = path + filename;
-    if(!filename.contains(".")) 
+    if(!filename.contains("."))
     {
       fn += ".java";
     }

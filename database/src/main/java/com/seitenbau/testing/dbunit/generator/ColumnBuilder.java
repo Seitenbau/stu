@@ -62,7 +62,7 @@ public class ColumnBuilder
       p_tableName = name.toLowerCase();
     }
 
-    return new Column(table, name, p_javaName, p_tableName, description, dataType.getDataType(), dataType.getJavaType(), relation,
+    return new Column(table, name, p_javaName, p_tableName, description, dataType, relation,
         flags);
   }
 

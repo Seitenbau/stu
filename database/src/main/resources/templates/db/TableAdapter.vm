@@ -8,6 +8,7 @@
 #set($clsTableFindWhere = ${names.getFindWhereClass($model)})
 #set($clsTableGetWhere  = ${names.getGetWhereClass($model)})
 #set($clsRowcollection  = ${names.getRowCollectionClass($model)})
+#set($jd                = ${model.dataSet.javaDocBuilder})
 #set($javaDocSep        = "#")
 #set($package           = ${model.package} )
 #if( $package && $package.length() != 0 )
@@ -155,10 +156,7 @@ public class ${clsAdapter} {
    *
    * <p>Example usage:
    * <pre>
-   * ${names.getTableAdapterVariable($model)}.rows {
-   *   REF #foreach( $col in $model.columns )| ${col.name} #end // header 
-   *   ...
-   * }
+${jd.createTableExample($model, "   ")}
    * </pre>
    *
    * @param rows The table data

@@ -25,6 +25,8 @@ public class DataSet
 
   NameProvider _names;
 
+  JavaDocBuilder _javaDocBuilder;
+
   public String getPackage()
   {
     return _package;
@@ -39,6 +41,7 @@ public class DataSet
     _package = thePackage;
     _name = name;
     _names = new NameProvider(name, thePackage);
+    _javaDocBuilder = new JavaDocBuilder(_names);
     _isTableDSLGeneration = isTableDSLGeneration;
     _isModelClassGeneration = isModelClassGeneration;
   }
@@ -51,6 +54,11 @@ public class DataSet
   public NameProvider getNames()
   {
     return _names;
+  }
+
+  public JavaDocBuilder getJavaDocBuilder()
+  {
+    return _javaDocBuilder;
   }
 
   public List<Table> getTables()

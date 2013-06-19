@@ -14,9 +14,7 @@ public class Column
 
   private final Table _table;
 
-  private final String _type;
-
-  private final String _javaType;
+  private final DataType _dataType;
 
   private final String _name;
 
@@ -32,7 +30,7 @@ public class Column
 
   private final List<Column> _referencedBy;
 
-  Column(Table table, String name, String javaName, String groovyName, String description, String type, String javaType,
+  Column(Table table, String name, String javaName, String groovyName, String description, DataType dataType,
       Relation relation, Set<String> flags)
   {
     _table = table;
@@ -40,8 +38,7 @@ public class Column
     _javaName = javaName;
     _groovyName = groovyName;
     _description = description;
-    _type = type;
-    _javaType = javaType;
+    _dataType = dataType;
     _relation = relation;
 
     _metaData = new ColumnMetaData(flags);
@@ -60,12 +57,17 @@ public class Column
 
   public String getJavaType()
   {
-    return _javaType;
+    return _dataType.getJavaType();
   }
 
   public String getType()
   {
-    return _type;
+    return _dataType.getDataType();
+  }
+
+  DataType getDataType()
+  {
+    return _dataType;
   }
 
   public String getName()
