@@ -16,7 +16,7 @@ public class TableBuilder
 
   private final List<ColumnBuilder> columnBuilders;
 
-  public TableBuilder(DatabaseModel model, String name)
+  TableBuilder(DatabaseModel model, String name)
   {
     this.model = model;
     this.name = name;
@@ -24,6 +24,10 @@ public class TableBuilder
     columnBuilders = new LinkedList<ColumnBuilder>();
   }
 
+  /**
+   * Finalizes the creation of the table.
+   * @return The created table
+   */
   public Table build()
   {
     final Table result = new Table(name, javaName, getTableDescription(), columnBuilders);
@@ -71,11 +75,6 @@ public class TableBuilder
   {
     this.description = description;
     return this;
-  }
-
-  String getDescription()
-  {
-    return description;
   }
 
   /**

@@ -13,25 +13,25 @@ public class ColumnMetaData
    * Although a database primary key column is an identifier column, there is no need for an unique
    * column to be explicit a primary key.
    */
-  public static final String UNIQUE = "unique";
+  public static final String UNIQUE = "stu_unique";
 
   /**
    * Determines, if the corresponding {@code nextValue()} method is
    * generated for the column
    */
-  public static final String ADD_NEXT_METHOD = "add_next_method";
+  public static final String ADD_NEXT_METHOD = "stu_add_next_method";
 
   /**
    * The the corresponding {@code nextValue()} method is automatically
    * called on insertRow
    */
-  public static final String AUTO_INVOKE_NEXT = "auto_invoke_next";
+  public static final String AUTO_INVOKE_NEXT = "stu_auto_invoke_next";
 
-  public static final String AUTO_INCREMENT = "auto_increment";
+  public static final String AUTO_INCREMENT = "stu_auto_increment";
 
-  public static final String IMMUTABLE = "immutable";
+  public static final String IMMUTABLE = "stu_immutable";
 
-  public static final String IDENTIFIER = "identifier";
+  public static final String IDENTIFIER = "stu_identifier";
 
   private final Map<String, Boolean> _values;
 
@@ -43,13 +43,16 @@ public class ColumnMetaData
       _values.put(flag, true);
     }
 
-    if (requiredNextMethod(flags))
+    if (isNextMethodRequired(flags))
     {
       _values.put(ADD_NEXT_METHOD, true);
     }
   }
 
-  private static boolean requiredNextMethod(Set<String> flags)
+  /**
+   * Checks if there are flags which essentially require the generation of the nextValue methods
+   */
+  private static boolean isNextMethodRequired(Set<String> flags)
   {
     return flags.contains(AUTO_INCREMENT) || flags.contains(AUTO_INVOKE_NEXT);
   }

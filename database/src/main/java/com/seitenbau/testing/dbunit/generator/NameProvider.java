@@ -3,6 +3,8 @@ package com.seitenbau.testing.dbunit.generator;
 public class NameProvider
 {
 
+  private static final String TRUNCABLE_ID_SUFFIX = "_id";
+
   private final String _name;
 
   private final String _package;
@@ -109,4 +111,37 @@ public class NameProvider
     return table.getJavaName() + "Model";
   }
 
+  public boolean columnNameCanBeTruncated(Column column)
+  {
+    final String groovyName = column.getGroovyName();
+    if (column.getRelation() == null || !groovyName.endsWith(TRUNCABLE_ID_SUFFIX)
+        && groovyName.length() > TRUNCABLE_ID_SUFFIX.length())
+    {
+      return false;
+    }
+
+    final String truncatedName = truncateGroovyName(column);
+
+    for (Column otherColumn : column.getTable().getColumns())
+    {
+      if (truncatedName.equals(otherColumn.getGroovyName()))
+      {
+        // column cannot be truncated
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public String truncateGroovyName(Column column)
+  {
+    final String groovyName = column.getGroovyName();
+    if (!groovyName.endsWith(TRUNCABLE_ID_SUFFIX))
+    {
+      throw new RuntimeException("Cannot truncate column name " + groovyName);
+    }
+
+    return groovyName.substring(0, groovyName.length() - TRUNCABLE_ID_SUFFIX.length());
+  }
 }

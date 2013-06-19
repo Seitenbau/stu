@@ -37,8 +37,8 @@ public class RelationBuilder
   }
 
   /**
-   * Describes the relation regarding the entities in the current table. The Refs belonging the
-   * current table will have a corresponding method to model this kind of relations.
+   * Describes the relation regarding the entities in the current table. The Refs belonging to the
+   * current table will have a corresponding method to model this relation.
    * <p>
    * When modeling associative tables, use {@link RelationBuilder#target(String)} to define the
    * DSL features.
@@ -64,8 +64,8 @@ public class RelationBuilder
   }
 
   /**
-   * Describes the relation regarding the entities in the target table. The Refs belonging the
-   * target table will have a corresponding method to model this kind of relations.
+   * Describes the relation regarding the entities in the target table. The Refs belonging to the
+   * target table will have a corresponding method to model this relation.
    * <p>
    * When modeling associative tables, use target to define the generated DSL (see Example 2).
    * <p>
@@ -160,9 +160,9 @@ public class RelationBuilder
     return target;
   }
 
-
   public static class LocalReferenceBuilder
   {
+
     private final RelationBuilder parent;
 
     public LocalReferenceBuilder(RelationBuilder parent, String name)
@@ -178,8 +178,8 @@ public class RelationBuilder
     }
 
     /**
-     * Describes the relation regarding the entities in the target table. The Refs belonging the
-     * target table will have a corresponding method to model this kind of relations.
+     * Describes the relation regarding the entities in the target table. The Refs belonging to the
+     * target table will have a corresponding method to model this relation.
      * <p>
      * When modeling associative tables, use target to define the generated DSL (see Example 2).
      * <p>
@@ -221,20 +221,15 @@ public class RelationBuilder
       return parent.column(name, dataType);
     }
 
+    /**
+     * Finalizes the creation of the table.
+     * @return The created table
+     */
     public Table build()
     {
       return parent.build();
     }
 
-    public String getName()
-    {
-      return parent.localName;
-    }
-
-    public String getDescription()
-    {
-      return parent.localDescription;
-    }
   }
 
   public static class TargetReferenceBuilder
@@ -267,8 +262,8 @@ public class RelationBuilder
     }
 
     /**
-     * Describes the relation regarding the entities in the current table. The Refs belonging the
-     * current table will have a corresponding method to model this kind of relations.
+     * Describes the relation regarding the entities in the current table. The Refs belonging to the
+     * current table will have a corresponding method to model this relation.
      * <p>
      * When modeling associative tables, use {@link RelationBuilder#target(String)} to define the
      * DSL features.
@@ -308,25 +303,6 @@ public class RelationBuilder
       return parent.build();
     }
 
-    public String getName()
-    {
-      return parent.targetName;
-    }
-
-    public String getDescription()
-    {
-      return parent.targetDescription;
-    }
-
-    public Integer getMin()
-    {
-      return parent.targetMin;
-    }
-
-    public Integer getMax()
-    {
-      return parent.targetMax;
-    }
   }
 
 }

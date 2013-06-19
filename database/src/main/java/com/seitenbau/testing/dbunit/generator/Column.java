@@ -10,8 +10,6 @@ import com.seitenbau.testing.util.CamelCase;
 public class Column
 {
 
-  private static final String ID_SUFFIX = "_id";
-
   private final Table _table;
 
   private final DataType _dataType;
@@ -108,26 +106,6 @@ public class Column
   public List<Column> getReferencedByList()
   {
     return Collections.unmodifiableList(_referencedBy);
-  }
-
-  public String getTruncatedReferenceName()
-  {
-    if (_relation == null || !_groovyName.endsWith(ID_SUFFIX))
-    {
-      return null;
-    }
-
-    final String result = _groovyName.substring(0, _groovyName.length() - ID_SUFFIX.length());
-    for (Column column : _table.getColumns())
-    {
-      if (result.equals(column.getName()))
-      {
-        // column cannot be truncated
-        return null;
-      }
-    }
-
-    return result;
   }
 
   public boolean isIdentifier()

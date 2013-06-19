@@ -85,8 +85,8 @@ public class ${clsAdapter} {
   public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.groovyName} = create${col.javaName}Binding();
 
 ## check if column is an identifier
-#if ( ${col.truncatedReferenceName} )
-#set( $shortname  = ${col.truncatedReferenceName} )
+#if ( ${names.columnNameCanBeTruncated($col)} )
+#set( $shortname  = ${names.truncateGroovyName($col)} )
 #comments()   
   public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${shortname} = ${col.name};
 
@@ -138,8 +138,8 @@ public class ${clsAdapter} {
    *   <li><strong>{@code REF}</strong>: {@code ${names.getRefClass($model)}}</li>
 #foreach( $col in $model.columns )
 #set( $shortname  = "" )
-#if ( ${col.truncatedReferenceName} )
-#set( $shortname  = " (alias: <strong>{@code " + ${col.truncatedReferenceName} + "}</strong>)")
+#if ( ${names.columnNameCanBeTruncated($col)} )
+#set( $shortname  = " (alias: <strong>{@code " + ${names.truncateGroovyName($col)} + "}</strong>)")
 #end
    *   <li> <strong>{@code ${col.name}}</strong>$shortname: {@code ${col.javaType}}
 #end

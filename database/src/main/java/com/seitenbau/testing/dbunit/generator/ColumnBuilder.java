@@ -125,7 +125,7 @@ public class ColumnBuilder
   public ColumnBuilder autoInvokeNext()
   {
     setFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
-    return addNextMethod();
+    return setFlag(ColumnMetaData.ADD_NEXT_METHOD);
   }
 
   /**
@@ -140,7 +140,7 @@ public class ColumnBuilder
   public ColumnBuilder autoIncrement()
   {
     setFlag(ColumnMetaData.AUTO_INCREMENT);
-    return addNextMethod();
+    return setFlag(ColumnMetaData.ADD_NEXT_METHOD);
   }
 
   /**
@@ -193,7 +193,7 @@ public class ColumnBuilder
   public ColumnBuilder unique()
   {
     setFlag(ColumnMetaData.UNIQUE);
-    return immutable();
+    return setFlag(ColumnMetaData.IMMUTABLE);
   }
 
   /**
