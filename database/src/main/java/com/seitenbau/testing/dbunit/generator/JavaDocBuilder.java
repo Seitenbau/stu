@@ -22,7 +22,7 @@ public class JavaDocBuilder
     if (table.isAssociativeTable())
     {
       appendLineStart(result, indention, innerIndention);
-      result.append("// Note: it is recommended to use the relation API to model n:m associations\n");
+      result.append("// Note: it is recommended to use the {@link #relations} API to model n:m associations\n");
     }
 
     appendLineStart(result, indention, innerIndention);
