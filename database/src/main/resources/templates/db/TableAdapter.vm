@@ -38,9 +38,6 @@ import groovy.lang.Closure;
 
 import java.util.List;
 
-###if( $model.package && $model.package.length() != 0 )
-##import ${model.package}.${model.dataSet.name}DataSet;
-###end
 import ${model.package}.${clsTable}.${clsRowbuilder};
 import ${model.package}.${clsTable}.${clsRowcollection};
 import ${model.package}.${clsTable}.${clsTableFindWhere};
@@ -79,7 +76,7 @@ public class ${clsAdapter} {
    * 
    */
 #end
-#comments()   
+#comments()
   public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.groovyName} = create${col.javaName}Binding();
 
 ## check if column is an identifier
@@ -154,7 +151,7 @@ ${jd.createTableExample($model, "   ", "")}
    */
   public void rows(Closure<?> rows)
   {
-    TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> callback = 
+    TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> callback =
         new TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>(_adapter);
     TableParser.parseTable(rows, this, callback);
   }
@@ -388,4 +385,3 @@ ${jd.createTableExample($model, "   ", "")}
   }
 
 }
-
