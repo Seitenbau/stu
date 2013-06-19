@@ -245,7 +245,20 @@ public class DataSetJavaAPITest
     // verify
     KAULBERSCH.getId();  // access rowbuilder
     Fail.fail();
+  }
 
+  @Test
+  public void setRefOnValueColumn()
+  {
+    DataSetRegistry.use(dataSet);
+
+    // prepare
+    exception.expect(RuntimeException.class);
+
+    // verify
+    dataSet.jobsTable.insertRow().setTitleRaw(KAULBERSCH);
+
+    Fail.fail();
   }
 
 }

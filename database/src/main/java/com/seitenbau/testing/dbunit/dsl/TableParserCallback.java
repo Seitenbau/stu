@@ -68,21 +68,13 @@ public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedR
       return;
     }
 
-    if (value instanceof DatabaseRef)
+    // Closures are considered to be Future values
+    if (value instanceof Closure)
     {
-      DatabaseRef ref = (DatabaseRef) value;
-      column.setReference(rowbuilder, ref);
+      value = new FutureClosure((Closure<?>)value);
     }
-    else if (value instanceof Closure)
-    {
-      // call closure values after row has been built and registered
-      FutureClosure futureValue = new FutureClosure((Closure<?>)value);
-      column.set(rowbuilder, futureValue);
-    }
-    else
-    {
-      column.set(rowbuilder, value);
-    }
+
+    column.set(rowbuilder, value);
   }
 
   @SuppressWarnings("unchecked")

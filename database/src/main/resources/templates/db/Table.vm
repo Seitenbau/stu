@@ -18,6 +18,7 @@ package ${package};
 
 import com.google.common.base.Optional;
 
+import com.seitenbau.testing.dbunit.dsl.DatabaseRef;
 import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 #if( !${model.isAssociativeTable()} )
@@ -248,6 +249,12 @@ public class ${clsTable} implements ITable
 
     public ${clsRowbuilder} set${column.javaName}Raw(Object value)
     {
+#if( !${column.relation} )
+      if (value instanceof DatabaseRef)
+      {
+        throw new RuntimeException("Column ${column.name} can not contain a Ref type (class: " + value.getClass().getName() + ")");
+      }
+#end
 #if( ${column.isImmutable()})
       if (!mutable[${foreach.index}] && NullCompatibleEquivalence.equals(data[${foreach.index}], value))
       {

@@ -22,17 +22,6 @@ public abstract class ColumnBinding<R, G>
    */
   public abstract void set(R row, Object value);
 
-  /**
-   * Sets a reference to the corresponding column.
-   * @param row The row on which the reference shall be set
-   * @param reference The reference to be set
-   * @throws RuntimeException if the column is not a reference column
-   */
-  public void setReference(R row, DatabaseRef reference)
-  {
-    throw new RuntimeException("Setting a reference is not supported for this column");
-  }
-
   public boolean isRefColumn()
   {
     return false;

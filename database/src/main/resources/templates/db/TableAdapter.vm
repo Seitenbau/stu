@@ -357,23 +357,6 @@ ${jd.createTableExample($model, "   ", "")}
           row.set${col.javaName}((${col.javaType})CastUtil.cast(value, ${col.type}));
         }
       }
-#if ( ${col.relation} )
-#set( $refTable = ${col.relation.table} )
-
-      @Override
-      public void setReference(${clsRowbuilder} row, DatabaseRef ref)
-      {
-        ${names.getRefClass($refTable)} reference = (${names.getRefClass($refTable)})ref;
-        ${names.getRowBuilderClass($refTable)} referenceBuilder = reference.getBuilder(_builder);
-        if (referenceBuilder != null)
-        {
-          final ${col.relation.column.javaType} value = referenceBuilder.get${col.relation.javaName}();
-          row.set${col.javaName}(value);
-        } else {
-          row.set${col.javaName}Raw(ref);
-        }
-      }
-#end
 #if ( ${col.isUnique()} )
 
       @Override
