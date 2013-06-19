@@ -229,6 +229,15 @@ public class ColumnBuilder
     return new RelationBuilder(this, targetColumn);
   }
 
+  /**
+   * Models a relation to another table using its identifier column. A relation will automatically
+   * add methods to model relations (e.g. setters on RowBuilders and methods on the Ref classes).
+   * <p>
+   * Although relations are mostly achieved by public key and foreign key columns in the
+   * actual database, a relation in STU does not require this.
+   * @param targetColumn The column, which the current column is related to
+   * @return The builder to configure the relation
+   */
   public RelationBuilder relationTo(Table table)
   {
     return new RelationBuilder(this, table.getIdentifierColumn());
