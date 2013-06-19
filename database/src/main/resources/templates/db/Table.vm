@@ -271,6 +271,7 @@ public class ${clsTable} implements ITable
     private void autoInvokeNext${column.javaName}()
     {
       next${column.javaName}();
+      // when auto invoked, the value can be overwritten manually
       mutable[${foreach.index}] = true;
     }
 #end

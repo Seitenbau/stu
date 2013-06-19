@@ -70,7 +70,7 @@ public class ColumnBuilder
    * Adds a further column to the table.
    * @param name The database name of the column.
    * @param dataType The column's data type.
-   * @return A builder to configure the column
+   * @return The column builder
    */
   public ColumnBuilder column(String name, DataType dataType)
   {
@@ -80,7 +80,7 @@ public class ColumnBuilder
   /**
    * Defines how the column is spelled in the Java source code.
    * @param javaName The column name within the Java sources
-   * @return The builder to configure the column
+   * @return The column builder
    */
   public ColumnBuilder javaName(String javaName)
   {
@@ -91,6 +91,7 @@ public class ColumnBuilder
   /**
    * Defines how the column is spelled in the Groovy Table Builder source codes.
    * @param javaName The column name within the Groovy sources
+   *
    * @return The builder to configure the column
    */
   public ColumnBuilder tableName(String tableName)
@@ -103,7 +104,7 @@ public class ColumnBuilder
    * Adds a description to the current column. This description is used for JavaDoc comments
    * in the generated classed
    * @param description The column description
-   * @return The builder to configure the column
+   * @return The column builder
    */
   public ColumnBuilder description(String description)
   {
@@ -115,7 +116,11 @@ public class ColumnBuilder
    * The the corresponding {@code nextValue()} method is automatically
    * called on insertRow. Enables the flag {@link ColumnMetaData#ADD_NEXT_METHOD} and
    * therefore the generation of a next value method as well.
-   * @return The builder to configure the column
+   * <p>
+   * Note: When used in combination with {@link ColumnMetaData#IMMUTABLE}, the automatic
+   * generated value can be overwritten once.
+   *
+   * @return The column builder
    */
   public ColumnBuilder autoInvokeNext()
   {
@@ -129,7 +134,8 @@ public class ColumnBuilder
    * therefore the generation of a next value method as well.
    * <p>
    * <b>This flag requires DbUnit 2.4.3 or later</b>
-   * @return The builder to configure the column
+   *
+   * @return The column builder
    */
   public ColumnBuilder autoIncrement()
   {
@@ -182,7 +188,7 @@ public class ColumnBuilder
    * value generation.
    * An unique value column cannot contain lazy evaluated Future values.
    *
-   * @return The builder to configure the column
+   * @return The column builder
    */
   public ColumnBuilder unique()
   {
@@ -190,6 +196,14 @@ public class ColumnBuilder
     return immutable();
   }
 
+  /**
+   * Ensures that the value of the column can only be set once.
+   * <p>
+   * Note: When used in combination with {@link ColumnMetaData#AUTO_INVOKE_NEXT}, the automatic
+   * generated value can be overwritten once.
+   *
+   * @return The column builder
+   */
   public ColumnBuilder immutable()
   {
     return setFlag(ColumnMetaData.IMMUTABLE);
