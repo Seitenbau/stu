@@ -18,7 +18,7 @@ import java.util.List;
 #end
 import java.util.HashMap;
 import java.util.Map;
-import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
+import com.seitenbau.testing.dbunit.dsl.DatabaseRef;
 
 import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
 
@@ -37,7 +37,7 @@ import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
 #end
  * </ul>
  */
-public class ${clsRef} extends DatabaseReference
+public class ${clsRef} extends DatabaseRef
 {
 
   private final Map<Object, ${clsRowbuilder}> builders;

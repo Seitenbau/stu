@@ -5,13 +5,13 @@ package com.seitenbau.testing.dbunit.dsl;
  *
  * @param <R> Table RowBuilder class
  * @param <G> Table GetWhere class
- * @param <D> Table DatabaseReference class
+ * @param <D> Table DatabaseRef class
  */
-public interface TableParserAdapter<R, G, D extends DatabaseReference>
+public interface TableParserAdapter<R, G, D extends DatabaseRef>
 {
 
   /**
-   * Inserts a new row into the table 
+   * Inserts a new row into the table
    * @return The rowbuilder for the new row
    */
   R insertRow();
@@ -21,7 +21,7 @@ public interface TableParserAdapter<R, G, D extends DatabaseReference>
    * @return The getWhere instance
    */
   G getWhere();
-  
+
   /**
    * Binds the row to the reference under the table's dataset
    * @param reference The reference

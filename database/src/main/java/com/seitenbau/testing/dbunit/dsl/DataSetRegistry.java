@@ -7,15 +7,15 @@ public final class DataSetRegistry
 {
 
   private final static Map<String, ThreadLocal<DataSetIdentificator>> activeScopes = new HashMap<String, ThreadLocal<DataSetIdentificator>>();
-  
+
   private DataSetRegistry()
   {
     throw new IllegalStateException("This class cannot be instantiated");
   }
 
   /**
-   * Sets the current scope for DatabaseReference instances. Only References
-   * beloning to the scope's  will be affected.
+   * Sets the current scope for DatabaseRef instances. Only References
+   * belonging to the scope one's will be affected.
    * @param identificator The scope to set
    * @return The last active scope
    */
@@ -24,7 +24,7 @@ public final class DataSetRegistry
     if (identificator == null) {
       return null;
     }
-    
+
     ThreadLocal<DataSetIdentificator> activeScope = activeScopes.get(identificator.getDataSetClassName());
     if (activeScope == null) {
       activeScope = new ThreadLocal<DataSetIdentificator>();

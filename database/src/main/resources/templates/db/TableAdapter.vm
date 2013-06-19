@@ -21,7 +21,7 @@ import com.google.common.base.Optional;
 
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.ColumnBinding;
-import com.seitenbau.testing.dbunit.dsl.DatabaseReference;
+import com.seitenbau.testing.dbunit.dsl.DatabaseRef;
 import com.seitenbau.testing.dbunit.dsl.NoValue;
 import com.seitenbau.testing.dbunit.dsl.RefColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
@@ -52,7 +52,7 @@ import ${model.package}.${names.getTableClass($table)}.${names.getRowBuilderClas
 public class ${clsAdapter} {
 
   /**
-   * Do not set a value. (To remove a value use <i>null</i>)
+   * Do not set a value. (To remove a value use {@code null})
    */
   public final NoValue _ = new NoValue();
 
@@ -361,7 +361,7 @@ ${jd.createTableExample($model, "   ", "")}
 #set( $refTable = ${col.relation.table} )
 
       @Override
-      public void setReference(${clsRowbuilder} row, DatabaseReference ref)
+      public void setReference(${clsRowbuilder} row, DatabaseRef ref)
       {
         ${names.getRefClass($refTable)} reference = (${names.getRefClass($refTable)})ref;
         ${names.getRowBuilderClass($refTable)} referenceBuilder = reference.getBuilder(_builder);
@@ -408,7 +408,7 @@ ${jd.createTableExample($model, "   ", "")}
 
   private boolean valueMustBeSetRaw(Object value)
   {
-    return (value instanceof DatabaseReference) || (value instanceof IDataSetModifier);
+    return (value instanceof DatabaseRef) || (value instanceof IDataSetModifier);
   }
 
 }

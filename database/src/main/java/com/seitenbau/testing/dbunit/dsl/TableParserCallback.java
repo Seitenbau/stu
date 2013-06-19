@@ -10,7 +10,7 @@ import java.util.List;
 import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.dsl.TableParserContext.ParsedRowCallback;
 
-public class TableParserCallback<R, G, D extends DatabaseReference> implements ParsedRowCallback
+public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedRowCallback
 {
 
   private final TableParserAdapter<R, G, D> _tableAdapter;
@@ -68,9 +68,9 @@ public class TableParserCallback<R, G, D extends DatabaseReference> implements P
       return;
     }
 
-    if (value instanceof DatabaseReference)
+    if (value instanceof DatabaseRef)
     {
-      DatabaseReference ref = (DatabaseReference) value;
+      DatabaseRef ref = (DatabaseRef) value;
       column.setReference(rowbuilder, ref);
     }
     else if (value instanceof Closure)

@@ -40,7 +40,7 @@ public abstract class ColumnBinding<R, G>
    * @param reference The reference to be set
    * @throws RuntimeException if the column is not a reference column
    */
-  public void setReference(R row, DatabaseReference reference)
+  public void setReference(R row, DatabaseRef reference)
   {
     throw new RuntimeException("Setting a reference is not supported for this column");
   }

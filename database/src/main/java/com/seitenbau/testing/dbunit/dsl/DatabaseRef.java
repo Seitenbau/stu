@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Base type for all Database references
+ * Base type for all database Ref types
  */
-public class DatabaseReference
+public class DatabaseRef
 {
 
   /**
