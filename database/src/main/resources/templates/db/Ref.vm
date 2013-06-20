@@ -66,6 +66,8 @@ public class ${clsRef} extends DatabaseRef
    * ${col.description}
    * @return The value
    */
+#else
+  // use description() in the table model to add a column description
 #end
   public ${col.javaType} get${col.javaName}()
   {
@@ -87,6 +89,12 @@ public class ${clsRef} extends DatabaseRef
     return row;
   }
 
+  /**
+   * Removes the Ref from the DataSet. Will delete the bound row and remove all n:m associations.
+   * Afterwards, the Ref will no longer be bound to that row.
+   * <p>
+   * Note: The DataSet may be in an invalid state, because 1:n or 1:1 associations will not be updated.
+   */
   public void removeFromDataSet()
   {
     ${clsDataSet} dataSet = getActiveDataSet();
@@ -113,6 +121,7 @@ public class ${clsRef} extends DatabaseRef
 #end
 #end
 
+    // unbind the Ref
     builders.remove(dataSet.getDataSet());
   }
 
@@ -202,7 +211,7 @@ public class ${clsRef} extends DatabaseRef
    * ${rel.description}
    * <p>
 #end
-   * Models: A n:m relationship between both entities.
+   * Models: A n:m relationship between both tables.
    * @param refs A list of references, which are related to the current entity
    * @return The reference to the current entity
    */

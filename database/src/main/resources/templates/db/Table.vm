@@ -16,25 +16,6 @@
 package ${package};
 #end
 
-import com.google.common.base.Optional;
-
-import com.seitenbau.testing.dbunit.dsl.DatabaseRef;
-import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
-import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
-#if( !${model.isAssociativeTable()} )
-import com.seitenbau.testing.dbunit.dsl.CastUtil;
-import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
-#end
-import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
-import com.seitenbau.testing.dbunit.generator.ColumnMetaDataBuilder;
-import com.seitenbau.testing.util.Action;
-import com.seitenbau.testing.util.Filter;
-import com.seitenbau.testing.util.Future;
-import com.seitenbau.testing.util.date.DateBuilder;
-#if( !${model.isAssociativeTable()})
-import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
-#end
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,13 +33,32 @@ import org.dbunit.dataset.RowOutOfBoundsException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
+import com.google.common.base.Optional;
+#if( !${model.isAssociativeTable()} )
+import com.seitenbau.testing.dbunit.dsl.CastUtil;
+#end
+import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
+import com.seitenbau.testing.dbunit.dsl.DatabaseRef;
+#if( !${model.isAssociativeTable()} )
+import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+#end
+import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
+import com.seitenbau.testing.dbunit.generator.ColumnMetaDataBuilder;
+#if( !${model.isAssociativeTable()})
+import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
+#end
+import com.seitenbau.testing.util.Action;
+import com.seitenbau.testing.util.Filter;
+import com.seitenbau.testing.util.Future;
+import com.seitenbau.testing.util.DateUtil;
+import com.seitenbau.testing.util.date.DateBuilder;
+
 #foreach( $table in $model.requiredTableImports )
 #set($importGetter = ${names.getRowGettersClass($table)})
 #set($importTable = ${names.getTableClass($table)})
 import ${model.package}.${importTable}.${importGetter};
 #end
-
-import static com.seitenbau.testing.util.DateUtil.*;
 
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
@@ -207,6 +207,24 @@ public class ${clsTable} implements ITable
       ref.setBuilder(table._dataSet, this);
       return this;
     }
+
+    void assertNoRefType(String columnName, Object value)
+    {
+      if (value instanceof DatabaseRef)
+      {
+        throw new RuntimeException("Column " + columnName + " can not contain a Ref type (class: " + value.getClass().getName() + ")");
+      }
+    }
+    
+    void assertNoOrCorrectRefType(String columnName, Class<?> clazz, Object value)
+    {
+      if (value instanceof DatabaseRef)
+      {
+        if (!clazz.isInstance(value)) {
+          throw new RuntimeException("Column " + columnName + " id can not contain the Ref type (class: " + value.getClass().getName() + ")");
+        }
+      }
+    }
 #foreach( $column in $model.columns )
 #if( $column.javaType.contains("Date") )
 
@@ -239,27 +257,21 @@ public class ${clsTable} implements ITable
     {
       return set${column.javaName}Raw(value);
     }
-
 #if( $column.relation )
+
     public ${clsRowbuilder} set${column.javaName}(${names.getRefClass($column.relation.column.table)} reference)
     {
       return set${column.javaName}Raw(reference);
     }
 #end
-
+    
     public ${clsRowbuilder} set${column.javaName}Raw(Object value)
     {
-      if (value instanceof DatabaseRef)
-      {
 #if( ${column.relation} )
-        if (!(value instanceof ${names.getRefClass($column.relation.table)}))
-        {
-          throw new RuntimeException("Column ${column.name} can not contain the Ref type (class: " + value.getClass().getName() + ")");
-        }
+      assertNoOrCorrectRefType("${column.javaName}", ${names.getRefClass($column.relation.table)}.class, value);
 #else
-        throw new RuntimeException("Column ${column.name} can not contain a Ref type (class: " + value.getClass().getName() + ")");
+      assertNoRefType("${column.javaName}", value);
 #end
-      }
 #if( ${column.isImmutable()})
       if (!mutable[${foreach.index}] && NullCompatibleEquivalence.equals(data[${foreach.index}], value))
       {
@@ -293,6 +305,8 @@ public class ${clsTable} implements ITable
      * ${column.description}
      * @return The value
      */
+#else
+    // use description() in the table model to add a column description
 #end
     public ${column.javaType} get${column.javaName}()
     {
@@ -328,6 +342,8 @@ public class ${clsTable} implements ITable
      * ${column.description}
      * @return The value as raw object
      */
+#else
+    // use description() in the table model to add a column description
 #end
     public Object get${column.javaName}Raw()
     {
@@ -406,20 +422,17 @@ public class ${clsTable} implements ITable
       if(column.equalsIgnoreCase(Columns.${column.javaName}) )
       {
 #if( ${column.relation} )
-## reference value cannot be lazy
-#set($refTable = ${column.relation.column.table})
+#set($refTableClass = ${names.getRefClass($column.relation.column.table)})
         Object value = data[$foreach.index];
-        if (value instanceof ${names.getRefClass($refTable)})
+        if (value instanceof ${refTableClass})
         {
-          ${names.getRefClass($refTable)} ref = (${names.getRefClass($refTable)})value;
+          ${refTableClass} ref = (${refTableClass})value;
           ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.relation.column.javaName}();
-          // TODO NM/CB/RW think about storing the value
-          // data[$foreach.index] = refValue;
           return refValue; 
         }      
         return value;
 #else
-        return getColumnValue($foreach.index);        
+        return getColumnValue($foreach.index);
 #end
       }
 #end
@@ -443,7 +456,7 @@ public class ${clsTable} implements ITable
     }
 #foreach( $column in $model.columns )
 #if( $column.relation )
-#set($otherGetter  = "RowGetters_" + ${column.relation.table.javaName} )
+#set($otherGetter = ${names.getRowGettersClass(${column.relation.table})} )
 
     public ${clsRowbuilder} ref${column.javaName}(@SuppressWarnings("rawtypes") $otherGetter reference)
     {
@@ -785,6 +798,8 @@ public class ${clsTable} implements ITable
      * Throws a RuntimeException, if row count is not equal to 1
      * @return The value
      */
+#else
+    // use description() in the table model to add a column description
 #end
     public ${column.javaType} get${column.javaName}()
     {
@@ -1081,7 +1096,7 @@ public class ${clsTable} implements ITable
 
   static Date toDate(String dateString)
   {
-    return asDate(dateString);
+    return DateUtil.asDate(dateString);
   }
   
   static Date toDate(DateBuilder date)

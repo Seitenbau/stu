@@ -1,15 +1,35 @@
-#set($names    = ${model.names})
-#set($filename = "RefFactory")
-#set($package  = ${model.package})
-#set($clsFactory = "RefFactory")
+#set($names          = ${model.names})
+#set($filename       = "RefFactory")
+#set($package        = ${model.package})
+#set($clsFactory     = "RefFactory")
+#set($jdSep          = "#")
 #if( $package && $package.length() != 0 )
 package ${package};
 #end
 
+/**
+ * Static Factory to create Refs belonging to {@link ${model.names.dataSetClass}}.
+ * Refs can be used to specify a table entity.
+ * <p>
+ * Available Ref types are: 
+ * <ul>
+#foreach( $table in $model.tables )
+ *   <li>{@link ${names.getRefClass($table)}}</li>
+#end
+ * </ul>
+ * A recommended way is to create a class with all used Refs as public static final variables,
+ * which are statically imported into the test classes.
+ * <p>
+ * See {@link ${names.builderClass}${jdSep}tables()} or any of the for example usage of Refs.
+ */
 public class ${clsFactory} 
 {
 #foreach( $table in $model.tables )
 
+  /**
+   * Creates a Ref for a ${names.getTableClass($table)} table.
+   * @return The created {@link ${names.getRefClass($table)}} instance
+   */
   public static ${names.getRefClass($table)} create${names.getRefClass($table)}()
   {
     return new ${names.getRefClass($table)}();

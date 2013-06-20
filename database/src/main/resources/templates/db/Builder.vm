@@ -204,11 +204,44 @@ ${jd.createRelationExamples($model, "   ", "  ")}
     return null;
   }
 
+  /**
+   * Override this method to specify a base DataSets, which the current DataSet will extend
+   * <p>Example usage (Groovy):
+   * <pre>
+   * def extendsDataSet() { BaseDataSet }
+   * </pre>
+   * <p>Example usage (Java):
+   * <pre>
+   * Object extendsDataSets() {
+   *   return baseDataSet.class;
+   * }
+   * </pre>
+   *
+   * @return The base data set class
+   */
   protected Object extendsDataSet() 
   {
     return null;
   }
 
+  /**
+   * Override this method to specify DataSets, from which the current DataSet is composed.
+   * <p>Example usage (Groovy):
+   * <pre>
+   * def extendsDataSets() { [ Base1DataSet, Base2DataSet ] }
+   * </pre>
+   * <p>Example usage (Java):
+   * <pre>
+   * Object extendsDataSets() {
+   *   List&lt;Class&lt;?&gt;&gt; baseDataSets = new ArrayList&lt;Class&lt;?&gt;&gt;();
+   *   baseDataSets.add(Base1DataSet.class);
+   *   baseDataSets.add(Base2DataSet.class);
+   *   return baseDataSets;
+   * }
+   * </pre>
+   *
+   * @return List of base data set classes
+   */
   protected Object extendsDataSets() 
   {
     return null;

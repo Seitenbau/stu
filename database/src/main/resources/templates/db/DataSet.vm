@@ -1,6 +1,6 @@
-#set($filename = ${model.names.dataSetClass} )
-#set($package  = ${model.package} )
-#set($clsDataSet = ${model.names.dataSetClass})
+#set($filename       = ${model.names.dataSetClass} )
+#set($package        = ${model.package} )
+#set($clsDataSet     = ${model.names.dataSetClass})
 #if( $package && $package.length() != 0 )
 package ${package};
 #end
