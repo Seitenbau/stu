@@ -216,32 +216,24 @@ ${jd.createRelationExamples($model, "   ", "  ")}
 
   /**
    * Parses and integrates the tables to the data set
-   * Supported tables:
-   * <ul>
+   * <p>Example usage:
+   * <pre>
+   * tables {
 #foreach( $table in $model.tables )
-   *   <li>{@code ${table.javaNameFirstLower}Table} - ${table.description}</li>
+${jd.createTableExample($table, "   ", "  ")}
 #end
+   * }
+   * </pre>
    * </ul>
    *  
-   * @param table Table data
+   * @param table Table data as a Groovy closure
    */
   public void tables(Closure<?> table)
   {
     tables(getWorkingInstance(this), table);
   }
 
-  /**
-   * Parses and integrates the tables to a given data set
-   * Supported tables:
-   * <ul>
-#foreach( $table in $model.tables )
-   *   <li>{@code ${table.javaNameFirstLower}Table} - ${table.description}</li>
-#end
-   * </ul>
-   *
-   * @param table Table data
-   */
-  public void tables(${clsBuilder} dataSet, Closure<?> table)
+  private void tables(${clsBuilder} dataSet, Closure<?> table)
   {
     DataSetIdentificator lastDataSet = DataSetRegistry.use(dataSet);
     table.setDelegate(dataSet);
@@ -252,6 +244,12 @@ ${jd.createRelationExamples($model, "   ", "  ")}
 
   /**
    * Parses the defined relations and integrates them into the data set
+   * <p>Example usage:
+   * <pre>
+   * relations {
+${jd.createRelationExamples($model, "   ", "  ")}
+   * }
+   * </pre>
    * @param relations The relations data
    */
   public void relations(Closure<?> relations)
@@ -259,11 +257,7 @@ ${jd.createRelationExamples($model, "   ", "  ")}
     this.relations(getWorkingInstance(this), relations);
   }
 
-  /**
-   * Parses the defined relations and integrates them into a given data set
-   * @param relations The relations data
-   */
-  public void relations(${clsBuilder} dataSet, Closure<?> relations)
+  private void relations(${clsBuilder} dataSet, Closure<?> relations)
   {
     DataSetIdentificator lastDataSet = DataSetRegistry.use(dataSet);
     relations.call();

@@ -29,22 +29,35 @@ import ${model.package}.${clsTable}.${clsRowbuilder};
  * Available fields:
  * <ul>
 #foreach ($col in $model.columns)
- *   <li>get${col.javaName}() - ${col.javaType}
+ *   <li>{@link ${jdSep}get${col.javaName}()} - ${col.javaType}
 #if( ${col.description} )
    *    <br>${col.description}
 #end
  *   </li>
 #end
  * </ul>
+ * <p>
+ * Available relations:
+ * <ul>
+#foreach( $rel in ${model.manyToOneRelations} )
+ *   <li>{@link ${jdSep}${rel.localName}(${rel.otherRefClass})}</li>
+#end
+#foreach( $rel in ${model.oneToManyRelations} )
+ *   <li>{@link ${jdSep}${rel.localName}(${rel.otherRefClass} ... )}</li>
+#end
+#foreach ( $rel in ${model.associativeRelations} )
+ *   <li>{@link ${jdSep}${rel.localName}(${rel.otherRefClass} ... )}</li>
+#end
+ * </ul>
  */
 public class ${clsRef} extends DatabaseRef
 {
 
-  private final Map<Object, ${clsRowbuilder}> builders;
+  private final Map<${clsDataSet}, ${clsRowbuilder}> builders;
   
   public ${clsRef}()
   {
-    builders = new HashMap<Object, ${clsRowbuilder}>();
+    builders = new HashMap<${clsDataSet}, ${clsRowbuilder}>();
   }
 #foreach ($col in $model.columns)
 
@@ -56,15 +69,23 @@ public class ${clsRef} extends DatabaseRef
 #end
   public ${col.javaType} get${col.javaName}()
   {
-    final ${clsDataSet} dataSet = getActiveDataSet();
-    final ${clsRowbuilder} row = builders.get(dataSet);
-    if (row == null)
-    {
-      throw new IllegalStateException("No corresponding row to query ${col.javaName} in ${model.javaName}Ref");
-    }
-    return row.get${col.javaName}();
+    return getCurrentBuilder().get${col.javaName}();
   } 
 #end
+
+  /**
+   * Allows to access the bound row builder depending on the active DataSet
+   * @return The Rowbuilder in the current DataSet
+   */
+  public ${clsRowbuilder} getCurrentBuilder()
+  {
+    ${clsRowbuilder} row = builders.get(getActiveDataSet());
+    if (row == null)
+    {
+      throw new IllegalStateException("No corresponding row builder found in ${clsRef}");
+    }
+    return row;
+  }
 
   public void removeFromDataSet()
   {
@@ -125,7 +146,6 @@ public class ${clsRef} extends DatabaseRef
   {
     return builders.get(identificator.getDataSet());
   }
-
 #foreach( $rel in ${model.manyToOneRelations} )
 #set( $map = ${privateListPrefix} + ${rel.localName} + "Map" )
 
@@ -133,8 +153,13 @@ public class ${clsRef} extends DatabaseRef
   private Map<${clsDataSet}, ${rel.otherRefClass}> ${map} = new HashMap<${clsDataSet}, ${rel.otherRefClass}>();
 
   /**
-   * TODO
-   * ManyToOne
+#if( ${rel.description} && ${rel.description.length()} > 0 )
+   * ${rel.description}
+   * <p>
+#end
+   * Models: This entity (and maybe others) is related to the given entity ref.
+   * @param ref The reference to the entity, to which the current entity is related to
+   * @return The reference to the current entity
    */
   public ${clsRef} ${rel.localName}(${rel.otherRefClass} ref)
   {
@@ -152,8 +177,13 @@ public class ${clsRef} extends DatabaseRef
 #foreach( $rel in ${model.oneToManyRelations} )
 
   /**
-   * TODO
-   * One To Many
+#if( ${rel.description} && ${rel.description.length()} > 0 )
+   * ${rel.description}
+   * <p>
+#end
+   * Models: This entity is related to the given entity refs.
+   * @param refs A list of references, which are related to the current entity
+   * @return The reference to the current entity
    */
   public ${clsRef} ${rel.localName}(${rel.otherRefClass} ... refs)
   {
@@ -168,8 +198,13 @@ public class ${clsRef} extends DatabaseRef
 #set( $otherTable = ${names.getTableVariable(${rel.otherColumn.table})} )
 
   /**
-   * TODO
-   * Associative Relation
+#if( ${rel.description} && ${rel.description.length()} > 0 )
+   * ${rel.description}
+   * <p>
+#end
+   * Models: A n:m relationship between both entities.
+   * @param refs A list of references, which are related to the current entity
+   * @return The reference to the current entity
    */
   public ${clsRef} ${rel.localName}(${rel.otherRefClass} ... refs)
   {

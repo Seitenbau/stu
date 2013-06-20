@@ -172,6 +172,10 @@ public class Table
       relation.otherColumn = rel.getColumn();
       relation.localName = rel.getLocalName();
       relation.otherName = rel.getRemoteName();
+      relation.description = rel.getLocalDescription();
+      if (relation.description.isEmpty()) {
+        relation.description = rel.getRemoteDescription();
+      }
 
       result.add(relation);
     }
@@ -198,6 +202,7 @@ public class Table
         relation.otherColumn = referencingCol;
         relation.localName = rel.getRemoteName();
         relation.otherName = rel.getLocalName();
+        relation.description = rel.getRemoteDescription();
 
         result.add(relation);
       }
@@ -228,6 +233,8 @@ public class Table
 
         relation.localAssociationColumn = referencingCol;
         relation.otherAssociationColumn = relation.otherColumn.getRelation().getColumn();
+
+        relation.description = referencingCol.getRelation().getRemoteDescription();
 
         result.add(relation);
       }
@@ -265,6 +272,8 @@ public class Table
 
     Column localAssociationColumn;
     Column otherAssociationColumn;
+
+    String description;
 
     public Column getLocalColumn()
     {
@@ -324,6 +333,11 @@ public class Table
       } else {
         return _dataSet.getNames().getRefVariable(otherColumn.getTable());
       }
+    }
+
+    public String getDescription()
+    {
+      return description;
     }
   }
 }

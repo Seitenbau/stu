@@ -46,9 +46,10 @@ public class PersonDatabaseModel extends DatabaseModel
           .description("Actually this column represents the last name of a person")
         .column("team_id", DataType.BIGINT) //
           .relationTo(teams.ref("id")) //
-            .description("Assigns a team to the person")
             .local("belongsTo")
+              .description("Assigns the person to a team")
             .target("hasMembers")
+              .description("Assigns the team to one or more persons")
       .build(); //
 
     table("person_job")
@@ -56,9 +57,11 @@ public class PersonDatabaseModel extends DatabaseModel
       .column("person_id", DataType.BIGINT)
         .relationTo(persons)
           .target("worksAs")
+            .description("Assigns a job to the person")
       .column("job_id", DataType.BIGINT)
         .relationTo(jobs)
           .target("performedBy")
+            .description("Assigns a person to the job")
     .build();
   }
 
