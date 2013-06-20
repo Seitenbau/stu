@@ -1,9 +1,11 @@
-#set($names    = ${model.dataSet.names})
-#set($filename = ${model.javaName} + "Ref")
-#set($package  = ${model.package})
-#set($clsDataSet = ${model.dataSet.name} + "DataSet")
-#set($clsRef = ${model.javaName} + "Ref")
-#set($clsRowbuilder = "RowBuilder_" + ${model.javaName})
+#set($names             = ${model.dataSet.names})
+#set($filename          = ${model.javaName} + "Ref")
+#set($package           = ${model.package})
+#set($clsDataSet        = ${model.dataSet.name} + "DataSet")
+#set($clsRef            = ${model.javaName} + "Ref")
+#set($clsTable          = ${names.getTableClass($model)})
+#set($clsRowbuilder     = ${names.getRowBuilderClass($model)})
+#set($jdSep             = "#")
 #set($privateListPrefix = "private_")
 #if( $package && $package.length() != 0 )
 package ${package};
@@ -12,19 +14,17 @@ package ${package};
 import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 
-#if ( !${model.isAssociativeTable()} )
-import java.util.Iterator;
-import java.util.List;
-#end
 import java.util.HashMap;
 import java.util.Map;
 import com.seitenbau.testing.dbunit.dsl.DatabaseRef;
 
-import ${model.package}.${model.javaName}Table.RowBuilder_${model.javaName};
+import ${model.package}.${clsTable}.${clsRowbuilder};
 
 
 /**
- * Reference to an ${model.javaName} table row
+ * Reference ("Ref") to a ${model.javaName} table row. Once bound to a table 
+ * {@link ${clsTable}${jdSep}${clsRowbuilder}}, the Ref can be used instead
+ * of the concrete rowbuilder.  
  * <p>
  * Available fields:
  * <ul>
@@ -73,10 +73,10 @@ public class ${clsRef} extends DatabaseRef
     ${clsRowbuilder} rowbuilder = getBuilder(dataSet);
     if (rowbuilder == null)
     {
-      // Nothing to delete... 
+      // Nothing to delete...
       return;
     }
-    
+
     dataSet.${names.getTableVariable($model)}.deleteRow(rowbuilder);
 
 #foreach( $col in $model.columns )
@@ -109,169 +109,81 @@ public class ${clsRef} extends DatabaseRef
     {
       throw new RuntimeException("Builder cannot be redefined");
     }
-#macro( setBuilderHandlerHead $refTable $verb )
-#set($refClsRef = ${refTable.javaName} + "Ref")
+#foreach( $rel in ${model.manyToOneRelations} )
+#set( $map = ${privateListPrefix} + ${rel.localName} + "Map" )
+#set( $refVar = ${rel.otherRefVariable})
 
-    List<${refClsRef}> ${verb}ListScoped = getOrCreateList(${privateListPrefix}${verb}Map, dataSet);
-    for (Iterator<${refClsRef}> it = ${verb}ListScoped.iterator(); it.hasNext(); )
+    ${rel.otherRefClass} ${refVar} = ${map}.get(dataSet);
+    if (${refVar} != null)
     {
-      ${refClsRef} ref = it.next();
-      it.remove();  // remove iterator because if it will not resolve now, it will never
-
-      ${model.package}.${names.getTableClass($refTable)}.${names.getRowBuilderClass($refTable)} otherBuilder = ref.getBuilder(dataSet);
-      if (otherBuilder == null) 
-      {
-        continue;
-      }
-#end
-#macro( setBuilderHandlerFooter )
-      if (otherList.contains(this)) 
-      {
-        otherList.remove(this);
-      }
+      builder.set${rel.localColumn.javaName}(${refVar});
     }
-#end    
-##
-##
-#### Handle own references ####################################
-##
-#if ( !${model.isAssociativeTable()} )
-#foreach( $col in $model.columns )
-#if( $col.relation )
-#set($refClsRef = ${names.getRefClass(${col.relation.table})})
-#set($verb = ${col.relation.localName})
-#setBuilderHandlerHead(${col.relation.table} $verb)
-      builder.set${col.javaName}(otherBuilder.get${col.relation.column.javaName}());
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${col.relation.remoteName}Map, getActiveDataSet());
-#setBuilderHandlerFooter()
-#end
-##
-##
-#### Handle foreign references #####################################
-##
-#foreach ( $referencingColumn in ${col.referencedByList} )
-#set($referencingTable = ${referencingColumn.table})
-#set($isAssociative = ${referencingTable.isAssociativeTable()})
-#if ($isAssociative)
-## -- Associative Table ----------
-#set($verb = ${referencingColumn.relation.remoteName})
-#set($refColumn = ${referencingTable.getAssociatedColumn($model)})
-#set($refTable = ${refColumn.relation.table})
-#set($refClsRef = ${refTable.javaName} + "Ref")
-#set($thisMethod = ${referencingColumn.javaName})
-#foreach ($c in $referencingTable.columns)
-#if ($c != $referencingColumn)
-#set($remoteKey = $c.relation.column.javaName)
-#else
-#set($thisKey = ${c.relation.column.javaName})
-#end
-#end
-#set($otherMap = ${refColumn.relation.remoteName})
-#else
-## -- Simple foreign reference ----------
-#set($refColumn = ${referencingColumn})
-#set($refTable = ${refColumn.table})
-#set($refClsRef = ${referencingTable.javaName} + "Ref")
-#set($verb = ${referencingColumn.relation.remoteName})
-#set($remoteKey = ${referencingColumn.relation.column.javaName})
-#set($otherMap = ${refColumn.relation.localName})
-#end
-#setBuilderHandlerHead($refTable $verb)
-#if($isAssociative)      
-      ${model.package}.${referencingTable.javaName}Table.RowBuilder_${referencingTable.javaName} row = dataSet.table_${referencingTable.javaName}.insertRow();
-      row.set${thisMethod}(builder.get${thisKey}());
-      row.set${refColumn.javaName}(otherBuilder.get${remoteKey}());
-#else
-      otherBuilder.set${refColumn.javaName}(builder.get${remoteKey}());
-#end      
-      List<${clsRef}> otherList = getOrCreateList(ref.${privateListPrefix}${otherMap}Map, getActiveDataSet());
-#setBuilderHandlerFooter()
-#end
-#end
 #end
   }
-  
+
   ${clsRowbuilder} getBuilder(DataSetIdentificator identificator)
   {
     return builders.get(identificator.getDataSet());
   }
 
-#macro( addToList $list $item )
-#if ($list.add($item))
-#end
-#end
-#macro( addReference $refTable $verb $remoteVerb $resolveCode $description )
-#set($refClsRef = ${refTable.javaName} + "Ref" )
-  Map<Object, List<${refClsRef}>> ${privateListPrefix}${verb}Map = new HashMap<Object, List<${refClsRef}>>();
+#foreach( $rel in ${model.manyToOneRelations} )
+#set( $map = ${privateListPrefix} + ${rel.localName} + "Map" )
 
-  // depending on relation type with or without ellipse (...)
+  // Cache for unresolvable relations
+  private Map<${clsDataSet}, ${rel.otherRefClass}> ${map} = new HashMap<${clsDataSet}, ${rel.otherRefClass}>();
+
   /**
-   * ${description}
-   * @param refs The references to associate with this one
+   * TODO
+   * ManyToOne
    */
-  public ${clsRef} ${verb}(${refClsRef} ... refs) 
+  public ${clsRef} ${rel.localName}(${rel.otherRefClass} ref)
   {
     ${clsDataSet} dataSet = getActiveDataSet();
-    ${clsRowbuilder} thisBuilder = getBuilder(dataSet);
-    
-    for (${refClsRef} ref : refs) 
-    {
-      ${model.package}.${refTable.javaName}Table.RowBuilder_${refTable.javaName} otherBuilder = ref.getBuilder(dataSet);
-      
-      // check if both row builders exist to resolve relation
-      if (thisBuilder != null && otherBuilder != null) 
-      {
-#foreach( $line in $resolveCode )
-        $line
-#end        
-      } else {
-        // at least one builder does not exist... add relation information
-        // to the Refs where no builder exist.
-        if (thisBuilder == null)
-        {
-          getOrCreateList(${privateListPrefix}${verb}Map, dataSet).add(ref);
-        }
-        if (otherBuilder == null) 
-        {
-          getOrCreateList(ref.${privateListPrefix}${remoteVerb}Map, dataSet).add(this);
-        }
-      }
+    ${clsRowbuilder} builder = getBuilder(dataSet);
+
+    if (builder != null) {
+      builder.set${rel.localColumn.javaName}(ref);
+    } else {
+      ${map}.put(dataSet, ref);
     }
     return this;
   }
+#end
+#foreach( $rel in ${model.oneToManyRelations} )
 
+  /**
+   * TODO
+   * One To Many
+   */
+  public ${clsRef} ${rel.localName}(${rel.otherRefClass} ... refs)
+  {
+    for (${rel.otherRefClass} ref : refs)
+    {
+      ref.${rel.otherName}(this);
+    }
+    return this;
+  }
+#end
+#foreach ( $rel in ${model.associativeRelations} )
+#set( $otherTable = ${names.getTableVariable(${rel.otherColumn.table})} )
+
+  /**
+   * TODO
+   * Associative Relation
+   */
+  public ${clsRef} ${rel.localName}(${rel.otherRefClass} ... refs)
+  {
+    ${clsDataSet} dataSet = getActiveDataSet();
+
+    for (${rel.otherRefClass} ref : refs)
+    {
+      ${package}.${names.getTableClass($rel.localAssociationColumn.table)}.${rel.otherRowbuilderClass} builder = dataSet.${otherTable}.insertRow();
+      builder.set${rel.localAssociationColumn.javaName}(this);
+      builder.set${rel.otherColumn.javaName}(ref);
+    }
+    return this;
+  }
 #end  
-#if ( !${model.isAssociativeTable()} )
-#foreach( $col in $model.columns )
-#if( $col.relation )
-#set($resolveCode = [ "thisBuilder.set${col.javaName}(otherBuilder.get${col.relation.column.javaName}());" ] )
-#addReference( $col.relation.table ${col.relation.localName} ${col.relation.remoteName} $resolveCode ${col.relation.localDescription} )
-#end
-#### Handle foreign references ################
-#foreach( $referencingCol in $col.referencedByList )
-#if ( ${referencingCol.table.isAssociativeTable()} )
-### Association Table Foreign Key ####################
-#set($assocTable = $referencingCol.table)
-#set($resolveCode = [ "// associative table" ] )
-#set($assocColumn = ${assocTable.getAssociatedColumn($model)})
-#set( $p_refTable = ${referencingCol.table.getAssociatedTable($model)})
-#set( $p_verb = ${referencingCol.relation.remoteName})
-#set( $p_remoteVerb = ${referencingCol.table.getAssociatedColumn($model).relation.remoteName})
-#set( $p_description = ${referencingCol.relation.remoteDescription} )
-#addToList($resolveCode "${model.package}.${referencingCol.table.javaName}Table.RowBuilder_${referencingCol.table.javaName} builder = dataSet.table_${referencingCol.table.javaName}.insertRow();")
-#addToList($resolveCode "builder.set${referencingCol.javaName}(thisBuilder.get${col.javaName}());")
-#addToList($resolveCode "builder.set${assocColumn.javaName}(otherBuilder.get${assocColumn.relation.column.javaName}());")
-#addReference( $p_refTable $p_verb $p_remoteVerb $resolveCode $p_description)
-#else
-### Simple Foreign Key ####################
-#set($resolveCode = [ "// foreign reference" ] )
-#set( $p_description = ${referencingCol.relation.remoteDescription} )
-#addToList($resolveCode "otherBuilder.set${referencingCol.javaName}(thisBuilder.get${col.javaName}());")
-#addReference( ${referencingCol.table} ${referencingCol.relation.remoteName} ${referencingCol.relation.localName} $resolveCode $p_description)
-#end
-#end
-#end
-#end
 
   private ${clsDataSet} getActiveDataSet() 
   {

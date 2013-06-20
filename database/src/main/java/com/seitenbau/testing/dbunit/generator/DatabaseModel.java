@@ -67,7 +67,7 @@ public abstract class DatabaseModel
 
   /**
    * Adds a table to the database model.
-   * @param name The name of the table
+   * @param name The database name of the table
    * @return The builder to configure the table.
    */
   public TableBuilder table(String name)
@@ -90,22 +90,13 @@ public abstract class DatabaseModel
    */
   public void generate() throws Exception
   {
-    DataSetGenerator gen = getDataSetGenInstance();
-
-    if (__forceCaller != null)
-    {
-      gen.setCaller(__forceCaller);
-    }
+    DataSetGenerator gen = getAndConfigureDataSetGenInstance();
     gen.generate();
   }
 
   public void generateInto(String folder) throws Exception
   {
-    DataSetGenerator gen = getDataSetGenInstance();
-    if (__forceCaller != null)
-    {
-      gen.setCaller(__forceCaller);
-    }
+    DataSetGenerator gen = getAndConfigureDataSetGenInstance();
     gen.generateInto(folder);
   }
 
@@ -117,6 +108,16 @@ public abstract class DatabaseModel
   public void disbaleTableDSLGeneration()
   {
     isTableDSLGeneration = false;
+  }
+
+  private DataSetGenerator getAndConfigureDataSetGenInstance()
+  {
+    DataSetGenerator gen = getDataSetGenInstance();
+    if (__forceCaller != null)
+    {
+      gen.setCaller(__forceCaller);
+    }
+    return gen;
   }
 
 }

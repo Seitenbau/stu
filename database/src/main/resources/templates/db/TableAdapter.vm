@@ -9,7 +9,7 @@
 #set($clsTableGetWhere  = ${names.getGetWhereClass($model)})
 #set($clsRowcollection  = ${names.getRowCollectionClass($model)})
 #set($jd                = ${model.dataSet.javaDocBuilder})
-#set($javaDocSep        = "#")
+#set($jdSep             = "#")
 #set($package           = ${model.package} )
 #if( $package && $package.length() != 0 )
 package ${package};
@@ -54,7 +54,10 @@ public class ${clsAdapter} {
   /**
    * Column Header for ${model.javaName} table.
    * <p>
+   * Binds a {@link ${clsRef}} with the current row. To create a Ref, use the {@link RefFactory}. 
+   * <p>
    * Data Type: ${names.getRefClass($model)}
+   * <p>
    */
   public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> REF = new RefColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}>();
 
@@ -98,9 +101,9 @@ public class ${clsAdapter} {
    * findWhere assumes that it is used to search for existing rows. An
    * exception will be thrown if no matching row was found. Use getWhere
    * or find to avoid this behavior.
-   * @see ${javaDocSep}getWhere
-   * @see ${javaDocSep}find(Closure)
-   * @see ${javaDocSep}find(Filter)
+   * @see ${jdSep}getWhere
+   * @see ${jdSep}find(Closure)
+   * @see ${jdSep}find(Filter)
    */
   public final ${clsTableFindWhere} findWhere;
 
@@ -108,9 +111,9 @@ public class ${clsAdapter} {
    * Allows searching for a row specified by a column value.
    * The first matching row is returned. Does not throw an
    * exception, if no element is found.
-   * @see ${javaDocSep}findWhere
-   * @see ${javaDocSep}find(Closure)
-   * @see ${javaDocSep}find(Filter)
+   * @see ${jdSep}findWhere
+   * @see ${jdSep}find(Closure)
+   * @see ${jdSep}find(Filter)
    */
   public final ${clsTableGetWhere} getWhere;
 
@@ -257,9 +260,9 @@ ${jd.createTableExample($model, "   ", "")}
    * Delivers a collection of rows matching to a filter.
    * @param filter The used filter
    * @return The collection of rows, may return an empty list
-   * @see ${javaDocSep}find(Closure)
-   * @see ${javaDocSep}findWhere
-   * @see ${javaDocSep}getWhere
+   * @see ${jdSep}find(Closure)
+   * @see ${jdSep}findWhere
+   * @see ${jdSep}getWhere
    */
   public ${clsRowcollection} find(Filter<${clsRowbuilder}> filter)
   {
@@ -270,9 +273,9 @@ ${jd.createTableExample($model, "   ", "")}
    * Delivers a collection of rows matching to a filter.
    * @param filter A Groovy Closure with an argument of type ${clsRowbuilder}, returning a boolean
    * @return The collection of rows, may return an empty list
-   * @see ${javaDocSep}find(Filter)
-   * @see ${javaDocSep}findWhere
-   * @see ${javaDocSep}getWhere
+   * @see ${jdSep}find(Filter)
+   * @see ${jdSep}findWhere
+   * @see ${jdSep}getWhere
    */
   public ${clsRowcollection} find(Closure<Boolean> filter)
   {

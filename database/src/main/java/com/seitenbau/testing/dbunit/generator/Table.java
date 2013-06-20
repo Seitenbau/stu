@@ -114,10 +114,6 @@ public class Table
     }
     for (Column col : getColumns())
     {
-      if (col.isUnique())
-      {
-        return false;
-      }
       if (col.getRelation() != null)
       {
         foreignKeys++;
@@ -127,53 +123,26 @@ public class Table
     return (foreignKeys == 2);
   }
 
-  public Table getAssociatedTable(Table table)
+
+  public Column getIdentifierColumn()
   {
-    for (Column col : getColumns())
+    for (Column col : _columns)
     {
-      final Relation reference = col.getRelation();
-      if (reference == null)
+      if (col.isIdentifier())
       {
-        continue;
+        return col;
       }
-      if (reference.getColumn().getTable() == table)
-      {
-        continue;
-      }
-
-      return reference.getColumn().getTable();
     }
-
-    return null;
-    // throw new RuntimeException("No associating column found");
+    throw new RuntimeException("No identifier column found");
   }
 
-  public Column getAssociatedColumn(Table table)
-  {
-    for (Column col : getColumns())
-    {
-      final Relation reference = col.getRelation();
-      if (reference == null)
-      {
-        continue;
-      }
-      if (reference.getColumn().getTable() == table)
-      {
-        continue;
-      }
-
-      return col;
-    }
-
-    return null;
-    // throw new RuntimeException("No associating column found");
-  }
-
-
-  public Set<Table> getAssociatedTables()
+  /**
+   * Helper method for the Generator. Determines the requires imports for the table.
+   * @return Set of Table, which have to be imported
+   */
+  public Set<Table> getRequiredTableImports()
   {
     Set<Table> result = new HashSet<Table>();
-    result.add(this);
     for (Column col : getColumns())
     {
       if (col.getRelation() != null)
@@ -184,28 +153,177 @@ public class Table
     return result;
   }
 
-  public Set<Table> getAssociatingTables()
+  public List<RelationTemplateHelper> getManyToOneRelations()
   {
-    Set<Table> result = new HashSet<Table>();
-    for (Column col : getColumns())
+    List<RelationTemplateHelper> result = new LinkedList<RelationTemplateHelper>();
+    if (isAssociativeTable()) {
+      return result;
+    }
+    for (Column col : _columns)
     {
-      for (Column refCol : col.getReferencedByList())
+      if (col.getRelation() == null)
       {
-        result.add(refCol.getTable());
+        continue;
+      }
+
+      Relation rel = col.getRelation();
+      RelationTemplateHelper relation = new RelationTemplateHelper();
+      relation.localColumn = col;
+      relation.otherColumn = rel.getColumn();
+      relation.localName = rel.getLocalName();
+      relation.otherName = rel.getRemoteName();
+
+      result.add(relation);
+    }
+    return result;
+  }
+
+  public List<RelationTemplateHelper> getOneToManyRelations()
+  {
+    List<RelationTemplateHelper> result = new LinkedList<RelationTemplateHelper>();
+    if (isAssociativeTable()) {
+      return result;
+    }
+    for (Column col : _columns)
+    {
+      for (Column referencingCol : col.getReferencedByList())
+      {
+        if (referencingCol.getTable().isAssociativeTable()) {
+          continue;
+        }
+
+        Relation rel = referencingCol.getRelation();
+        RelationTemplateHelper relation = new RelationTemplateHelper();
+        relation.localColumn = col;
+        relation.otherColumn = referencingCol;
+        relation.localName = rel.getRemoteName();
+        relation.otherName = rel.getLocalName();
+
+        result.add(relation);
       }
     }
     return result;
   }
 
-  public Column getIdentifierColumn()
+  public List<RelationTemplateHelper> getAssociativeRelations()
+  {
+    List<RelationTemplateHelper> result = new LinkedList<RelationTemplateHelper>();
+    if (isAssociativeTable()) {
+      return result;
+    }
+    for (Column col : _columns)
+    {
+      for (Column referencingCol : col.getReferencedByList())
+      {
+        if (!referencingCol.getTable().isAssociativeTable()) {
+          continue;
+        }
+
+        RelationTemplateHelper relation = new RelationTemplateHelper();
+
+        relation.localColumn = col;
+        relation.otherColumn = referencingCol.getTable().getAssociatedColumn(this);
+        relation.localName = referencingCol.getRelation().getRemoteName();
+        relation.otherName = relation.otherColumn.getRelation().getRemoteName();
+
+        relation.localAssociationColumn = referencingCol;
+        relation.otherAssociationColumn = relation.otherColumn.getRelation().getColumn();
+
+        result.add(relation);
+      }
+    }
+    return result;
+  }
+
+  private Column getAssociatedColumn(Table table)
   {
     for (Column col : getColumns())
     {
-      if (col.isIdentifier())
+      final Relation relation = col.getRelation();
+      if (relation == null)
       {
-        return col;
+        continue;
+      }
+      if (relation.getColumn().getTable() == table)
+      {
+        continue;
+      }
+
+      return col;
+    }
+
+    throw new RuntimeException("No associating column found");
+  }
+
+  public final class RelationTemplateHelper
+  {
+    Column localColumn;
+    String localName;
+
+    Column otherColumn;
+    String otherName;
+
+    Column localAssociationColumn;
+    Column otherAssociationColumn;
+
+    public Column getLocalColumn()
+    {
+      return localColumn;
+    }
+
+    public String getLocalName()
+    {
+      return localName;
+    }
+
+    public Column getOtherColumn()
+    {
+      return otherColumn;
+    }
+
+    public String getOtherName()
+    {
+      return otherName;
+    }
+
+    public boolean isAssociative()
+    {
+      return (localAssociationColumn != null) && (otherAssociationColumn != null);
+    }
+
+    public Column getLocalAssociationColumn()
+    {
+      return localAssociationColumn;
+    }
+
+    public Column getOtherAssociationColumn()
+    {
+      return otherAssociationColumn;
+    }
+
+    public String getOtherRowbuilderClass()
+    {
+      return _dataSet.getNames().getRowBuilderClass(otherColumn.getTable());
+    }
+
+    public String getOtherRefClass()
+    {
+      if (isAssociative())
+      {
+        return _dataSet.getNames().getRefClass(otherAssociationColumn.getTable());
+      } else {
+        return _dataSet.getNames().getRefClass(otherColumn.getTable());
       }
     }
-    throw new RuntimeException("No identifier column found");
+
+    public String getOtherRefVariable()
+    {
+      if (isAssociative())
+      {
+        return _dataSet.getNames().getRefVariable(otherAssociationColumn.getTable());
+      } else {
+        return _dataSet.getNames().getRefVariable(otherColumn.getTable());
+      }
+    }
   }
 }

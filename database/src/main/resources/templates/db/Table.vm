@@ -11,7 +11,7 @@
 #set($clsTable       = ${names.getTableClass($model)} )
 #set($clsDataSet     = ${names.dataSetClass} )
 #set($clsRef         = ${names.getRefClass($model)})
-#set($javaDocSep     = "#")
+#set($jdSep          = "#")
 #if( $package && $package.length() != 0 )
 package ${package};
 #end
@@ -52,12 +52,10 @@ import org.dbunit.dataset.RowOutOfBoundsException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
-#foreach( $otab in $model.associatedTables )
-#if ($otab != $model)
-#set($otherGetter = ${names.getRowGettersClass($otab)})
-#set($otherTable = ${names.getTableClass($otab)})
-import ${model.package}.${otherTable}.${otherGetter};
-#end
+#foreach( $table in $model.requiredTableImports )
+#set($importGetter = ${names.getRowGettersClass($table)})
+#set($importTable = ${names.getTableClass($table)})
+import ${model.package}.${importTable}.${importGetter};
 #end
 
 import static com.seitenbau.testing.util.DateUtil.*;
@@ -201,6 +199,8 @@ public class ${clsTable} implements ITable
 
     /**
      * Binds the row with the reference in this scope
+     * @param ref The reference, which shall be bound to the row builder
+     * @return The row builder
      */
     public ${clsRowbuilder} bind(${clsRef} ref)
     {
@@ -468,8 +468,8 @@ public class ${clsTable} implements ITable
    * Delivers a collection of rows matching to a filter.
    * @param filter The used filter
    * @return The collection of rows, may return an empty list
-   * @see ${javaDocSep}findWhere
-   * @see ${javaDocSep}getWhere
+   * @see ${jdSep}findWhere
+   * @see ${jdSep}getWhere
    */
   public ${rowcollection} find(Filter<${clsRowbuilder}> filter)
   {
@@ -503,8 +503,8 @@ public class ${clsTable} implements ITable
    * findWhere assumes that it is used to search for existing rows. An
    * exception will be thrown if no matching row was found. Use getWhere
    * or find to avoid this behavior.
-   * @see ${javaDocSep}getWhere
-   * @see ${javaDocSep}find(Filter)
+   * @see ${jdSep}getWhere
+   * @see ${jdSep}find(Filter)
    */
   public $findWhereClass findWhere = new $findWhereClass(this);
 
@@ -608,8 +608,8 @@ public class ${clsTable} implements ITable
    * Allows searching for a row specified by a column value.
    * The first matching row is returned. Does not throw an
    * exception, if no element is found.
-   * @see ${javaDocSep}findWhere
-   * @see ${javaDocSep}find(Filter)
+   * @see ${jdSep}findWhere
+   * @see ${jdSep}find(Filter)
    */
   public $getWhereClass getWhere = new $getWhereClass(this);
 
