@@ -11,14 +11,17 @@
  * <p>
 #if (!${table.isAssociativeTable()})
 #if ($isadapter)
-#set( $adapter = ${table.dataSet.names.getTableAdapterClass($table)} )
+#set( $jdClass = ${table.dataSet.names.getTableAdapterClass($table)} )
  * To define test data, overwrite the method {@link ${table.dataSet.names.builderClass}${jdSep}tables()} or
- * dynamically call the method {@link ${adapter}${jdSep}rows(Closure)}.
- * <p>
- * Use {@link ${adapter}${jdSep}insertRow()} to model tables with the plain Java builder API.
+ * dynamically call the method {@link ${jdClass}${jdSep}rows(Closure)}.
 #else
- * Use {@link ${table.dataSet.names.getTableClass($table)}${jdSep}insertRow()} to model tables with the plain Java builder API.
+#set( $jdClass = ${table.dataSet.names.getTableClass($table)} )
 #end
+ * <p>
+ * Use {@link ${jdClass}${jdSep}insertRow()} to model tables with the plain Java builder API.
+ * <p>
+ * To search for rows, use {@link ${jdClass}${jdSep}findWhere}, {@link ${jdClass}${jdSep}getWhere}
+ * or {@link ${jdClass}${jdSep}find}.
 #set( $relcnt = 0 )
 #foreach( $col in $table.columns )
 #if( ${col.relation} )
