@@ -74,7 +74,7 @@ public class ${clsAdapter} {
    * <p>
    * Data Type: {@code ${col.javaType}}
 #if( ${col.relation} )
-   * or {@code ${names.getRefClass($col.relation.column.table)}
+   * or {@link ${names.getRefClass($col.relation.column.table)}}
 #end
    * <br>   
    * Database Type: ${col.type}
