@@ -11,6 +11,7 @@
 #set($jd                = ${model.dataSet.javaDocBuilder})
 #set($jdSep             = "#")
 #set($package           = ${model.package} )
+#parse("templates/db/include_javadoc.vm")
 #if( $package && $package.length() != 0 )
 package ${package};
 #end
@@ -44,6 +45,7 @@ import ${model.package}.${clsTable}.${clsTableFindWhere};
 import ${model.package}.${clsTable}.${clsTableGetWhere};
 
 
+#javadoc_table_adapter($model)
 public class ${clsAdapter} {
 
   /**
@@ -172,23 +174,62 @@ ${jd.createTableExample($model, "   ", "")}
     _table.clear();
   }
 
+  /**
+   * Insert a new Row at the end of the Table
+   * <code><pre>
+   * ds.${names.getTableAdapterVariable($model)}.insertRow()
+   *   .bind(${jd.getSampleRef($model)})
+#foreach( $column in $model.columns )
+   *   .set${column.javaName}( null )
+#end
+   *   ;
+   * </pre></code>
+   */
   public ${clsRowbuilder} insertRow()
   {
     return _table.insertRow();
   }
 #if( ${model.dataSet.isModelClassGeneration()} )
 
+  /**
+   * Insert a new Row at the end of the Table
+   * <code><pre>
+   * ds.${names.getTableAdapterVariable($model)}.insertRow()
+   *   .bind( ${jd.getSampleRef($model)} )
+#foreach( $column in $model.columns )
+   *   .set${column.javaName}( null )
+#end
+   *   ;
+   * </pre></code>
+   */
   public ${clsRowbuilder} insertRow(${model.javaName}Model row)
   {
     return _table.insertRow(row);
   }
 #end
 
+  /**
+   * Insert a new Row at the given position
+   * <code><pre>
+   * ds.${names.getTableAdapterVariable($model)}.this.insertRowAt(2)
+   *   .bind( ${jd.getSampleRef($model)} )
+#foreach( $column in $model.columns )
+   *   .set${column.javaName}( null )
+#end
+   *   ;
+   * </pre></code>
+   */
   public ${clsRowbuilder} insertRowAt(int index)
   {
     return _table.insertRowAt(index);
   }
 
+  /**
+   * Insert a row at the end of the table
+   * <code><pre>
+   * ds.${names.getTableAdapterVariable($model)}.insertRow(someRow);
+   * </pre></code>
+   */
   public ${clsRowbuilder} insertRow(${clsRowbuilder} theRow)
   {
     return _table.insertRow(theRow);

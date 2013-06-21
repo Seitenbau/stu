@@ -1,0 +1,97 @@
+#set($jdSep = "#")
+#macro( javadoc_table $table )
+#internal_javadoc_table($table, false)
+#end
+#macro( javadoc_table_adapter $table )
+#internal_javadoc_table($table, true)
+#end
+#macro( internal_javadoc_table $table $isadapter )
+/**
+ * ${table.description}
+ * <p>
+#if (!${table.isAssociativeTable()})
+#if ($isadapter)
+#set( $adapter = ${table.dataSet.names.getTableAdapterClass($table)} )
+ * To define test data, overwrite the method {@link ${table.dataSet.names.builderClass}${jdSep}tables()} or
+ * dynamically call the method {@link ${adapter}${jdSep}rows(Closure)}.
+ * <p>
+ * Use {@link ${adapter}${jdSep}insertRow()} to model tables with the plain Java builder API.
+#else
+ * Use {@link ${table.dataSet.names.getTableClass($table)}${jdSep}insertRow()} to model tables with the plain Java builder API.
+#end
+#set( $relcnt = 0 )
+#foreach( $col in $table.columns )
+#if( ${col.relation} )
+#if( ${relcnt} == 0 )
+ * <p>
+ * This table contains relations to these tables:
+ * <ul>
+#end
+#set( $relcnt = $relcnt + 1 )
+#if ($isadapter)
+ *   <li>${table.dataSet.names.getTableClass(${col.relation.table})} - {@link ${table.dataSet.names.getTableAdapterClass(${col.relation.table})}}</li>
+#else
+ *   <li>{@link ${table.dataSet.names.getTableClass(${col.relation.table})}}</li>
+#end
+#end
+#end
+#if( ${relcnt} > 0)
+ * </ul>
+#end
+#set( $relcnt = 0 )
+#foreach( $col in $table.columns )
+#if( ${col.referencedByList.size()} > 0 )
+#if( ${relcnt} == 0 )
+ * <p>
+ * The table is referenced by these tables:
+ * <ul>
+#end
+#set( $relcnt = $relcnt + 1 )
+#foreach( $ref in $col.referencedByList )
+#if ($isadapter)
+ *   <li>${table.dataSet.names.getTableClass(${ref.table})} - {@link ${table.dataSet.names.getTableAdapterClass(${ref.table})}}</li>
+#else
+ *   <li>{@link ${table.dataSet.names.getTableClass(${ref.table})}}</li>
+#end
+#end
+#end
+#end
+#if( ${relcnt} > 0)
+ * </ul>
+#end
+#else
+ * This is an associative table, which associates two tables in 
+ * (most likely) a n:m relationship. It is recommended not to define
+ * relations with the table syntax, but with the relation API on the
+ * Ref types.
+ * <p>
+ * The associated tables are:
+ * <ul>
+#foreach( $col in $table.columns )
+#if( ${col.relation} )
+#if ($isadapter)
+ *   <li>${table.dataSet.names.getTableClass(${col.relation.table})} - {@link ${table.dataSet.names.getTableAdapterClass(${col.relation.table})}}</li>
+#else
+ *   <li>{@link ${table.dataSet.names.getTableClass(${col.relation.table})}}</li>
+#end
+#end
+#end
+ * </ul>
+ * The Ref types provide these methods to express relations:
+ * <ul>
+#foreach( $col in $table.columns )
+#if( ${col.relation} )
+ *   <li>{@link ${table.dataSet.names.getRefClass(${col.relation.table})}${jdSep}${col.relation.remoteName}}</li>
+#end
+#end
+ * </ul>
+#end
+#if ($isadapter)
+#set($parentClass = ${table.dataSet.names.builderClass})
+#else
+#set($parentClass = ${table.dataSet.names.dataSetClass})
+#end
+ * <p>
+ * See {@link ${parentClass}} for an overview over all tables.
+ */
+#end

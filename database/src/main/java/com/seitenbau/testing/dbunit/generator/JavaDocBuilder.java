@@ -39,7 +39,7 @@ public class JavaDocBuilder
     if (!table.isAssociativeTable()) {
       separator = true;
       String ref = "REF";
-      String refVar = "ANY" + table.getName().toUpperCase() + "REF";
+      String refVar = getSampleRef(table);
 
       result.append(ref);
       appendSpaces(result, refVar.length() - ref.length());
@@ -112,11 +112,11 @@ public class JavaDocBuilder
       StringBuilder result = new StringBuilder();
       appendLineStart(result, indention, innerIndention);
 
-      result.append("ANY" + table.getName().toUpperCase() + "REF");
+      result.append(getSampleRef(table));
       result.append(".");
       result.append(col.getRelation().getLocalName());
       result.append("(");
-      result.append("ANY" + col.getRelation().getTable().getName().toUpperCase() + "REF");
+      result.append(getSampleRef(col.getRelation().getTable()));
       result.append(")\n");
 
       return result.toString();
@@ -149,11 +149,11 @@ public class JavaDocBuilder
     StringBuilder result = new StringBuilder();
     appendLineStart(result, indention, innerIndention);
 
-    result.append("ANY" + table1.getName().toUpperCase() + "REF");
+    result.append(getSampleRef(table1));
     result.append(".");
     result.append(relation);
     result.append("(");
-    result.append("ANY" + table2.getName().toUpperCase() + "REF");
+    result.append(getSampleRef(table2));
     result.append(")\n");
     return result.toString();
   }
@@ -171,6 +171,11 @@ public class JavaDocBuilder
     {
       builder.append(' ');
     }
+  }
+
+  public String getSampleRef(Table table)
+  {
+    return "ANY" + table.getName().toUpperCase() + "REF";
   }
 
   private String getSampleValue(Column column)

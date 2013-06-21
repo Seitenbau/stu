@@ -11,7 +11,9 @@
 #set($clsTable       = ${names.getTableClass($model)} )
 #set($clsDataSet     = ${names.dataSetClass} )
 #set($clsRef         = ${names.getRefClass($model)})
+#set($jd             = ${model.dataSet.javaDocBuilder})
 #set($jdSep          = "#")
+#parse("templates/db/include_javadoc.vm")
 #if( $package && $package.length() != 0 )
 package ${package};
 #end
@@ -63,6 +65,9 @@ import ${model.package}.${importTable}.${importGetter};
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
 **********************************************************/
+#set( $adapter = ${names.getTableAdapterClass($model)} )
+
+#javadoc_table($model)
 public class ${clsTable} implements ITable
 {
   public final static String NAME = "${model.name}";
@@ -328,10 +333,7 @@ public class ${clsTable} implements ITable
       if (value instanceof ${names.getRefClass($refTable)})
       {
         ${names.getRefClass($refTable)} ref = (${names.getRefClass($refTable)})value;
-        ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.relation.column.javaName}();
-        // TODO NM/CB/RW think about storing the value
-        // data[$foreach.index] = refValue;
-        return refValue; 
+        return ref.getBuilder(table._dataSet).get${column.relation.column.javaName}();
       }      
 #end
       return (${column.javaType})value;
@@ -352,15 +354,16 @@ public class ${clsTable} implements ITable
 #end 
 
     /**
-    * Insert a new Row at the end of the Table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow()
+     * Insert a new Row at the end of the Table
+     * <code><pre>
+     * ds.${names.getTableVariable($model)}.insertRow()
+     *   .bind( ${jd.getSampleRef($model)} )
 #foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
+     *   .set${column.javaName}( null )
 #end
-    *   ;
-    * </pre></code>
-    */
+     *   ;
+     * </pre></code>
+     */
     public ${clsRowbuilder} insertRow()
     {
       return table.insertRow();
@@ -368,15 +371,16 @@ public class ${clsTable} implements ITable
 #if( ${model.dataSet.isModelClassGeneration()} )
 
     /**
-    * Insert a new Row at the end of the Table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow()
+     * Insert a new Row at the end of the Table
+     * <code><pre>
+     * ds.${names.getTableVariable($model)}.insertRow()
+     *   .bind( ${jd.getSampleRef($model)} )
 #foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
+     *   .set${column.javaName}( null )
 #end
-    *   ;
-    * </pre></code>
-    */
+     *   ;
+     * </pre></code>
+     */
     public ${clsRowbuilder} insertRow(${model.javaName}Model row)
     {
       return table.insertRow(row);
@@ -384,26 +388,27 @@ public class ${clsTable} implements ITable
 #end
 
     /**
-    * Insert a new Row at the given position
-    * <code><pre>
-    * ds.table_${model.javaName}.this.insertRowAt(2)
+     * Insert a new Row at the given position
+     * <code><pre>
+     * ds.${names.getTableVariable($model)}.this.insertRowAt(2)
+     *   .bind( ${jd.getSampleRef($model)} )
 #foreach( $column in $model.columns )
-    *   .set${column.javaName}( null )
+     *   .set${column.javaName}( null )
 #end
-    *   ;
-    * </pre></code>
-    */
+     *   ;
+     * </pre></code>
+     */
     public ${clsRowbuilder} insertRowAt(int index)
     {
       return table.insertRowAt(index);
     }
 
     /**
-    * Insert a row at the end of the table
-    * <code><pre>
-    * ds.table_${model.javaName}.insertRow(someRow);
-    * </pre></code>
-    */
+     * Insert a row at the end of the table
+     * <code><pre>
+     * ds.${names.getTableVariable($model)}.insertRow(someRow);
+     * </pre></code>
+     */
     public ${clsRowbuilder} insertRow(${clsRowbuilder} theRow)
     {
       return table.insertRow(theRow);
@@ -874,7 +879,8 @@ public class ${clsTable} implements ITable
   /**
    * Insert a new empty Row.
    * <code><pre>
-   * ds.table_${model.javaName}.insertRow()
+   * ds.${names.getTableVariable($model)}.insertRow()
+   *   .bind( ${jd.getSampleRef($model)} )
 #foreach( $column in $model.columns )
    *   .set${column.javaName}( null )
 #end
@@ -896,7 +902,7 @@ public class ${clsTable} implements ITable
 
   /**
   * <code><pre>
-  * ds.table_${model.javaName}.insertRow()
+  * ds.${names.getTableVariable($model)}.insertRow()
   * </pre></code>
   */
   public ${clsRowbuilder} insertRow(${model.javaName}Model rowToAdd)
@@ -912,7 +918,7 @@ public class ${clsTable} implements ITable
 
   /**
   * <code><pre>
-  * ds.table_${model.javaName}.insertRow(data);
+  * ds.${names.getTableVariable($model)}.insertRow(data);
   * </pre></code>
   */
   public ${clsRowbuilder} insertRow(${clsRowbuilder} theRow)
@@ -923,7 +929,7 @@ public class ${clsTable} implements ITable
   
   /**
   * <code><pre>
-  * ds.table_${model.javaName}.insertRows(data);
+  * ds.${names.getTableVariable($model)}.insertRows(data);
   * </pre></code>
   */
   public void insertRows(${clsRowbuilder}...theRows)
@@ -934,7 +940,7 @@ public class ${clsTable} implements ITable
   /**
   * Insert new row at the given index
   * <code><pre>
-  * ds.table_${model.javaName}.insertRowAt(3)
+  * ds.${names.getTableVariable($model)}.insertRowAt(3)
   *   ;
   * </pre></code>
   */
@@ -948,7 +954,7 @@ public class ${clsTable} implements ITable
   /**
   * Insert new row Object at the given index
   * <code><pre>
-  * ds.table_${model.javaName}.insertRowAt(3)
+  * ds.${names.getTableVariable($model)}.insertRowAt(3)
   * </pre></code>
   */
   public ${clsRowbuilder} insertRowAt(int index,${clsRowbuilder} theRow)

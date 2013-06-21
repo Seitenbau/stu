@@ -53,16 +53,16 @@ public class PersonDatabaseModel extends DatabaseModel
       .build(); //
 
     table("person_job")
-      .description("The table that holds relations of persons to jobs")
-      .column("person_id", DataType.BIGINT)
-        .relationTo(persons)
-          .target("worksAs")
-            .description("Assigns a job to the person")
-      .column("job_id", DataType.BIGINT)
-        .relationTo(jobs)
-          .target("performedBy")
-            .description("Assigns a person to the job")
-    .build();
+        .description("The table that holds relations of persons to jobs")
+        .column("person_id", DataType.BIGINT)
+          .relationTo(persons)
+            .target("worksAs")
+              .description("Assigns a job to the person")
+        .column("job_id", DataType.BIGINT)
+          .relationTo(jobs)
+            .target("performedBy")
+              .description("Assigns a person to the job")
+      .build();
   }
 
 }
