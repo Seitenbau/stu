@@ -135,7 +135,7 @@ public class ${clsAdapter} {
   /**
    * Parses the rows of a ${model.javaName} table. Supported columns are:
    * <ul>
-   *   <li><strong>{@code REF}</strong>: {@code ${names.getRefClass($model)}}</li>
+   *   <li><strong>{@code REF}</strong>: {@link ${names.getRefClass($model)}}</li>
 #foreach( $col in $model.columns )
 #set( $shortname  = "" )
 #if ( ${names.columnNameCanBeTruncated($col)} )

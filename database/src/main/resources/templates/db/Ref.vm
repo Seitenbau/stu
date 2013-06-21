@@ -24,7 +24,7 @@ import ${model.package}.${clsTable}.${clsRowbuilder};
 /**
  * Reference ("Ref") to a ${model.javaName} table row. Once bound to a table 
  * {@link ${clsTable}${jdSep}${clsRowbuilder}}, the Ref can be used instead
- * of the concrete rowbuilder.  
+ * of the concrete rowbuilder. To create a Ref, use the {@link RefFactory}.
  * <p>
  * Available fields:
  * <ul>
