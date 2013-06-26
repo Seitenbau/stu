@@ -107,22 +107,20 @@ public class Table
 
   public boolean isAssociativeTable()
   {
-    int foreignKeys = 0;
-    if (getColumns().size() < 2)
-    {
-      return false;
-    }
-    for (Column col : getColumns())
-    {
-      if (col.getRelation() != null)
-      {
-        foreignKeys++;
-      }
-    }
-
-    return (foreignKeys == 2);
+    return false;
   }
 
+  public boolean hasDataColumns()
+  {
+    for (Column col : getColumns())
+    {
+      if (col.getRelation() == null)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 
   public Column getIdentifierColumn()
   {
@@ -147,15 +145,15 @@ public class Table
     {
       if (col.getRelation() != null)
       {
-        result.add(col.getRelation().getTable());
+        result.add(col.getRelation().getForeignColumn().getTable());
       }
     }
     return result;
   }
 
-  public List<RelationTemplateHelper> getManyToOneRelations()
+  public List<Column> getForeignColumns()
   {
-    List<RelationTemplateHelper> result = new LinkedList<RelationTemplateHelper>();
+    List<Column> result = new LinkedList<Column>();
     if (isAssociativeTable()) {
       return result;
     }
@@ -166,53 +164,34 @@ public class Table
         continue;
       }
 
-      Relation rel = col.getRelation();
-      RelationTemplateHelper relation = new RelationTemplateHelper();
-      relation.localColumn = col;
-      relation.otherColumn = rel.getColumn();
-      relation.localName = rel.getLocalName();
-      relation.otherName = rel.getRemoteName();
-      relation.description = rel.getLocalDescription();
-      if (relation.description.isEmpty()) {
-        relation.description = rel.getRemoteDescription();
-      }
-
-      result.add(relation);
+      result.add(col);
     }
     return result;
   }
 
-  public List<RelationTemplateHelper> getOneToManyRelations()
+  public List<Column> getReferencingColumns()
   {
-    List<RelationTemplateHelper> result = new LinkedList<RelationTemplateHelper>();
+    List<Column> result = new LinkedList<Column>();
     if (isAssociativeTable()) {
       return result;
     }
     for (Column col : _columns)
     {
-      for (Column referencingCol : col.getReferencedByList())
+      for (Column foreignCol : col.getReferencedByList())
       {
-        if (referencingCol.getTable().isAssociativeTable()) {
+        if (foreignCol.getTable().isAssociativeTable()) {
           continue;
         }
 
-        Relation rel = referencingCol.getRelation();
-        RelationTemplateHelper relation = new RelationTemplateHelper();
-        relation.localColumn = col;
-        relation.otherColumn = referencingCol;
-        relation.localName = rel.getRemoteName();
-        relation.otherName = rel.getLocalName();
-        relation.description = rel.getRemoteDescription();
-
-        result.add(relation);
+        result.add(foreignCol);
       }
     }
     return result;
   }
 
-  public List<RelationTemplateHelper> getAssociativeRelations()
+  public List<AssociativeRelation> getAssociativeRelations()
   {
-    List<RelationTemplateHelper> result = new LinkedList<RelationTemplateHelper>();
+    List<AssociativeRelation> result = new LinkedList<AssociativeRelation>();
     if (isAssociativeTable()) {
       return result;
     }
@@ -224,17 +203,17 @@ public class Table
           continue;
         }
 
-        RelationTemplateHelper relation = new RelationTemplateHelper();
+        AssociativeRelation relation = new AssociativeRelation();
 
         relation.localColumn = col;
-        relation.otherColumn = referencingCol.getTable().getAssociatedColumn(this);
-        relation.localName = referencingCol.getRelation().getRemoteName();
-        relation.otherName = relation.otherColumn.getRelation().getRemoteName();
-
+        relation.localName = referencingCol.getRelation().getForeignName();
         relation.localAssociationColumn = referencingCol;
-        relation.otherAssociationColumn = relation.otherColumn.getRelation().getColumn();
 
-        relation.description = referencingCol.getRelation().getRemoteDescription();
+        relation.foreignColumn = referencingCol.getTable().getAssociatedColumn(this);
+        relation.foreignName = relation.foreignColumn.getRelation().getForeignName();
+        relation.foreignAssociationColumn = relation.foreignColumn.getRelation().getForeignColumn();
+
+        relation.description = referencingCol.getRelation().getForeignDescription();
 
         result.add(relation);
       }
@@ -246,12 +225,12 @@ public class Table
   {
     for (Column col : getColumns())
     {
-      final Relation relation = col.getRelation();
+      final ColumnReference relation = col.getRelation();
       if (relation == null)
       {
         continue;
       }
-      if (relation.getColumn().getTable() == table)
+      if (relation.getForeignColumn().getTable() == table)
       {
         continue;
       }
@@ -262,16 +241,15 @@ public class Table
     throw new RuntimeException("No associating column found");
   }
 
-  public final class RelationTemplateHelper
+  public final class AssociativeRelation
   {
     Column localColumn;
     String localName;
-
-    Column otherColumn;
-    String otherName;
-
     Column localAssociationColumn;
-    Column otherAssociationColumn;
+
+    Column foreignColumn;
+    String foreignName;
+    Column foreignAssociationColumn;
 
     String description;
 
@@ -285,19 +263,14 @@ public class Table
       return localName;
     }
 
-    public Column getOtherColumn()
+    public Column getForeignColumn()
     {
-      return otherColumn;
+      return foreignColumn;
     }
 
-    public String getOtherName()
+    public String getForeignName()
     {
-      return otherName;
-    }
-
-    public boolean isAssociative()
-    {
-      return (localAssociationColumn != null) && (otherAssociationColumn != null);
+      return foreignName;
     }
 
     public Column getLocalAssociationColumn()
@@ -305,34 +278,24 @@ public class Table
       return localAssociationColumn;
     }
 
-    public Column getOtherAssociationColumn()
+    public Column getForeignAssociationColumn()
     {
-      return otherAssociationColumn;
+      return foreignAssociationColumn;
     }
 
-    public String getOtherRowbuilderClass()
+    public String getForeignRowbuilderClass()
     {
-      return _dataSet.getNames().getRowBuilderClass(otherColumn.getTable());
+      return _dataSet.getNames().getRowBuilderClass(foreignColumn.getTable());
     }
 
-    public String getOtherRefClass()
-    {
-      if (isAssociative())
-      {
-        return _dataSet.getNames().getRefClass(otherAssociationColumn.getTable());
-      } else {
-        return _dataSet.getNames().getRefClass(otherColumn.getTable());
-      }
-    }
+//    public String getForeignRefClass()
+//    {
+//      return _dataSet.getNames().getRefClass(foreignAssociationColumn.getTable());
+//    }
 
-    public String getOtherRefVariable()
+    public String getForeignRefVariable()
     {
-      if (isAssociative())
-      {
-        return _dataSet.getNames().getRefVariable(otherAssociationColumn.getTable());
-      } else {
-        return _dataSet.getNames().getRefVariable(otherColumn.getTable());
-      }
+      return _dataSet.getNames().getRefVariable(foreignAssociationColumn.getTable());
     }
 
     public String getDescription()

@@ -38,6 +38,13 @@ public interface TableParserAdapter<R, G, D extends DatabaseRef>
   R getRowByReference(D reference);
 
   /**
+   * Returns the table context, which is used as delegate when the
+   * table closure is evaluated, in fact the instance of the table adapter class.
+   * @return The table context
+   */
+  Object getTableContext();
+
+  /**
    * Returns the name of the table (uses for error messages)
    * @return The table's name
    */

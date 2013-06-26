@@ -32,9 +32,9 @@
 #end
 #set( $relcnt = $relcnt + 1 )
 #if ($isadapter)
- *   <li>${table.dataSet.names.getTableClass(${col.relation.table})} - {@link ${table.dataSet.names.getTableAdapterClass(${col.relation.table})}}</li>
+ *   <li>${table.dataSet.names.getTableClass(${col.relation.foreignColumn.table})} - {@link ${table.dataSet.names.getTableAdapterClass(${col.relation.foreignColumn.table})}}</li>
 #else
- *   <li>{@link ${table.dataSet.names.getTableClass(${col.relation.table})}}</li>
+ *   <li>{@link ${table.dataSet.names.getTableClass(${col.relation.foreignColumn.table})}}</li>
 #end
 #end
 #end
@@ -73,9 +73,9 @@
 #foreach( $col in $table.columns )
 #if( ${col.relation} )
 #if ($isadapter)
- *   <li>${table.dataSet.names.getTableClass(${col.relation.table})} - {@link ${table.dataSet.names.getTableAdapterClass(${col.relation.table})}}</li>
+ *   <li>${table.dataSet.names.getTableClass(${col.relation.foreignColumn.table})} - {@link ${table.dataSet.names.getTableAdapterClass(${col.relation.foreignColumn.table})}}</li>
 #else
- *   <li>{@link ${table.dataSet.names.getTableClass(${col.relation.table})}}</li>
+ *   <li>{@link ${table.dataSet.names.getTableClass(${col.relation.foreignColumn.table})}}</li>
 #end
 #end
 #end
@@ -84,7 +84,7 @@
  * <ul>
 #foreach( $col in $table.columns )
 #if( ${col.relation} )
- *   <li>{@link ${table.dataSet.names.getRefClass(${col.relation.table})}${jdSep}${col.relation.remoteName}}</li>
+ *   <li>{@link ${table.dataSet.names.getRefClass(${col.relation.foreignColumn.table})}${jdSep}${col.relation.foreignName}}</li>
 #end
 #end
  * </ul>

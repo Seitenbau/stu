@@ -22,14 +22,14 @@ public class Column
 
   private final String _description;
 
-  private final Relation _relation;
+  private final ColumnReference _relation;
 
   private final ColumnMetaData _metaData;
 
   private final List<Column> _referencedBy;
 
   Column(Table table, String name, String javaName, String groovyName, String description, DataType dataType,
-      Relation relation, Set<String> flags)
+      ColumnReference relation, Set<String> flags)
   {
     _table = table;
     _name = name;
@@ -44,7 +44,7 @@ public class Column
     _referencedBy = new ArrayList<Column>();
     if (relation != null)
     {
-      _relation.getColumn()._referencedBy.add(this);
+      _relation.getForeignColumn()._referencedBy.add(this);
     }
   }
 
@@ -93,7 +93,7 @@ public class Column
     return _description;
   }
 
-  public Relation getRelation()
+  public ColumnReference getRelation()
   {
     return _relation;
   }

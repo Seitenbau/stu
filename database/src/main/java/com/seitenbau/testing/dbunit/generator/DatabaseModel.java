@@ -75,6 +75,11 @@ public abstract class DatabaseModel
     return new TableBuilder(this, name);
   }
 
+  public TableBuilder associativeTable(String name)
+  {
+    return new AssociativeTableBuilder(this, name);
+  }
+
   /**
    * Adds a built table to the data set
    * @param table The Table built by a TableBuilder

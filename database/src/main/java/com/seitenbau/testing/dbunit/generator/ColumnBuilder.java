@@ -21,9 +21,11 @@ public class ColumnBuilder
 
   private String description;
 
-  private Relation relation;
+  private ColumnReference relation;
 
   private final Set<String> flags;
+
+  public final ColumnReferenceBuilder reference;
 
   public ColumnBuilder(TableBuilder tableBuilder, String name, DataType dataType)
   {
@@ -35,6 +37,7 @@ public class ColumnBuilder
     this.tableName = null;
     this.dataType = dataType;
 
+    this.reference = new ColumnReferenceBuilder(this);
     tableBuilder.addColumnBuilder(this);
   }
 
@@ -215,6 +218,7 @@ public class ColumnBuilder
     return this;
   }
 
+// TODO NM CLEAR ---------
   /**
    * Models a relation to another table column. A relation will automatically add methods
    * to model relations (e.g. setters on RowBuilders and methods on the Ref classes).
@@ -224,10 +228,6 @@ public class ColumnBuilder
    * @param targetColumn The column, which the current column is related to
    * @return The builder to configure the relation
    */
-  public RelationBuilder relationTo(Column targetColumn)
-  {
-    return new RelationBuilder(this, targetColumn);
-  }
 
   /**
    * Models a relation to another table using its identifier column. A relation will automatically
@@ -238,12 +238,9 @@ public class ColumnBuilder
    * @param targetColumn The column, which the current column is related to
    * @return The builder to configure the relation
    */
-  public RelationBuilder relationTo(Table table)
-  {
-    return new RelationBuilder(this, table.getIdentifierColumn());
-  }
+// CLEAR -----------------
 
-  void addRelation(Relation relation)
+  void setRelation(ColumnReference relation)
   {
     if (relation != null)
     {

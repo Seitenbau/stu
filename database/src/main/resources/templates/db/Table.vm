@@ -36,18 +36,18 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
 
 import com.google.common.base.Optional;
-#if( !${model.isAssociativeTable()} )
+#if( ${model.hasDataColumns()} )
 import com.seitenbau.testing.dbunit.dsl.CastUtil;
 #end
 import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.dsl.DatabaseRef;
-#if( !${model.isAssociativeTable()} )
+#if( ${model.hasDataColumns()} )
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 #end
 import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaDataBuilder;
-#if( !${model.isAssociativeTable()})
+#if( ${model.hasDataColumns()})
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 #end
 import com.seitenbau.testing.util.Action;
@@ -152,7 +152,7 @@ public class ${clsTable} implements ITable
     T set${column.javaName}(Integer intValue);
 #end
 #if( $column.relation )
-    T set${column.javaName}(${names.getRefClass($column.relation.column.table)} reference);
+    T set${column.javaName}(${names.getRefClass($column.relation.foreignColumn.table)} reference);
 #end
 #if( ${column.isFutureValueSupported()} )
     T set${column.javaName}(Future<Object> value);
@@ -264,7 +264,7 @@ public class ${clsTable} implements ITable
     }
 #if( $column.relation )
 
-    public ${clsRowbuilder} set${column.javaName}(${names.getRefClass($column.relation.column.table)} reference)
+    public ${clsRowbuilder} set${column.javaName}(${names.getRefClass($column.relation.foreignColumn.table)} reference)
     {
       return set${column.javaName}Raw(reference);
     }
@@ -273,7 +273,7 @@ public class ${clsTable} implements ITable
     public ${clsRowbuilder} set${column.javaName}Raw(Object value)
     {
 #if( ${column.relation} )
-      assertNoOrCorrectRefType("${column.javaName}", ${names.getRefClass($column.relation.table)}.class, value);
+      assertNoOrCorrectRefType("${column.javaName}", ${names.getRefClass($column.relation.foreignColumn.table)}.class, value);
 #else
       assertNoRefType("${column.javaName}", value);
 #end
@@ -329,11 +329,11 @@ public class ${clsTable} implements ITable
       }
 #end
 #if( (${column.relation}) )
-#set($refTable = $column.relation.column.table)
+#set($refTable = $column.relation.foreignColumn.table)
       if (value instanceof ${names.getRefClass($refTable)})
       {
         ${names.getRefClass($refTable)} ref = (${names.getRefClass($refTable)})value;
-        return ref.getBuilder(table._dataSet).get${column.relation.column.javaName}();
+        return ref.getBuilder(table._dataSet).get${column.relation.foreignColumn.javaName}();
       }      
 #end
       return (${column.javaType})value;
@@ -427,12 +427,12 @@ public class ${clsTable} implements ITable
       if(column.equalsIgnoreCase(Columns.${column.javaName}) )
       {
 #if( ${column.relation} )
-#set($refTableClass = ${names.getRefClass($column.relation.column.table)})
+#set($refTableClass = ${names.getRefClass($column.relation.foreignColumn.table)})
         Object value = data[$foreach.index];
         if (value instanceof ${refTableClass})
         {
           ${refTableClass} ref = (${refTableClass})value;
-          ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.relation.column.javaName}();
+          ${column.javaType} refValue = ref.getBuilder(table._dataSet).get${column.relation.foreignColumn.javaName}();
           return refValue; 
         }      
         return value;
@@ -461,11 +461,11 @@ public class ${clsTable} implements ITable
     }
 #foreach( $column in $model.columns )
 #if( $column.relation )
-#set($otherGetter = ${names.getRowGettersClass(${column.relation.table})} )
+#set($otherGetter = ${names.getRowGettersClass(${column.relation.foreignColumn.table})} )
 
     public ${clsRowbuilder} ref${column.javaName}(@SuppressWarnings("rawtypes") $otherGetter reference)
     {
-      set${column.javaName}(reference.get${column.relation.javaName}());
+      set${column.javaName}(reference.get${column.relation.foreignColumn.javaName}());
       return this;
     }
 #end
@@ -570,7 +570,7 @@ public class ${clsTable} implements ITable
       return ${column.javaNameFirstLower}(row.get${column.javaName}());
     }
 #if( $column.relation )
-#set( $refTable = ${column.relation.column.table} )
+#set( $refTable = ${column.relation.foreignColumn.table} )
 
     public ${rowcollection} ${column.javaNameFirstLower}(${names.getRefClass($refTable)} ref)
     {
@@ -587,7 +587,7 @@ public class ${clsTable} implements ITable
       {
         throw new RuntimeException("Ref not defined in this scope");
       }
-      return ${column.javaNameFirstLower}(row.get${column.relation.column.javaName}());
+      return ${column.javaNameFirstLower}(row.get${column.relation.foreignColumn.javaName}());
     }
 #end       
 
@@ -673,7 +673,7 @@ public class ${clsTable} implements ITable
       return ${column.javaNameFirstLower}(row.get${column.javaName}());
     }
 #if( $column.relation )
-#set( $refTable = ${column.relation.column.table} )
+#set( $refTable = ${column.relation.foreignColumn.table} )
 
     public Optional<${clsRowbuilder}> ${column.javaNameFirstLower}(${names.getRefClass($refTable)} ref)
     {
@@ -690,7 +690,7 @@ public class ${clsTable} implements ITable
       {
         throw new RuntimeException("Ref not defined in this scope");
       }
-      return ${column.javaNameFirstLower}(row.get${column.relation.column.javaName}());
+      return ${column.javaNameFirstLower}(row.get${column.relation.foreignColumn.javaName}());
     }
 #end       
 
@@ -701,8 +701,7 @@ public class ${clsTable} implements ITable
         if (row.get${column.javaName}().equals(toSearch)) 
         {
           return Optional.of(row);
-        }
-      }
+        }      }
       return Optional.<${clsRowbuilder}> absent();
     }
 #if( $column.javaType.contains("Long") )
@@ -992,18 +991,18 @@ public class ${clsTable} implements ITable
     return rowToDelete;
   }
 #if( ${model.isAssociativeTable()})
-#set( $col1 = ${model.columns.get(0)} )
-#set( $tab1 = ${model.columns.get(0).relation.table} )
-#set( $col2 = ${model.columns.get(1)} )
-#set( $tab2 = ${model.columns.get(1).relation.table} )
+#set( $col1 = ${model.associativeColumns.get(0)} )
+#set( $col2 = ${model.associativeColumns.get(1)} )
+#set( $tab1 = ${col1.relation.foreignColumn.table} )
+#set( $tab2 = ${col2.relation.foreignColumn.table} )
 #set( $ref1 = ${names.getRefVariable($tab1)} )
 #set( $ref2 = ${names.getRefVariable($tab2)} )
 
   public ${clsRowbuilder} deleteAssociation(${names.getRefClass($tab1)} ${ref1}, ${names.getRefClass($tab2)} ${ref2})
   {
     for (${clsRowbuilder} row : rows) {
-      if (row.get${col1.javaName}() == ${ref1}.get${col1.relation.column.javaName}() &&
-          row.get${col2.javaName}() == ${ref2}.get${col2.relation.column.javaName}())
+      if (row.get${col1.javaName}() == ${ref1}.get${col1.relation.foreignColumn.javaName}() &&
+          row.get${col2.javaName}() == ${ref2}.get${col2.relation.foreignColumn.javaName}())
       {
         rows.remove(row);
         return row;
@@ -1022,7 +1021,7 @@ public class ${clsTable} implements ITable
   {
     for (${clsRowbuilder} row : rows) 
     {
-      if (row.get${col1.javaName}() == ref.get${col1.relation.column.javaName}())
+      if (row.get${col1.javaName}() == ref.get${col1.relation.foreignColumn.javaName}())
       {
         rows.remove(row);
         return row;
@@ -1036,7 +1035,7 @@ public class ${clsTable} implements ITable
   {
     for (${clsRowbuilder} row : rows)
     {
-      if (row.get${col2.javaName}() == ref.get${col2.relation.column.javaName}())
+      if (row.get${col2.javaName}() == ref.get${col2.relation.foreignColumn.javaName}())
       {
         rows.remove(row);
         return row;

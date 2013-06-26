@@ -39,14 +39,14 @@ import ${model.package}.${clsTable}.${clsRowbuilder};
  * <p>
  * Available relations:
  * <ul>
-#foreach( $rel in ${model.manyToOneRelations} )
- *   <li>{@link ${jdSep}${rel.localName}(${rel.otherRefClass})}</li>
+#foreach( $col in ${model.foreignColumns} )
+ *   <li>{@link ${jdSep}${col.relation.localName}(${names.getRefClass($col.relation.foreignColumn.table)})}</li>
 #end
-#foreach( $rel in ${model.oneToManyRelations} )
- *   <li>{@link ${jdSep}${rel.localName}(${rel.otherRefClass} ... )}</li>
+#foreach( $foreignCol in ${model.referencingColumns} )
+ *   <li>{@link ${jdSep}${foreignCol.relation.foreignName}(${names.getRefClass(${foreignCol.table})} ... )}</li>
 #end
 #foreach ( $rel in ${model.associativeRelations} )
- *   <li>{@link ${jdSep}${rel.localName}(${rel.otherRefClass} ... )}</li>
+ *   <li>{@link ${jdSep}${rel.localName}(${names.getRefClass(${rel.foreignAssociationColumn.table})} ... )}</li>
 #end
  * </ul>
  */
@@ -139,14 +139,14 @@ public class ${clsRef} extends DatabaseRef
     {
       throw new RuntimeException("Builder cannot be redefined");
     }
-#foreach( $rel in ${model.manyToOneRelations} )
-#set( $map = ${privateListPrefix} + ${rel.localName} + "Map" )
-#set( $refVar = ${rel.otherRefVariable})
+#foreach( $col in ${model.foreignColumns} )
+#set( $map = ${privateListPrefix} + ${col.relation.localName} + "Map" )
+#set( $refVar = ${names.getRefVariable(${col.relation.foreignColumn.table})})
 
-    ${rel.otherRefClass} ${refVar} = ${map}.get(dataSet);
+    ${names.getRefClass(${col.relation.foreignColumn.table})} ${refVar} = ${map}.get(dataSet);
     if (${refVar} != null)
     {
-      builder.set${rel.localColumn.javaName}(${refVar});
+      builder.set${col.javaName}(${refVar});
     }
 #end
   }
@@ -155,56 +155,56 @@ public class ${clsRef} extends DatabaseRef
   {
     return builders.get(identificator.getDataSet());
   }
-#foreach( $rel in ${model.manyToOneRelations} )
-#set( $map = ${privateListPrefix} + ${rel.localName} + "Map" )
+#foreach( $col in ${model.foreignColumns} )
+#set( $map = ${privateListPrefix} + ${col.relation.localName} + "Map" )
 
   // Cache for unresolvable relations
-  private Map<${clsDataSet}, ${rel.otherRefClass}> ${map} = new HashMap<${clsDataSet}, ${rel.otherRefClass}>();
+  private Map<${clsDataSet}, ${names.getRefClass(${col.relation.foreignColumn.table})}> ${map} = new HashMap<${clsDataSet}, ${names.getRefClass(${col.relation.foreignColumn.table})}>();
 
   /**
-#if( ${rel.description} && ${rel.description.length()} > 0 )
-   * ${rel.description}
+#if( ${col.relation.localDescription.length()} > 0 )
+   * ${col.relation.localDescription}
    * <p>
 #end
    * Models: This entity (and maybe others) is related to the given entity ref.
    * @param ref The reference to the entity, to which the current entity is related to
    * @return The reference to the current entity
    */
-  public ${clsRef} ${rel.localName}(${rel.otherRefClass} ref)
+  public ${clsRef} ${col.relation.localName}(${names.getRefClass(${col.relation.foreignColumn.table})} ref)
   {
     ${clsDataSet} dataSet = getActiveDataSet();
     ${clsRowbuilder} builder = getBuilder(dataSet);
 
     if (builder != null) {
-      builder.set${rel.localColumn.javaName}(ref);
+      builder.set${col.javaName}(ref);
     } else {
       ${map}.put(dataSet, ref);
     }
     return this;
   }
 #end
-#foreach( $rel in ${model.oneToManyRelations} )
+#foreach( $foreignCol in ${model.referencingColumns} )
 
   /**
-#if( ${rel.description} && ${rel.description.length()} > 0 )
-   * ${rel.description}
+#if( ${foreignCol.relation.foreignDescription.length()} > 0 )
+   * ${foreignCol.relation.foreignDescription}
    * <p>
 #end
    * Models: This entity is related to the given entity refs.
    * @param refs A list of references, which are related to the current entity
    * @return The reference to the current entity
    */
-  public ${clsRef} ${rel.localName}(${rel.otherRefClass} ... refs)
+  public ${clsRef} ${foreignCol.relation.foreignName}(${names.getRefClass(${foreignCol.table})} ... refs)
   {
-    for (${rel.otherRefClass} ref : refs)
+    for (${names.getRefClass(${foreignCol.table})} ref : refs)
     {
-      ref.${rel.otherName}(this);
+      ref.${foreignCol.relation.localName}(this);
     }
     return this;
   }
 #end
 #foreach ( $rel in ${model.associativeRelations} )
-#set( $otherTable = ${names.getTableVariable(${rel.otherColumn.table})} )
+#set( $foreignTable = ${names.getTableVariable(${rel.foreignColumn.table})} )
 
   /**
 #if( ${rel.description} && ${rel.description.length()} > 0 )
@@ -215,15 +215,15 @@ public class ${clsRef} extends DatabaseRef
    * @param refs A list of references, which are related to the current entity
    * @return The reference to the current entity
    */
-  public ${clsRef} ${rel.localName}(${rel.otherRefClass} ... refs)
+  public ${clsRef} ${rel.localName}(${names.getRefClass(${rel.foreignAssociationColumn.table})} ... refs)
   {
     ${clsDataSet} dataSet = getActiveDataSet();
 
-    for (${rel.otherRefClass} ref : refs)
+    for (${names.getRefClass(${rel.foreignAssociationColumn.table})} ref : refs)
     {
-      ${package}.${names.getTableClass($rel.localAssociationColumn.table)}.${rel.otherRowbuilderClass} builder = dataSet.${otherTable}.insertRow();
+      ${package}.${names.getTableClass(${rel.localAssociationColumn.table})}.${names.getRowBuilderClass(${rel.foreignColumn.table})} builder = dataSet.${foreignTable}.insertRow();
       builder.set${rel.localAssociationColumn.javaName}(this);
-      builder.set${rel.otherColumn.javaName}(ref);
+      builder.set${rel.foreignColumn.javaName}(ref);
     }
     return this;
   }

@@ -13,7 +13,6 @@ public class JavaDocBuilder
 
   public String createTableExample(Table table, String indention, String innerIndention)
   {
-
     String tableVar = names.getTableAdapterVariable(table);
 
     StringBuilder result = new StringBuilder();
@@ -99,7 +98,7 @@ public class JavaDocBuilder
   public String createRelationsExample(Table table, String indention, String innerIndention)
   {
     if (table.isAssociativeTable()) {
-      return createAssociativeTableRelationsExample(table, indention, innerIndention);
+      return createAssociativeTableRelationsExample((AssociativeTable)table, indention, innerIndention);
     }
 
     for (Column col : table.getColumns())
@@ -116,7 +115,7 @@ public class JavaDocBuilder
       result.append(".");
       result.append(col.getRelation().getLocalName());
       result.append("(");
-      result.append(getSampleRef(col.getRelation().getTable()));
+      result.append(getSampleRef(col.getRelation().getForeignColumn().getTable()));
       result.append(")\n");
 
       return result.toString();
@@ -124,27 +123,11 @@ public class JavaDocBuilder
     return "";
   }
 
-  private String createAssociativeTableRelationsExample(Table table, String indention, String innerIndention)
+  private String createAssociativeTableRelationsExample(AssociativeTable table, String indention, String innerIndention)
   {
-    Table table1 = null;
-    Table table2 = null;
-    String relation = null;
-    for (Column col : table.getColumns())
-    {
-      if (col.getRelation() == null)
-      {
-        continue;
-      }
-
-      if (table1 == null)
-      {
-        table1 = col.getRelation().getTable();
-        relation = col.getRelation().getRemoteName();
-      }
-      else {
-        table2 = col.getRelation().getTable();
-      }
-    }
+    Table table1 = table.getAssociativeColumns().get(0).getRelation().getForeignColumn().getTable();
+    Table table2 = table.getAssociativeColumns().get(1).getRelation().getForeignColumn().getTable();
+    String relation = table.getAssociativeColumns().get(0).getRelation().getForeignName();
 
     StringBuilder result = new StringBuilder();
     appendLineStart(result, indention, innerIndention);
@@ -212,7 +195,7 @@ public class JavaDocBuilder
     case DATE:
     case TIME:
     case TIMESTAMP:
-      return "<date>";
+      return "&lt;date&gt;";
 
     case VARBINARY:
     case BINARY:
@@ -227,6 +210,6 @@ public class JavaDocBuilder
 
   private String getSampleRefValue(Column column)
   {
-    return "ANY" + column.getRelation().getTable().getName().toUpperCase() + "REF";
+    return "ANY" + column.getRelation().getForeignColumn().getTable().getName().toUpperCase() + "REF";
   }
 }

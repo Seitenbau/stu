@@ -15,7 +15,7 @@
 #if( $package && $package.length() != 0 )
 package ${package};
 #end
-#if( !${model.isAssociativeTable()})
+#if( ${model.hasDataColumns()})
 
 import com.google.common.base.Optional;
 #end
@@ -27,7 +27,6 @@ import com.seitenbau.testing.dbunit.dsl.NoValue;
 import com.seitenbau.testing.dbunit.dsl.RefColumnBinding;
 import com.seitenbau.testing.dbunit.dsl.TableParser;
 import com.seitenbau.testing.dbunit.dsl.TableParserAdapter;
-import com.seitenbau.testing.dbunit.dsl.TableParserCallback;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.DataType;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
@@ -74,7 +73,7 @@ public class ${clsAdapter} {
    * <p>
    * Data Type: {@code ${col.javaType}}
 #if( ${col.relation} )
-   * or {@link ${names.getRefClass($col.relation.column.table)}}
+   * or {@link ${names.getRefClass($col.relation.foreignColumn.table)}}
 #end
    * <br>   
    * Database Type: ${col.type}
@@ -156,9 +155,7 @@ ${jd.createTableExample($model, "   ", "")}
    */
   public void rows(Closure<?> rows)
   {
-    TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}> callback =
-        new TableParserCallback<${clsRowbuilder}, ${clsTableGetWhere}, ${clsRef}>(_adapter);
-    TableParser.parseTable(rows, this, callback);
+    TableParser.parseTable(rows, _adapter);
   }
   
   public int getRowCount() 
@@ -262,8 +259,8 @@ ${jd.createTableExample($model, "   ", "")}
     return _table.deleteRow(rowToDelete);
   }
 #if( ${model.isAssociativeTable()})
-#set( $tab1 = ${model.columns.get(0).relation.table} )
-#set( $tab2 = ${model.columns.get(1).relation.table} )
+#set( $tab1 = ${model.associativeColumns.get(0).relation.foreignColumn.table} )
+#set( $tab2 = ${model.associativeColumns.get(1).relation.foreignColumn.table} )
 #set( $ref1 = ${names.getRefVariable($tab1)} )
 #set( $ref2 = ${names.getRefVariable($tab2)} )
 
@@ -378,6 +375,12 @@ ${jd.createTableExample($model, "   ", "")}
     public ${clsRowbuilder} getRowByReference(${clsRef} reference)
     {
       return reference.getBuilder(_builder);
+    }
+
+    @Override
+    public Object getTableContext()
+    {
+      return ${clsAdapter}.this;
     }
 
     @Override

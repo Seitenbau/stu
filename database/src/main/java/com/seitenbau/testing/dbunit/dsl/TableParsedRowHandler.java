@@ -8,9 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.base.Optional;
-import com.seitenbau.testing.dbunit.dsl.TableParserContext.ParsedRowCallback;
 
-public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedRowCallback
+public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 {
 
   private final TableParserAdapter<R, G, D> _tableAdapter;
@@ -27,7 +26,7 @@ public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedR
 
   private List<Integer> _traversedColumns;
 
-  public TableParserCallback(TableParserAdapter<R, G, D> tableAdapter)
+  TableParsedRowHandler(TableParserAdapter<R, G, D> tableAdapter)
   {
     _tableAdapter = tableAdapter;
     _head = null;
@@ -38,8 +37,7 @@ public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedR
     _traversedColumns = Collections.<Integer>emptyList();
   }
 
-  @Override
-  public void parsedRow(TableRowModel row)
+  public void handleRow(TableRowModel row)
   {
     _lineNr++;
     if (row.isHeadRow())
@@ -143,10 +141,10 @@ public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedR
     {
       this.row = row;
       ref = getRefValue();
-      uniqueValues = getIdValues();
+      uniqueValues = getUniqueValues();
 
       R builderByReference = getBuilderByReference();
-      R builderById = getBuilderById();
+      R builderById = getBuilderByUniqueValues();
       builder = getBuilderFromTwo(builderByReference, builderById);
       if (builder == null)
       {
@@ -201,7 +199,7 @@ public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedR
       return null;
     }
 
-    private List<Object> getIdValues()
+    private List<Object> getUniqueValues()
     {
       List<Object> result = new ArrayList<Object>();
       for (Integer i : _head.getUniqueColumnIndexes())
@@ -211,7 +209,7 @@ public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedR
       return result;
     }
 
-    private R getBuilderById()
+    private R getBuilderByUniqueValues()
     {
       R result = null;
 
@@ -263,14 +261,14 @@ public class TableParserCallback<R, G, D extends DatabaseRef> implements ParsedR
     {
       for (int index = 0; index < _uniqueColumns.size(); index++)
       {
-        Object id = uniqueValues.get(index);
-        if (id == null || id instanceof NoValue)
+        Object value = uniqueValues.get(index);
+        if (value == null || value instanceof NoValue)
         {
           continue;
         }
 
         ColumnBinding<R, G> col = _uniqueColumns.get(index);
-        col.set(builder, id);
+        col.set(builder, value);
       }
     }
 

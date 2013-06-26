@@ -2,68 +2,64 @@ package com.seitenbau.testing.dbunit.generator;
 
 import com.seitenbau.testing.util.CamelCase;
 
-public class RelationBuilder
+public class ColumnReferenceBuilder
 {
   private final ColumnBuilder columnBuilder;
 
-  private final Column column;
-
-  private LocalReferenceBuilder local;
-
-  private TargetReferenceBuilder target;
-
-  private String localName;
-
-  private String localDescription;
-
-  private String targetName;
-
-  private String targetDescription;
-
-  private Integer targetMin;
-
-  private Integer targetMax;
-
-  public RelationBuilder(ColumnBuilder columnBuilder, Column reference)
-  {
-    this.columnBuilder = columnBuilder;
-    this.column = reference;
-  }
-
-  public RelationBuilder description(String description)
-  {
-    targetDescription = description;
-    return this;
-  }
+  private Column foreignColumn;
 
   /**
+   * TODO NM UPDATE
    * Describes the relation regarding the entities in the current table. The generated Ref class
    * belonging to the current table will have a corresponding method to model this relation.
    * <p>
-   * When modeling associative tables, use {@link RelationBuilder#target(String)} to define the
+   * When modeling associative tables, use {@link ColumnReferenceBuilder#target(String)} to define the
    * generated methods on the involved Ref classes.
    * <p>
    * Example: A player belongs to a team
    * <pre>
    * table("player")
    *     .column("team_id", DataType.BIGINT)
-   *       .relationTo(teamTable)
-   *         .local("belongsTo")
+   *       .references
+   *         .local
+   *           .name("belongsTo")
    * </pre>
-   * @param name The relation name used for the generated DSL.
    * @return The builder to configure the local relation.
    */
-  public LocalReferenceBuilder local(String name)
+  public final LocalReferenceBuilder local;
+
+  private ForeignReferenceBuilder foreign;
+
+  private String localName;
+
+  private String localDescription;
+
+  private String localMultiplicities;
+
+  private String foreignName;
+
+  private String foreignDescription;
+
+  private String foreignMultiplicities;
+
+  public ColumnReferenceBuilder(ColumnBuilder columnBuilder)
   {
-    if (local != null)
-    {
-      throw new IllegalArgumentException("Multiple definition of local not allowed");
-    }
-    local = new LocalReferenceBuilder(this, name);
-    return local;
+    this.columnBuilder = columnBuilder;
+
+    local = new LocalReferenceBuilder(this);
+
+    // initialize values
+    localName = CamelCase.makeFirstLowerCase(columnBuilder.getColumnJavaName()) + "To";
+    localDescription = "";
+    localMultiplicities = "1";
+
+    foreignName = CamelCase.makeFirstLowerCase(columnBuilder.getTableBuilder().getJavaName()) + "to";
+    foreignDescription = "";
+    foreignMultiplicities = "1";
   }
 
   /**
+   * TODO NM UPDATE
    * Describes the relation regarding the entities in the target table. The generated Ref class
    * belonging to the target table will have a corresponding method to model this relation.
    * <p>
@@ -92,14 +88,23 @@ public class RelationBuilder
    * @param name The relation name used for the generated DSL.
    * @return The builder to configure the target relation.
    */
-  public TargetReferenceBuilder target(String name)
+  public ForeignReferenceBuilder foreign(Column foreignColumn)
   {
-    if (target != null)
+    if (foreign != null)
     {
       throw new IllegalArgumentException("Multiple definition of target not allowed");
     }
-    target = new TargetReferenceBuilder(this, name);
-    return target;
+    this.foreignColumn = foreignColumn;
+    foreign = new ForeignReferenceBuilder(this);
+    return foreign;
+  }
+
+  /**
+   * TODO NM add
+   */
+  public ForeignReferenceBuilder foreign(Table table)
+  {
+    return foreign(table.getIdentifierColumn());
   }
 
   /**
@@ -126,50 +131,25 @@ public class RelationBuilder
 
   private void buildReference()
   {
-    String p_localName = getUsedName(localName, columnBuilder.getColumnJavaName());
-    String p_targetName = getUsedName(targetName, columnBuilder.getTableBuilder().getJavaName());
-
-    // Avoid null pointer for Apache Velocity
-    String p_localDescription = localDescription != null ? localDescription : "";
-    String p_targetDescription = targetDescription != null ? targetDescription : "";
-
-    columnBuilder.addRelation(new Relation(column, p_localName, p_localDescription, p_targetName, p_targetDescription,
-        targetMin, targetMax));
-  }
-
-  private static String getUsedName(String name, String columnJavaName)
-  {
-    if (name == null)
-    {
-      return CamelCase.makeFirstLowerCase(columnJavaName) + "To";
-    }
-    return name;
-  }
-
-  Column getColumn()
-  {
-    return column;
-  }
-
-  LocalReferenceBuilder getLocal()
-  {
-    return local;
-  }
-
-  TargetReferenceBuilder getTarget()
-  {
-    return target;
+    columnBuilder.setRelation(new ColumnReference(foreignColumn,
+        localName, localDescription, localMultiplicities,
+        foreignName, foreignDescription, foreignMultiplicities));
   }
 
   public static class LocalReferenceBuilder
   {
 
-    private final RelationBuilder parent;
+    private final ColumnReferenceBuilder parent;
 
-    public LocalReferenceBuilder(RelationBuilder parent, String name)
+    public LocalReferenceBuilder(ColumnReferenceBuilder parent)
     {
       this.parent = parent;
+    }
+
+    public LocalReferenceBuilder name(String name)
+    {
       parent.localName = name;
+      return this;
     }
 
     public LocalReferenceBuilder description(String description)
@@ -178,7 +158,14 @@ public class RelationBuilder
       return this;
     }
 
+    public LocalReferenceBuilder multiplicities(String multiplicities)
+    {
+      parent.localMultiplicities = multiplicities;
+      return this;
+    }
+
     /**
+     * TODO NM UPDATE
      * Describes the relation regarding the entities in the target table. The generated Ref class
      * belonging to the target table will have a corresponding method to model this relation.
      * <p>
@@ -207,9 +194,17 @@ public class RelationBuilder
      * @param name The relation name used for the generated DSL.
      * @return The builder to configure the target relation.
      */
-    public TargetReferenceBuilder target(String name)
+    public ForeignReferenceBuilder foreign(Column foreignColumn)
     {
-      return parent.target(name);
+      return parent.foreign(foreignColumn);
+    }
+
+    /**
+     * TODO NM add
+     */
+    public ForeignReferenceBuilder foreign(Table table)
+    {
+      return parent.foreign(table.getIdentifierColumn());
     }
 
     /**
@@ -234,40 +229,16 @@ public class RelationBuilder
 
   }
 
-  public static class TargetReferenceBuilder
+  public static class ForeignReferenceBuilder
   {
-    private final RelationBuilder parent;
-
-
-    public TargetReferenceBuilder(RelationBuilder parent, final String name)
-    {
-      this.parent = parent;
-      parent.targetName = name;
-    }
-
-    public TargetReferenceBuilder description(String description)
-    {
-      parent.targetDescription = description;
-      return this;
-    }
-
-    public TargetReferenceBuilder min(int min)
-    {
-      parent.targetMin = min;
-      return this;
-    }
-
-    public TargetReferenceBuilder max(int max)
-    {
-      parent.targetMax = max;
-      return this;
-    }
+    private final ColumnReferenceBuilder parent;
 
     /**
+     * TODO NM UPDATE
      * Describes the relation regarding the entities in the current table. The generated Ref class
      * belonging to the current table will have a corresponding method to model this relation.
      * <p>
-     * When modeling associative tables, use {@link RelationBuilder#target(String)} to define the
+     * When modeling associative tables, use {@link ColumnReferenceBuilder#target(String)} to define the
      * generated methods on the involved Ref classes.
      * <p>
      * Example: A player belongs to a team
@@ -280,9 +251,30 @@ public class RelationBuilder
      * @param name The relation name used for the generated DSL.
      * @return The builder to configure the local relation.
      */
-    public LocalReferenceBuilder local(String name)
+    public final LocalReferenceBuilder local;
+
+    public ForeignReferenceBuilder(ColumnReferenceBuilder parent)
     {
-      return parent.local(name);
+      this.parent = parent;
+      local = parent.local;
+    }
+
+    public ForeignReferenceBuilder name(String name)
+    {
+      parent.foreignName = name;
+      return this;
+    }
+
+    public ForeignReferenceBuilder description(String description)
+    {
+      parent.foreignDescription = description;
+      return this;
+    }
+
+    public ForeignReferenceBuilder multiplicities(String multiplicities)
+    {
+      parent.foreignMultiplicities = multiplicities;
+      return this;
     }
 
     /**

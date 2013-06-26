@@ -45,23 +45,28 @@ public class PersonDatabaseModel extends DatabaseModel
         .column("name", DataType.VARCHAR) //
           .description("Actually this column represents the last name of a person")
         .column("team_id", DataType.BIGINT) //
-          .relationTo(teams.ref("id")) //
-            .local("belongsTo")
+          .reference //
+            .local
+              .name("belongsTo")
               .description("Assigns the person to a team")
-            .target("hasMembers")
+            .foreign(teams)
+              .name("hasMembers")
               .description("Assigns the team to one or more persons")
       .build(); //
 
-    table("person_job")
+    associativeTable("person_job")
         .description("The table that holds relations of persons to jobs")
         .column("person_id", DataType.BIGINT)
-          .relationTo(persons)
-            .target("worksAs")
+          .reference
+            .foreign(persons)
+              .name("worksAs")
               .description("Assigns a job to the person")
         .column("job_id", DataType.BIGINT)
-          .relationTo(jobs)
-            .target("performedBy")
+          .reference
+            .foreign(jobs)
+              .name("performedBy")
               .description("Assigns a person to the job")
+        //.column("startTime", DataType.DATE)
       .build();
   }
 

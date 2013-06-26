@@ -6,15 +6,15 @@ import java.util.List;
 public class TableBuilder
 {
 
-  private final DatabaseModel model;
+  protected final DatabaseModel model;
 
-  private final String name;
+  protected final String name;
 
-  private String javaName;
+  protected String javaName;
 
-  private String description;
+  protected String description;
 
-  private final List<ColumnBuilder> columnBuilders;
+  protected final List<ColumnBuilder> columnBuilders;
 
   TableBuilder(DatabaseModel model, String name)
   {
@@ -35,7 +35,7 @@ public class TableBuilder
     return result;
   }
 
-  private String getTableDescription()
+  protected String getTableDescription()
   {
     if (description != null)
     {
