@@ -34,7 +34,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     _lineNr = 0;
     _refColumn = null;
     _uniqueColumns = new LinkedList<ColumnBinding<R, G>>();
-    _traversedColumns = Collections.<Integer>emptyList();
+    _traversedColumns = Collections.<Integer> emptyList();
   }
 
   public void handleRow(TableRowModel row)
@@ -69,10 +69,18 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     // Closures are considered to be Future values
     if (value instanceof Closure)
     {
-      value = new FutureClosure((Closure<?>)value);
+      value = new FutureClosure((Closure<?>) value);
     }
 
-    column.set(rowbuilder, value);
+    try
+    {
+      column.set(rowbuilder, value);
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException("Cannot set value <" + value + "> of type " + value.getClass().getName()
+          + ", expected class " + column.getDataType().getJavaTypeClass().getName() + "  in line " + _lineNr + " row " + row, e);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -110,20 +118,8 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 
   private void throwException(String message, int lineNr, TableRowModel row)
   {
-    StringBuilder builder = new StringBuilder();
-    builder.append("Error in " + _tableAdapter.getTableName() + ", line " + lineNr + ": " + message);
-    if (row.getValues().size() > 0)
-    {
-      builder.append(" [TableRowModel: ");
-      for (Object value : row.getValues())
-      {
-        builder.append(value);
-        builder.append(" | ");
-      }
-      builder.setLength(builder.length() - 3);
-      builder.append("]");
-    }
-    throw new IllegalArgumentException(builder.toString());
+    throw new IllegalArgumentException("Error in " + _tableAdapter.getTableName() + ", line " + lineNr + ": " + message
+        + " on " + row);
   }
 
   private class BuilderFinderOrCreator
@@ -189,7 +185,8 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     @SuppressWarnings("unchecked")
     private D getRefValue()
     {
-      if (_refColumn != null) {
+      if (_refColumn != null)
+      {
         Object refValue = row.getValue(_head.getRefColumnIndex());
         if (!(refValue instanceof NoValue))
         {
@@ -222,8 +219,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
         }
 
         ColumnBinding<R, G> col = _uniqueColumns.get(index);
-        Optional<R> builderById = col.getWhere(_tableAdapter.getWhere(),
-            CastUtil.cast(id, col.getDataType()));
+        Optional<R> builderById = col.getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, col.getDataType()));
         if (!builderById.isPresent())
         {
           continue;
@@ -274,7 +270,8 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 
     private void bindBuilderToScope()
     {
-      if (ref != null) {
+      if (ref != null)
+      {
         _tableAdapter.bindToDataSet(ref, builder);
       }
     }

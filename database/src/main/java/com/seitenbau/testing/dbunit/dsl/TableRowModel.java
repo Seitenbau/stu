@@ -110,4 +110,38 @@ public class TableRowModel
     }
     return result;
   }
+
+  @Override
+  public String toString()
+  {
+    StringBuilder builder = new StringBuilder();
+    builder.append("[TableRowModel");
+    if (getValues().size() > 0)
+    {
+      builder.append(": ");
+      for (Object value : getValues())
+      {
+        if (value instanceof String)
+        {
+          builder.append("\"" + value + "\"");
+        }
+        else if (value instanceof Character)
+        {
+          builder.append("'" + value + "'");
+        }
+        else if (value instanceof DatabaseRef)
+        {
+
+          builder.append("<" + value.getClass().getSimpleName() + ">");
+        } else {
+          builder.append(value);
+        }
+        builder.append(" | ");
+      }
+      builder.setLength(builder.length() - 3);
+    }
+    builder.append("]");
+
+    return builder.toString();
+  }
 }

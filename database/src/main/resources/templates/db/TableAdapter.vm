@@ -404,7 +404,13 @@ ${jd.createTableExample($model, "   ", "")}
         {
           row.set${col.javaName}Raw(value);
         } else {
-          row.set${col.javaName}((${col.javaType})CastUtil.cast(value, ${col.type}));
+          Object castedValue = CastUtil.cast(value, ${col.type})
+##          if (!(castedValue instanceof ${col.javaType})
+##          {
+##            // Table element has wrong type
+##            throw new RuntimeException("
+##          }
+          row.set${col.javaName}((${col.javaType})castedValue);
         }
       }
 #if ( ${col.isUnique()} )
