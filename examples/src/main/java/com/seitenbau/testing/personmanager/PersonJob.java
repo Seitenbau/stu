@@ -51,9 +51,9 @@ public class PersonJob
       this.pk.setJob(job);
   }
 
-  @Column
   private Date engagementStart;
 
+  @Column(name = "engagement_start")
   public Date getEngagementStart()
   {
     return engagementStart;
