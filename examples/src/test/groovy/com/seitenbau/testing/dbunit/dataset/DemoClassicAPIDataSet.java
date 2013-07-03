@@ -9,6 +9,7 @@ import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWT;
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.TM;
 
 import com.seitenbau.testing.dbunit.model.PersonDatabaseDataSet;
+import com.seitenbau.testing.dbunit.util.DateUtil;
 import com.seitenbau.testing.util.Future;
 
 public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
@@ -66,6 +67,7 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
       .insertRow()
         .setPersonId(KAULBERSCH.getId())
         .setJobId(SWD.getId())
+        .setEngagementStart(DateUtil.getDate(2013, 4, 1, 14, 0, 0))
       .insertRow()
         .setPersonId(GUITTON.getId())
         .setJobId(SWT.getId())

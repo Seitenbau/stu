@@ -6,22 +6,20 @@ import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.seitenbau.testing.dbunit.dataset.DemoClassicAPIDataSet;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.JavaDataSet;
+import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
 
 public class DataSetCompareTest
 {
 
-  @Ignore
   @Test
   public void compareJavaDataSetWithSTUDataSet() throws DataSetException
   {
-    // prepare
     IDataSet javaDataSet = new JavaDataSet();
     IDataSet stuDataSet = new DefaultDataSet().createDBUnitDataSet();
 
@@ -29,7 +27,6 @@ public class DataSetCompareTest
     assertEquality(javaDataSet, stuDataSet);
   }
 
-  @Ignore
   @Test
   public void compareJavaDataSetWithGroovyDataSet() throws DataSetException
   {
@@ -41,7 +38,6 @@ public class DataSetCompareTest
     assertEquality(javaDataSet, groovyDataSet);
   }
 
-  @Ignore
   @Test
   public void compareJavaDataSetWithClassicAPIDataSet() throws DataSetException
   {
@@ -72,8 +68,11 @@ public class DataSetCompareTest
         for (Column column : firstColumns)
         {
           Object firstValue = firstTable.getValue(row, column.getColumnName());
-          Object secondValue = firstTable.getValue(row, column.getColumnName());
-          assertThat(firstValue).isEqualTo(secondValue);
+          Object secondValue = secondTable.getValue(row, column.getColumnName());
+
+          // use NullCompatibleEquivaalence for comparison of different types
+          // (e.g. Integer vs Long)
+          assertThat(NullCompatibleEquivalence.equals(firstValue,  secondValue)).isTrue();
         }
       }
     }

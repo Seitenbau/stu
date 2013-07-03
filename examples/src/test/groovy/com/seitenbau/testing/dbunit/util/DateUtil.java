@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit;
+package com.seitenbau.testing.dbunit.util;
 
 import java.util.Calendar;
 import java.util.Date;

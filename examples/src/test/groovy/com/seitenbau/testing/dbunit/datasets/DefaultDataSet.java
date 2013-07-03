@@ -3,6 +3,7 @@ package com.seitenbau.testing.dbunit.datasets;
 import com.seitenbau.testing.dbunit.model.JobsTable.RowGetters_Jobs;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowGetters_Teams;
+import com.seitenbau.testing.dbunit.util.DateUtil;
 
 public class DefaultDataSet extends EmptyDataSet
 {
@@ -27,7 +28,7 @@ public class DefaultDataSet extends EmptyDataSet
     RowGetters_Teams<?> qualityAssurance = //
     table_Teams.insertRow() //
         .setTitle("Quality Assurance") //
-        .setDescription("Verifies that requirements for a product are fulfilled").setMembersize(3);
+        .setDescription("Verifies software").setMembersize(3);
 
     RowBuilder_Persons dennis = table_Persons.insertRow() //
         .setFirstName("Dennis") //
@@ -43,15 +44,16 @@ public class DefaultDataSet extends EmptyDataSet
         .setFirstName("Christian") //
         .setName("Baranowski") //
         .refTeamId(qualityAssurance);
-    
+
     table_PersonJob.insertRow() //
         .setPersonId(dennis.getId()) //
-        .setJobId(softwareDeveloper.getId());
-    
+        .setJobId(softwareDeveloper.getId())
+        .setEngagementStart(DateUtil.getDate(2013, 4, 1, 14, 0, 0));
+
     table_PersonJob.insertRow() //
     .setPersonId(julien.getId()) //
     .setJobId(softwareTester.getId());
-    
+
     table_PersonJob.insertRow() //
     .setPersonId(christian.getId()) //
     .setJobId(teamManager.getId());

@@ -66,7 +66,7 @@ public class PersonDatabaseModel extends DatabaseModel
             .foreign(jobs)
               .name("performedBy")
               .description("Assigns a person to the job")
-        .column("engagementStart", DataType.DATE)
+        .column("engagement_start", DataType.DATE)
       .build();
   }
 
