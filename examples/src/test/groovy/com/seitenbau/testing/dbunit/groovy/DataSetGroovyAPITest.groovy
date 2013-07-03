@@ -10,11 +10,11 @@ import com.seitenbau.testing.dbunit.dsl.DataSetRegistry
 import com.seitenbau.testing.dbunit.model.JobsTable
 
 
-public class DataSetGroovyAPITest 
+public class DataSetGroovyAPITest
 {
-  
+
   DemoGroovyDataSet dataSet = new DemoGroovyDataSet()
-  
+
   @Test
   void findWhereSWD()
   {
@@ -77,11 +77,11 @@ public class DataSetGroovyAPITest
   {
     assertThat(dataSet.personsTable.rowCount).isEqualTo(3);
   }
-  
+
   @Test
   void testForEach()
   {
-    List<String> names = ["Christian", "Dennis", "Julien"] 
+    List<String> names = ["Christian", "Dennis", "Julien"]
     dataSet.personsTable.foreach({ names.remove(it.firstName) })
     assertThat(names.size()).isEqualTo(0);
   }
