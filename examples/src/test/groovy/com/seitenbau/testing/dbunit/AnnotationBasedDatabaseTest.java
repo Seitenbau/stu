@@ -5,7 +5,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.fest.assertions.Assertions;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +14,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.seitenbau.testing.dbunit.datasets.DefaultDataSet;
 import com.seitenbau.testing.dbunit.datasets.SampleDataSet;
+import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.dbunit.model.JobsTable.RowBuilder_Jobs;
 import com.seitenbau.testing.dbunit.model.PersonDatabaseDataSet;
+import com.seitenbau.testing.dbunit.model.PersonJobTable;
+import com.seitenbau.testing.dbunit.model.PersonsTable;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
+import com.seitenbau.testing.dbunit.model.TeamsTable;
 import com.seitenbau.testing.dbunit.model.TeamsTable.RowBuilder_Teams;
 import com.seitenbau.testing.dbunit.rule.DatabaseBefore;
 import com.seitenbau.testing.dbunit.rule.DatabasePrepare;
@@ -40,6 +43,13 @@ public class AnnotationBasedDatabaseTest
   @Autowired
   DataSource dataSource;
 
+  private final SortConfig[] sortConfig = new SortConfig[] {
+      new SortConfig(PersonJobTable.NAME, PersonJobTable.Columns.PersonId, PersonJobTable.Columns.JobId),
+      new SortConfig(PersonsTable.NAME, PersonsTable.Columns.Id),
+      new SortConfig(JobsTable.NAME, JobsTable.Columns.Id),
+      new SortConfig(TeamsTable.NAME, TeamsTable.Columns.Id),
+    };
+
   @Rule
   public DatabaseTesterRule dbTesterRule = new DatabaseTesterRule(new Future<DataSource>(){
     @Override
@@ -47,7 +57,7 @@ public class AnnotationBasedDatabaseTest
     {
       return dataSource;
     }
-  });
+  }).setDefaultSortConfig(sortConfig);
 
   @Test
   public void allPersonsFromDefaultDataset() throws Exception
@@ -86,7 +96,7 @@ public class AnnotationBasedDatabaseTest
     defaultDataSet.table_PersonJob.insertRow().setPersonId(person.getId()).setJobId(job.getId());
   }
 
-  @Ignore("the sort order has to be set on the DatabaseTesteRule")
+  //@Ignore("the sort order has to be set on the DatabaseTesteRule")
   @Test
   @DatabasePrepare("withRainer")
   @DatabaseSetup(prepare = DefaultDataSet.class, assertNoModification = true)
