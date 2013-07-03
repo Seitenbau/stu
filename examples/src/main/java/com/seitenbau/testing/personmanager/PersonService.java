@@ -127,6 +127,15 @@ public class PersonService
   public void removeTeam(Team team)
   {
     Team dbTeam = getDatabaseTeam(team);
+    Integer teamId = team.getId();
+    for (Person person : findPersons())
+    {
+      if (teamId.equals(person.getTeam()))
+      {
+        throw new RuntimeException("Cannot remove team");
+      }
+    }
+
     teamRepo.delete(dbTeam);
   }
 

@@ -13,12 +13,10 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.fest.assertions.Fail;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -31,6 +29,7 @@ import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.dbunit.model.PersonDatabaseBuilder;
 import com.seitenbau.testing.dbunit.model.PersonJobTable;
 import com.seitenbau.testing.dbunit.model.PersonsTable;
+import com.seitenbau.testing.dbunit.model.TeamsRef;
 import com.seitenbau.testing.dbunit.model.TeamsTable;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
@@ -340,17 +339,12 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBaseSorted(dataSet, sortConfig);
   }
 
-  @Ignore
-  @Test(expected=DataIntegrityViolationException.class)
+  @Test(expected=RuntimeException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void removeTeamWithExistingReference() throws Exception
   {
     // prepare
-    Team team = new Team();
-    team.setTitle(QA.getTitle());
-    team.setDescription(QA.getDescription());
-    team.setMembersize(QA.getMembersize());
-    team.setId(QA.getId());
+    Team team = getTeam(QA);
 
     // execute
     sut.removeTeam(team);
@@ -369,5 +363,17 @@ public class GroovyDataSetDatabaseTest
     }
 
     throw new RuntimeException("No job found");
+  }
+
+  private Team getTeam(TeamsRef teamsRef)
+  {
+    for (Team team : sut.findTeams())
+    {
+      if (team.getId() == teamsRef.getId()) {
+        return team;
+      }
+    }
+
+    throw new RuntimeException("No team found");
   }
 }

@@ -6,12 +6,10 @@ import static org.fest.assertions.Assertions.*
 import javax.sql.DataSource
 
 import org.fest.assertions.Fail
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
@@ -113,10 +111,7 @@ class GroovyDatabaseDataSetTest {
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void addPerson() {
     // prepare
-    Job job = new Job()
-    job.id = SWD.id
-    job.title = SWD.title
-    job.description = SWD.description
+    Job job = getJob(SWD)
 
     Person person = new Person()
     person.setFirstName("Nikolaus")
@@ -149,10 +144,7 @@ class GroovyDatabaseDataSetTest {
   void removePerson()
   {
     // prepare
-    Job job = new Job()
-    job.id = SWD.id
-    job.title = SWD.title
-    job.description = SWD.description
+    Job job = getJob(SWD)
 
     Person person = new Person()
     person.setFirstName("Dennis")
@@ -213,8 +205,8 @@ class GroovyDatabaseDataSetTest {
 
     // verify
     dataSet.jobsTable.rows {
-      REF           | id            | title                   | description
-      SAT           | savedJob.id   | "Software Architect"    | "Developing software architecture"
+      id            | title                   | description
+      savedJob.id   | "Software Architect"    | "Developing software architecture"
     }
     dbTester.assertDataBase(dataSet)
   }
@@ -234,22 +226,20 @@ class GroovyDatabaseDataSetTest {
     dbTester.assertDataBase(dataSet)
   }
 
-  @Ignore // TODO Exception when removing is not thrown on every machine
-  @Test(expected=DataIntegrityViolationException)
+  @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeJobWithExistingReference()
   {
     // prepare
-    Job job = new Job()
-    job.setDescription(SWD.description)
-    job.setTitle(SWD.title)
-    job.setId(SWD.id)
+    Job job = getJob(SWD)
 
     // execute
     sut.removeJob(job)
 
     // verify
-    Fail.fail()
+    dataSet.jobsTable.deleteRow(SWD);
+    dataSet.personJobTable.deleteAllAssociations(SWD);
+    dbTester.assertDataBaseSorted(dataSet, sortConfig);
   }
 
   @Test
@@ -299,17 +289,12 @@ class GroovyDatabaseDataSetTest {
     dbTester.assertDataBase(dataSet)
   }
 
-  @Ignore // TODO Exception when removing is not thrown on every machine
-  @Test(expected=DataIntegrityViolationException)
+  @Test(expected=RuntimeException)
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeTeamWithExistingReference()
   {
     // prepare
-    Team team = new Team()
-    team.setTitle(QA.title)
-    team.setDescription(QA.description)
-    team.setMembersize(QA.membersize)
-    team.setId(QA.id)
+    Team team = getTeam(QA)
 
     // execute
     sut.removeTeam(team)
