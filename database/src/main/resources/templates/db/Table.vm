@@ -191,6 +191,8 @@ public class ${clsTable} implements ITable
         
     ${clsTable} table;
     
+    ${clsRef} ref;
+    
     ${clsRowbuilder}(${clsTable} tableDelegate) 
     {
       data = new Object[COLUMNS.length];
@@ -209,8 +211,14 @@ public class ${clsTable} implements ITable
      */
     public ${clsRowbuilder} bind(${clsRef} ref)
     {
+      this.ref = ref;
       ref.setBuilder(table._dataSet, this);
       return this;
+    }
+    
+    public ${clsRef} getRef()
+    {
+      return ref;
     }
 
     void assertNoRefType(String columnName, Object value)
@@ -729,6 +737,11 @@ public class ${clsTable} implements ITable
     public void add(${clsRowbuilder} row) 
     {
       _rows.add(row);
+    }
+    
+    public List<${clsRowbuilder}> getRows()
+    {
+      return Collections.unmodifiableList(_rows);
     }
       
     public boolean isEmpty() 
