@@ -42,13 +42,19 @@ import com.seitenbau.testing.dbunit.dsl.CastUtil;
 import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.dsl.DatabaseRef;
-#if( ${model.hasDataColumns()} )
+#foreach( $column in $model.columns )
+#if( ${column.isNextValueMethodGenerated()} )
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+#break
+#end
 #end
 import com.seitenbau.testing.dbunit.generator.ColumnMetaData;
 import com.seitenbau.testing.dbunit.generator.ColumnMetaDataBuilder;
-#if( ${model.hasDataColumns()})
+#foreach( $column in $model.columns )
+#if( ${column.isImmutable()})
 import com.seitenbau.testing.dbunit.util.NullCompatibleEquivalence;
+#break
+#end
 #end
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
