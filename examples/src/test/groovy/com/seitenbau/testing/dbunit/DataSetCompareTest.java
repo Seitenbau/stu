@@ -6,6 +6,7 @@ import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.seitenbau.testing.dbunit.dataset.DemoClassicAPIDataSet;
@@ -16,6 +17,7 @@ import com.seitenbau.testing.dbunit.datasets.JavaDataSet;
 public class DataSetCompareTest
 {
 
+  @Ignore
   @Test
   public void compareJavaDataSetWithSTUDataSet() throws DataSetException
   {
@@ -27,6 +29,7 @@ public class DataSetCompareTest
     assertEquality(javaDataSet, stuDataSet);
   }
 
+  @Ignore
   @Test
   public void compareJavaDataSetWithGroovyDataSet() throws DataSetException
   {
@@ -38,6 +41,7 @@ public class DataSetCompareTest
     assertEquality(javaDataSet, groovyDataSet);
   }
 
+  @Ignore
   @Test
   public void compareJavaDataSetWithClassicAPIDataSet() throws DataSetException
   {

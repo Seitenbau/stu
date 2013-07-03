@@ -404,7 +404,7 @@ ${jd.createTableExample($model, "   ", "")}
         {
           row.set${col.javaName}Raw(value);
         } else {
-          Object castedValue = CastUtil.cast(value, ${col.type})
+          Object castedValue = CastUtil.cast(value, ${col.type});
 ##          if (!(castedValue instanceof ${col.javaType})
 ##          {
 ##            // Table element has wrong type

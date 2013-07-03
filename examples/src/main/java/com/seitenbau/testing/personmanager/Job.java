@@ -1,13 +1,15 @@
 package com.seitenbau.testing.personmanager;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -16,9 +18,9 @@ import javax.persistence.Table;
 public class Job
 {
   @Id
-  @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "jobs_seq")
-  @SequenceGenerator(name="jobs_seq", sequenceName = "jobs_seq")
-  @Column(name="id")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "jobs_seq")
+  @SequenceGenerator(name = "jobs_seq", sequenceName = "jobs_seq")
+  @Column(name = "id")
   int id;
 
   @Column
@@ -26,10 +28,10 @@ public class Job
 
   @Column
   String description;
-  
-  @ManyToMany(mappedBy="jobs")
-  private List<Person> persons;
-  
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.job")
+  private Set<PersonJob> persons = new HashSet<PersonJob>();
+
   public int getId()
   {
     return id;
@@ -39,7 +41,7 @@ public class Job
   {
     this.id = id;
   }
-  
+
   public void setId(Long id)
   {
     this.id = id.intValue();
@@ -65,13 +67,22 @@ public class Job
     this.description = description;
   }
 
-  public List<Person> getPersons()
+  public void addPerson(Person person)
+  {
+    PersonJob personJob = new PersonJob();
+    personJob.setPerson(person);
+    personJob.setJob(this);
+    persons.add(personJob);
+  }
+
+  public Set<PersonJob> getPersons()
   {
     return persons;
   }
 
-  public void setPersons(List<Person> persons)
+  public void setPersons(Set<PersonJob> persons)
   {
     this.persons = persons;
   }
+
 }

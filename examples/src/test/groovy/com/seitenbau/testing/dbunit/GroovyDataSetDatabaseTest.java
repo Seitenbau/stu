@@ -7,7 +7,6 @@ import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SAT;
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.SWD;
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +27,11 @@ import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
 import com.seitenbau.testing.dbunit.model.JobsRef;
+import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.dbunit.model.PersonDatabaseBuilder;
+import com.seitenbau.testing.dbunit.model.PersonJobTable;
+import com.seitenbau.testing.dbunit.model.PersonsTable;
+import com.seitenbau.testing.dbunit.model.TeamsTable;
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup;
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule;
 import com.seitenbau.testing.dbunit.rule.InjectDataSet;
@@ -57,11 +60,33 @@ public class GroovyDataSetDatabaseTest
        }
      }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"));
 
+  private final SortConfig[] sortConfig = new SortConfig[] {
+      new SortConfig(PersonJobTable.NAME, PersonJobTable.Columns.PersonId, PersonJobTable.Columns.JobId),
+      new SortConfig(PersonsTable.NAME, PersonsTable.Columns.Id),
+      new SortConfig(JobsTable.NAME, JobsTable.Columns.Id),
+      new SortConfig(TeamsTable.NAME, TeamsTable.Columns.Id),
+    };
+
   @Autowired
   PersonService sut;
 
   @InjectDataSet
   PersonDatabaseBuilder dataSet;
+
+  @Test
+  @DatabaseSetup(prepare = DemoGroovyDataSet.class)
+  public void unmodifiedDataSet() throws Exception
+  {
+    dbTester.assertDataBaseSorted(dataSet, sortConfig);
+  }
+
+
+  @Test
+  @DatabaseSetup(prepare = ExtendedDemoGroovyDataSet.class)
+  public void unmodifiedExtendedDataset() throws Exception
+  {
+    dbTester.assertDataBaseSorted(dataSet, sortConfig);
+  }
 
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
@@ -124,20 +149,19 @@ public class GroovyDataSetDatabaseTest
 
     // verify
     assertThat(result).hasSize(4);
-    dbTester.assertDataBase(dataSet);
+    dbTester.assertDataBaseSorted(dataSet, sortConfig);
   }
-
 
   @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void addPerson() throws Exception {
     // prepare
+    Job job = getJob(SWD);
     Person person = new Person();
     person.setFirstName("Nikolaus");
     person.setName("Moll");
-    List<Job> jobs = createJobs(SWD);
-    person.setJobs(jobs);
     person.setTeam(QA.getId().intValue());
+    person.addJob(job);
 
     // execute
     Person newPerson = sut.addPerson(person);
@@ -150,27 +174,10 @@ public class GroovyDataSetDatabaseTest
       .setTeamId(QA);
 
     dataSet.personJobTable.insertRow()
-      .setJobId(jobs.get(0).getId())
+      .setJobId(job.getId())
       .setPersonId(newPerson.getId());
 
-    dbTester.assertDataBase(dataSet);
-  }
-
-  private Job createJob(JobsRef jobsRef)
-  {
-    Job job = new Job();
-    job.setId(jobsRef.getId());
-    job.setTitle(jobsRef.getTitle());
-    return job;
-  }
-
-  private List<Job> createJobs(JobsRef ... jobsRefs)
-  {
-    List<Job> jobs = new ArrayList<Job>();
-    for (JobsRef jobsRef : jobsRefs) {
-      jobs.add(createJob(jobsRef));
-    }
-    return jobs;
+    dbTester.assertDataBaseSorted(dataSet, sortConfig);
   }
 
   @Test
@@ -180,7 +187,7 @@ public class GroovyDataSetDatabaseTest
     Person person = new Person();
     person.setFirstName("Dennis");
     person.setName("Kaulbersch");
-    person.setJobs(createJobs(SWD));
+    person.addJob(getJob(SWD));
     person.setTeam(QA.getId().intValue());
     person.setId(KAULBERSCH.getId().intValue());
 
@@ -193,14 +200,14 @@ public class GroovyDataSetDatabaseTest
     dbTester.assertDataBase(dataSet);
   }
 
-  @Test
+  @Test(expected=RuntimeException.class)
   @DatabaseSetup(prepare = EmptyGroovyDataSet.class)
   public void removePersonThatDoesNotExist() throws Exception {
     // prepare
     Person person = new Person();
     person.setFirstName("John");
     person.setId(23);
-    person.addJob(new Job());
+    //person.addJob(new Job());
     person.setName("Doe");
     person.setTeam(1899);
 
@@ -259,11 +266,10 @@ public class GroovyDataSetDatabaseTest
 
     // verify
     dataSet.jobsTable.deleteRow(SAT);
-    dbTester.assertDataBase(dataSet);
+    dbTester.assertDataBaseSorted(dataSet, sortConfig);
   }
 
-  @Ignore // TODO Exception when removing is not thrown on every machine
-  @Test(expected=DataIntegrityViolationException.class)
+  @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void removeJobWithExistingReference () throws Exception
   {
@@ -277,7 +283,9 @@ public class GroovyDataSetDatabaseTest
     sut.removeJob(job);
 
     // verify
-    Fail.fail();
+    dataSet.jobsTable.deleteRow(SWD);
+    dataSet.personJobTable.deleteAllAssociations(SWD);
+    dbTester.assertDataBaseSorted(dataSet, sortConfig);
   }
 
   @Test
@@ -329,10 +337,10 @@ public class GroovyDataSetDatabaseTest
 
     // verify
     dataSet.teamsTable.deleteRow(HR);
-    dbTester.assertDataBase(dataSet);
+    dbTester.assertDataBaseSorted(dataSet, sortConfig);
   }
 
-  @Ignore // TODO Exception when removing is not thrown on every machine
+  @Ignore
   @Test(expected=DataIntegrityViolationException.class)
   @DatabaseSetup(prepare = DemoGroovyDataSet.class)
   public void removeTeamWithExistingReference() throws Exception
@@ -351,4 +359,15 @@ public class GroovyDataSetDatabaseTest
     Fail.fail();
   }
 
+  private Job getJob(JobsRef jobsRef)
+  {
+    for (Job job : sut.findJobs())
+    {
+      if (job.getId() == jobsRef.getId()) {
+        return job;
+      }
+    }
+
+    throw new RuntimeException("No job found");
+  }
 }

@@ -16,7 +16,7 @@ public class AssociativeTable extends Table
 
     _associativeColumns = new ArrayList<Column>();
     _dataColumns = new ArrayList<Column>();
-    for (Column col : getColumns())
+    for (Column col : super.getColumns())
     {
       if (col.getRelation() != null)
       {
@@ -43,7 +43,7 @@ public class AssociativeTable extends Table
     return Collections.unmodifiableList(_associativeColumns);
   }
 
-  public List<Column> getDaaColumns()
+  public List<Column> getDataColumns()
   {
     return Collections.unmodifiableList(_dataColumns);
   }

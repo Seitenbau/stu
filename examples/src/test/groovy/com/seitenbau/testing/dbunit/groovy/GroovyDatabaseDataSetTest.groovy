@@ -15,11 +15,10 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
-import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet
-import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet
-import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet
+import com.seitenbau.testing.dbunit.SortConfig
+import com.seitenbau.testing.dbunit.dataset.*
 import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset
-import com.seitenbau.testing.dbunit.model.PersonDatabaseBuilder
+import com.seitenbau.testing.dbunit.model.*
 import com.seitenbau.testing.dbunit.rule.DatabaseSetup
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule
 import com.seitenbau.testing.dbunit.rule.InjectDataSet
@@ -42,6 +41,13 @@ class GroovyDatabaseDataSetTest {
          return dataSource;
        }
      }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"));
+
+   SortConfig[] sortConfig = [
+     new SortConfig(PersonJobTable.NAME, PersonJobTable.Columns.PersonId, PersonJobTable.Columns.JobId),
+     new SortConfig(PersonsTable.NAME, PersonsTable.Columns.Id),
+     new SortConfig(JobsTable.NAME, JobsTable.Columns.Id),
+     new SortConfig(TeamsTable.NAME, TeamsTable.Columns.Id),
+   ]
 
   @Autowired
   PersonService sut
@@ -106,18 +112,16 @@ class GroovyDatabaseDataSetTest {
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void addPerson() {
     // prepare
-    List<Job> jobs = new ArrayList<Job>()
     Job job = new Job()
     job.id = SWD.id
     job.title = SWD.title
     job.description = SWD.description
-    jobs.add(job)
 
     Person person = new Person()
     person.setFirstName("Nikolaus")
     person.setName("Moll")
-    person.setJobs(jobs)
     person.setTeam(QA.id.intValue())
+    person.addJob(job)
 
     // execute
     def savedPerson = sut.addPerson(person)
@@ -136,7 +140,7 @@ class GroovyDatabaseDataSetTest {
       savedPerson.id  | SWD.id
 
     }
-    dbTester.assertDataBase(dataSet)
+    dbTester.assertDataBaseSorted(dataSet, sortConfig)
   }
 
   @Test
@@ -144,19 +148,17 @@ class GroovyDatabaseDataSetTest {
   void removePerson()
   {
     // prepare
-    List<Job> jobs = new ArrayList<Job>()
     Job job = new Job()
     job.id = SWD.id
     job.title = SWD.title
     job.description = SWD.description
-    jobs.add(job)
 
     Person person = new Person()
     person.setFirstName("Dennis")
     person.setName("Kaulbersch")
-    person.setJobs(jobs)
     person.setTeam(QA.id.intValue())
     person.setId(KAULBERSCH.id.intValue())
+    person.addJob(job)
 
     // execute
     sut.removePerson(person)
@@ -220,23 +222,16 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet)
+  @DatabaseSetup(prepare = ExtendedWithoutRelationsDemoGroovyDataSet)
   void removeJobWithoutExistingReference()
   {
     // prepare
-    Job job = new Job()
-    job.setTitle("Software Architect")
-    job.setDescription("Developing software architecture")
-    job.setId(4)
+    Job job = getJob(SAT)
 
     // execute
     sut.removeJob(job)
 
     // verify
-    dataSet.jobsTable.rows {
-      REF           | id  | title                   | description
-      SAT           | 4   | "Software Architect"    | "Developing software architecture"
-    }
     dataSet.jobsTable.deleteRow(SAT)
     dbTester.assertDataBase(dataSet)
   }
@@ -292,24 +287,16 @@ class GroovyDatabaseDataSetTest {
   }
 
   @Test
-  @DatabaseSetup(prepare = DemoGroovyDataSet)
+  @DatabaseSetup(prepare = ExtendedWithoutRelationsDemoGroovyDataSet)
   void removeTeamWithoutExistingReference()
   {
     // prepare
-    Team team = new Team()
-    team.setTitle("Human Resources")
-    team.setDescription("Make up workforce of an organzation")
-    team.setMembersize(0)
-    team.setId(2)
+    Team team = getTeam(HR)
 
     // execute
     sut.removeTeam(team)
 
     // verify
-    dataSet.teamsTable.rows {
-      REF           | id  | title                   | description                           | membersize
-      HR            | 2   | "Human Resources"       | "Make up workforce of an organzation" | 0
-    }
     dataSet.teamsTable.deleteRow(HR)
     dbTester.assertDataBase(dataSet)
   }
@@ -331,5 +318,29 @@ class GroovyDatabaseDataSetTest {
 
     // verify
     Fail.fail()
+  }
+
+  private Job getJob(JobsRef jobsRef)
+  {
+    for (Job job : sut.findJobs())
+    {
+      if (job.getId() == jobsRef.getId()) {
+        return job;
+      }
+    }
+
+    throw new RuntimeException("No job found");
+  }
+
+  private Team getTeam(TeamsRef teamsRef)
+  {
+    for (Team team : sut.findTeams())
+    {
+      if (team.getId() == teamsRef.getId()) {
+        return team;
+      }
+    }
+
+    throw new RuntimeException("No team found");
   }
 }

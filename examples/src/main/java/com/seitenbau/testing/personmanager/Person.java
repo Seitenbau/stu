@@ -1,15 +1,15 @@
 package com.seitenbau.testing.personmanager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -30,16 +30,11 @@ public class Person
   @Column
   private String name;
 
-  @OneToMany
-  @JoinTable (
-    name="person_job",
-        joinColumns={@JoinColumn(name="person_id", referencedColumnName="id")},
-        inverseJoinColumns={@JoinColumn(name="job_id", referencedColumnName="id")}
-  )
-  private List<Job> jobs;
-
   @Column(name = "team_id")
   private Integer team;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.person")
+  private Set<PersonJob> jobs = new HashSet<PersonJob>();
 
   public Integer getId()
   {
@@ -71,22 +66,30 @@ public class Person
     this.name = name;
   }
 
-  public List<Job> getJobs()
-  {
-    return jobs;
+
+  public Set<PersonJob> getJobs() {
+      return jobs;
   }
 
-  public void setJobs(List<Job> jobs)
-  {
-    this.jobs = jobs;
+  public void setJobs(Set<PersonJob> jobs) {
+      this.jobs = jobs;
   }
-  
+
   public void addJob(Job job)
   {
-    if(this.jobs == null) {
-      this.jobs = new ArrayList<Job>();
-    }
-    this.jobs.add(job);
+    PersonJob personJob = new PersonJob();
+    personJob.setPerson(this);
+    personJob.setJob(job);
+    jobs.add(personJob);
+  }
+
+  public void addJob(Job job, Date engagementStart)
+  {
+    PersonJob personJob = new PersonJob();
+    personJob.setPerson(this);
+    personJob.setJob(job);
+    personJob.setEngagementStart(engagementStart);
+    jobs.add(personJob);
   }
 
   public Integer getTeam()

@@ -19,6 +19,15 @@ public class PersonService
   @Autowired
   TeamRepository teamRepo;
 
+  @Autowired
+  PersonJobRepository personJobRepo;
+
+  @Transactional
+  public List<PersonJob> findPersonJobs()
+  {
+    return personJobRepo.findAll();
+  }
+
   @Transactional
   public List<Person> findPersons()
   {
@@ -43,18 +52,31 @@ public class PersonService
   public Person addPerson(Person person)
   {
     Person addedPerson = personRepo.saveAndFlush(person);
-    int teamId = addedPerson.getTeam();
-    incrementMembersizeOfTeam(teamId);
+    for (PersonJob personJob : addedPerson.getJobs())
+    {
+      personJobRepo.saveAndFlush(personJob);
+    }
+    int team = addedPerson.getTeam();
+    incrementMembersizeOfTeam(team);
     return addedPerson;
   }
 
   @Transactional
   public void removePerson(Person person)
   {
-    personRepo.delete(person);
-    
-    int teamId = person.getTeam();
-    decrementMembersizeOfTeam(teamId);
+    Person dbPerson = getDatabasePerson(person);
+    for (PersonJob personJob : findPersonJobs())
+    {
+      if (personJob.getPerson().getId() == dbPerson.getId())
+      {
+        personJobRepo.delete(personJob);
+      }
+    }
+
+    personRepo.delete(dbPerson);
+
+    int team = dbPerson.getTeam();
+    decrementMembersizeOfTeam(team);
   }
 
   @Transactional
@@ -66,13 +88,27 @@ public class PersonService
   @Transactional
   public Job addJob(Job job)
   {
-    return jobRepo.saveAndFlush(job);
+    Job addedJob = jobRepo.saveAndFlush(job);
+    for (PersonJob personJob : addedJob.getPersons())
+    {
+      personJobRepo.saveAndFlush(personJob);
+    }
+    return addedJob;
   }
 
   @Transactional
   public void removeJob(Job job)
   {
-    jobRepo.delete(job);
+    Job dbJob = getDatabaseJob(job);
+    for (PersonJob personJob : findPersonJobs())
+    {
+      if (personJob.getJob().getId() == dbJob.getId())
+      {
+        personJobRepo.delete(personJob);
+      }
+    }
+
+    jobRepo.delete(dbJob);
   }
 
   @Transactional
@@ -90,22 +126,34 @@ public class PersonService
   @Transactional
   public void removeTeam(Team team)
   {
-    teamRepo.delete(team);
+    Team dbTeam = getDatabaseTeam(team);
+    teamRepo.delete(dbTeam);
   }
-  
+
   private void updateMembersizeOfTeam(int teamId, int amount)
   {
-    Team team = findTeamForTeamId(teamId);
-
-    if (team != null)
+    Team team = findTeamById(teamId);
+    if (team == null)
     {
-      int oldMembersize = team.getMembersize();
-      team.setMembersize(oldMembersize + amount);
-      teamRepo.saveAndFlush(team);
+      throw new RuntimeException("Team not in database");
     }
+
+    int oldMembersize = team.getMembersize();
+    team.setMembersize(oldMembersize + amount);
+    teamRepo.saveAndFlush(team);
   }
 
-  private Team findTeamForTeamId(int teamId)
+  private void incrementMembersizeOfTeam(int team)
+  {
+    updateMembersizeOfTeam(team, 1);
+  }
+
+  private void decrementMembersizeOfTeam(int team)
+  {
+    updateMembersizeOfTeam(team, -1);
+  }
+
+  public Team findTeamById(long teamId)
   {
     for (Team team : teamRepo.findAll())
     {
@@ -116,14 +164,64 @@ public class PersonService
     }
     return null;
   }
-  
-  private void incrementMembersizeOfTeam(int teamId)
+
+  public Person findPersonById(long personId)
   {
-    updateMembersizeOfTeam(teamId, 1);
+    for (Person person : personRepo.findAll())
+    {
+      if (personId == person.getId())
+      {
+        return person;
+      }
+    }
+    return null;
   }
-  
-  private void decrementMembersizeOfTeam(int teamId)
+
+  public Job findJobById(long jobId)
   {
-    updateMembersizeOfTeam(teamId, -1);
+    for (Job job : jobRepo.findAll())
+    {
+      if (jobId == job.getId())
+      {
+        return job;
+      }
+    }
+    return null;
+  }
+
+  private Person getDatabasePerson(Person person)
+  {
+    Person dbPerson = findPersonById(person.getId());
+    if (dbPerson == null) {
+      throw new RuntimeException("Person does not exist");
+    }
+
+    // TODO NM think about comparing the persons...
+
+    return dbPerson;
+  }
+
+  private Job getDatabaseJob(Job job)
+  {
+    Job dbJob = findJobById(job.getId());
+    if (dbJob == null) {
+      throw new RuntimeException("Job does not exist");
+    }
+
+    // TODO NM think about comparing the persons...
+
+    return dbJob;
+  }
+
+  private Team getDatabaseTeam(Team team)
+  {
+    Team dbTeam = findTeamById(team.getId());
+    if (dbTeam== null) {
+      throw new RuntimeException("Team does not exist");
+    }
+
+    // TODO NM think about comparing the persons...
+
+    return dbTeam;
   }
 }

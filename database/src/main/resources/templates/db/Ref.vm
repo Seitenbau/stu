@@ -212,6 +212,23 @@ public class ${clsRef} extends DatabaseRef
    * <p>
 #end
    * Models: A n:m relationship between both tables.
+#if (${rel.localAssociationColumn.table.dataColumns.size()} > 0)
+#set( $clsRelAttr = ${names.getTableClass(${rel.localAssociationColumn.table})} + ".RelationAttributes" )
+   * @param ref A the reference, which is related to the current entity
+   * @return A builder to set attributes on the relation
+   */
+  // RelationAttributes
+  public ${clsRelAttr} ${rel.localName}(${names.getRefClass(${rel.foreignAssociationColumn.table})} ref)
+  {
+    ${clsDataSet} dataSet = getActiveDataSet();
+
+    ${package}.${names.getTableClass(${rel.localAssociationColumn.table})}.${names.getRowBuilderClass(${rel.foreignColumn.table})} builder = dataSet.${foreignTable}.insertRow();
+    builder.set${rel.localAssociationColumn.javaName}(this);
+    builder.set${rel.foreignColumn.javaName}(ref);
+
+    return new ${clsRelAttr}(builder);
+  }
+#else
    * @param refs A list of references, which are related to the current entity
    * @return The reference to the current entity
    */
@@ -227,7 +244,8 @@ public class ${clsRef} extends DatabaseRef
     }
     return this;
   }
-#end  
+#end
+#end
 
   private ${clsDataSet} getActiveDataSet() 
   {

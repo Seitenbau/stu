@@ -28,13 +28,13 @@ public class DBAssertion
   /**
    * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
    * XML Datei spezifziert wurden.
-   * 
+   *
    * @param tableName Der Tabellennamen. Darf nicht Null sein und
    *        nicht leer.
-   * 
+   *
    * @param expectedDataSetFile Die XML Datei mit dem vergleichs
    *        DataSet, darf nicht null oder leer sein.
-   * 
+   *
    * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
    *         aufgtetten ist.
    */
@@ -74,13 +74,13 @@ public class DBAssertion
   /**
    * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
    * XML Datei spezifziert wurden.
-   * 
+   *
    * @param tableName Der Tabellennamen. Darf nicht Null sein und
    *        nicht leer.
-   * 
+   *
    * @param expectedDataSetFile Die XML Datei mit dem vergleichs
    *        DataSet, darf nicht null oder leer sein.
-   * 
+   *
    * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
    *         aufgtetten ist.
    */
@@ -102,7 +102,7 @@ public class DBAssertion
    * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
    * XML Datei spezifziert wurden. Weiter wird durch Kommas getrennt
    * die felder die für den Verglaich relevant sind angegeben.
-   * 
+   *
    * @param tableName Der Tabellen Name. Darf nicht Null oder leer
    *        sein.
    * @param expectedDataSetFile Die Datei die das XML DataSet für den
@@ -124,7 +124,7 @@ public class DBAssertion
    * Methode erstellt aus einem Array von Strings Einen Komma
    * getrennten String aus createSQLFields("NAME", "Title") wird =>
    * "Name, Title"
-   * 
+   *
    * @param fields Die einzelenen String Felder
    * @return Als Rückgabe wird ein Komma getrennter String zurück
    *         geben der die übergeben Felder beinhaltet.
@@ -148,7 +148,7 @@ public class DBAssertion
   /**
    * Assert vergleicht eine Tabelle mit Test Daten aus einem DataSet.
    * Wird genutzt wenn nicht alle Felder genutzt werden sollen.
-   * 
+   *
    * @param tableName Name der zuvergleichenden Tabelle
    * @param expectedDataSet Die Testdaten auf die Tabelle geprüft
    *        wird.
@@ -156,7 +156,7 @@ public class DBAssertion
    * @throws Exception Wird geworfen wenn beim Vergleich ein Fehler
    *         aufgtretten ist oder die Tabelle nicht die Testdaten
    *         beinhaltet.
-   * 
+   *
    */
   static public void assertTable(IDatabaseConnection databaseConnection, String tableName, IDataSet expectedDataSet,
       String... fields) throws Exception
@@ -178,7 +178,7 @@ public class DBAssertion
   /**
    * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
    * XML Datei spezifziert wurden.
-   * 
+   *
    * @param tableName Der Tabellennamen. Darf nicht Null sein und
    *        nicht leer.
    * @param expectedDataSetFile Die XML Datei mit dem vergleichs
@@ -204,7 +204,7 @@ public class DBAssertion
   /**
    * Überprüft eine Tabelle in der DB mit dem übergebenen DatenSet. Es
    * werden dabei die Spalten gefilter und nur die im DatSet geprüft.
-   * 
+   *
    * @param tableName Der Name der Tabelle.
    * @param expectedDataSet das Daten mit dem erwartet Zustand der
    *        Tabelle
@@ -226,7 +226,7 @@ public class DBAssertion
    * Überprüft alle Tabellen in der DB gegen das übergebenen DatenSet.
    * Es werden nur die Spalten geprüft welche auch im DatSet vorhanden
    * sind.
-   * 
+   *
    * @param expectedDataSet das Daten mit dem erwartet Zustand der
    *        Tabelle
    * @param replacers

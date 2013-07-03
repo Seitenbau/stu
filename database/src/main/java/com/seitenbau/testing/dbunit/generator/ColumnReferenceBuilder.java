@@ -158,7 +158,7 @@ public class ColumnReferenceBuilder
       return this;
     }
 
-    public LocalReferenceBuilder multiplicities(String multiplicities)
+    public LocalReferenceBuilder multiplicity(String multiplicities)
     {
       parent.localMultiplicities = multiplicities;
       return this;
@@ -271,7 +271,7 @@ public class ColumnReferenceBuilder
       return this;
     }
 
-    public ForeignReferenceBuilder multiplicities(String multiplicities)
+    public ForeignReferenceBuilder multiplicity(String multiplicities)
     {
       parent.foreignMultiplicities = multiplicities;
       return this;

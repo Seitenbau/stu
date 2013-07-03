@@ -2,6 +2,7 @@ package com.seitenbau.testing.dbunit.dataset
 
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 
+import com.seitenbau.testing.dbunit.DateUtil
 import com.seitenbau.testing.dbunit.model.*
 
 
@@ -32,7 +33,7 @@ class DemoGroovyDataSet extends PersonDatabaseBuilder
 
   def relations() {
     QA.hasMembers(KAULBERSCH, GUITTON, BARANOWSKI)
-    KAULBERSCH.worksAs(SWD)
+    KAULBERSCH.worksAs(SWD).engagementStart(DateUtil.getDate(2013, 4, 1, 14, 0, 0))
     GUITTON.worksAs(SWT)
     BARANOWSKI.worksAs(TM)
   }

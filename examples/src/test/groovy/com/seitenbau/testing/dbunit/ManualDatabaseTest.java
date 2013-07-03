@@ -35,12 +35,12 @@ import com.seitenbau.testing.util.Future;
 @ContextConfiguration(classes=PersonManagerContext.class)
 public class ManualDatabaseTest
 {
-  
+
   @Autowired
   DataSource dataSource;
-  
+
   @Rule
-  public DatabaseTesterRule dbTesterRule = 
+  public DatabaseTesterRule dbTesterRule =
      new DatabaseTesterRule(new Future<DataSource>(){
        @Override
        public DataSource getFuture()
@@ -208,7 +208,7 @@ public class ManualDatabaseTest
     person.setId(23);
     person.addJob(new Job());
     person.setName("Doe");
-    person.setTeam(1899);
+    person.setTeam(null);
 
     // execute
     sut.removePerson(person);

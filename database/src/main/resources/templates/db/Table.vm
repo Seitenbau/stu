@@ -596,7 +596,7 @@ public class ${clsTable} implements ITable
       ${rowcollection} modifiers = new ${rowcollection}(table);
       for (${clsRowbuilder} row : rows) 
       {
-        if (row.get${column.javaName}().equals(toSearch)) 
+        if (toSearch.equals(row.get${column.javaName}())) 
         {
           modifiers.add(row);
         }
@@ -698,7 +698,7 @@ public class ${clsTable} implements ITable
     {
       for (${clsRowbuilder} row : rows) 
       {
-        if (row.get${column.javaName}().equals(toSearch)) 
+        if (toSearch.equals(row.get${column.javaName}())) 
         {
           return Optional.of(row);
         }      }
@@ -1108,5 +1108,29 @@ public class ${clsTable} implements ITable
   {
     return date.asDate();
   }
+#if( ${model.isAssociativeTable()})
+#if (${model.dataColumns.size()} > 0)
+
+  public static class RelationAttributes
+  {
+
+    private final $clsRowbuilder row;
+
+    RelationAttributes($clsRowbuilder row)
+    {
+      this.row = row;
+    }
+#foreach( $column in $model.dataColumns )
+
+    public RelationAttributes ${column.javaNameFirstLower}(${column.javaType} value)
+    {
+      row.set${column.javaName}(value);
+      return this;
+    }
+#end
+
+  }
+#end
+#end
 
 }
