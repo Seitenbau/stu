@@ -21,10 +21,37 @@ public class ColumnBuilder
 
   private String description;
 
-  private ColumnReference relation;
-
   private final Set<String> flags;
 
+  /**
+   * Allows to configure a reference to another column.
+   * The configuration is split into a local and a foreign part. The local part
+   * describes the relation from the perspective of the current table. The
+   * foreign part specifies the column and describes the relation from the
+   * perspective of the referenced table.
+   * <p>
+   * The following example models the relation between an house and its rooms:
+   * <code><pre>
+   * Table house = table("house")
+   *     .column("id", DataType.BIGINT)
+   *       .identifierColumn()
+   *     .column("address", DataType.VARCHAR)
+   *   .build();
+   *
+   * table("room")
+   *     .column("id", DataType.BIGINT)
+   *     .column("house", DataType.BIGINT)
+   *       .reference
+   *         .local
+   *           .name("belongsTo")
+   *         .foreign(house)
+   *           .name("hasRoom")
+   *   .build();
+   * </pre></code>
+   *
+   * Associative n:m relations should be modeled by association tables (see
+   * {@link DatabaseModel#associativeTable}).
+   */
   public final ColumnReferenceBuilder reference;
 
   public ColumnBuilder(TableBuilder tableBuilder, String name, DataType dataType)
@@ -65,7 +92,7 @@ public class ColumnBuilder
       p_tableName = name.toLowerCase();
     }
 
-    return new Column(table, name, p_javaName, p_tableName, description, dataType, relation,
+    return new Column(table, name, p_javaName, p_tableName, description, dataType, reference.getReference(),
         flags);
   }
 
@@ -239,16 +266,6 @@ public class ColumnBuilder
    * @return The builder to configure the relation
    */
 // CLEAR -----------------
-
-  void setRelation(ColumnReference relation)
-  {
-    if (relation != null)
-    {
-      // Relation is overwritten...
-      // TODO NM/CB exception?
-    }
-    this.relation = relation;
-  }
 
   String getColumnName()
   {

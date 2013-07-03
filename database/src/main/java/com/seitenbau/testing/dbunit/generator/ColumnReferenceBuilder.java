@@ -9,20 +9,20 @@ public class ColumnReferenceBuilder
   private Column foreignColumn;
 
   /**
-   * TODO NM UPDATE
-   * Describes the relation regarding the entities in the current table. The generated Ref class
-   * belonging to the current table will have a corresponding method to model this relation.
+   * Describes the relation from the perspective of the current table.
+   * The given name will be used to express relations with the Ref types.
    * <p>
-   * When modeling associative tables, use {@link ColumnReferenceBuilder#target(String)} to define the
-   * generated methods on the involved Ref classes.
+   * When modeling associative tables, no local part is needed.
    * <p>
    * Example: A player belongs to a team
    * <pre>
    * table("player")
    *     .column("team_id", DataType.BIGINT)
-   *       .references
+   *       .reference
    *         .local
    *           .name("belongsTo")
+   *         .foreign(team)
+   *           .name("hasMembers")
    * </pre>
    * @return The builder to configure the local relation.
    */
@@ -42,9 +42,13 @@ public class ColumnReferenceBuilder
 
   private String foreignMultiplicities;
 
+  private ColumnReference reference;
+
   public ColumnReferenceBuilder(ColumnBuilder columnBuilder)
   {
     this.columnBuilder = columnBuilder;
+
+    reference = null;
 
     local = new LocalReferenceBuilder(this);
 
@@ -59,9 +63,8 @@ public class ColumnReferenceBuilder
   }
 
   /**
-   * TODO NM UPDATE
-   * Describes the relation regarding the entities in the target table. The generated Ref class
-   * belonging to the target table will have a corresponding method to model this relation.
+   * Describes the relation from the perspective of the foreign table.
+   * The given name will be used to express relations with the Ref types.
    * <p>
    * When modeling associative tables, only the target names will be used as method names
    * for the involved Ref classes (see Example 2).
@@ -70,23 +73,26 @@ public class ColumnReferenceBuilder
    * <pre>
    * table("player")
    *     .column("team_id", DataType.BIGINT)
-   *       .relationTo(teamTable)
-   *         .target("hasMembers")
+   *       .reference
+   *         .foreign(teamTable)
+   *           .name("hasMembers")
    * </pre>
    * <p>
    * Example 2: Associative Table<br>
    * Any person can be member of any group.
    * <pre>
    * table("person_group")
-   *       .column("person_id", DataType.BIGINT)
-   *         .relationTo(person)
-   *           .target("belongsTo")
-   *       .column("group_id", DataType.BIGINT)
+   *     .column("person_id", DataType.BIGINT)
+   *       .reference
+   *         .foreign(person)
+   *           .name("belongsTo")
+   *     .column("group_id", DataType.BIGINT)
+   *       .reference
    *         .relationTo(group)
-   *           .target("hasMembers")
+   *           .name("hasMembers")
    * </pre>
-   * @param name The relation name used for the generated DSL.
-   * @return The builder to configure the target relation.
+   * @param foreignColumn The referenced column
+   * @return The builder to configure the relation in the foreign perspective.
    */
   public ForeignReferenceBuilder foreign(Column foreignColumn)
   {
@@ -100,7 +106,36 @@ public class ColumnReferenceBuilder
   }
 
   /**
-   * TODO NM add
+   * Describes the relation from the perspective of the foreign table. The given name
+   * will be used to express relations with the Ref types.
+   * <p>
+   * When modeling associative tables, only the target names will be used as method names
+   * for the involved Ref classes (see Example 2).
+   * <p>
+   * Example 1: Players are members of a team
+   * <pre>
+   * table("player")
+   *     .column("team_id", DataType.BIGINT)
+   *       .reference
+   *         .foreign(teamTable)
+   *           .name("hasMembers")
+   * </pre>
+   * <p>
+   * Example 2: Associative Table<br>
+   * Any person can be member of any group.
+   * <pre>
+   * table("person_group")
+   *     .column("person_id", DataType.BIGINT)
+   *       .reference
+   *         .foreign(person)
+   *           .name("belongsTo")
+   *     .column("group_id", DataType.BIGINT)
+   *       .reference
+   *         .relationTo(group)
+   *           .name("hasMembers")
+   * </pre>
+   * @param table The referenced table
+   * @return The builder to configure the relation in the foreign perspective.
    */
   public ForeignReferenceBuilder foreign(Table table)
   {
@@ -129,11 +164,16 @@ public class ColumnReferenceBuilder
     return columnBuilder.build();
   }
 
-  private void buildReference()
+  void buildReference()
   {
-    columnBuilder.setRelation(new ColumnReference(foreignColumn,
-        localName, localDescription, localMultiplicities,
-        foreignName, foreignDescription, foreignMultiplicities));
+    reference = new ColumnReference(foreignColumn,
+          localName, localDescription, localMultiplicities,
+          foreignName, foreignDescription, foreignMultiplicities);
+  }
+
+  ColumnReference getReference()
+  {
+    return reference;
   }
 
   public static class LocalReferenceBuilder
@@ -165,9 +205,8 @@ public class ColumnReferenceBuilder
     }
 
     /**
-     * TODO NM UPDATE
-     * Describes the relation regarding the entities in the target table. The generated Ref class
-     * belonging to the target table will have a corresponding method to model this relation.
+     * Describes the relation from the perspective of the foreign table. The given name
+     * will be used to express relations with the Ref types.
      * <p>
      * When modeling associative tables, only the target names will be used as method names
      * for the involved Ref classes (see Example 2).
@@ -176,23 +215,26 @@ public class ColumnReferenceBuilder
      * <pre>
      * table("player")
      *     .column("team_id", DataType.BIGINT)
-     *       .relationTo(teamTable)
-     *         .target("hasMembers")
+     *       .reference
+     *         .foreign(teamTable)
+     *           .name("hasMembers")
      * </pre>
      * <p>
      * Example 2: Associative Table<br>
      * Any person can be member of any group.
      * <pre>
      * table("person_group")
-     *       .column("person_id", DataType.BIGINT)
-     *         .relationTo(person)
-     *           .target("belongsTo")
-     *       .column("group_id", DataType.BIGINT)
+     *     .column("person_id", DataType.BIGINT)
+     *       .reference
+     *         .foreign(person)
+     *           .name("belongsTo")
+     *     .column("group_id", DataType.BIGINT)
+     *       .reference
      *         .relationTo(group)
-     *           .target("hasMembers")
+     *           .name("hasMembers")
      * </pre>
-     * @param name The relation name used for the generated DSL.
-     * @return The builder to configure the target relation.
+     * @param foreignColumn The referenced column
+     * @return The builder to configure the relation in the foreign perspective.
      */
     public ForeignReferenceBuilder foreign(Column foreignColumn)
     {
@@ -200,7 +242,36 @@ public class ColumnReferenceBuilder
     }
 
     /**
-     * TODO NM add
+     * Describes the relation from the perspective of the foreign table. The given name
+     * will be used to express relations with the Ref types.
+     * <p>
+     * When modeling associative tables, only the target names will be used as method names
+     * for the involved Ref classes (see Example 2).
+     * <p>
+     * Example 1: Players are members of a team
+     * <pre>
+     * table("player")
+     *     .column("team_id", DataType.BIGINT)
+     *       .reference
+     *         .foreign(teamTable)
+     *           .name("hasMembers")
+     * </pre>
+     * <p>
+     * Example 2: Associative Table<br>
+     * Any person can be member of any group.
+     * <pre>
+     * table("person_group")
+     *     .column("person_id", DataType.BIGINT)
+     *       .reference
+     *         .foreign(person)
+     *           .name("belongsTo")
+     *     .column("group_id", DataType.BIGINT)
+     *       .reference
+     *         .relationTo(group)
+     *           .name("hasMembers")
+     * </pre>
+     * @param table The referenced table
+     * @return The builder to configure the relation in the foreign perspective.
      */
     public ForeignReferenceBuilder foreign(Table table)
     {
@@ -234,21 +305,21 @@ public class ColumnReferenceBuilder
     private final ColumnReferenceBuilder parent;
 
     /**
-     * TODO NM UPDATE
-     * Describes the relation regarding the entities in the current table. The generated Ref class
-     * belonging to the current table will have a corresponding method to model this relation.
+     * Describes the relation from the perspective of the current table.
+     * The given name will be used to express relations with the Ref types.
      * <p>
-     * When modeling associative tables, use {@link ColumnReferenceBuilder#target(String)} to define the
-     * generated methods on the involved Ref classes.
+     * When modeling associative tables, no local part is needed.
      * <p>
      * Example: A player belongs to a team
      * <pre>
      * table("player")
      *     .column("team_id", DataType.BIGINT)
-     *       .relationTo(teamTable)
-     *         .local("belongsTo")
+     *       .reference
+     *         .local
+     *           .name("belongsTo")
+     *         .foreign(team)
+     *           .name("hasMembers")
      * </pre>
-     * @param name The relation name used for the generated DSL.
      * @return The builder to configure the local relation.
      */
     public final LocalReferenceBuilder local;
@@ -259,6 +330,9 @@ public class ColumnReferenceBuilder
       local = parent.local;
     }
 
+    /**
+     * @param name The relation name used for the generated DSL.
+     */
     public ForeignReferenceBuilder name(String name)
     {
       parent.foreignName = name;

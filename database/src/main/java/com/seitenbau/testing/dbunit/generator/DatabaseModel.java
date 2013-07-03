@@ -75,6 +75,46 @@ public abstract class DatabaseModel
     return new TableBuilder(this, name);
   }
 
+  /**
+   * Adds an associative table to the database model. Associative tables should be used
+   * to model n:m relations, although they can be used for modeling every binary relation.
+   * <p>
+   * Associative tables consist of two columns with foreign relations and can have further
+   * columns for attributes, which describe the relation.
+   * <p>
+   * The following example shows a table with images and and a table with tags to categorize
+   * the images. Each image requires at least one tag, while a tag does not need to have
+   * associated images.
+   * <code><pre>
+   * Table image = table("image")
+   *     .column("id", DataType.BIGINT)
+   *       .identifierColumn()
+   *     .column("name", DataType.VARCHAR)
+   *     .column("content", DataType.BLOB)
+   *   .build();
+   *
+   * Table tag = table("tag")
+   *     .column("name", DataType.VARCHAR)
+   *       .identifierColumn()
+   *   .build();
+   *
+   * associativeTable("image_tag")
+   *     .column("image_id", DataType.BIGINT)
+   *       .reference
+   *         .foreign(image)
+   *            .name("hasTags")
+   *            .multiplicity("1..*")
+   *      .column("tag_name", DataType.VARCHAR)
+   *        .reference
+   *          .foreign(tag)
+   *            .name("containsImages")
+   *            .multiplicity("0..*")
+   *   .build();
+   * </pre></code>
+   *
+   * @param name The name of the table
+   * @return The builder to configure the associative table
+   */
   public TableBuilder associativeTable(String name)
   {
     return new AssociativeTableBuilder(this, name);
