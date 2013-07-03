@@ -40,14 +40,15 @@ class GroovyDatabaseDataSetTest {
        {
          return dataSource;
        }
-     }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"));
+     }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"))
+     .setDefaultSortConfig(sortConfig)
 
-   SortConfig[] sortConfig = [
-     new SortConfig(PersonJobTable.NAME, PersonJobTable.Columns.PersonId, PersonJobTable.Columns.JobId),
-     new SortConfig(PersonsTable.NAME, PersonsTable.Columns.Id),
-     new SortConfig(JobsTable.NAME, JobsTable.Columns.Id),
-     new SortConfig(TeamsTable.NAME, TeamsTable.Columns.Id),
-   ]
+  SortConfig[] sortConfig = [
+      new SortConfig(PersonJobTable.NAME, PersonJobTable.Columns.PersonId, PersonJobTable.Columns.JobId),
+      new SortConfig(PersonsTable.NAME, PersonsTable.Columns.Id),
+      new SortConfig(JobsTable.NAME, JobsTable.Columns.Id),
+      new SortConfig(TeamsTable.NAME, TeamsTable.Columns.Id),
+    ]
 
   @Autowired
   PersonService sut
@@ -169,17 +170,14 @@ class GroovyDatabaseDataSetTest {
     dbTester.assertDataBase(dataSet)
   }
 
-  @Ignore // TODO Exception when removing is not thrown on every machine
-  @Test(expected=DataIntegrityViolationException.class)
+  @Test(expected=RuntimeException.class)
   @DatabaseSetup(prepare = EmptyGroovyDataSet)
   void removePersonThatDoesNotExist()
   {
     // prepare
-
     Person person = new Person()
     person.setFirstName("John")
     person.setId(23)
-    person.setJob(0)
     person.setName("Doe")
     person.setTeam(1899)
 
