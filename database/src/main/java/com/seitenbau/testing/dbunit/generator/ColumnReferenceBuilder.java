@@ -34,13 +34,13 @@ public class ColumnReferenceBuilder
 
   private String localDescription;
 
-  private String localMultiplicities;
+  private String localMultiplicity;
 
   private String foreignName;
 
   private String foreignDescription;
 
-  private String foreignMultiplicities;
+  private String foreignMultiplicity;
 
   private ColumnReference reference;
 
@@ -55,11 +55,11 @@ public class ColumnReferenceBuilder
     // initialize values
     localName = CamelCase.makeFirstLowerCase(columnBuilder.getColumnJavaName()) + "To";
     localDescription = "";
-    localMultiplicities = "1";
+    localMultiplicity = "1";
 
     foreignName = CamelCase.makeFirstLowerCase(columnBuilder.getTableBuilder().getJavaName()) + "to";
     foreignDescription = "";
-    foreignMultiplicities = "1";
+    foreignMultiplicity = "1";
   }
 
   /**
@@ -167,8 +167,8 @@ public class ColumnReferenceBuilder
   void buildReference()
   {
     reference = new ColumnReference(foreignColumn,
-          localName, localDescription, localMultiplicities,
-          foreignName, foreignDescription, foreignMultiplicities);
+          localName, localDescription, localMultiplicity,
+          foreignName, foreignDescription, foreignMultiplicity);
   }
 
   ColumnReference getReference()
@@ -181,11 +181,28 @@ public class ColumnReferenceBuilder
 
     private final ColumnReferenceBuilder parent;
 
-    public LocalReferenceBuilder(ColumnReferenceBuilder parent)
+    LocalReferenceBuilder(ColumnReferenceBuilder parent)
     {
       this.parent = parent;
     }
 
+    /**
+     * Configures the relation name from the perspective of the current table.
+     * The name will be used to express relations with the Ref types.
+     * <p>
+     * Example: A player belongs to a team
+     * <pre>
+     * table("player")
+     *     .column("team_id", DataType.BIGINT)
+     *       .reference
+     *         .local
+     *           .name("belongsTo")
+     *         .foreign(team)
+     *           .name("hasMembers")
+     * </pre>
+     * @param name The relation name used for the generated DSL.
+     * @return The builder to configure the local relation.
+     */
     public LocalReferenceBuilder name(String name)
     {
       parent.localName = name;
@@ -198,9 +215,9 @@ public class ColumnReferenceBuilder
       return this;
     }
 
-    public LocalReferenceBuilder multiplicity(String multiplicities)
+    public LocalReferenceBuilder multiplicity(String multiplicity)
     {
-      parent.localMultiplicities = multiplicities;
+      parent.localMultiplicity = multiplicity;
       return this;
     }
 
@@ -324,14 +341,28 @@ public class ColumnReferenceBuilder
      */
     public final LocalReferenceBuilder local;
 
-    public ForeignReferenceBuilder(ColumnReferenceBuilder parent)
+    ForeignReferenceBuilder(ColumnReferenceBuilder parent)
     {
       this.parent = parent;
       local = parent.local;
     }
 
     /**
+     * Configures the relation name from the perspective of the foreign table.
+     * The name will be used to express relations with the Ref types.
+     * <p>
+     * Example: A team has members
+     * <pre>
+     * table("player")
+     *     .column("team_id", DataType.BIGINT)
+     *       .reference
+     *         .local
+     *           .name("belongsTo")
+     *         .foreign(team)
+     *           .name("hasMembers")
+     * </pre>
      * @param name The relation name used for the generated DSL.
+     * @return The builder to configure the local relation.
      */
     public ForeignReferenceBuilder name(String name)
     {
@@ -345,9 +376,9 @@ public class ColumnReferenceBuilder
       return this;
     }
 
-    public ForeignReferenceBuilder multiplicity(String multiplicities)
+    public ForeignReferenceBuilder multiplicity(String multiplicitiy)
     {
-      parent.foreignMultiplicities = multiplicities;
+      parent.foreignMultiplicity = multiplicitiy;
       return this;
     }
 

@@ -8,24 +8,24 @@ public class ColumnReference
 
   private final String _localDescription;
 
-  private final String _localMultiplicties;
+  private final String _localMultiplicty;
 
   private final String _foreignName;
 
   private final String _foreignDescription;
 
-  private final String _foreignMultiplicties;
+  private final String _foreignMultiplicty;
 
-  ColumnReference(Column foreignColumn, String localName, String localDescription, String localMultiplicties, String foreignName,
-      String foreignDescription, String foreignMultiplicities)
+  ColumnReference(Column foreignColumn, String localName, String localDescription, String localMultiplicty, String foreignName,
+      String foreignDescription, String foreignMultiplicity)
   {
     _foreignColumn = foreignColumn;
     _localName = localName;
     _localDescription = localDescription;
-    _localMultiplicties = localMultiplicties;
+    _localMultiplicty = localMultiplicty;
     _foreignName = foreignName;
     _foreignDescription = foreignDescription;
-    _foreignMultiplicties = foreignMultiplicities;
+    _foreignMultiplicty = foreignMultiplicity;
   }
 
   public Column getForeignColumn()
@@ -43,9 +43,9 @@ public class ColumnReference
     return _localDescription;
   }
 
-  public String getLocalMultiplicities()
+  public String getLocalMultiplicity()
   {
-    return _localMultiplicties;
+    return _localMultiplicty;
   }
 
   public String getForeignName()
@@ -58,9 +58,9 @@ public class ColumnReference
     return _foreignDescription;
   }
 
-  public String getForeignMultiplicities()
+  public String getForeignMultiplicity()
   {
-    return _foreignMultiplicties;
+    return _foreignMultiplicty;
   }
 
 }
