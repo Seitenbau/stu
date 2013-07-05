@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.groovy
 
+import org.junit.rules.ExpectedException
+
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 import static org.fest.assertions.Assertions.*
 
@@ -29,6 +31,9 @@ class GroovyDatabaseDataSetTest {
 
   @Autowired
   DataSource dataSource;
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none()
 
   @Rule
   public DatabaseTesterRule dbTester =
@@ -289,18 +294,17 @@ class GroovyDatabaseDataSetTest {
     dbTester.assertDataBase(dataSet)
   }
 
-  @Test(expected=RuntimeException)
+  @Test
   @DatabaseSetup(prepare = DemoGroovyDataSet)
   void removeTeamWithExistingReference()
   {
     // prepare
     Team team = getTeam(QA)
 
+    thrown.expect(RuntimeException)
+
     // execute
     sut.removeTeam(team)
-
-    // verify
-    Fail.fail()
   }
 
   private Job getJob(JobsRef jobsRef)
