@@ -87,6 +87,9 @@ project("database") {
     runtime("mysql:mysql-connector-java:$mysqlConnVersion")
 
     testCompile("org.slf4j:slf4j-log4j12:$slf4jVersion")
+    testCompile( "org.apache.ant:ant-junit:1.8.4" ) {
+        exclude(group: 'junit', module: 'junit')
+    }
   }
 }
 

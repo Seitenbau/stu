@@ -85,32 +85,47 @@ public abstract class DatabaseModel
    * The following example shows a table with images and and a table with tags to categorize
    * the images. Each image requires at least one tag, while a tag does not need to have
    * associated images.
-   * <code><pre>
-   * Table image = table("image")
-   *     .column("id", DataType.BIGINT)
-   *       .identifierColumn()
-   *     .column("name", DataType.VARCHAR)
-   *     .column("content", DataType.BLOB)
-   *   .build();
+   * <code>
+   * <pre class="groovyTestCase">
+   * import com.seitenbau.testing.dbunit.generator.*;
+   * 
+   * public class DemoDatabaseModel extends DatabaseModel {
+   * 
+   *   public DemoDatabaseModel() {
+   *     Table image = table("image")
+   *       .column("id", DataType.BIGINT)
+   *         .identifierColumn()
+   *       .column("name", DataType.VARCHAR)
+   *       .column("content", DataType.BLOB)
+   *     .build();
    *
-   * Table tag = table("tag")
-   *     .column("name", DataType.VARCHAR)
-   *       .identifierColumn()
-   *   .build();
+   *     Table tag = table("tag")
+   *       .column("name", DataType.VARCHAR)
+   *         .identifierColumn()
+   *     .build();
    *
-   * associativeTable("image_tag")
-   *     .column("image_id", DataType.BIGINT)
-   *       .reference
-   *         .foreign(image)
-   *            .name("hasTags")
-   *            .multiplicity("1..*")
-   *      .column("tag_name", DataType.VARCHAR)
-   *        .reference
-   *          .foreign(tag)
-   *            .name("containsImages")
-   *            .multiplicity("0..*")
-   *   .build();
-   * </pre></code>
+   *     associativeTable("image_tag")
+   *       .column("image_id", DataType.BIGINT)
+   *         .reference
+   *           .foreign(image)
+   *             .name("hasTags")
+   *             .multiplicity("1..*")
+   *       .column("tag_name", DataType.VARCHAR)
+   *         .reference
+   *           .foreign(tag)
+   *             .name("containsImages")
+   *             .multiplicity("0..*")
+   *     .build();
+   *   }
+   * }
+   * 
+   * DemoDatabaseModel model = new DemoDatabaseModel();
+   * DataSetGenerator generator = model.getDataSetGenInstance();
+   * DataSet dataSet = generator.getDataSet();
+   * 
+   * assert dataSet.getTables().size() == 3;
+   * </pre>
+   * </code>
    *
    * @param name The name of the table
    * @return The builder to configure the associative table
