@@ -88,20 +88,20 @@ public abstract class DatabaseModel
    * <code>
    * <pre class="groovyTestCase">
    * import com.seitenbau.testing.dbunit.generator.*;
-   * 
+   *
    * public class DemoDatabaseModel extends DatabaseModel {
-   * 
+   *
    *   public DemoDatabaseModel() {
    *     Table image = table("image")
    *       .column("id", DataType.BIGINT)
-   *         .identifierColumn()
+   *         .defaultIdentifier()
    *       .column("name", DataType.VARCHAR)
    *       .column("content", DataType.BLOB)
    *     .build();
    *
    *     Table tag = table("tag")
    *       .column("name", DataType.VARCHAR)
-   *         .identifierColumn()
+   *         .defaultIdentifier()
    *     .build();
    *
    *     associativeTable("image_tag")
@@ -118,11 +118,11 @@ public abstract class DatabaseModel
    *     .build();
    *   }
    * }
-   * 
+   *
    * DemoDatabaseModel model = new DemoDatabaseModel();
    * DataSetGenerator generator = model.getDataSetGenInstance();
    * DataSet dataSet = generator.getDataSet();
-   * 
+   *
    * assert dataSet.getTables().size() == 3;
    * </pre>
    * </code>
