@@ -31,23 +31,38 @@ public class ColumnBuilder
    * perspective of the referenced table.
    * <p>
    * The following example models the relation between an house and its rooms:
-   * <code><pre>
-   * Table house = table("house")
-   *     .column("id", DataType.BIGINT)
-   *       .identifierColumn()
-   *     .column("address", DataType.VARCHAR)
-   *   .build();
+   * <code>
+   * <pre class="groovyTestCase">
+   * import com.seitenbau.testing.dbunit.generator.*;
    *
-   * table("room")
-   *     .column("id", DataType.BIGINT)
-   *     .column("house", DataType.BIGINT)
-   *       .reference
-   *         .local
-   *           .name("belongsTo")
-   *         .foreign(house)
-   *           .name("hasRoom")
-   *   .build();
-   * </pre></code>
+   * public class DemoDatabaseModel extends DatabaseModel {
+   *
+   *   public DemoDatabaseModel() {
+   *     Table house = table("house")
+   *         .column("id", DataType.BIGINT)
+   *           .defaultIdentifier()
+   *         .column("address", DataType.VARCHAR)
+   *       .build();
+   *
+   *     table("room")
+   *         .column("id", DataType.BIGINT)
+   *         .column("house", DataType.BIGINT)
+   *           .reference
+   *             .local
+   *               .name("belongsTo")
+   *             .foreign(house)
+   *               .name("hasRoom")
+   *       .build();
+   *   }
+   * }
+   *
+   * DemoDatabaseModel model = new DemoDatabaseModel();
+   * DataSetGenerator generator = model.getDataSetGenInstance();
+   * DataSet dataSet = generator.getDataSet();
+   *
+   * assert dataSet.getTables().size() == 2;
+   * </pre>
+   * </code>
    *
    * Associative n:m relations should be modeled by association tables (see
    * {@link DatabaseModel#associativeTable}).
@@ -244,28 +259,6 @@ public class ColumnBuilder
     flags.add(flag);
     return this;
   }
-
-// TODO NM CLEAR ---------
-  /**
-   * Models a relation to another table column. A relation will automatically add methods
-   * to model relations (e.g. setters on RowBuilders and methods on the Ref classes).
-   * <p>
-   * Although relations are mostly achieved by public key and foreign key columns in the
-   * actual database, a relation in STU does not require this.
-   * @param targetColumn The column, which the current column is related to
-   * @return The builder to configure the relation
-   */
-
-  /**
-   * Models a relation to another table using its identifier column. A relation will automatically
-   * add methods to model relations (e.g. setters on RowBuilders and methods on the Ref classes).
-   * <p>
-   * Although relations are mostly achieved by public key and foreign key columns in the
-   * actual database, a relation in STU does not require this.
-   * @param targetColumn The column, which the current column is related to
-   * @return The builder to configure the relation
-   */
-// CLEAR -----------------
 
   String getColumnName()
   {

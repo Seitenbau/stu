@@ -15,15 +15,37 @@ public class ColumnReferenceBuilder
    * When modeling associative tables, no local part is needed.
    * <p>
    * Example: A player belongs to a team
-   * <pre>
-   * table("player")
-   *     .column("team_id", DataType.BIGINT)
-   *       .reference
-   *         .local
-   *           .name("belongsTo")
-   *         .foreign(team)
-   *           .name("hasMembers")
+   * <code>
+   * <pre class="groovyTestCase">
+   * import com.seitenbau.testing.dbunit.generator.*;
+   *
+   * public class DemoDatabaseModel extends DatabaseModel {
+   *
+   *   public DemoDatabaseModel() {
+   *     Table team = table("team")
+   *         .column("id", DataType.BIGINT)
+   *           .defaultIdentifier()
+   *         .column("name", DataType.VARCHAR)
+   *       .build();
+
+   *     table("player")
+   *         .column("team_id", DataType.BIGINT)
+   *           .reference
+   *             .local
+   *               .name("belongsTo")
+   *             .foreign(team)
+   *               .name("hasMembers")
+   *       .build();
+   *   }
+   * }
+   *
+   * DemoDatabaseModel model = new DemoDatabaseModel();
+   * DataSetGenerator generator = model.getDataSetGenInstance();
+   * DataSet dataSet = generator.getDataSet();
+   *
+   * assert dataSet.getTables().size() == 2;
    * </pre>
+   * </code>
    * @return The builder to configure the local relation.
    */
   public final LocalReferenceBuilder local;
@@ -70,27 +92,74 @@ public class ColumnReferenceBuilder
    * for the involved Ref classes (see Example 2).
    * <p>
    * Example 1: Players are members of a team
-   * <pre>
-   * table("player")
-   *     .column("team_id", DataType.BIGINT)
-   *       .reference
-   *         .foreign(teamTable)
-   *           .name("hasMembers")
+   * <code>
+   * <pre class="groovyTestCase">
+   * import com.seitenbau.testing.dbunit.generator.*;
+   *
+   * public class DemoDatabaseModel extends DatabaseModel {
+   *
+   *   public DemoDatabaseModel() {
+   *     Table team = table("team")
+   *         .column("id", DataType.BIGINT)
+   *         .column("name", DataType.VARCHAR)
+   *       .build();
+   *
+   *     table("player")
+   *         .column("team_id", DataType.BIGINT)
+   *           .reference
+   *             .foreign(team.ref("id"))
+   *               .name("hasMembers")
+   *       .build();
+   *   }
+   * }
+   *
+   * DemoDatabaseModel model = new DemoDatabaseModel();
+   * DataSetGenerator generator = model.getDataSetGenInstance();
+   * DataSet dataSet = generator.getDataSet();
+   *
+   * assert dataSet.getTables().size() == 2;
    * </pre>
+   * </code>
    * <p>
    * Example 2: Associative Table<br>
    * Any person can be member of any group.
-   * <pre>
-   * table("person_group")
-   *     .column("person_id", DataType.BIGINT)
-   *       .reference
-   *         .foreign(person)
-   *           .name("belongsTo")
-   *     .column("group_id", DataType.BIGINT)
-   *       .reference
-   *         .relationTo(group)
-   *           .name("hasMembers")
+   * <code>
+   * <pre class="groovyTestCase">
+   * import com.seitenbau.testing.dbunit.generator.*;
+   *
+   * public class DemoDatabaseModel extends DatabaseModel {
+   *
+   *   public DemoDatabaseModel() {
+   *     Table person = table("person")
+   *         .column("id", DataType.BIGINT)
+   *         .column("name", DataType.VARCHAR)
+   *       .build();
+   *
+   *     Table group = table("group")
+   *         .column("id", DataType.BIGINT)
+   *         .column("name", DataType.VARCHAR)
+   *       .build();
+   *
+   *     table("person_group")
+   *         .column("person_id", DataType.BIGINT)
+   *           .reference
+   *             .foreign(person.ref("id"))
+   *               .name("belongsTo")
+   *         .column("group_id", DataType.BIGINT)
+   *           .reference
+   *             .foreign(group.ref("id"))
+   *               .name("hasMembers")
+   *       .build();
+   *   }
+   * }
+   *
+   * DemoDatabaseModel model = new DemoDatabaseModel();
+   * DataSetGenerator generator = model.getDataSetGenInstance();
+   * DataSet dataSet = generator.getDataSet();
+   *
+   * assert dataSet.getTables().size() == 3;
    * </pre>
+   * </code>
    * @param foreignColumn The referenced column
    * @return The builder to configure the relation in the foreign perspective.
    */
@@ -113,27 +182,78 @@ public class ColumnReferenceBuilder
    * for the involved Ref classes (see Example 2).
    * <p>
    * Example 1: Players are members of a team
-   * <pre>
-   * table("player")
-   *     .column("team_id", DataType.BIGINT)
-   *       .reference
-   *         .foreign(teamTable)
-   *           .name("hasMembers")
+   * <code>
+   * <pre class="groovyTestCase">
+   * import com.seitenbau.testing.dbunit.generator.*;
+   *
+   * public class DemoDatabaseModel extends DatabaseModel {
+   *
+   *   public DemoDatabaseModel() {
+   *     Table team = table("team")
+   *         .column("id", DataType.BIGINT)
+   *           .defaultIdentifier()
+   *         .column("name", DataType.VARCHAR)
+   *       .build();
+   *
+   *     table("player")
+   *         .column("team_id", DataType.BIGINT)
+   *           .reference
+   *             .foreign(team)
+   *               .name("hasMembers")
+   *       .build();
+   *   }
+   * }
+   *
+   * DemoDatabaseModel model = new DemoDatabaseModel();
+   * DataSetGenerator generator = model.getDataSetGenInstance();
+   * DataSet dataSet = generator.getDataSet();
+   *
+   * assert dataSet.getTables().size() == 2;
    * </pre>
+   * </code>
    * <p>
    * Example 2: Associative Table<br>
    * Any person can be member of any group.
    * <pre>
-   * table("person_group")
-   *     .column("person_id", DataType.BIGINT)
-   *       .reference
-   *         .foreign(person)
-   *           .name("belongsTo")
-   *     .column("group_id", DataType.BIGINT)
-   *       .reference
-   *         .relationTo(group)
-   *           .name("hasMembers")
+   * <code>
+   * <pre class="groovyTestCase">
+   * import com.seitenbau.testing.dbunit.generator.*;
+   *
+   * public class DemoDatabaseModel extends DatabaseModel {
+   *
+   *   public DemoDatabaseModel() {
+   *     Table person = table("person")
+   *         .column("id", DataType.BIGINT)
+   *           .defaultIdentifier()
+   *         .column("name", DataType.VARCHAR)
+   *       .build();
+   *
+   *     Table group = table("group")
+   *         .column("id", DataType.BIGINT)
+   *           .defaultIdentifier()
+   *         .column("name", DataType.VARCHAR)
+   *       .build();
+   *
+   *     table("person_group")
+   *         .column("person_id", DataType.BIGINT)
+   *           .reference
+   *             .foreign(person)
+   *               .name("belongsTo")
+   *         .column("group_id", DataType.BIGINT)
+   *           .reference
+   *             .foreign(group)
+   *               .name("hasMembers")
+   *        .build();
+   *   }
+   * }
+   *
+   * DemoDatabaseModel model = new DemoDatabaseModel();
+   * DataSetGenerator generator = model.getDataSetGenInstance();
+   * DataSet dataSet = generator.getDataSet();
+   *
+   * assert dataSet.getTables().size() == 3;
    * </pre>
+   * </code>
    * @param table The referenced table
    * @return The builder to configure the relation in the foreign perspective.
    */
@@ -191,15 +311,37 @@ public class ColumnReferenceBuilder
      * The name will be used to express relations with the Ref types.
      * <p>
      * Example: A player belongs to a team
-     * <pre>
-     * table("player")
-     *     .column("team_id", DataType.BIGINT)
-     *       .reference
-     *         .local
-     *           .name("belongsTo")
-     *         .foreign(team)
-     *           .name("hasMembers")
+     * <code>
+     * <pre class="groovyTestCase">
+     * import com.seitenbau.testing.dbunit.generator.*;
+     *
+     * public class DemoDatabaseModel extends DatabaseModel {
+     *
+     *   public DemoDatabaseModel() {
+     *     Table team = table("team")
+     *         .column("id", DataType.BIGINT)
+     *           .defaultIdentifier()
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     table("player")
+     *         .column("team_id", DataType.BIGINT)
+     *           .reference
+     *             .local
+     *               .name("belongsTo")
+     *             .foreign(team)
+     *               .name("hasMembers")
+     *       .build();
+     *   }
+     * }
+     *
+     * DemoDatabaseModel model = new DemoDatabaseModel();
+     * DataSetGenerator generator = model.getDataSetGenInstance();
+     * DataSet dataSet = generator.getDataSet();
+     *
+     * assert dataSet.getTables().size() == 2;
      * </pre>
+     * </code>
      * @param name The relation name used for the generated DSL.
      * @return The builder to configure the local relation.
      */
@@ -229,27 +371,75 @@ public class ColumnReferenceBuilder
      * for the involved Ref classes (see Example 2).
      * <p>
      * Example 1: Players are members of a team
-     * <pre>
-     * table("player")
-     *     .column("team_id", DataType.BIGINT)
-     *       .reference
-     *         .foreign(teamTable)
-     *           .name("hasMembers")
+     * <code>
+     * <pre class="groovyTestCase">
+     * import com.seitenbau.testing.dbunit.generator.*;
+     *
+     * public class DemoDatabaseModel extends DatabaseModel {
+     *
+     *   public DemoDatabaseModel() {
+     *     Table team = table("team")
+     *         .column("id", DataType.BIGINT)
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     table("player")
+     *         .column("team_id", DataType.BIGINT)
+     *           .reference
+     *             .foreign(team.ref("id"))
+     *               .name("hasMembers")
+     *       .build();
+     *   }
+     * }
+     *
+     * DemoDatabaseModel model = new DemoDatabaseModel();
+     * DataSetGenerator generator = model.getDataSetGenInstance();
+     * DataSet dataSet = generator.getDataSet();
+     *
+     * assert dataSet.getTables().size() == 2;
      * </pre>
+     * </code>
      * <p>
      * Example 2: Associative Table<br>
      * Any person can be member of any group.
      * <pre>
-     * table("person_group")
-     *     .column("person_id", DataType.BIGINT)
-     *       .reference
-     *         .foreign(person)
-     *           .name("belongsTo")
-     *     .column("group_id", DataType.BIGINT)
-     *       .reference
-     *         .relationTo(group)
-     *           .name("hasMembers")
+     * <code>
+     * <pre class="groovyTestCase">
+     * import com.seitenbau.testing.dbunit.generator.*;
+     *
+     * public class DemoDatabaseModel extends DatabaseModel {
+     *
+     *   public DemoDatabaseModel() {
+     *     Table person = table("person")
+     *         .column("id", DataType.BIGINT)
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     Table group = table("group")
+     *         .column("id", DataType.BIGINT)
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     table("person_group")
+     *         .column("person_id", DataType.BIGINT)
+     *           .reference
+     *             .foreign(person.ref("id"))
+     *               .name("belongsTo")
+     *         .column("group_id", DataType.BIGINT)
+     *           .reference
+     *             .foreign(group.ref("id"))
+     *               .name("hasMembers")
+     *       .build();
+     *   }
+     * }
+     *
+     * DemoDatabaseModel model = new DemoDatabaseModel();
+     * DataSetGenerator generator = model.getDataSetGenInstance();
+     * DataSet dataSet = generator.getDataSet();
+     *
+     * assert dataSet.getTables().size() == 3;
      * </pre>
+     * </code>
      * @param foreignColumn The referenced column
      * @return The builder to configure the relation in the foreign perspective.
      */
@@ -266,27 +456,78 @@ public class ColumnReferenceBuilder
      * for the involved Ref classes (see Example 2).
      * <p>
      * Example 1: Players are members of a team
-     * <pre>
-     * table("player")
-     *     .column("team_id", DataType.BIGINT)
-     *       .reference
-     *         .foreign(teamTable)
-     *           .name("hasMembers")
+     * <code>
+     * <pre class="groovyTestCase">
+     * import com.seitenbau.testing.dbunit.generator.*;
+     *
+     * public class DemoDatabaseModel extends DatabaseModel {
+     *
+     *   public DemoDatabaseModel() {
+     *     Table team = table("team")
+     *         .column("id", DataType.BIGINT)
+     *           .defaultIdentifier()
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     table("player")
+     *         .column("team_id", DataType.BIGINT)
+     *           .reference
+     *             .foreign(team)
+     *               .name("hasMembers")
+     *       .build();
+     *   }
+     * }
+     *
+     * DemoDatabaseModel model = new DemoDatabaseModel();
+     * DataSetGenerator generator = model.getDataSetGenInstance();
+     * DataSet dataSet = generator.getDataSet();
+     *
+     * assert dataSet.getTables().size() == 2;
      * </pre>
+     * </code>
      * <p>
      * Example 2: Associative Table<br>
      * Any person can be member of any group.
      * <pre>
-     * table("person_group")
-     *     .column("person_id", DataType.BIGINT)
-     *       .reference
-     *         .foreign(person)
-     *           .name("belongsTo")
-     *     .column("group_id", DataType.BIGINT)
-     *       .reference
-     *         .relationTo(group)
-     *           .name("hasMembers")
+     * <code>
+     * <pre class="groovyTestCase">
+     * import com.seitenbau.testing.dbunit.generator.*;
+     *
+     * public class DemoDatabaseModel extends DatabaseModel {
+     *
+     *   public DemoDatabaseModel() {
+     *     Table person = table("person")
+     *         .column("id", DataType.BIGINT)
+     *           .defaultIdentifier()
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     Table group = table("group")
+     *         .column("id", DataType.BIGINT)
+     *           .defaultIdentifier()
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     table("person_group")
+     *         .column("person_id", DataType.BIGINT)
+     *           .reference
+     *             .foreign(person)
+     *               .name("belongsTo")
+     *         .column("group_id", DataType.BIGINT)
+     *           .reference
+     *             .foreign(group)
+     *               .name("hasMembers")
+     *       .build();
+     *   }
+     * }
+     *
+     * DemoDatabaseModel model = new DemoDatabaseModel();
+     * DataSetGenerator generator = model.getDataSetGenInstance();
+     * DataSet dataSet = generator.getDataSet();
+     *
+     * assert dataSet.getTables().size() == 3;
      * </pre>
+     * </code>
      * @param table The referenced table
      * @return The builder to configure the relation in the foreign perspective.
      */
@@ -328,15 +569,37 @@ public class ColumnReferenceBuilder
      * When modeling associative tables, no local part is needed.
      * <p>
      * Example: A player belongs to a team
-     * <pre>
-     * table("player")
-     *     .column("team_id", DataType.BIGINT)
-     *       .reference
-     *         .local
-     *           .name("belongsTo")
-     *         .foreign(team)
-     *           .name("hasMembers")
+     * <code>
+     * <pre class="groovyTestCase">
+     * import com.seitenbau.testing.dbunit.generator.*;
+     *
+     * public class DemoDatabaseModel extends DatabaseModel {
+     *
+     *   public DemoDatabaseModel() {
+     *     Table team = table("team")
+     *         .column("id", DataType.BIGINT)
+     *           .defaultIdentifier()
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     table("player")
+     *         .column("team_id", DataType.BIGINT)
+     *           .reference
+     *             .local
+     *               .name("belongsTo")
+     *             .foreign(team)
+     *               .name("hasMembers")
+     *       .build();
+     *   }
+     * }
+     *
+     * DemoDatabaseModel model = new DemoDatabaseModel();
+     * DataSetGenerator generator = model.getDataSetGenInstance();
+     * DataSet dataSet = generator.getDataSet();
+     *
+     * assert dataSet.getTables().size() == 2;
      * </pre>
+     * </code>
      * @return The builder to configure the local relation.
      */
     public final LocalReferenceBuilder local;
@@ -352,15 +615,37 @@ public class ColumnReferenceBuilder
      * The name will be used to express relations with the Ref types.
      * <p>
      * Example: A team has members
-     * <pre>
-     * table("player")
-     *     .column("team_id", DataType.BIGINT)
-     *       .reference
-     *         .local
-     *           .name("belongsTo")
-     *         .foreign(team)
-     *           .name("hasMembers")
+     * <code>
+     * <pre class="groovyTestCase">
+     * import com.seitenbau.testing.dbunit.generator.*;
+     *
+     * public class DemoDatabaseModel extends DatabaseModel {
+     *
+     *   public DemoDatabaseModel() {
+     *     Table team = table("team")
+     *         .column("id", DataType.BIGINT)
+     *           .defaultIdentifier()
+     *         .column("name", DataType.VARCHAR)
+     *       .build();
+     *
+     *     table("player")
+     *         .column("team_id", DataType.BIGINT)
+     *           .reference
+     *             .local
+     *               .name("belongsTo")
+     *             .foreign(team)
+     *               .name("hasMembers")
+     *       .build();
+     *   }
+     * }
+     *
+     * DemoDatabaseModel model = new DemoDatabaseModel();
+     * DataSetGenerator generator = model.getDataSetGenInstance();
+     * DataSet dataSet = generator.getDataSet();
+     *
+     * assert dataSet.getTables().size() == 2;
      * </pre>
+     * </code>
      * @param name The relation name used for the generated DSL.
      * @return The builder to configure the local relation.
      */
