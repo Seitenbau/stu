@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.generator;
 
+import com.google.common.base.Optional;
+
 public class NameProvider
 {
 
@@ -111,37 +113,26 @@ public class NameProvider
     return table.getJavaName() + "Model";
   }
 
-  public boolean columnNameCanBeTruncated(Column column)
+  public Optional<String> getTruncatedGroovyName(Column column)
   {
     final String groovyName = column.getGroovyName();
     if (column.getRelation() == null || !groovyName.endsWith(TRUNCABLE_ID_SUFFIX)
         && groovyName.length() > TRUNCABLE_ID_SUFFIX.length())
     {
-      return false;
+      return Optional.absent();
     }
 
-    final String truncatedName = truncateGroovyName(column);
-
+    final String truncatedName = groovyName.substring(0, groovyName.length() - TRUNCABLE_ID_SUFFIX.length());
     for (Column otherColumn : column.getTable().getColumns())
     {
       if (truncatedName.equals(otherColumn.getGroovyName()))
       {
         // column cannot be truncated
-        return false;
+        return Optional.absent();
       }
     }
 
-    return true;
+    return Optional.of(truncatedName);
   }
 
-  public String truncateGroovyName(Column column)
-  {
-    final String groovyName = column.getGroovyName();
-    if (!groovyName.endsWith(TRUNCABLE_ID_SUFFIX))
-    {
-      throw new RuntimeException("Cannot truncate column name " + groovyName);
-    }
-
-    return groovyName.substring(0, groovyName.length() - TRUNCABLE_ID_SUFFIX.length());
-  }
 }

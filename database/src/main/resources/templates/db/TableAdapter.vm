@@ -87,10 +87,10 @@ public class ${clsAdapter} {
   public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.groovyName} = create${col.javaName}Binding();
 
 ## check if column is an identifier
-#if ( ${names.columnNameCanBeTruncated($col)} )
-#set( $shortname  = ${names.truncateGroovyName($col)} )
+#set( $shortname  = ${names.getTruncatedGroovyName($col)} )
+#if ( ${shortname.isPresent()} )
 #comments()   
-  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${shortname} = ${col.name};
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${shortname.get()} = ${col.name};
 
 #end
 #end
@@ -139,11 +139,12 @@ public class ${clsAdapter} {
    * <ul>
    *   <li><strong>{@code REF}</strong>: {@link ${names.getRefClass($model)}}</li>
 #foreach( $col in $model.columns )
-#set( $shortname  = "" )
-#if ( ${names.columnNameCanBeTruncated($col)} )
-#set( $shortname  = " (alias: <strong>{@code " + ${names.truncateGroovyName($col)} + "}</strong>)")
+#set( $shortnametext = "" )
+#set( $shortname = ${names.getTruncatedGroovyName($col)} )
+#if ( ${shortname.isPresent()} )
+#set( $shortname  = " (alias: <strong>{@code " + ${shortname.get()} + "}</strong>)")
 #end
-   *   <li> <strong>{@code ${col.name}}</strong>$shortname: {@code ${col.javaType}}
+   *   <li> <strong>{@code ${col.name}}</strong>$shortnametext: {@code ${col.javaType}}
 #end
    * </ul>
    * The table has to start with a header row, but there can be more
