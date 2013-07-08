@@ -1,11 +1,12 @@
 defaultTasks "clean", "build"
 
 configure(allprojects) {
+
   apply plugin: "java"
   apply plugin: "idea"
 
-  group = "com.seitenbau.testing"
-  version = "1.0.0-SNAPSHOT"
+  group     = "com.seitenbau.testing"
+  version   = "1.0.0-SNAPSHOT"
 
   sourceCompatibility   = 1.6
   targetCompatibility   = 1.6
@@ -32,8 +33,8 @@ configure(allprojects) {
   ext.springVersion                 = "3.2.2.RELEASE"
   ext.velocityVersion               = "1.7"
 
-  ext.sourceEncoding    = "ISO-8859-1"
-  ext.gradleScriptDir   = "${rootProject.projectDir}/gradle"
+  ext.sourceEncoding                = "ISO-8859-1"
+  ext.gradleScriptDir               = "${rootProject.projectDir}/gradle"
 
   compileJava {
     options.encoding = project.sourceEncoding
@@ -94,6 +95,7 @@ project("database") {
 }
 
 project("examples") {
+
   dependencies {
     compile project(':database')
     runtime("org.hsqldb:hsqldb:$hsqldbVersion")
@@ -108,14 +110,14 @@ project("examples") {
   sourceSets {
     dataSetModel {
       java {
-        srcDir 'src/test/dataSetModel'
+        srcDir "$projectDir/src/test/dataSetModel"
       }
       compileClasspath += configurations.compile
       runtimeClasspath += configurations.runtime
     }
     dataSetDsl {
       java {
-        srcDir "build/src/dataSetDsl"
+        srcDir "$projectDir/build/src/dataSetDsl"
       }
       compileClasspath = configurations.compile
     }
@@ -133,10 +135,18 @@ project("examples") {
     classpath = sourceSets.dataSetModel.runtimeClasspath
   }
 
+  idea {
+     module {
+       sourceDirs += file("$projectDir/src/test/dataSetModel")
+       sourceDirs += file("$projectDir/build/src/dataSetDsl")
+       excludeDirs = []
+     }
+  }
+  ideaModule.dependsOn("generateDataSetDsl")
+
   eclipseClasspath.dependsOn("generateDataSetDsl")
   compileDataSetDslJava.dependsOn("generateDataSetDsl")
   compileTestGroovy.dependsOn("compileDataSetDslJava")
-  
 }
 
 configure(rootProject) {

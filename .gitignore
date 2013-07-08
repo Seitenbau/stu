@@ -17,3 +17,8 @@ target
 # Idea
 *.iml
 .idea
+*.ipr
+*.iws
+
+# velocity
+velocity.log
