@@ -27,7 +27,7 @@ public abstract class ColumnBinding<R, G>
     return false;
   }
 
-  public boolean isUnique()
+  public boolean isIdentifier()
   {
     return false;
   }

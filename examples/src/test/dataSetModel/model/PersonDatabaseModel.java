@@ -16,7 +16,7 @@ public class PersonDatabaseModel extends DatabaseModel
     Table jobs = table("jobs") //
         .description("The table containing the jobs of a great company")
         .column("id", DataType.BIGINT) //
-          .identifierColumn() //
+          .defaultIdentifier() //
           .autoInvokeNext() //
           // .autoIncrement() // requires DBUnit 2.4.3 or later
         .column("title", DataType.VARCHAR) //
@@ -29,7 +29,7 @@ public class PersonDatabaseModel extends DatabaseModel
     Table teams = table("teams") //
         .description("The table containing the teams of a great company")
         .column("id", DataType.BIGINT) //
-          .identifierColumn() //
+          .defaultIdentifier() //
           .autoInvokeNext() //
         .column("title", DataType.VARCHAR) //
         .column("description", DataType.VARCHAR) //
@@ -39,7 +39,7 @@ public class PersonDatabaseModel extends DatabaseModel
     Table persons = table("persons") //
         .description("The table containing the staff of a great company")
         .column("id", DataType.BIGINT) //
-          .identifierColumn() //
+          .defaultIdentifier() //
           .autoInvokeNext() //
         .column("first_name", DataType.VARCHAR) //
         .column("name", DataType.VARCHAR) //

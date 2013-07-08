@@ -15,14 +15,14 @@ public class TableRowModel
 
   private int refColumnIndex;
 
-  private final List<Integer> uniqueColumnIndexes;
+  private final List<Integer> identifierColumnIndexes;
 
   private final Optional<StackTraceElement> stackTraceElement;
 
   public TableRowModel(Object value)
   {
     refColumnIndex = -1;
-    uniqueColumnIndexes = new LinkedList<Integer>();
+    identifierColumnIndexes = new LinkedList<Integer>();
     isHeadRow = value instanceof ColumnBinding;
     stackTraceElement = determineStackTraceElement();
 
@@ -63,8 +63,8 @@ public class TableRowModel
       if (column.isRefColumn()) {
         refColumnIndex = values.size();
       }
-      if (column.isUnique()) {
-        uniqueColumnIndexes.add(Integer.valueOf(values.size()));
+      if (column.isIdentifier()) {
+        identifierColumnIndexes.add(Integer.valueOf(values.size()));
       }
     }
     values.add(value);
@@ -94,13 +94,13 @@ public class TableRowModel
     return refColumnIndex;
   }
 
-  public List<Integer> getUniqueColumnIndexes()
+  public List<Integer> getIdentifierColumnIndexes()
   {
     if (!isHeadRow)
     {
-      throw new RuntimeException("Cannot query unique column index from non-head row");
+      throw new RuntimeException("Cannot query identifier column index from non-head row");
     }
-    return uniqueColumnIndexes;
+    return identifierColumnIndexes;
   }
 
   public Object getValue(int index)
@@ -117,7 +117,7 @@ public class TableRowModel
     List<Integer> result = new LinkedList<Integer>();
     for (int i = 0; i < values.size(); i++)
     {
-      if (i == refColumnIndex || uniqueColumnIndexes.contains(Integer.valueOf(i)))
+      if (i == refColumnIndex || identifierColumnIndexes.contains(Integer.valueOf(i)))
       {
         continue;
       }

@@ -92,12 +92,12 @@ public class Table
     throw new RuntimeException("No column " + colName);
   }
 
-  public List<Column> getUniqueColumns()
+  public List<Column> getIdentifierColumns()
   {
     List<Column> result = new LinkedList<Column>();
     for (Column col : getColumns())
     {
-      if (col.isUnique())
+      if (col.isIdentifier())
       {
         result.add(col);
       }
@@ -122,16 +122,16 @@ public class Table
     return false;
   }
 
-  public Column getIdentifierColumn()
+  public Column getDefaultIdentifierColumn()
   {
     for (Column col : _columns)
     {
-      if (col.isIdentifier())
+      if (col.isDefaultIdentifier())
       {
         return col;
       }
     }
-    throw new RuntimeException("No identifier column found");
+    throw new RuntimeException("No default identifier column found");
   }
 
   /**

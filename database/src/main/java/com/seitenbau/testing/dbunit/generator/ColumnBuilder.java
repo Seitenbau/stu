@@ -190,7 +190,7 @@ public class ColumnBuilder
 
   /**
    * The column is the default identification column for the table when used to build
-   * a relation to the table. Implicitly activates the Flags {@link ColumnMetaData#UNIQUE}
+   * a relation to the table. Implicitly activates the Flags {@link ColumnMetaData#IDENTIFIER}
    * and {@link ColumnMetaData#IMMUTABLE} as well.
    * <p>
    * To enable automatic value generation, the flag {@link ColumnMetaData#AUTO_INVOKE_NEXT}
@@ -198,31 +198,31 @@ public class ColumnBuilder
    *
    * @return The column builder
    */
-  public ColumnBuilder identifierColumn()
+  public ColumnBuilder defaultIdentifier()
   {
+    setFlag(ColumnMetaData.DEFAULT_IDENTIFIER);
     setFlag(ColumnMetaData.IDENTIFIER);
-    setFlag(ColumnMetaData.UNIQUE);
     return setFlag(ColumnMetaData.IMMUTABLE);
   }
 
 
   /**
-   * The column value is unique and so it can be used to identify the entity (the whole table row).
-   * Although a database primary key column is an identifier column, there is no need for an unique
-   * column to be explicit a primary key.
+   * The column can be used to identify a table row. Although a database primary key column
+   * is an identifier column, there is no need for an identifier column to be explicit a
+   * primary key.
    * <p>
    * Implicitly activates the flag {@link ColumnMetaData#IMMUTABLE}.
    * <p>
-   * The value of an unique column has to be set when a row is created (manually or
+   * The value of an identifier column has to be set when a row is created (manually or
    * automatically). It cannot be changed afterwards. Use autoInvokeNext() for automatic
    * value generation.
-   * An unique value column cannot contain lazy evaluated Future values.
+   * An identifier value column cannot contain lazy evaluated Future values.
    *
    * @return The column builder
    */
-  public ColumnBuilder unique()
+  public ColumnBuilder identifier()
   {
-    setFlag(ColumnMetaData.UNIQUE);
+    setFlag(ColumnMetaData.IDENTIFIER);
     return setFlag(ColumnMetaData.IMMUTABLE);
   }
 

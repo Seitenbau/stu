@@ -20,7 +20,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 
   private ColumnBinding<R, G> _refColumn;
 
-  private List<ColumnBinding<R, G>> _uniqueColumns;
+  private List<ColumnBinding<R, G>> _identifierColumns;
 
   private List<Integer> _traversedColumns;
 
@@ -30,7 +30,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     _head = null;
     _columns = 0;
     _refColumn = null;
-    _uniqueColumns = new LinkedList<ColumnBinding<R, G>>();
+    _identifierColumns = new LinkedList<ColumnBinding<R, G>>();
     _traversedColumns = Collections.<Integer> emptyList();
   }
 
@@ -86,11 +86,11 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     _columns = _head.getColumnCount();
     _traversedColumns = _head.getTraversableColumns();
     _refColumn = null;
-    _uniqueColumns = new LinkedList<ColumnBinding<R, G>>();
+    _identifierColumns = new LinkedList<ColumnBinding<R, G>>();
 
-    for (Integer i : _head.getUniqueColumnIndexes())
+    for (Integer i : _head.getIdentifierColumnIndexes())
     {
-      _uniqueColumns.add((ColumnBinding<R, G>) _head.getValue(i));
+      _identifierColumns.add((ColumnBinding<R, G>) _head.getValue(i));
     }
 
     if (_head.getRefColumnIndex() != -1)
@@ -114,7 +114,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 
     private final D ref;
 
-    private final List<Object> uniqueValues;
+    private final List<Object> identifierValues;
 
     private R builder;
 
@@ -122,17 +122,17 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     {
       this.row = row;
       ref = getRefValue();
-      uniqueValues = getUniqueValues();
+      identifierValues = getIdentifierValues();
 
       R builderByReference = getBuilderByReference();
-      R builderById = getBuilderByUniqueValues();
+      R builderById = getBuilderByIdentifierValues();
       builder = getBuilderFromTwo(builderByReference, builderById);
       if (builder == null)
       {
         builder = createRowBuilder();
       }
 
-      setUniqueValuesOnRowBuilder();
+      setIdentifierValuesOnRowBuilder();
       bindBuilderToScope();
     }
 
@@ -181,29 +181,29 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
       return null;
     }
 
-    private List<Object> getUniqueValues()
+    private List<Object> getIdentifierValues()
     {
       List<Object> result = new ArrayList<Object>();
-      for (Integer i : _head.getUniqueColumnIndexes())
+      for (Integer i : _head.getIdentifierColumnIndexes())
       {
         result.add(row.getValue(i));
       }
       return result;
     }
 
-    private R getBuilderByUniqueValues()
+    private R getBuilderByIdentifierValues()
     {
       R result = null;
 
-      for (int index = 0; index < _uniqueColumns.size(); index++)
+      for (int index = 0; index < _identifierColumns.size(); index++)
       {
-        Object id = uniqueValues.get(index);
+        Object id = identifierValues.get(index);
         if (id == null || id instanceof NoValue)
         {
           continue;
         }
 
-        ColumnBinding<R, G> col = _uniqueColumns.get(index);
+        ColumnBinding<R, G> col = _identifierColumns.get(index);
         Optional<R> builderById = col.getWhere(_tableAdapter.getWhere(), CastUtil.cast(id, col.getDataType()));
         if (!builderById.isPresent())
         {
@@ -217,7 +217,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 
         if (builderById.get() != result)
         {
-          throw new TableParserException("Unique values differ in table data", row);
+          throw new TableParserException("Identifier values differ in table data", row);
         }
       }
 
@@ -238,17 +238,17 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
       return _tableAdapter.insertRow();
     }
 
-    private void setUniqueValuesOnRowBuilder()
+    private void setIdentifierValuesOnRowBuilder()
     {
-      for (int index = 0; index < _uniqueColumns.size(); index++)
+      for (int index = 0; index < _identifierColumns.size(); index++)
       {
-        Object value = uniqueValues.get(index);
+        Object value = identifierValues.get(index);
         if (value == null || value instanceof NoValue)
         {
           continue;
         }
 
-        ColumnBinding<R, G> col = _uniqueColumns.get(index);
+        ColumnBinding<R, G> col = _identifierColumns.get(index);
         col.set(builder, value);
       }
     }

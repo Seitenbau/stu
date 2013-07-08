@@ -16,7 +16,7 @@
 package ${package};
 #end
 #foreach( $col in $model.columns )
-#if ( ${col.isUnique()} )
+#if ( ${col.isIdentifier()} )
 
 import com.google.common.base.Optional;
 #break
@@ -416,7 +416,7 @@ ${jd.createTableExample($model, "   ", "")}
           row.set${col.javaName}((${col.javaType})castedValue);
         }
       }
-#if ( ${col.isUnique()} )
+#if ( ${col.isIdentifier()} )
 
       @Override
       public Optional<${clsRowbuilder}> getWhere(${clsTableGetWhere} getWhere, Object value)
@@ -425,7 +425,7 @@ ${jd.createTableExample($model, "   ", "")}
       }
 
       @Override
-      public boolean isUnique()
+      public boolean isIdentifier()
       {
         return true;
       }

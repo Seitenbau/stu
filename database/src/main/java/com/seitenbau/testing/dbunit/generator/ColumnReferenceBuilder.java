@@ -139,7 +139,7 @@ public class ColumnReferenceBuilder
    */
   public ForeignReferenceBuilder foreign(Table table)
   {
-    return foreign(table.getIdentifierColumn());
+    return foreign(table.getDefaultIdentifierColumn());
   }
 
   /**
@@ -292,7 +292,7 @@ public class ColumnReferenceBuilder
      */
     public ForeignReferenceBuilder foreign(Table table)
     {
-      return parent.foreign(table.getIdentifierColumn());
+      return parent.foreign(table.getDefaultIdentifierColumn());
     }
 
     /**

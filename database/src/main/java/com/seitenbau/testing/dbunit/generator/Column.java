@@ -108,14 +108,14 @@ public class Column
     return Collections.unmodifiableList(_referencedBy);
   }
 
+  public boolean isDefaultIdentifier()
+  {
+    return _metaData.hasFlag(ColumnMetaData.DEFAULT_IDENTIFIER);
+  }
+
   public boolean isIdentifier()
   {
     return _metaData.hasFlag(ColumnMetaData.IDENTIFIER);
-  }
-
-  public boolean isUnique()
-  {
-    return _metaData.hasFlag(ColumnMetaData.UNIQUE);
   }
 
   public boolean isImmutable()

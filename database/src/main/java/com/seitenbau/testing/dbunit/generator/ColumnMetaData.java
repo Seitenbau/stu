@@ -9,11 +9,13 @@ public class ColumnMetaData
 {
 
   /**
-   * The column value is unique and so it can be used to identify the entity (the whole table row).
-   * Although a database primary key column is an identifier column, there is no need for an unique
-   * column to be explicit a primary key.
+   * The column value can be used to identify the table row.
+   * Although a database primary key column is an identifier column, there is no need for an
+   * identifier column to be explicit a primary key.
    */
-  public static final String UNIQUE = "stu_unique";
+  public static final String IDENTIFIER = "stu_identifier";
+
+  public static final String DEFAULT_IDENTIFIER = "stu_default_identifier";
 
   /**
    * Determines, if the corresponding {@code nextValue()} method is
@@ -30,8 +32,6 @@ public class ColumnMetaData
   public static final String AUTO_INCREMENT = "stu_auto_increment";
 
   public static final String IMMUTABLE = "stu_immutable";
-
-  public static final String IDENTIFIER = "stu_identifier";
 
   private final Map<String, Boolean> _values;
 
