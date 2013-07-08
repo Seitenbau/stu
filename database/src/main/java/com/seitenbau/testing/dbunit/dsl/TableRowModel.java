@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 public class TableRowModel
 {
 
@@ -15,26 +17,26 @@ public class TableRowModel
 
   private final List<Integer> uniqueColumnIndexes;
 
-  private StackTraceElement[] stackTrace;
+  private final Optional<StackTraceElement> stackTraceElement;
 
   public TableRowModel(Object value)
   {
     refColumnIndex = -1;
     uniqueColumnIndexes = new LinkedList<Integer>();
     isHeadRow = value instanceof ColumnBinding;
-    stackTrace = Thread.currentThread().getStackTrace();
+    stackTraceElement = determineStackTraceElement();
 
     addValue(value);
   }
 
-  void clearStackTrace()
+  private Optional<StackTraceElement> determineStackTraceElement()
   {
-    stackTrace = null;
+    return getTableStackTraceElement(Thread.currentThread().getStackTrace());
   }
 
-  StackTraceElement[] getStackTrace()
+  Optional<StackTraceElement> getStackTraceElement()
   {
-    return stackTrace;
+    return stackTraceElement;
   }
 
   public TableRowModel or(Object arg)
@@ -158,4 +160,40 @@ public class TableRowModel
 
     return builder.toString();
   }
+
+  private Optional<StackTraceElement> getTableStackTraceElement(StackTraceElement[] stack)
+  {
+    for (int i = 0; i < stack.length; i++) {
+      StackTraceElement element = stack[i];
+
+      if (element.getFileName() == null || element.getClassName() == null)
+      {
+        continue;
+      }
+
+      if (element.getClassName().startsWith("org.codehaus.groovy"))
+      {
+        continue;
+      }
+
+      if (element.getClassName().equals("com.seitenbau.testing.dbunit.dsl.TableParser"))
+      {
+        continue;
+      }
+
+      if (!element.getFileName().endsWith(".groovy"))
+      {
+        continue;
+      }
+
+      if (!element.getMethodName().startsWith("doCall"))
+      {
+        continue;
+      }
+      return Optional.of(element);
+    }
+
+    return Optional.<StackTraceElement>absent();
+  }
+
 }

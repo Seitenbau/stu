@@ -29,7 +29,6 @@ public class TableParserContext
     if (lastRow != null)
     {
       currentContext.rowHandler.handleRow(lastRow);
-      lastRow.clearStackTrace();
     }
     TableRowModel row = new TableRowModel(value);
     currentContext.activeRow = row;
@@ -48,7 +47,6 @@ public class TableParserContext
     if (currentContext.activeRow != null)
     {
       currentContext.rowHandler.handleRow(currentContext.activeRow);
-      currentContext.activeRow.clearStackTrace();
     }
     context.remove();
   }
