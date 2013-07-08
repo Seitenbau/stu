@@ -3,7 +3,7 @@ package com.seitenbau.testing.dbunit.dataset
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
 
 import com.seitenbau.testing.dbunit.model.*
-import com.seitenbau.testing.dbunit.util.DateUtil;
+import com.seitenbau.testing.dbunit.util.DateUtil
 
 
 class DemoGroovyDataSet extends PersonDatabaseBuilder

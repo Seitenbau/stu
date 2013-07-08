@@ -18,8 +18,6 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 
   private int _columns;
 
-  private int _lineNr;
-
   private ColumnBinding<R, G> _refColumn;
 
   private List<ColumnBinding<R, G>> _uniqueColumns;
@@ -31,7 +29,6 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     _tableAdapter = tableAdapter;
     _head = null;
     _columns = 0;
-    _lineNr = 0;
     _refColumn = null;
     _uniqueColumns = new LinkedList<ColumnBinding<R, G>>();
     _traversedColumns = Collections.<Integer> emptyList();
@@ -39,7 +36,6 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 
   public void handleRow(TableRowModel row)
   {
-    _lineNr++;
     if (row.isHeadRow())
     {
       readHeadRow(row);
@@ -78,8 +74,8 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     }
     catch (Exception e)
     {
-      throw new RuntimeException("Cannot set value <" + value + "> of type " + value.getClass().getName()
-          + ", expected class " + column.getDataType().getJavaTypeClass().getName() + "  in line " + _lineNr + " row " + row, e);
+      throw new TableParserException("Cannot set value <" + value + "> of type " + value.getClass().getName()
+          + ", expected class " + column.getDataType().getJavaTypeClass().getName() + " row " + row, row, e);
     }
   }
 
@@ -107,19 +103,19 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
   {
     if (row.getColumnCount() != _columns)
     {
-      throwColumnsDoNotMatchException(_lineNr, row);
+      throwColumnsDoNotMatchException(row);
     }
   }
 
-  private void throwColumnsDoNotMatchException(int lineNr, TableRowModel row)
+  private void throwColumnsDoNotMatchException(TableRowModel row)
   {
-    throwException("column count does not match", lineNr, row);
+    throwException("column count does not match", row);
   }
 
-  private void throwException(String message, int lineNr, TableRowModel row)
+  private void throwException(String message, TableRowModel row)
   {
-    throw new IllegalArgumentException("Error in " + _tableAdapter.getTableName() + ", line " + lineNr + ": " + message
-        + " on " + row);
+    throw new TableParserException("Error in " + _tableAdapter.getTableName() + ": " + message
+        + " on " + row, row);
   }
 
   private class BuilderFinderOrCreator
@@ -179,7 +175,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
       }
 
       // so none is null and they differ
-      throw new RuntimeException("Table structure failure, [Trial to use same ID for different Refs]");
+      throw new TableParserException("Table structure failure, [Trial to use same ID for different Refs]", row);
     }
 
     @SuppressWarnings("unchecked")
@@ -232,7 +228,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
 
         if (builderById.get() != result)
         {
-          throw new RuntimeException("Unique values differ in table data");
+          throw new TableParserException("Unique values differ in table data", row);
         }
       }
 

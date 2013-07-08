@@ -15,12 +15,31 @@ public class TableRowModel
 
   private final List<Integer> uniqueColumnIndexes;
 
+  private StackTraceElement[] stackTrace;
+
   public TableRowModel(Object value)
   {
     refColumnIndex = -1;
     uniqueColumnIndexes = new LinkedList<Integer>();
     isHeadRow = value instanceof ColumnBinding;
+    stackTrace = Thread.currentThread().getStackTrace();
+
+    for (StackTraceElement e : stackTrace)
+    {
+      System.out.println("---- " + e);
+    }
+
     addValue(value);
+  }
+
+  void clearStackTrace()
+  {
+    stackTrace = null;
+  }
+
+  StackTraceElement[] getStackTrace()
+  {
+    return stackTrace;
   }
 
   public TableRowModel or(Object arg)

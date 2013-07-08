@@ -23,6 +23,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.EmptyGroovyDataSet;
 import com.seitenbau.testing.dbunit.dataset.ExtendedDemoGroovyDataSet;
+import com.seitenbau.testing.dbunit.dataset.MalFormedGroovyDataSet;
+import com.seitenbau.testing.dbunit.dsl.TableParserException;
 import com.seitenbau.testing.dbunit.extend.impl.ApacheDerbySequenceReset;
 import com.seitenbau.testing.dbunit.model.JobsRef;
 import com.seitenbau.testing.dbunit.model.JobsTable;
@@ -85,6 +87,13 @@ public class GroovyDataSetDatabaseTest
   public void unmodifiedExtendedDataset() throws Exception
   {
     dbTester.assertDataBaseSorted(dataSet, sortConfig);
+  }
+
+  @Test(expected=TableParserException.class)
+  public void malFormedDataset() throws Exception
+  {
+    // exception must be thrown within test
+    new MalFormedGroovyDataSet();
   }
 
   @Test
