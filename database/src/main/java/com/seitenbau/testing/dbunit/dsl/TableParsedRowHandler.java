@@ -75,7 +75,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     catch (Exception e)
     {
       throw new TableParserException("Cannot set value <" + value + "> of type " + value.getClass().getName()
-          + ", expected class " + column.getDataType().getJavaTypeClass().getName() + " row " + row, row, e);
+          + ", expected class " + column.getDataType().getJavaTypeClass().getName() + " in " + row, row, e);
     }
   }
 
@@ -103,19 +103,8 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
   {
     if (row.getColumnCount() != _columns)
     {
-      throwColumnsDoNotMatchException(row);
+      throw new TableParserException("Column count does not match in " + row, row);
     }
-  }
-
-  private void throwColumnsDoNotMatchException(TableRowModel row)
-  {
-    throwException("column count does not match", row);
-  }
-
-  private void throwException(String message, TableRowModel row)
-  {
-    throw new TableParserException("Error in " + _tableAdapter.getTableName() + ": " + message
-        + " on " + row, row);
   }
 
   private class BuilderFinderOrCreator
@@ -175,7 +164,7 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
       }
 
       // so none is null and they differ
-      throw new TableParserException("Table structure failure, [Trial to use same ID for different Refs]", row);
+      throw new TableParserException("Invalid use of identifiers. Might be a trial to use same ID for different Refs?", row);
     }
 
     @SuppressWarnings("unchecked")

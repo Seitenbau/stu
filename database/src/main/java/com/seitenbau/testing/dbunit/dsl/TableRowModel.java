@@ -24,11 +24,6 @@ public class TableRowModel
     isHeadRow = value instanceof ColumnBinding;
     stackTrace = Thread.currentThread().getStackTrace();
 
-    for (StackTraceElement e : stackTrace)
-    {
-      System.out.println("---- " + e);
-    }
-
     addValue(value);
   }
 
