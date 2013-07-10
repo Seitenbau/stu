@@ -22,3 +22,6 @@ target
 
 # velocity
 velocity.log
+
+# generated DSL sources
+*/src/dataset-dsl/*

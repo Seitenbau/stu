@@ -36,6 +36,7 @@ configure(allprojects) {
   ext.sourceEncoding                = "ISO-8859-1"
   ext.gradleScriptDir               = "${rootProject.projectDir}/gradle"
 
+
   compileJava {
     options.encoding = project.sourceEncoding
   }
@@ -96,7 +97,12 @@ project("database") {
 
 project("examples") {
 
-  dependencies {
+    apply plugin: "base"
+
+    ext.outputDatasetDslDir = "$projectDir/src/dataset-dsl/java"
+    ext.srcDatasetModelDir  = "$projectDir/src/dataset-model/java"
+
+    dependencies {
     compile project(':database')
     runtime("org.hsqldb:hsqldb:$hsqldbVersion")
     compile("org.springframework:spring-context:$springVersion")
@@ -110,14 +116,14 @@ project("examples") {
   sourceSets {
     dataSetModel {
       java {
-        srcDir "$projectDir/src/test/dataSetModel"
+        srcDir srcDatasetModelDir
       }
       compileClasspath += configurations.compile
       runtimeClasspath += configurations.runtime
     }
     dataSetDsl {
       java {
-        srcDir "$projectDir/build/src/dataSetDsl"
+        srcDir outputDatasetDslDir
       }
       compileClasspath = configurations.compile
     }
@@ -128,18 +134,25 @@ project("examples") {
   }
 
   task generateDataSetDsl(dependsOn: 'dataSetModelClasses', type: JavaExec) {
-    inputs.dir  file("src/test/dataSetModel/model")
-    outputs.dir file("$buildDir/src/dataSetDsl")
+    destDir   = file(outputDatasetDslDir)
+    inputs.dir  srcDatasetModelDir
+    outputs.dir destDir
     main      = 'model.Generator'
-    args      = ["build/src/dataSetDsl"]
+    args      = [destDir]
     classpath = sourceSets.dataSetModel.runtimeClasspath
+    doFirst {
+       destDir.mkdirs()
+    }
+  }
+
+  clean {
+    delete outputDatasetDslDir
   }
 
   idea {
      module {
-       sourceDirs += file("$projectDir/src/test/dataSetModel")
-       sourceDirs += file("$projectDir/build/src/dataSetDsl")
-       excludeDirs = []
+       sourceDirs += file(srcDatasetModelDir)
+       sourceDirs += file(outputDatasetDslDir)
      }
   }
   ideaModule.dependsOn("generateDataSetDsl")
