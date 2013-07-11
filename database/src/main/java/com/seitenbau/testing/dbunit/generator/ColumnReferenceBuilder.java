@@ -27,7 +27,7 @@ public class ColumnReferenceBuilder
    *           .defaultIdentifier()
    *         .column("name", DataType.VARCHAR)
    *       .build();
-
+   *
    *     table("player")
    *         .column("team_id", DataType.BIGINT)
    *           .reference
@@ -214,7 +214,6 @@ public class ColumnReferenceBuilder
    * <p>
    * Example 2: Associative Table<br>
    * Any person can be member of any group.
-   * <pre>
    * <code>
    * <pre class="groovyTestCase">
    * import com.seitenbau.testing.dbunit.generator.*;

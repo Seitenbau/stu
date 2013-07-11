@@ -2,8 +2,8 @@ package model;
 
 public class Generator
 {
-  
-  private static final String DEFAULT_FOLDER = "build/src/dataSetDsl"; 
+
+  private static final String DEFAULT_FOLDER = "src/dataset-dsl/java";
 
   public static void main(String[] args) throws Exception
   {
@@ -20,5 +20,5 @@ public class Generator
     }
     return args[0];
   }
-  
+
 }
