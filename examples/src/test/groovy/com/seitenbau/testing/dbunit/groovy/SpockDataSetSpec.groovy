@@ -12,7 +12,7 @@ import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule
 import com.seitenbau.testing.dbunit.rule.InjectDataSet
 import com.seitenbau.testing.personmanager.PersonManagerContext
 import com.seitenbau.testing.personmanager.PersonService
-import org.junit.Rule                       s
+import org.junit.Rule
 import org.junit.rules.ExpectedException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
