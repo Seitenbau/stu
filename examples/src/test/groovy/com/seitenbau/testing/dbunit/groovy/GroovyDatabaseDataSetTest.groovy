@@ -37,14 +37,9 @@ class GroovyDatabaseDataSetTest {
 
   @Rule
   public DatabaseTesterRule dbTester =
-    new DatabaseTesterRule(new Future<DataSource>(){
-       @Override
-       public DataSource getFuture()
-       {
-         return dataSource;
-       }
-     }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"))
-     .setDefaultSortConfig(sortConfig)
+    new DatabaseTesterRule({dataSource })
+            .addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"))
+            .setDefaultSortConfig(sortConfig)
 
   SortConfig[] sortConfig = [
       new SortConfig(PersonJobTable.NAME, PersonJobTable.Columns.PersonId, PersonJobTable.Columns.JobId),

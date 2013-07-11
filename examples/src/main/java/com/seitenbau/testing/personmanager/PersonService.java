@@ -139,6 +139,11 @@ public class PersonService
     teamRepo.delete(dbTeam);
   }
 
+  @Transactional
+  public Person findPersonByName(String name) {
+      return personRepo.findByName(name);
+  }
+
   private void updateMembersizeOfTeam(int teamId, int amount)
   {
     Team team = findTeamById(teamId);
