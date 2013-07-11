@@ -98,12 +98,12 @@ project("database") {
 
 project("examples") {
 
-    apply plugin: "base"
+  ext {
+    outputDatasetDslDir = "$projectDir/src/dataset-dsl/java"
+    srcDatasetModelDir  = "$projectDir/src/dataset-model/java"
+  }
 
-    ext.outputDatasetDslDir = "$projectDir/src/dataset-dsl/java"
-    ext.srcDatasetModelDir  = "$projectDir/src/dataset-model/java"
-
-    dependencies {
+  dependencies {
     compile project(':database')
     runtime("org.hsqldb:hsqldb:$hsqldbVersion")
     compile("org.springframework:spring-context:$springVersion")
