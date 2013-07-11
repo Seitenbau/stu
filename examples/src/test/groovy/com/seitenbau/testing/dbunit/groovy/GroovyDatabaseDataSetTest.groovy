@@ -23,7 +23,6 @@ import com.seitenbau.testing.dbunit.rule.DatabaseSetup
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule
 import com.seitenbau.testing.dbunit.rule.InjectDataSet
 import com.seitenbau.testing.personmanager.*
-import com.seitenbau.testing.util.Future
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=[PersonManagerContext])
