@@ -165,7 +165,7 @@ public abstract class DatabaseModel
     isModelClassGeneration = true;
   }
 
-  public void disbaleTableDSLGeneration()
+  public void disableTableDSLGeneration()
   {
     isTableDSLGeneration = false;
   }
