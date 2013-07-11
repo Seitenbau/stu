@@ -1,6 +1,5 @@
 package com.seitenbau.testing.dbunit.groovy
 
-import com.seitenbau.testing.dbunit.dsl.DataSetRegistry
 import spock.lang.Unroll
 
 import static com.seitenbau.testing.dbunit.PersonDatabaseRefs.*
