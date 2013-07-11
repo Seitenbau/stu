@@ -23,7 +23,6 @@ import com.seitenbau.testing.dbunit.rule.DatabaseSetup
 import com.seitenbau.testing.dbunit.rule.DatabaseTesterRule
 import com.seitenbau.testing.dbunit.rule.InjectDataSet
 import com.seitenbau.testing.personmanager.*
-import com.seitenbau.testing.util.Future
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=[PersonManagerContext])
@@ -37,14 +36,9 @@ class GroovyDatabaseDataSetTest {
 
   @Rule
   public DatabaseTesterRule dbTester =
-    new DatabaseTesterRule(new Future<DataSource>(){
-       @Override
-       public DataSource getFuture()
-       {
-         return dataSource;
-       }
-     }).addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"))
-     .setDefaultSortConfig(sortConfig)
+    new DatabaseTesterRule({dataSource })
+            .addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"))
+            .setDefaultSortConfig(sortConfig)
 
   SortConfig[] sortConfig = [
       new SortConfig(PersonJobTable.NAME, PersonJobTable.Columns.PersonId, PersonJobTable.Columns.JobId),

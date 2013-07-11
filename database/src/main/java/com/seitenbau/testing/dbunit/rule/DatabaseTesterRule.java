@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import groovy.lang.Closure;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.datatype.IDataTypeFactory;
@@ -107,6 +108,17 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   public DatabaseTesterRule(Future<DataSource> lazyDataSource, IDataSetModifier... defaultModifiers)
   {
     super(lazyDataSource, defaultModifiers);
+  }
+
+  public DatabaseTesterRule(final Closure<DataSource> lazyDataSourceClosure, IDataSetModifier... defaultModifiers)
+  {
+    this(new Future<DataSource>(){
+        @Override
+        public DataSource getFuture()
+        {
+            return lazyDataSourceClosure.call();
+        }
+    }, defaultModifiers);
   }
 
   protected class AnnotationConfig
