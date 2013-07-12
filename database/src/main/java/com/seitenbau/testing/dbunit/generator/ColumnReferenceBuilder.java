@@ -419,7 +419,7 @@ public class ColumnReferenceBuilder
      *         .column("name", DataType.VARCHAR)
      *       .build();
      *
-     *     table("person_group")
+     *     associativeTable("person_group")
      *         .column("person_id", DataType.BIGINT)
      *           .reference
      *             .foreign(person.ref("id"))
@@ -498,16 +498,14 @@ public class ColumnReferenceBuilder
      *     Table person = table("person")
      *         .column("id", DataType.BIGINT)
      *           .defaultIdentifier()
-     *         .column("name", DataType.VARCHAR)
      *       .build();
      *
      *     Table group = table("group")
      *         .column("id", DataType.BIGINT)
      *           .defaultIdentifier()
-     *         .column("name", DataType.VARCHAR)
      *       .build();
      *
-     *     table("person_group")
+     *     associativeTable("person_group")
      *         .column("person_id", DataType.BIGINT)
      *           .reference
      *             .foreign(person)
