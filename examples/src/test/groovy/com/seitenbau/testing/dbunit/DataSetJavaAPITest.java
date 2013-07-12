@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.fest.assertions.Fail;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -79,7 +80,6 @@ public class DataSetJavaAPITest
   public void quietFindWhereSubQueries()
   {
     SubQueryGroovyDataSet testDataSet = new SubQueryGroovyDataSet();
-    DataSetRegistry.use(testDataSet);
 
     RowCollection_Persons firstQuery = testDataSet.personsTable.quietFindWhere.firstName("Hans");
     RowCollection_Persons secondQuery = firstQuery.where.name("Wurst");
@@ -88,6 +88,20 @@ public class DataSetJavaAPITest
     assertThat(firstQuery.getRowCount()).isEqualTo(2);
     assertThat(secondQuery.getRowCount()).isEqualTo(1);
     assertThat(thirdQuery.getRowCount()).isEqualTo(0);
+  }
+
+  @Test
+  public void getWhereOnMultipleValues()
+  {
+    //given
+    SubQueryGroovyDataSet testDataSet = new SubQueryGroovyDataSet();
+
+    try {
+      //when
+      testDataSet.personsTable.getWhere.firstName("Hans");
+      //then
+      Assert.fail();
+    } catch (RuntimeException e) {}
   }
 
   @Test
