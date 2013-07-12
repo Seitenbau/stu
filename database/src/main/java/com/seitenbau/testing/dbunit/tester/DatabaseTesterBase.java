@@ -1097,7 +1097,14 @@ public class DatabaseTesterBase<MY_TYPE>
       ClassLoader cl = DatabaseTester.class.getClassLoader();
       for (StackTraceElement item : stackTrace)
       {
-        Class<?> clazz = cl.loadClass(item.getClassName());
+        String clazzName = item.getClassName();
+
+        // fix for Spock tests
+        if (clazzName.startsWith("sun.reflect")) {
+          continue;
+        }
+
+        Class<?> clazz = cl.loadClass(clazzName);
         if (!isSubclassFrom(clazz, DatabaseTesterBase.class))
         {
           if (potentialClazz == null)
