@@ -51,7 +51,6 @@ configure(subprojects) {
   dependencies {
     compile("org.codehaus.groovy:groovy-all:$groovyVersion")
     testCompile("org.spockframework:spock-core:$spockVersion")
-    testCompile("org.spockframework:spock-spring:$spockVersion")
   }
 }
 
@@ -89,6 +88,7 @@ project("database") {
 
     runtime("mysql:mysql-connector-java:$mysqlConnVersion")
 
+    testCompile("org.spockframework:spock-spring:$spockVersion")
     testCompile("org.slf4j:slf4j-log4j12:$slf4jVersion")
     testCompile( "org.apache.ant:ant-junit:1.8.4" ) {
         exclude(group: 'junit', module: 'junit')
@@ -112,6 +112,8 @@ project("examples") {
     compile("org.springframework.data:spring-data-jpa:$springDataVersion")
     compile("org.hibernate.javax.persistence:hibernate-jpa-2.0-api:$hibernatPersistanceVersion")
     compile("org.hibernate:hibernate-entitymanager:$hibernatEntityManagerVersion")
+
+    testCompile("org.spockframework:spock-spring:$spockVersion")
   }
   
   sourceSets {
