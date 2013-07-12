@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.fest.assertions.Fail;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -93,15 +92,12 @@ public class DataSetJavaAPITest
   @Test
   public void getWhereOnMultipleValues()
   {
-    //given
     SubQueryGroovyDataSet testDataSet = new SubQueryGroovyDataSet();
 
-    try {
-      //when
-      testDataSet.personsTable.getWhere.firstName("Hans");
-      //then
-      Assert.fail();
-    } catch (RuntimeException e) {}
+    exception.expect(RuntimeException.class);
+    testDataSet.personsTable.getWhere.firstName("Hans");
+
+    Fail.fail();
   }
 
   @Test
