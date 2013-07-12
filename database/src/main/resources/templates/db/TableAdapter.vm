@@ -103,19 +103,32 @@ public class ${clsAdapter} {
   /**
    * Allows searching for one or more rows specified by a column value.
    * findWhere assumes that it is used to search for existing rows. An
-   * exception will be thrown if no matching row was found. Use getWhere
-   * or find to avoid this behavior.
+   * exception will be thrown if no matching row was found. Use {@link
+   * ${jdSep}quietFindWhere}, {@link ${jdSep} getWhere} or 
+   * ${jdSep}find to avoid this behavior.
    * @see ${jdSep}getWhere
+   * @see ${jdSep}quietFindWhere
    * @see ${jdSep}find(Closure)
    * @see ${jdSep}find(Filter)
    */
   public final ${clsTableFindWhere} findWhere;
 
   /**
+   * Allows searching for one or more rows specified by a column value.
+   * quietFindWhere will not throw an exception if no row was found.
+   * @see ${jdSep}getWhere
+   * @see ${jdSep}findWhere
+   * @see ${jdSep}find(Closure)
+   * @see ${jdSep}find(Filter)
+   */
+  public final ${clsTableFindWhere} quietFindWhere;
+
+  /**
    * Allows searching for a row specified by a column value.
    * The first matching row is returned. Does not throw an
    * exception, if no element is found.
    * @see ${jdSep}findWhere
+   * @see ${jdSep}quietFindWhere
    * @see ${jdSep}find(Closure)
    * @see ${jdSep}find(Filter)
    */
@@ -126,6 +139,7 @@ public class ${clsAdapter} {
     _builder = builder;
     _table = table;
     findWhere = _table.findWhere;
+    quietFindWhere = _table.quietFindWhere;
     getWhere = _table.getWhere;
   }
 

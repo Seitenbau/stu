@@ -16,9 +16,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.seitenbau.testing.dbunit.dataset.DemoGroovyDataSet;
+import com.seitenbau.testing.dbunit.dataset.SubQueryGroovyDataSet;
 import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 import com.seitenbau.testing.dbunit.model.JobsTable;
 import com.seitenbau.testing.dbunit.model.PersonsTable.RowBuilder_Persons;
+import com.seitenbau.testing.dbunit.model.PersonsTable.RowCollection_Persons;
 import com.seitenbau.testing.util.Action;
 import com.seitenbau.testing.util.Filter;
 
@@ -58,6 +60,34 @@ public class DataSetJavaAPITest
     DataSetRegistry.use(dataSet);
     assertThat(dataSet.personJobTable.findWhere.jobId(SWD).getRowCount()).isEqualTo(1);
     assertThat(dataSet.personsTable.findWhere.teamId(QA).getRowCount()).isEqualTo(3);
+  }
+
+  @Test
+  public void findWhereSubQueries()
+  {
+    SubQueryGroovyDataSet testDataSet = new SubQueryGroovyDataSet();
+    DataSetRegistry.use(testDataSet);
+
+    RowCollection_Persons firstQuery = testDataSet.personsTable.findWhere.firstName("Hans");
+    RowCollection_Persons subQuery = firstQuery.where.name("Wurst");
+
+    assertThat(firstQuery.getRowCount()).isEqualTo(2);
+    assertThat(subQuery.getRowCount()).isEqualTo(1);
+  }
+
+  @Test
+  public void quietFindWhereSubQueries()
+  {
+    SubQueryGroovyDataSet testDataSet = new SubQueryGroovyDataSet();
+    DataSetRegistry.use(testDataSet);
+
+    RowCollection_Persons firstQuery = testDataSet.personsTable.quietFindWhere.firstName("Hans");
+    RowCollection_Persons secondQuery = firstQuery.where.name("Wurst");
+    RowCollection_Persons thirdQuery = firstQuery.where.name("invalid name");
+
+    assertThat(firstQuery.getRowCount()).isEqualTo(2);
+    assertThat(secondQuery.getRowCount()).isEqualTo(1);
+    assertThat(thirdQuery.getRowCount()).isEqualTo(0);
   }
 
   @Test

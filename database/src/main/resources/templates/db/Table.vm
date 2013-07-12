@@ -501,11 +501,12 @@ public class ${clsTable} implements ITable
    * @param filter The used filter
    * @return The collection of rows, may return an empty list
    * @see ${jdSep}findWhere
+   * @see ${jdSep}quietFindWhere
    * @see ${jdSep}getWhere
    */
   public ${rowcollection} find(Filter<${clsRowbuilder}> filter)
   {
-    ${rowcollection} modifiers = new ${rowcollection}(this);
+    ${rowcollection} modifiers = new ${rowcollection}(this, false);
     for (${clsRowbuilder} row : rows)
     {
       if (filter.accept(row))
@@ -533,27 +534,47 @@ public class ${clsTable} implements ITable
   /**
    * Allows searching for one or more rows specified by a column value.
    * findWhere assumes that it is used to search for existing rows. An
-   * exception will be thrown if no matching row was found. Use getWhere
-   * or find to avoid this behavior.
+   * exception will be thrown if no matching row was found. Use {@link
+   * ${jdSep}quietFindWhere}, {@link ${jdSep} getWhere} or 
+   * ${jdSep}find to avoid this behavior.
    * @see ${jdSep}getWhere
+   * @see ${jdSep}quietFindWhere
    * @see ${jdSep}find(Filter)
    */
-  public $findWhereClass findWhere = new $findWhereClass(this);
+  public $findWhereClass findWhere = new $findWhereClass(this, true);
+
+  /**
+   * Allows searching for one or more rows specified by a column value.
+   * quietFindWhere will not throw an exception if no row was found.
+   * @see ${jdSep}getWhere
+   * @see ${jdSep}findWhere
+   * @see ${jdSep}find(Filter)
+   */
+  public $findWhereClass quietFindWhere = new $findWhereClass(this, false);
 
   public static class $findWhereClass
   {
     private final List<${clsRowbuilder}> rows;
     private final ${clsTable} table;
+    private final boolean useNotEmptyAssertions;
     
-    public $findWhereClass(${clsTable} theTable)
+    public $findWhereClass(${clsTable} theTable, boolean useNotEmptyAssertions)
     {
-       rows = theTable.rows;
        table = theTable;
+       rows = theTable.rows;
+       this.useNotEmptyAssertions = useNotEmptyAssertions;
+    }
+
+    public $findWhereClass(${clsTable} theTable, List<${clsRowbuilder}> rows, boolean useNotEmptyAssertions)
+    {
+       table = theTable;
+       this.rows = rows;
+       this.useNotEmptyAssertions = useNotEmptyAssertions;
     }
     
     public ${rowcollection} rowComparesTo(Comparable<${clsRowbuilder}> toSearch) 
     {
-      ${rowcollection} modifiers = new ${rowcollection}(table);
+      ${rowcollection} modifiers = new ${rowcollection}(table, useNotEmptyAssertions);
       for (${clsRowbuilder} row : rows) 
       {
         if (toSearch.compareTo(row) == 0) 
@@ -561,7 +582,7 @@ public class ${clsTable} implements ITable
           modifiers.add(row);
         }
       }
-      assertModifiersNotEmpty(modifiers, "No Row with ${column.name} = " + toSearch);
+      assertModifiersNotEmpty(modifiers, "column values", toSearch);
       return modifiers;
     }
 #foreach( $column in $model.columns )  
@@ -607,7 +628,7 @@ public class ${clsTable} implements ITable
 
     public ${rowcollection} ${column.javaNameFirstLower}(${column.javaType} toSearch) 
     {
-      ${rowcollection} modifiers = new ${rowcollection}(table);
+      ${rowcollection} modifiers = new ${rowcollection}(table, useNotEmptyAssertions);
       for (${clsRowbuilder} row : rows) 
       {
         if (toSearch.equals(row.get${column.javaName}())) 
@@ -615,7 +636,7 @@ public class ${clsTable} implements ITable
           modifiers.add(row);
         }
       }
-      assertModifiersNotEmpty(modifiers, "No Row with ${column.name} = " + toSearch);
+      assertModifiersNotEmpty(modifiers, "${column.name}", toSearch);
       return modifiers;
     }
 #if( $column.javaType.contains("Long") )
@@ -627,11 +648,11 @@ public class ${clsTable} implements ITable
 #end
 #end
 
-    private void assertModifiersNotEmpty(${rowcollection} modifiers, String message)
+    private void assertModifiersNotEmpty(${rowcollection} modifiers, String columnName, Object toSearch)
     {
-      if (modifiers.isEmpty()) 
+      if (useNotEmptyAssertions && modifiers.isEmpty()) 
       {
-        throw new RuntimeException(message);
+        throw new RuntimeException("No Row with " + columnName + " = " + toSearch);
       }
     }    
   }
@@ -658,14 +679,19 @@ public class ${clsTable} implements ITable
     
     public Optional<${clsRowbuilder}> rowComparesTo(Comparable<${clsRowbuilder}> toSearch) 
     {
+      Optional<${clsRowbuilder}> result = Optional.<${clsRowbuilder}> absent();
       for (${clsRowbuilder} row : rows) 
       {
         if (toSearch.compareTo(row) == 0) 
         {
-          return Optional.of(row);
+          if (result.isPresent()) {
+            throw new RuntimeException("Multiple hits in getWhere query");
+          }
+          
+          result = Optional.of(row);
         }
       }
-      return Optional.<${clsRowbuilder}> absent();
+      return result;
     }
 #foreach( $column in $model.columns )  
 
@@ -710,13 +736,18 @@ public class ${clsTable} implements ITable
 
     public Optional<${clsRowbuilder}> ${column.javaNameFirstLower}(${column.javaType} toSearch) 
     {
+      Optional<${clsRowbuilder}> result = Optional.<${clsRowbuilder}> absent();
       for (${clsRowbuilder} row : rows) 
       {
         if (toSearch.equals(row.get${column.javaName}())) 
         {
-          return Optional.of(row);
-        }      }
-      return Optional.<${clsRowbuilder}> absent();
+          if (result.isPresent()) {
+            throw new RuntimeException("Multiple hits in getWhere for column ${column.name} = " + toSearch);
+          }
+          result = Optional.of(row);
+        }      
+      }
+      return result;
     }
 #if( $column.javaType.contains("Long") )
     
@@ -733,10 +764,13 @@ public class ${clsTable} implements ITable
   {
     
     List<${clsRowbuilder}> _rows;
+    
+    boolean _useNotEmptyAssertions;
 
-    public ${rowmodify}(${clsTable} theTable) 
+    public ${rowmodify}(${clsTable} theTable, boolean useNotEmptyAssertions) 
     {
       super(theTable);
+      _useNotEmptyAssertions = useNotEmptyAssertions;
       _rows = new ArrayList<${clsRowbuilder}>();
     }
       
@@ -863,7 +897,7 @@ public class ${clsTable} implements ITable
     @Override
     public ${rowmodify} clone()
     {
-      ${rowmodify} clone = new ${rowmodify}(table);
+      ${rowmodify} clone = new ${rowmodify}(table, _useNotEmptyAssertions);
       for(${clsRowbuilder} row:_rows) 
       {
         clone._rows.add(row.clone());
@@ -876,11 +910,12 @@ public class ${clsTable} implements ITable
   public static class ${rowcollection} extends ${rowmodify} 
   {
     
-    public $findWhereClass where = new $findWhereClass(table);
+    public final $findWhereClass where;
     
-    public ${rowcollection}(${clsTable} theTable)
+    public ${rowcollection}(${clsTable} theTable, boolean useNotEmptyAssertions) 
     {
-      super(theTable);
+      super(theTable, useNotEmptyAssertions);
+      where = new $findWhereClass(table, _rows, useNotEmptyAssertions);
     }
     
   }

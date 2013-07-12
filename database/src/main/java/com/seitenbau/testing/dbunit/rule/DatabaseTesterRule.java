@@ -1,12 +1,13 @@
 package com.seitenbau.testing.dbunit.rule;
 
+import groovy.lang.Closure;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import groovy.lang.Closure;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.datatype.IDataTypeFactory;
@@ -50,7 +51,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   protected SortConfig[] _defaultSortConfig;
 
   /**
-   * 
+   *
    * @param driverName
    * @param url
    * @param username
@@ -68,7 +69,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   /**
    * Create a new DatabaseTesterRule by using the configuation via
    * TestConfiguration
-   * 
+   *
    * <pre>
    *   db.driver=org.gjt.mm.mysql.Driver
    *   db.url=jdbc:mysql://192.168.0.x:3306/dbName
@@ -77,7 +78,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    *   # optinal :
    *   db.schema=theSchema
    * </pre>
-   * 
+   *
    * @param configClass
    * @param defaultModifiers
    */
@@ -116,7 +117,9 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
         @Override
         public DataSource getFuture()
         {
-            return lazyDataSourceClosure.call();
+            DataSource value = lazyDataSourceClosure.call();
+            System.out.println("------- VALUE: " + value);
+            return value;
         }
     }, defaultModifiers);
   }
@@ -259,7 +262,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   /**
    * Set the default sorting used when Comparing via the Database
    * Tester rule. Not used in 'normal' compares.
-   * 
+   *
    * @param defaultSortConfig the new SortConfig
    * @return this
    */
@@ -297,7 +300,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    * The default DefaultDataset used for clean insert when no
    * {@link DatabaseSetup} annotation is found on the Test
    * class/method.
-   * 
+   *
    * @param defaultDataSet the default dataset.
    * @return this
    */
@@ -312,7 +315,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    * {@link DatabaseSetup} annotation is found on the Test
    * class/method. This is a future, so the actual creation can be
    * postboned.
-   * 
+   *
    * @param future the default dataset as Future
    * @return this
    */
@@ -327,7 +330,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    * {@link DatabaseSetup} annotation is found on the Test
    * class/method. This is a future, so the actual creation can be
    * postboned.
-   * 
+   *
    * @param factory the default dataset factory as Future
    * @return this
    */
@@ -340,7 +343,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   /**
    * Default implementation returns null. No sorting will be applied.
    * Override to specify sorting format.
-   * 
+   *
    * @return sorting configuration
    * @throws DataSetException
    */
@@ -349,6 +352,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
     return _defaultSortConfig;
   }
 
+  @Override
   public Statement apply(final Statement base, final FrameworkMethod method, final Object target)
   {
     _target = target;
@@ -466,8 +470,8 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
       factoryInstance = DatasetFactoryComposite.of(factories);
     }
     invokePrepareDatasetMethods(descriptor, factoryInstance);
-  
-    if(factoryInstance instanceof DataSetIdentificator) 
+
+    if(factoryInstance instanceof DataSetIdentificator)
     {
       DataSetIdentificator scope = (DataSetIdentificator) factoryInstance;
       DataSetRegistry.use(scope);
