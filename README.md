@@ -1,5 +1,7 @@
 # stu - Simple Test Utils
 
+[![Build Status](https://buildhive.cloudbees.com/job/Seitenbau/job/stu/badge/icon)](https://buildhive.cloudbees.com/job/Seitenbau/job/stu/)
+
 The project contains simple utils for JUnit and Co.
 
 TODO project description.
