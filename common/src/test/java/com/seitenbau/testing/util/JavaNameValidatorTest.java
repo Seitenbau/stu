@@ -14,8 +14,8 @@ public final class JavaNameValidatorTest
   {
     assertThat(isValidPackageName("t")).isTrue();
     assertThat(isValidPackageName("Test.TesT")).isTrue();
-    assertThat(isValidPackageName("Täst")).isTrue();
-    assertThat(isValidPackageName("ÜTäst")).isTrue();
+    assertThat(isValidPackageName("TÃ¤st")).isTrue();
+    assertThat(isValidPackageName("ÃœTÃ¤st")).isTrue();
     assertThat(isValidPackageName("$.TesT")).isTrue();
     assertThat(isValidPackageName("")).isTrue();
 
@@ -32,8 +32,8 @@ public final class JavaNameValidatorTest
   public void testIsValidIdentifier()
   {
     assertThat(isValidIdentifier("t")).isTrue();
-    assertThat(isValidIdentifier("Täst")).isTrue();
-    assertThat(isValidIdentifier("ÜTäst")).isTrue();
+    assertThat(isValidIdentifier("TÃ¤st")).isTrue();
+    assertThat(isValidIdentifier("ÃœTÃ¤st")).isTrue();
     assertThat(isValidIdentifier("$TesT")).isTrue();
     assertThat(isValidIdentifier("_TesT_")).isTrue();
 
