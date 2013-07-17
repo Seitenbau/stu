@@ -13,8 +13,6 @@ import com.seitenbau.testing.util.date.DateBuilder;
 
 public class DateUtilTest
 {
-  Calendar calendar = Calendar.getInstance();
-
   @Test
   public void testAsDateFormants()
   {
@@ -28,64 +26,60 @@ public class DateUtilTest
   {
     Date format1 = DateUtil.asDate("2010-02-23 10:04:12.894");
 
-    setupCalendar(format1);
+    DateTime dt = new DateTime(format1);
 
-    assertThat(calendar.get(Calendar.YEAR)).isEqualTo(2010);
-    assertThat(calendar.get(Calendar.MONTH) + 1).isEqualTo(2);
-    assertThat(calendar.get(Calendar.DAY_OF_MONTH)).isEqualTo(23);
-    assertThat(calendar.get(Calendar.HOUR_OF_DAY)).isEqualTo(10);
-    assertThat(calendar.get(Calendar.MINUTE)).isEqualTo(4);
-    assertThat(calendar.get(Calendar.SECOND)).isEqualTo(12);
-    assertThat(calendar.get(Calendar.MILLISECOND)).isEqualTo(894);
-    assertThat(format1.getTime()).isEqualTo(1266915852894L);
+    assertThat(dt.year().get()).isEqualTo(2010);
+    assertThat(dt.monthOfYear().get()).isEqualTo(2);
+    assertThat(dt.dayOfMonth().get()).isEqualTo(23);
+    assertThat(dt.hourOfDay().get()).isEqualTo(10);
+    assertThat(dt.minuteOfHour().get()).isEqualTo(4);
+    assertThat(dt.secondOfMinute().get()).isEqualTo(12);
+    assertThat(dt.millisOfSecond().get()).isEqualTo(894);
   }
 
   @Test
   public void testAsDateFormatOrdering()
   {
     Date format1 = DateUtil.asDate("23.02.2010 10:04:12.894");
-    setupCalendar(format1);
+    DateTime dt = new DateTime(format1);
 
-    assertThat(calendar.get(Calendar.YEAR)).isEqualTo(2010);
-    assertThat(calendar.get(Calendar.MONTH) + 1).isEqualTo(2);
-    assertThat(calendar.get(Calendar.DAY_OF_MONTH)).isEqualTo(23);
-    assertThat(calendar.get(Calendar.HOUR_OF_DAY)).isEqualTo(10);
-    assertThat(calendar.get(Calendar.MINUTE)).isEqualTo(4);
-    assertThat(calendar.get(Calendar.SECOND)).isEqualTo(12);
-    assertThat(calendar.get(Calendar.MILLISECOND)).isEqualTo(894);
-    assertThat(format1.getTime()).isEqualTo(1266915852894L);
+    assertThat(dt.year().get()).isEqualTo(2010);
+    assertThat(dt.monthOfYear().get()).isEqualTo(2);
+    assertThat(dt.dayOfMonth().get()).isEqualTo(23);
+    assertThat(dt.hourOfDay().get()).isEqualTo(10);
+    assertThat(dt.minuteOfHour().get()).isEqualTo(4);
+    assertThat(dt.secondOfMinute().get()).isEqualTo(12);
+    assertThat(dt.millisOfSecond().get()).isEqualTo(894);
   }
 
   @Test
   public void testAsDateWithNoDate()
   {
     Date format1 = DateUtil.asDate("10:04:12.894");
-    setupCalendar(format1);
+    DateTime dt = new DateTime(format1);
 
-    assertThat(calendar.get(Calendar.YEAR)).isEqualTo(1970);
-    assertThat(calendar.get(Calendar.MONTH)).isEqualTo(0);
-    assertThat(calendar.get(Calendar.DAY_OF_MONTH)).isEqualTo(1);
-    assertThat(calendar.get(Calendar.HOUR_OF_DAY)).isEqualTo(10);
-    assertThat(calendar.get(Calendar.MINUTE)).isEqualTo(4);
-    assertThat(calendar.get(Calendar.SECOND)).isEqualTo(12);
-    assertThat(calendar.get(Calendar.MILLISECOND)).isEqualTo(894);
-    assertThat(format1.getTime()).isEqualTo(32652894L);
+    assertThat(dt.year().get()).isEqualTo(1970);
+    assertThat(dt.monthOfYear().get()).isEqualTo(1);
+    assertThat(dt.dayOfMonth().get()).isEqualTo(1);
+    assertThat(dt.hourOfDay().get()).isEqualTo(10);
+    assertThat(dt.minuteOfHour().get()).isEqualTo(4);
+    assertThat(dt.secondOfMinute().get()).isEqualTo(12);
+    assertThat(dt.millisOfSecond().get()).isEqualTo(894);
   }
 
   @Test
   public void testAsDateWithNoTime()
   {
     Date format1 = DateUtil.asDate("2010-02-23");
-    setupCalendar(format1);
+    DateTime dt = new DateTime(format1);
 
-    assertThat(calendar.get(Calendar.YEAR)).isEqualTo(2010);
-    assertThat(calendar.get(Calendar.MONTH) + 1).isEqualTo(2);
-    assertThat(calendar.get(Calendar.DAY_OF_MONTH)).isEqualTo(23);
-    assertThat(calendar.get(Calendar.HOUR_OF_DAY)).isEqualTo(0);
-    assertThat(calendar.get(Calendar.MINUTE)).isEqualTo(0);
-    assertThat(calendar.get(Calendar.SECOND)).isEqualTo(0);
-    assertThat(calendar.get(Calendar.MILLISECOND)).isEqualTo(0);
-    assertThat(format1.getTime()).isEqualTo(1266879600000L);
+    assertThat(dt.year().get()).isEqualTo(2010);
+    assertThat(dt.monthOfYear().get()).isEqualTo(2);
+    assertThat(dt.dayOfMonth().get()).isEqualTo(23);
+    assertThat(dt.hourOfDay().get()).isEqualTo(0);
+    assertThat(dt.minuteOfHour().get()).isEqualTo(0);
+    assertThat(dt.secondOfMinute().get()).isEqualTo(0);
+    assertThat(dt.millisOfSecond().get()).isEqualTo(0);
   }
 
   @Test
@@ -208,7 +202,6 @@ public class DateUtilTest
   public void testBuilderRemoveAllIs1970()
   {
     Calendar datum = DateUtil.asCalendar("2010-02-23 10:04:12.894");
-    setupCalendar(datum.getTime());
 
     Date val = DateUtil.datum(datum).resetDate().resetTime().add(1).hour().asDate();
     Date ref = new Date(0);
@@ -255,13 +248,4 @@ public class DateUtilTest
       // to get to 100% coverage ... :)
     };
   }
-
-  private void setupCalendar(Date date)
-  {
-    // calendar.setTimeInMillis(date.getTime());
-    // calendar.add(Calendar.MINUTE, -1 * date.getTimezoneOffset());
-    DateTime dt = new DateTime(date);
-    calendar.setTime(dt.toDate());
-  }
-
 }
