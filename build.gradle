@@ -52,6 +52,12 @@ configure(subprojects) {
     compile("org.codehaus.groovy:groovy-all:$groovyVersion")
     testCompile("org.spockframework:spock-core:$spockVersion")
   }
+
+  test {
+     testLogging {
+        exceptionFormat "full" // default is "short"
+     }
+  }
 }
 
 project("common") {
