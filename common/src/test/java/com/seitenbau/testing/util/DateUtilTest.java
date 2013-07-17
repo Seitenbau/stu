@@ -5,15 +5,15 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.seitenbau.testing.util.date.DateBuilder;
 
 public class DateUtilTest
 {
-  Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+  Calendar calendar = Calendar.getInstance();
 
   @Test
   public void testAsDateFormants()
@@ -27,6 +27,7 @@ public class DateUtilTest
   public void testAsDateFormantsWithMS()
   {
     Date format1 = DateUtil.asDate("2010-02-23 10:04:12.894");
+
     setupCalendar(format1);
 
     assertThat(calendar.get(Calendar.YEAR)).isEqualTo(2010);
@@ -257,8 +258,10 @@ public class DateUtilTest
 
   private void setupCalendar(Date date)
   {
-    calendar.setTimeInMillis(date.getTime());
-    calendar.add(Calendar.MINUTE, -1 * date.getTimezoneOffset());
+    // calendar.setTimeInMillis(date.getTime());
+    // calendar.add(Calendar.MINUTE, -1 * date.getTimezoneOffset());
+    DateTime dt = new DateTime(date);
+    calendar.setTime(dt.toDate());
   }
 
 }

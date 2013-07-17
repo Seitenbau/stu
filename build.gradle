@@ -22,6 +22,7 @@ configure(allprojects) {
   ext.hibernatPersistanceVersion    = "1.0.1.Final"
   ext.hibernatEntityManagerVersion  = "4.2.0.Final"
   ext.hsqldbVersion                 = "2.2.8"
+  ext.jodaTimeVersion               = "2.2"
   ext.junitVersion                  = "4.10"
   ext.logbackVersion                = "1.0.6"
   ext.mockitoVersion                = "1.9.5"
@@ -72,6 +73,7 @@ project("common") {
     compile("org.springframework:spring-beans:$springVersion", optional)
     compile("ch.qos.logback:logback-classic:$logbackVersion", optional)
     compile("com.google.guava:guava:$guavaVersion", optional)
+    compile("joda-time:joda-time:$jodaTimeVersion", optional)
   }
 }
 
