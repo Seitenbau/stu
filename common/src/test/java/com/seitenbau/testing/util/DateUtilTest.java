@@ -203,9 +203,18 @@ public class DateUtilTest
   {
     Calendar datum = DateUtil.asCalendar("2010-02-23 10:04:12.894");
 
-    Date val = DateUtil.datum(datum).resetDate().resetTime().add(1).hour().asDate();
-    Date ref = new Date(0);
+    Date val = DateUtil.datum(datum).resetDate().resetTime().asDate();
+    DateTime dt = new DateTime(val);
+    Date ref = dt.toDate();
+
     assertThat(val).isExactly(ref);
+    assertThat(dt.year().get()).isEqualTo(1970);
+    assertThat(dt.monthOfYear().get()).isEqualTo(1);
+    assertThat(dt.dayOfMonth().get()).isEqualTo(1);
+    assertThat(dt.hourOfDay().get()).isEqualTo(0);
+    assertThat(dt.minuteOfHour().get()).isEqualTo(0);
+    assertThat(dt.secondOfMinute().get()).isEqualTo(0);
+    assertThat(dt.millisOfSecond().get()).isEqualTo(0);
   }
 
   @Test
