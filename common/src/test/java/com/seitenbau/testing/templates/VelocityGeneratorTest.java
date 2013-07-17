@@ -1,12 +1,12 @@
 package com.seitenbau.testing.templates;
 
-import org.apache.velocity.exception.ResourceNotFoundException;
+import static com.seitenbau.testing.asserts.fest.Assertions.assertThat;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.seitenbau.testing.rules.FileRule;
-import static com.seitenbau.testing.asserts.fest.Assertions.*;
 
 public class VelocityGeneratorTest
 {
@@ -30,7 +30,7 @@ public class VelocityGeneratorTest
     VelocityGenerator sut = new VelocityGenerator();
 
     // verify
-    exception.expect(ResourceNotFoundException.class);
+    exception.expect(RuntimeException.class);
 
     // execute
     sut.executeTemplate(model,
