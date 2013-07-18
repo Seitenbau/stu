@@ -96,7 +96,6 @@ project("database") {
 
     runtime("mysql:mysql-connector-java:$mysqlConnVersion")
 
-    testCompile("org.spockframework:spock-spring:$spockVersion")
     testCompile("org.slf4j:slf4j-log4j12:$slf4jVersion")
     testCompile( "org.apache.ant:ant-junit:1.8.4" ) {
         exclude(group: 'junit', module: 'junit')
@@ -145,12 +144,12 @@ project("examples") {
   }
 
   task generateDataSetDsl(dependsOn: 'dataSetModelClasses', type: JavaExec) {
-    destDir   = file(outputDatasetDslDir)
-    inputs.dir  srcDatasetModelDir
-    outputs.dir destDir
-    main      = 'model.Generator'
-    args      = [destDir]
-    classpath = sourceSets.dataSetModel.runtimeClasspath
+    ext.destDir   = file(outputDatasetDslDir)
+    inputs.dir      srcDatasetModelDir
+    outputs.dir     destDir
+    main          = 'model.Generator'
+    args          = [destDir]
+    classpath     = sourceSets.dataSetModel.runtimeClasspath
     doFirst {
        destDir.mkdirs()
     }
