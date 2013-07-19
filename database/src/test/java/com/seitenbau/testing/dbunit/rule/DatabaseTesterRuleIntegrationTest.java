@@ -26,6 +26,7 @@ class DataSet2 extends DataSet1
   }
 }
 
+@Ignore("TODO change to in memory DB")
 @DatabaseSetup(prepare = DataSet1.class)
 public class DatabaseTesterRuleIntegrationTest
 {
@@ -33,8 +34,8 @@ public class DatabaseTesterRuleIntegrationTest
   public ExpectedException exception = ExpectedException.none();
 
   @Rule
-  public DatabaseTesterRule db = new DatabaseTesterRule("com.mysql.jdbc.Driver",
-      "jdbc:mysql://192.168.0.85:3308/test_weinhold_B", "db_weinhold", "weinhold08")
+  public DatabaseTesterRule db = new DatabaseTesterRule("TODO",
+      "jdbc:TODO://192.168.0.85:3308/XY", "XY", "XY")
       .setDatabaseOperationFactory(new NoneFactory());
 
   @InjectDataSet
