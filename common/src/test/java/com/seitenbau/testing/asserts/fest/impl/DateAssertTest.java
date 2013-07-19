@@ -132,10 +132,20 @@ public class DateAssertTest
   @Test
   public void testExactlyFailsWithAs()
   {
-      final Date ref = DateUtil.asDate("2012-12-01 10:03:02");
-      Date past = new Date(ref.getTime() + 1);
+      final Date ref = new Date(){
+          @Override
+          public String toString() {
+              return "" + getTime();
+          }
+      };
+      Date past = new Date(ref.getTime() + 1){
+          @Override
+          public String toString() {
+              return "" + getTime();
+          }
+      };
       DateAssert sut = createSut(ref, ref);
-      exception.expectMessage("[HI] expected Sat Dec 01 10:03:02 CET 2012 but was Sat Dec 01 10:03:02 CET 2012 diff=-1ms");
+      exception.expectMessage("[HI] expected " + past  + " but was " +ref +" diff=-1ms");
       sut.as("HI").isExactly(past);
   }
 
