@@ -13,6 +13,11 @@ public abstract class LogManager
     return new ConsoleLoggerImpl(cleanup(logger.getCanonicalName()));
   }
 
+  public static void reset() {
+      isDefault = true;
+      _current = Levels.WARN;
+  }
+
   protected static String cleanup(String name)
   {
     if(name==null) {

@@ -1,5 +1,6 @@
 package com.seitenbau.testing.logger;
 
+import org.junit.After;
 import org.junit.Test;
 
 import com.seitenbau.testing.logger.LogManager.Levels;
@@ -8,6 +9,13 @@ import static com.seitenbau.testing.asserts.fest.Assertions.*;
 
 public class LogManagerTest
 {
+
+  @After
+  public void cleanup()
+  {
+     LogManager.reset();
+  }
+
   @Test
   public void testGet()
   {
@@ -38,7 +46,7 @@ public class LogManagerTest
   @Test
   public void getLevel_default()
   {
-    assertThat(LogManager.isDefault);
+    assertThat(LogManager.isDefault).isEqualTo(true);
     assertThat(LogManager.getLevel()).isSameAs(Levels.WARN);
   }
 

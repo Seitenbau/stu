@@ -3,6 +3,7 @@ package com.seitenbau.testing.logger;
 import java.io.PrintStream;
 import static com.seitenbau.testing.asserts.fest.Assertions.*;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +36,12 @@ public class ConsoleLoggerImplTest
     public void setup()
     {
         LogManager.setLevel(Levels.TRACE);
+    }
+
+    @After
+    public void cleanup()
+    {
+        LogManager.reset();
     }
 
     @Test
