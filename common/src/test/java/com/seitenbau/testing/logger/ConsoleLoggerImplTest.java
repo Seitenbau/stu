@@ -26,11 +26,11 @@ public class ConsoleLoggerImplTest
 
     Object value = new Object() {
         public String toString() {
-            return "einObjekt";
+            return "anObject";
         }
     };
 
-    String text = "texteinObjektnull";
+    String text = "textanObjectnull";
 
     @Before
     public void setup()

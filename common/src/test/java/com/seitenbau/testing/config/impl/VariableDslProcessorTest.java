@@ -24,7 +24,7 @@ public class VariableDslProcessorTest extends TestCase
     data.put("server-val-key03", "val-key03-server");
     data.put("innerKey0", "inner-value");
     data.put("innerKey1", "level1-${innerKey0}");
-    data.put("verschachtelt", "level2-${innerKey1}");
+    data.put("nested", "level2-${innerKey1}");
     data.put("escaped", "esx-${rainer}-\\${rainer}");
   }
 
@@ -41,13 +41,13 @@ public class VariableDslProcessorTest extends TestCase
   {
     verify("${notFound}").isEqualTo("${notFound}");
     verify("${rainer}").isEqualTo("val-rainer");
-    verify("${verschachtelt}").isEqualTo("level2-level1-inner-value");
+    verify("${nested}").isEqualTo("level2-level1-inner-value");
   }
 
   @Test
-  public void testVerschachteltesReplacement()
+  public void testNestedReplacement()
   {
-    verify("notFound${rainer}$${verschachtelt}").isEqualTo("notFoundval-rainer$level2-level1-inner-value");
+    verify("notFound${rainer}$${nested}").isEqualTo("notFoundval-rainer$level2-level1-inner-value");
 
     verify("notFound${rainer${rainer}}").isEqualTo("notFound${rainerval-rainer}");
     verify("notFound${server-${key03}}").isEqualTo("notFoundval-key03-server");

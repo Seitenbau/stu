@@ -16,21 +16,21 @@ class Param3 extends Param {}
 class BaseClass {
   
 }
-class Klasse1 extends BaseClass {
-  void method_k1_NoAnntation() {}
-  @MyAnnotation void method_k1_Anntation() {}
-  @MyAnnotation void method_with_Anntation(Param p) {}
+class Class1 extends BaseClass {
+  void method_k1_NoAnnotation() {}
+  @MyAnnotation void method_k1_Annotation() {}
+  @MyAnnotation void method_with_Annotation(Param p) {}
 }
-class Klasse2 extends Klasse1 {
-  void method_k2_NoAnntation() {}
-  @MyAnnotation void method_k2_Anntation() {}
-  @MyAnnotation void method_with_Anntation(Param p) {}
+class Class2 extends Class1 {
+  void method_k2_NoAnnotation() {}
+  @MyAnnotation void method_k2_Annotation() {}
+  @MyAnnotation void method_with_Annotation(Param p) {}
 }
-class Klasse3 extends Klasse1 {
-  void method_k2_NoAnntation() {}
-  @MyAnnotation void method_k2_Anntation() {}
-  @MyAnnotation void method_with_Anntation(Param p) {}
-  @MyAnnotation void method_with_Anntation(Param3 p) {}
+class Class3 extends Class1 {
+  void method_k2_NoAnnotation() {}
+  @MyAnnotation void method_k2_Annotation() {}
+  @MyAnnotation void method_with_Annotation(Param p) {}
+  @MyAnnotation void method_with_Annotation(Param3 p) {}
 }
 
 public class ReflectionUtilsTest
@@ -39,7 +39,7 @@ public class ReflectionUtilsTest
   @Test
   public void notUsedAnnoation() 
   {
-    List<Method> result = ReflectionUtils.findMethodByAnnotation(Klasse1.class, Retention.class, true);
+    List<Method> result = ReflectionUtils.findMethodByAnnotation(Class1.class, Retention.class, true);
     // verify
     assertThat(result).isEmpty();
   }
@@ -55,31 +55,31 @@ public class ReflectionUtilsTest
   @Test
   public void usedAnnotationButKlasse1()
   {
-    List<Method> result = ReflectionUtils.findMethodByAnnotation(Klasse1.class, MyAnnotation.class, true);
+    List<Method> result = ReflectionUtils.findMethodByAnnotation(Class1.class, MyAnnotation.class, true);
     // verify
     assertThat(result).hasSize(2);
-    assertThat(result).onProperty("name").contains("method_k1_Anntation", "method_with_Anntation");
+    assertThat(result).onProperty("name").contains("method_k1_Annotation", "method_with_Annotation");
   }
 
   @Test
   public void usedAnnotationButKlasse2()
   {
-    List<Method> result = ReflectionUtils.findMethodByAnnotation(Klasse2.class, MyAnnotation.class, true);
+    List<Method> result = ReflectionUtils.findMethodByAnnotation(Class2.class, MyAnnotation.class, true);
     // verify
     assertThat(result).hasSize(3);
     assertThat(result).onProperty("name")
-        .containsSequence("method_with_Anntation", "method_k2_Anntation", "method_k1_Anntation");
+        .containsSequence("method_with_Annotation", "method_k2_Annotation", "method_k1_Annotation");
   }
 
   @Test
   public void findMethodsWithDifferentParamTypeInChildThanInParent()
   {
-    List<Method> result = ReflectionUtils.findMethodByAnnotation(Klasse3.class, MyAnnotation.class, true);
+    List<Method> result = ReflectionUtils.findMethodByAnnotation(Class3.class, MyAnnotation.class, true);
     // verify
     assertThat(result).hasSize(4);
     assertThat(result).onProperty("name")
-        .containsSequence("method_with_Anntation", "method_with_Anntation", "method_k2_Anntation",
-            "method_k1_Anntation");
+        .containsSequence("method_with_Annotation", "method_with_Annotation", "method_k2_Annotation",
+            "method_k1_Annotation");
   }
   
   @Test

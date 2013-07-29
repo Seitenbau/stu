@@ -1,24 +1,22 @@
 package com.seitenbau.testing.rules.impl;
 
-import java.lang.reflect.Method;
+import static com.seitenbau.testing.asserts.fest.Assertions.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-import junit.framework.TestFailure;
+import java.lang.reflect.Method;
 
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
 
 import com.seitenbau.testing.annotation.TestCase;
 import com.seitenbau.testing.annotation.TestDesc;
 import com.seitenbau.testing.annotation.TestID;
 import com.seitenbau.testing.mockito.MockitoRule;
 import com.seitenbau.testing.rules.ITestMethodDescriptor;
-import com.seitenbau.testing.rules.impl.JUnitTestMethodDescriptorTest.ActualTestClass;
-
-import static com.seitenbau.testing.asserts.fest.Assertions.*;
 
 public class JUnitTestMethodDescriptorTest
 {

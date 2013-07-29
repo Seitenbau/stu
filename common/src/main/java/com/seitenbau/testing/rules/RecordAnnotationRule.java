@@ -149,9 +149,9 @@ public class RecordAnnotationRule<T extends Annotation> extends BeforeAfterRule
   }
 
   /**
-   * Detects if the annotation was present on the testmethod.
+   * Detects if the annotation was present on the test method.
    * 
-   * @return {@code true} if the annotation was present otherwiese
+   * @return {@code true} if the annotation was present otherwise
    *         {@code false}
    */
   public boolean isActive()

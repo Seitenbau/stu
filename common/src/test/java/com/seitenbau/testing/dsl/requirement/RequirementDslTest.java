@@ -85,12 +85,10 @@ public class RequirementDslTest
   @Test
   public void isdslYes() {
     assertThat(RequirementDsl.isRequirement("notImpl:rainer")).isTrue();
-//    assertThat(RequirementDsl.isRequirement("cusTom:x:12")).isTrue();
   }
   
   @Test
   public void isdslNo() {
-//    assertThat(RequirementDsl.isRequirement("")).isFalse();
     assertThat(RequirementDsl.isRequirement("nothingels: ")).isFalse();
     assertThat(RequirementDsl.isRequirement(" : ")).isFalse();
   }

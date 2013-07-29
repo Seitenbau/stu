@@ -1,7 +1,7 @@
 package com.seitenbau.testing.dsl.tickets;
 
 /**
- * Hilfsmethoden fuer ticket-dsl
+ * Helper methods for the ticket dsl.
  */
 public class Ticket {
 

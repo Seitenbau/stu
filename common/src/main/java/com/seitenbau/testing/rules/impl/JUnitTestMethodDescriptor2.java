@@ -37,7 +37,7 @@ public class JUnitTestMethodDescriptor2 implements ITestMethodDescriptor
       boolean searchHierachy)
   {
     T anno = _description.getAnnotation(annotationClass);
-    // Schould be :
+    // Should be :
     // AnnotationUtils.findAnnotation()
     if (anno != null)
     {

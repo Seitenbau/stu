@@ -7,12 +7,12 @@ public class DateField
 {
 
   @Day
-  public String tag;
+  public String day;
   
   @Month
-  public String monat;
+  public String month;
   
   @Year
-  public String jahr;
+  public String year;
   
 }

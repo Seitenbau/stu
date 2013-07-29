@@ -1,7 +1,5 @@
 package com.seitenbau.testing.asserts.fest.impl;
 
-import static org.junit.Assert.*;
-
 import java.util.Date;
 
 import org.hamcrest.Description;

@@ -19,10 +19,10 @@ import com.seitenbau.testing.data.impl.NameAndSpecGlue;
  * &#064;RunWith(Parameterized.class)
  * public class SampleBasarTest
  * {
- *   static Builder&lt;Bereiche&gt; builder = Builder.build(new Specs(Basar.class)
+ *   static Builder&lt;Block&gt; builder = Builder.build(new Specs(Basar.class)
  *   {
  *     {
- *       property(&quot;nummer&quot;, new OfTypeInteger()
+ *       property(&quot;number&quot;, new OfTypeInteger()
  *       {
  *         {
  *           notNegative();
@@ -61,9 +61,9 @@ import com.seitenbau.testing.data.impl.NameAndSpecGlue;
  *
  *   static public class Basar
  *   {
- *     Integer nummer;
+ *     Integer number;
  *
- *     String preis;
+ *     String price;
  *
  *     String desc;
  *   }

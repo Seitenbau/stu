@@ -35,9 +35,9 @@ public class BeforeAfterRule extends BeforeAfterRule2
    * @return if {@code true} (is default) the original exception will
    *         be re-thrown. If {@code false} the exception will be
    *         suppressed (Meaning test will be green), or you have to
-   *         throw your own Speicalized-Excpetion.
+   *         throw your own Specialized-Exception.
    * @throws Throwable can throw any other error exception instead of
-   *         the one actual occured
+   *         the one actual occurred
    */
   protected boolean afterError(ITestMethodDescriptor descriptor, Throwable t) throws Throwable
   {

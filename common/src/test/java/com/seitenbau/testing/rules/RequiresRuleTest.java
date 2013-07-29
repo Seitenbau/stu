@@ -1,9 +1,8 @@
 package com.seitenbau.testing.rules;
 
-import org.junit.Test;
-import static com.seitenbau.testing.asserts.fest.Assertions.*;
+import static com.seitenbau.testing.asserts.fest.Assertions.assertThat;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 public class RequiresRuleTest
 {

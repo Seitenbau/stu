@@ -130,7 +130,6 @@ public class TestDataGruppeTest
   @Test
   public void testIsValidParameter_True() throws Exception
   {
-    List<TestDataGroup> invalidParameters = parameterGenerator.getInvalidParameters(TestDataGroup.class);
     boolean validParameter = parameterGenerator.isValidParameter(
         TestDataGroup.class.getField("name"), 
         "Mustermann");

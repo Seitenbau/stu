@@ -28,10 +28,10 @@ public class FileRuleTest
   public void successTest() throws FileNotFoundException, IOException
   {
     FileOutputStream fos = new FileOutputStream(new File("target/output.txt"));
-    fos.write("Dies ist eine test datei\r".getBytes());
-    fos.write("gleicher Inhalt\r".getBytes());
+    fos.write("This is a test file\r".getBytes());
+    fos.write("same content\r".getBytes());
     fos.write("Hi\r".getBytes());
-    fos.write("Inhalt 'dannach'".getBytes());
+    fos.write("Content 'afterwards'".getBytes());
     fos.close();
   }
 
@@ -52,10 +52,10 @@ public class FileRuleTest
         String exp = clean(item.getExpected());
         String msg = clean(item.getMessage());
         assertThat(act).isEqualTo("Line <3>\nnull\n");
-        assertThat(exp).isEqualTo("Line <3>\nInhalt 'dannach'\n");
+        assertThat(exp).isEqualTo("Line <3>\nContent 'afterwards'\n");
         assertThat(msg)
             .isEqualTo(
-                "File content comparison failed expected:<Line <3>\n[Inhalt 'dannach']\n> but was:<Line <3>\n[null]\n>");
+                "File content comparison failed expected:<Line <3>\n[Content 'afterwards']\n> but was:<Line <3>\n[null]\n>");
         return true;
       }
 
@@ -68,8 +68,8 @@ public class FileRuleTest
 
     // execute
     FileOutputStream fos = new FileOutputStream(new File("target/output.txt"));
-    fos.write("Dies ist eine test datei\r".getBytes());
-    fos.write("gleicher Inhalt\r".getBytes());
+    fos.write("This is a test file\r".getBytes());
+    fos.write("same content\r".getBytes());
     fos.write("Hi\r".getBytes());
     fos.close();
   }

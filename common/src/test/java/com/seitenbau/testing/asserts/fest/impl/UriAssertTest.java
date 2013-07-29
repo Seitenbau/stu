@@ -9,8 +9,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import junit.framework.TestCase;
-
 public class UriAssertTest
 {
   UriAssert sut2 = sut();

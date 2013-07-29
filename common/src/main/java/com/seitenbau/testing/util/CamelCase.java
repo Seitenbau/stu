@@ -30,8 +30,7 @@ public class CamelCase
           sb.append(" ");
         }
       }
-      else if (!Character.isUpperCase(cur)) // !uppercase to match
-                                            // space
+      else if (!Character.isUpperCase(cur)) // !uppercase to match space
       {
         if (last != null && Character.isUpperCase(last)
             && !Character.isDigit(cur))

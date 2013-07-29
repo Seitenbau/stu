@@ -16,13 +16,13 @@ public class DateFieldParameterGeneratorTest
   {
 
     @ValidValues({"20.01.2011", "20.02.2011"})
-    @BeforeDate("gueltigkeitsende")
+    @BeforeDate("endOfValidityPeriod")
     @ExcludeDefaultInvalidDateValues
-    public DateField gueltigkeitsbeginn;
+    public DateField beginningOfValidityPeriod;
 
     @ValidValues({"21.1.2012", "21.1.2009"})
     @ExcludeDefaultInvalidDateValues
-    public DateField gueltigkeitsende;
+    public DateField endOfValidityPeriod;
 
   }
 
@@ -39,21 +39,21 @@ public class DateFieldParameterGeneratorTest
         .getValidParameters(TestDataExcludeDefaultInvalidDateValues.class);
     assertEquals(2, validParameters.size());
 
-    assertEquals("20", validParameters.get(0).gueltigkeitsbeginn.tag);
-    assertEquals("01", validParameters.get(0).gueltigkeitsbeginn.monat);
-    assertEquals("2011", validParameters.get(0).gueltigkeitsbeginn.jahr);
+    assertEquals("20", validParameters.get(0).beginningOfValidityPeriod.day);
+    assertEquals("01", validParameters.get(0).beginningOfValidityPeriod.month);
+    assertEquals("2011", validParameters.get(0).beginningOfValidityPeriod.year);
 
-    assertEquals("21", validParameters.get(0).gueltigkeitsende.tag);
-    assertEquals("1", validParameters.get(0).gueltigkeitsende.monat);
-    assertEquals("2012", validParameters.get(0).gueltigkeitsende.jahr);
+    assertEquals("21", validParameters.get(0).endOfValidityPeriod.day);
+    assertEquals("1", validParameters.get(0).endOfValidityPeriod.month);
+    assertEquals("2012", validParameters.get(0).endOfValidityPeriod.year);
 
-    assertEquals("20", validParameters.get(1).gueltigkeitsbeginn.tag);
-    assertEquals("02", validParameters.get(1).gueltigkeitsbeginn.monat);
-    assertEquals("2011", validParameters.get(1).gueltigkeitsbeginn.jahr);
+    assertEquals("20", validParameters.get(1).beginningOfValidityPeriod.day);
+    assertEquals("02", validParameters.get(1).beginningOfValidityPeriod.month);
+    assertEquals("2011", validParameters.get(1).beginningOfValidityPeriod.year);
 
-    assertEquals("21", validParameters.get(1).gueltigkeitsende.tag);
-    assertEquals("1", validParameters.get(1).gueltigkeitsende.monat);
-    assertEquals("2009", validParameters.get(1).gueltigkeitsende.jahr);
+    assertEquals("21", validParameters.get(1).endOfValidityPeriod.day);
+    assertEquals("1", validParameters.get(1).endOfValidityPeriod.month);
+    assertEquals("2009", validParameters.get(1).endOfValidityPeriod.year);
   }
 
   @Test
@@ -64,24 +64,24 @@ public class DateFieldParameterGeneratorTest
         .getInvalidParameters(TestDataExcludeDefaultInvalidDateValues.class);
     assertEquals(1, invalidParameters.size());
 
-    assertEquals("21", invalidParameters.get(0).gueltigkeitsbeginn.tag);
-    assertEquals("1", invalidParameters.get(0).gueltigkeitsbeginn.monat);
-    assertEquals("2013", invalidParameters.get(0).gueltigkeitsbeginn.jahr);
+    assertEquals("21", invalidParameters.get(0).beginningOfValidityPeriod.day);
+    assertEquals("1", invalidParameters.get(0).beginningOfValidityPeriod.month);
+    assertEquals("2013", invalidParameters.get(0).beginningOfValidityPeriod.year);
 
-    assertEquals("21", invalidParameters.get(0).gueltigkeitsende.tag);
-    assertEquals("1", invalidParameters.get(0).gueltigkeitsende.monat);
-    assertEquals("2012", invalidParameters.get(0).gueltigkeitsende.jahr);
+    assertEquals("21", invalidParameters.get(0).endOfValidityPeriod.day);
+    assertEquals("1", invalidParameters.get(0).endOfValidityPeriod.month);
+    assertEquals("2012", invalidParameters.get(0).endOfValidityPeriod.year);
   }
   
   static class TestData
   {
 
     @ValidValues({"20.01.2011", "20.02.2011"})
-    @BeforeDate("gueltigkeitsende")
-    public DateField gueltigkeitsbeginn;
+    @BeforeDate("endOfValidityPeriod")
+    public DateField beginningOfValidityPeriod;
 
     @ValidValues({"21.1.2012", "21.1.2009"})
-    public DateField gueltigkeitsende;
+    public DateField endOfValidityPeriod;
 
   }
   
@@ -92,82 +92,82 @@ public class DateFieldParameterGeneratorTest
         .getInvalidParameters(TestData.class);
     assertEquals(11, invalidParameters.size());
 
-    assertEquals("21",    invalidParameters.get(0).gueltigkeitsbeginn.tag);
-    assertEquals("1",     invalidParameters.get(0).gueltigkeitsbeginn.monat);
-    assertEquals("2013",  invalidParameters.get(0).gueltigkeitsbeginn.jahr);
-    assertEquals("21",    invalidParameters.get(0).gueltigkeitsende.tag);
-    assertEquals("1",     invalidParameters.get(0).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(0).gueltigkeitsende.jahr);
+    assertEquals("21",    invalidParameters.get(0).beginningOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(0).beginningOfValidityPeriod.month);
+    assertEquals("2013",  invalidParameters.get(0).beginningOfValidityPeriod.year);
+    assertEquals("21",    invalidParameters.get(0).endOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(0).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(0).endOfValidityPeriod.year);
     
-    assertEquals("29",    invalidParameters.get(1).gueltigkeitsbeginn.tag);
-    assertEquals("2",     invalidParameters.get(1).gueltigkeitsbeginn.monat);
-    assertEquals("2013",  invalidParameters.get(1).gueltigkeitsbeginn.jahr);
-    assertEquals("21",    invalidParameters.get(1).gueltigkeitsende.tag);
-    assertEquals("1",     invalidParameters.get(1).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(1).gueltigkeitsende.jahr);
+    assertEquals("29",    invalidParameters.get(1).beginningOfValidityPeriod.day);
+    assertEquals("2",     invalidParameters.get(1).beginningOfValidityPeriod.month);
+    assertEquals("2013",  invalidParameters.get(1).beginningOfValidityPeriod.year);
+    assertEquals("21",    invalidParameters.get(1).endOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(1).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(1).endOfValidityPeriod.year);
     
-    assertEquals("31",    invalidParameters.get(2).gueltigkeitsbeginn.tag);
-    assertEquals("4",     invalidParameters.get(2).gueltigkeitsbeginn.monat);
-    assertEquals("2012",  invalidParameters.get(2).gueltigkeitsbeginn.jahr);
-    assertEquals("21",    invalidParameters.get(2).gueltigkeitsende.tag);
-    assertEquals("1",     invalidParameters.get(2).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(2).gueltigkeitsende.jahr);
+    assertEquals("31",    invalidParameters.get(2).beginningOfValidityPeriod.day);
+    assertEquals("4",     invalidParameters.get(2).beginningOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(2).beginningOfValidityPeriod.year);
+    assertEquals("21",    invalidParameters.get(2).endOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(2).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(2).endOfValidityPeriod.year);
     
-    assertEquals("",      invalidParameters.get(3).gueltigkeitsbeginn.tag);
-    assertEquals("4",     invalidParameters.get(3).gueltigkeitsbeginn.monat);
-    assertEquals("2012",  invalidParameters.get(3).gueltigkeitsbeginn.jahr);
-    assertEquals("21",    invalidParameters.get(3).gueltigkeitsende.tag);
-    assertEquals("1",     invalidParameters.get(3).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(3).gueltigkeitsende.jahr);
+    assertEquals("",      invalidParameters.get(3).beginningOfValidityPeriod.day);
+    assertEquals("4",     invalidParameters.get(3).beginningOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(3).beginningOfValidityPeriod.year);
+    assertEquals("21",    invalidParameters.get(3).endOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(3).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(3).endOfValidityPeriod.year);
     
-    assertEquals("30",    invalidParameters.get(4).gueltigkeitsbeginn.tag);
-    assertEquals("",      invalidParameters.get(4).gueltigkeitsbeginn.monat);
-    assertEquals("2012",  invalidParameters.get(4).gueltigkeitsbeginn.jahr);
-    assertEquals("21",    invalidParameters.get(4).gueltigkeitsende.tag);
-    assertEquals("1",     invalidParameters.get(4).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(4).gueltigkeitsende.jahr);
+    assertEquals("30",    invalidParameters.get(4).beginningOfValidityPeriod.day);
+    assertEquals("",      invalidParameters.get(4).beginningOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(4).beginningOfValidityPeriod.year);
+    assertEquals("21",    invalidParameters.get(4).endOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(4).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(4).endOfValidityPeriod.year);
     
-    assertEquals("30",    invalidParameters.get(5).gueltigkeitsbeginn.tag);
-    assertEquals("4",     invalidParameters.get(5).gueltigkeitsbeginn.monat);
-    assertEquals("",      invalidParameters.get(5).gueltigkeitsbeginn.jahr);
-    assertEquals("21",    invalidParameters.get(5).gueltigkeitsende.tag);
-    assertEquals("1",     invalidParameters.get(5).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(5).gueltigkeitsende.jahr);
+    assertEquals("30",    invalidParameters.get(5).beginningOfValidityPeriod.day);
+    assertEquals("4",     invalidParameters.get(5).beginningOfValidityPeriod.month);
+    assertEquals("",      invalidParameters.get(5).beginningOfValidityPeriod.year);
+    assertEquals("21",    invalidParameters.get(5).endOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(5).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(5).endOfValidityPeriod.year);
     
-    assertEquals("20",    invalidParameters.get(6).gueltigkeitsbeginn.tag);
-    assertEquals("01",    invalidParameters.get(6).gueltigkeitsbeginn.monat);
-    assertEquals("2011",  invalidParameters.get(6).gueltigkeitsbeginn.jahr);
-    assertEquals("29",    invalidParameters.get(6).gueltigkeitsende.tag);
-    assertEquals("2",     invalidParameters.get(6).gueltigkeitsende.monat);
-    assertEquals("2013",  invalidParameters.get(6).gueltigkeitsende.jahr);
+    assertEquals("20",    invalidParameters.get(6).beginningOfValidityPeriod.day);
+    assertEquals("01",    invalidParameters.get(6).beginningOfValidityPeriod.month);
+    assertEquals("2011",  invalidParameters.get(6).beginningOfValidityPeriod.year);
+    assertEquals("29",    invalidParameters.get(6).endOfValidityPeriod.day);
+    assertEquals("2",     invalidParameters.get(6).endOfValidityPeriod.month);
+    assertEquals("2013",  invalidParameters.get(6).endOfValidityPeriod.year);
     
-    assertEquals("20",    invalidParameters.get(7).gueltigkeitsbeginn.tag);
-    assertEquals("01",     invalidParameters.get(7).gueltigkeitsbeginn.monat);
-    assertEquals("2011",  invalidParameters.get(7).gueltigkeitsbeginn.jahr);
-    assertEquals("31",    invalidParameters.get(7).gueltigkeitsende.tag);
-    assertEquals("4",     invalidParameters.get(7).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(7).gueltigkeitsende.jahr);
+    assertEquals("20",    invalidParameters.get(7).beginningOfValidityPeriod.day);
+    assertEquals("01",     invalidParameters.get(7).beginningOfValidityPeriod.month);
+    assertEquals("2011",  invalidParameters.get(7).beginningOfValidityPeriod.year);
+    assertEquals("31",    invalidParameters.get(7).endOfValidityPeriod.day);
+    assertEquals("4",     invalidParameters.get(7).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(7).endOfValidityPeriod.year);
     
-    assertEquals("20",    invalidParameters.get(8).gueltigkeitsbeginn.tag);
-    assertEquals("01",     invalidParameters.get(8).gueltigkeitsbeginn.monat);
-    assertEquals("2011",  invalidParameters.get(8).gueltigkeitsbeginn.jahr);
-    assertEquals("",    invalidParameters.get(8).gueltigkeitsende.tag);
-    assertEquals("4",     invalidParameters.get(8).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(8).gueltigkeitsende.jahr);
+    assertEquals("20",    invalidParameters.get(8).beginningOfValidityPeriod.day);
+    assertEquals("01",     invalidParameters.get(8).beginningOfValidityPeriod.month);
+    assertEquals("2011",  invalidParameters.get(8).beginningOfValidityPeriod.year);
+    assertEquals("",    invalidParameters.get(8).endOfValidityPeriod.day);
+    assertEquals("4",     invalidParameters.get(8).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(8).endOfValidityPeriod.year);
     
-    assertEquals("20",    invalidParameters.get(9).gueltigkeitsbeginn.tag);
-    assertEquals("01",     invalidParameters.get(9).gueltigkeitsbeginn.monat);
-    assertEquals("2011",  invalidParameters.get(9).gueltigkeitsbeginn.jahr);
-    assertEquals("30",    invalidParameters.get(9).gueltigkeitsende.tag);
-    assertEquals("",     invalidParameters.get(9).gueltigkeitsende.monat);
-    assertEquals("2012",  invalidParameters.get(9).gueltigkeitsende.jahr);
+    assertEquals("20",    invalidParameters.get(9).beginningOfValidityPeriod.day);
+    assertEquals("01",     invalidParameters.get(9).beginningOfValidityPeriod.month);
+    assertEquals("2011",  invalidParameters.get(9).beginningOfValidityPeriod.year);
+    assertEquals("30",    invalidParameters.get(9).endOfValidityPeriod.day);
+    assertEquals("",     invalidParameters.get(9).endOfValidityPeriod.month);
+    assertEquals("2012",  invalidParameters.get(9).endOfValidityPeriod.year);
     
-    assertEquals("20",    invalidParameters.get(10).gueltigkeitsbeginn.tag);
-    assertEquals("01",     invalidParameters.get(10).gueltigkeitsbeginn.monat);
-    assertEquals("2011",  invalidParameters.get(10).gueltigkeitsbeginn.jahr);
-    assertEquals("30",    invalidParameters.get(10).gueltigkeitsende.tag);
-    assertEquals("4",     invalidParameters.get(10).gueltigkeitsende.monat);
-    assertEquals("",  invalidParameters.get(10).gueltigkeitsende.jahr);
+    assertEquals("20",    invalidParameters.get(10).beginningOfValidityPeriod.day);
+    assertEquals("01",     invalidParameters.get(10).beginningOfValidityPeriod.month);
+    assertEquals("2011",  invalidParameters.get(10).beginningOfValidityPeriod.year);
+    assertEquals("30",    invalidParameters.get(10).endOfValidityPeriod.day);
+    assertEquals("4",     invalidParameters.get(10).endOfValidityPeriod.month);
+    assertEquals("",  invalidParameters.get(10).endOfValidityPeriod.year);
   }
   
   static class TestDataInvalidValues
@@ -176,7 +176,7 @@ public class DateFieldParameterGeneratorTest
     @ExcludeDefaultInvalidDateValues
     @ValidValues({"21.1.2012", "21.1.2009"})
     @InvalidValues({"21.1.2009", " . . "})
-    public DateField gueltigkeitsende;
+    public DateField endOfValidityPeriod;
 
   }
 
@@ -187,30 +187,30 @@ public class DateFieldParameterGeneratorTest
         .getInvalidParameters(TestDataInvalidValues.class);
     assertEquals(2, invalidParameters.size());
     
-    assertEquals("21",    invalidParameters.get(0).gueltigkeitsende.tag);
-    assertEquals("1",     invalidParameters.get(0).gueltigkeitsende.monat);
-    assertEquals("2009",  invalidParameters.get(0).gueltigkeitsende.jahr);
+    assertEquals("21",    invalidParameters.get(0).endOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(0).endOfValidityPeriod.month);
+    assertEquals("2009",  invalidParameters.get(0).endOfValidityPeriod.year);
     
-    assertEquals(" ",     invalidParameters.get(1).gueltigkeitsende.tag);
-    assertEquals(" ",     invalidParameters.get(1).gueltigkeitsende.monat);
-    assertEquals(" ",     invalidParameters.get(1).gueltigkeitsende.jahr);
+    assertEquals(" ",     invalidParameters.get(1).endOfValidityPeriod.day);
+    assertEquals(" ",     invalidParameters.get(1).endOfValidityPeriod.month);
+    assertEquals(" ",     invalidParameters.get(1).endOfValidityPeriod.year);
   }
   
   static class TestDataExcludeBeforeDate
   {
 
     @ValidValues({"20.01.2011", "20.02.2011"})
-    @BeforeDate({"gueltigkeitsende", "gueltigkeitsendeTwo"})
+    @BeforeDate({"endOfValidityPeriod", "endOfValidityPeriodTwo"})
     @ExcludeDefaultInvalidDateValues
-    public DateField gueltigkeitsbeginn;
+    public DateField beginningOfValidityPeriod;
 
     @ValidValues({"01.01.1999", "21.1.2012", "21.1.2009", "01.02.1999"})
     @ExcludeDefaultInvalidDateValues
-    public DateField gueltigkeitsende;
+    public DateField endOfValidityPeriod;
     
     @ValidValues({"19.01.2013", "20.01.2013", "01.01.1999"})
     @ExcludeDefaultInvalidDateValues
-    public DateField gueltigkeitsendeTwo;
+    public DateField endOfValidityPeriodTwo;
 
   }
   
@@ -221,9 +221,9 @@ public class DateFieldParameterGeneratorTest
         .getInvalidParameters(TestDataExcludeBeforeDate.class);
     assertEquals(1, invalidParameters.size());
     
-    assertEquals("20",    invalidParameters.get(0).gueltigkeitsbeginn.tag);
-    assertEquals("1",     invalidParameters.get(0).gueltigkeitsbeginn.monat);
-    assertEquals("2014",  invalidParameters.get(0).gueltigkeitsbeginn.jahr);
+    assertEquals("20",    invalidParameters.get(0).beginningOfValidityPeriod.day);
+    assertEquals("1",     invalidParameters.get(0).beginningOfValidityPeriod.month);
+    assertEquals("2014",  invalidParameters.get(0).beginningOfValidityPeriod.year);
   }
   
 }

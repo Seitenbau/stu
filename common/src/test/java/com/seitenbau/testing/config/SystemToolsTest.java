@@ -1,11 +1,11 @@
 package com.seitenbau.testing.config;
 
+import static com.seitenbau.testing.asserts.fest.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
-import static com.seitenbau.testing.asserts.fest.Assertions.*;
-import org.junit.Test;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 public class SystemToolsTest 
 {

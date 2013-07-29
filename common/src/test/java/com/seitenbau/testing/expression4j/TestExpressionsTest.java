@@ -30,23 +30,6 @@ public class TestExpressionsTest
     assertThat(_assert).isFalse();
   }
 
-//  @Test
-//  public void testExpect()
-//  {
-//    // prepare
-//    assertThat(_action).isFalse();
-//    assertThat(_expect).isFalse();
-//    assertThat(_assert).isFalse();
-//
-//    // execute
-//    TestExpressions.expect(object).doExpect();
-//
-//    // verify
-//    assertThat(_action).isFalse();
-//    assertThat(_expect).isTrue();
-//    assertThat(_assert).isFalse();
-//  }
-
   @Test
   public void testVerify()
   {

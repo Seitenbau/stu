@@ -1,12 +1,11 @@
 package com.seitenbau.testing.dsl.requirement;
 
+import static com.seitenbau.testing.asserts.fest.Assertions.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 
 import com.seitenbau.testing.dsl.requirement.RequirementDsl.RequirementState;
-
-import static com.seitenbau.testing.asserts.fest.Assertions.*;
-
-import junit.framework.TestCase;
 
 public class AbstractKeyValueDetectorTest
 {

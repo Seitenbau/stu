@@ -10,28 +10,28 @@ import java.lang.annotation.Annotation;
 public interface ITestMethodDescriptor
 {
   /**
-   * Returns the current testmethod name.
+   * Returns the current test method name.
    * 
    * @return The method name itself, not the FQN!
    */
   String getMethodName();
 
   /**
-   * Returns the current testclass name
+   * Returns the current test class name
    * 
    * @return The class name itself, not the FQN!
    */
   String getClassName();
 
   /**
-   * Returns the current Test Class Canoncial Name (FQN)
+   * Returns the current Test Class Canonical Name (FQN)
    * 
    * @return The FQN of the TestClass
    */
   String getClassCanoncialName();
 
   /**
-   * Find a Annotation at the Test-Method or in the Hierachy.
+   * Find a Annotation at the Test-Method or in the hierarchy.
    * 
    * @param annotationClass The Annotations Type to search for
    * @param searchHierachy If {@code true} the Annotation can also be
@@ -53,7 +53,7 @@ public interface ITestMethodDescriptor
   /**
    * Returns the current test instance.
    * 
-   * @return The test inscane or {@code null} when this is a
+   * @return The test instance or {@code null} when this is a
    *         classrule.
    */
   Object getTarget();

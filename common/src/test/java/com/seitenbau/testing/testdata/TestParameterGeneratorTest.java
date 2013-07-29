@@ -27,7 +27,7 @@ public class TestParameterGeneratorTest
     public String name;
 
     @ValidValues("Mustermann")
-    @InvalidValues("Kein Name")
+    @InvalidValues("No Name")
     public String lastname;
 
     @Optional
@@ -113,7 +113,7 @@ public class TestParameterGeneratorTest
     assertEquals("Christian", parameters.get(3).name);
 
     assertEquals("Mustermann", parameters.get(0).lastname);
-    assertEquals("Kein Name", parameters.get(1).lastname);
+    assertEquals("No Name", parameters.get(1).lastname);
     assertEquals("", parameters.get(2).lastname);
     assertEquals("Mustermann", parameters.get(3).lastname);
 
@@ -137,7 +137,7 @@ public class TestParameterGeneratorTest
     assertEquals("Christian", parameters.get(4).name);
 
     assertEquals("Mustermann", parameters.get(0).lastname);
-    assertEquals("Kein Name", parameters.get(1).lastname);
+    assertEquals("No Name", parameters.get(1).lastname);
     assertEquals(null, parameters.get(2).lastname);
     assertEquals("", parameters.get(3).lastname);
     assertEquals("Mustermann", parameters.get(4).lastname);
@@ -785,28 +785,28 @@ public class TestParameterGeneratorTest
 
   static class ComplexTestData
   {
-    public List<Dokument> dokument;
+    public List<Document> document;
   }
 
-  static class Dokument
+  static class Document
   {
 
     @Optional
     @TextValue(maxLength = 30)
-    public String dokumentnummer;
+    public String documentNumber;
 
     @NotEmpty
-    public Dokumentstatus dokumentstatus;
+    public DocumentState documentState;
 
   }
 
-  static class Dokumentstatus
+  static class DocumentState
   {
 
     @NotEmpty
     @ValidValues({"1"})
     @InvalidValues({"5"})
-    public String dokumentstatus;
+    public String documentState;
 
   }
 
@@ -818,21 +818,21 @@ public class TestParameterGeneratorTest
     for (ComplexTestData complexTestData : invalidParameters)
     {
       int countInvalidParams = 0;
-      List<Dokument> dokuments = complexTestData.dokument;
-      if (dokuments != null)
+      List<Document> documents = complexTestData.document;
+      if (documents != null)
       {
-        for (Dokument dokument : dokuments)
+        for (Document document : documents)
         {
           boolean validParameter = parameterGenerator.isValidParameter(
-              Dokument.class.getField("dokumentnummer"),
-              dokument.dokumentnummer);
+              Document.class.getField("documentNumber"),
+              document.documentNumber);
           if (!validParameter)
           {
             countInvalidParams++;
           }
-          String dokumentstatus = dokument.dokumentstatus.dokumentstatus;
+          String documentState = document.documentState.documentState;
           validParameter = parameterGenerator.isValidParameter(
-              Dokumentstatus.class.getField("dokumentstatus"), dokumentstatus);
+              DocumentState.class.getField("documentState"), documentState);
           if (!validParameter)
           {
             countInvalidParams++;
@@ -840,13 +840,12 @@ public class TestParameterGeneratorTest
         }
       }
       boolean validParameter = parameterGenerator.isValidParameter(
-          ComplexTestData.class.getField("dokument"), complexTestData.dokument);
+          ComplexTestData.class.getField("document"), complexTestData.document);
       if (!validParameter)
       {
         countInvalidParams++;
       }
-      assertEquals("Anzahl der Invaliden Testparam muss immer 1 sein.", 1,
-          countInvalidParams);
+      assertEquals("Count of invalid tests param muse be equal to 1.", 1, countInvalidParams);
     }
   }
   

@@ -15,7 +15,7 @@ import com.seitenbau.testing.asserts.fest.impl.ExtendedFileAssert.ProvidesFile;
  * the file does not exist it will not fail. If the file does not
  * exist after your test execution by default this rule will also not
  * fail! Use {@link #FileRule(String, boolean)} when for other
- * behaviours <br/>
+ * behaviors <br/>
  * You can also use this directly in your test to cleanup the file.
  * See {@link #prepareTest()}
  */
@@ -62,7 +62,7 @@ public class FileRule extends BeforeAfterRule implements ProvidesFile
   /**
    * Use this to cleanup possible existing files before your test. If
    * FileRule is used as rule, this is automatically called by JUnit,
-   * otherwies call this in your test prepare phase.
+   * otherwise call this in your test prepare phase.
    */
   public void prepareTest()
   {

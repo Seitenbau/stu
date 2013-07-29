@@ -80,7 +80,7 @@ public class AssertionLogger extends BeforeAfterRule
     }
 
     /**
-     * Loggs the given objects if a failure occurs. The String is build
+     * Logs the given objects if a failure occurs. The String is build
      * when the call is executed. Changes done until the call is
      * executed are reflected.
      * 
@@ -92,7 +92,7 @@ public class AssertionLogger extends BeforeAfterRule
     }
 
     /**
-     * Stores given obejcts into a List. The List is only printed out if
+     * Stores given objects into a List. The List is only printed out if
      * a Test fails and the AssertionLogger rule is used. By default the
      * result of the toString() method is stored. All given objects are
      * stored/printed out as one coherent String.
@@ -100,7 +100,7 @@ public class AssertionLogger extends BeforeAfterRule
      * <pre>
      *   AssertionLogger.log("url  : ", "http://localhost","/suffix");
      *   
-     *   // f�hrt sp�ter zur Ausgabe von:
+     *   // results in output:
      *   url  : http://localhost/suffix
      * </pre>
      * 

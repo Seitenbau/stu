@@ -11,10 +11,10 @@ public class ReflectionUtils
 {
 
   /**
-   * Find's all methods with the given annoation. <br/>
-   * The list is orderd by hierachy : First methods from children than
+   * Find's all methods with the given annotation. <br/>
+   * The list is ordered by hierarchy : First methods from children than
    * from the superclass(s). The list only contains methods once,
-   * methods found allready in a child, are not in the list when they
+   * methods found already in a child, are not in the list when they
    * exist with the same name + parameters in a superclass.
    * @param clazz
    * @param annotationClazz

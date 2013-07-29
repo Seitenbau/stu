@@ -33,7 +33,7 @@ class UrlBuilderSpec extends Specification
   def UrlWithPathElement()
   {
     given:
-      def pathElement = "kontakte"
+      def pathElement = "contacts"
     when:
       builder.path(pathElement)
     then:
@@ -43,7 +43,7 @@ class UrlBuilderSpec extends Specification
   def UrlWithPathElements()
   {
     given:
-      def pathElement = "kontakte"
+      def pathElement = "contacts"
       def bSub = "bSub"
       def aSub = "aSub"
     when:

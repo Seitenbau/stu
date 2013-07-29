@@ -10,12 +10,12 @@ public class TestPropertyIsTest
   {
     TestPropertyIs sut = new TestPropertyIs();
 
-    assertThat(sut.check(null, "wert")).isFalse();
-    assertThat(sut.check("werT", "wert")).isFalse();
-    assertThat(sut.check("wert", "werT")).isFalse();
-    assertThat(sut.check("wert", null)).isFalse();
+    assertThat(sut.check(null, "value")).isFalse();
+    assertThat(sut.check("valuE", "value")).isFalse();
+    assertThat(sut.check("value", "valuE")).isFalse();
+    assertThat(sut.check("value", null)).isFalse();
 
     assertThat(sut.check(null, null)).isTrue();
-    assertThat(sut.check("werT", "werT")).isTrue();
+    assertThat(sut.check("valuE", "valuE")).isTrue();
   }
 }

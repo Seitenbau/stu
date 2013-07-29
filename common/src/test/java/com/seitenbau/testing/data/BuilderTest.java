@@ -1,8 +1,10 @@
 package com.seitenbau.testing.data;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Vector;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -10,8 +12,6 @@ import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import com.seitenbau.testing.data.specs.OfTypeElements;
-
-import static org.junit.Assert.*;
 
 public class BuilderTest
 {

@@ -1,9 +1,6 @@
 package com.seitenbau.testing.config.impl;
 
-import static org.fest.assertions.Assertions.*;
-
-import java.net.InetAddress;
-import java.util.Properties;
+import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,32 +30,32 @@ public class PersistentConfigurationTest {
   public void loadKeyValues() {
     sut.initValuesFor(new String[]{"test-01"},noProcessor);
     assertThat(sut.getValueMap()).hasSize(BASE_PROPERTIES + 3);
-    assertThat(sut.getString("wert1")).isEqualTo("einWert");
-    assertThat(sut.getString("wert2.werte")).isEqualTo("zweiWerte");
-    assertThat(sut.getString("wert3[test]")).isEqualTo("testWert");
+    assertThat(sut.getString("value1")).isEqualTo("aValue");
+    assertThat(sut.getString("value2.values")).isEqualTo("twoValues");
+    assertThat(sut.getString("value3[test]")).isEqualTo("testValue");
   }
 
   @Test
   public void loadDslValues() {
     sut.initValuesFor(new String[]{"test-02"},noProcessor);
     assertThat(sut.getValueMap()).hasSize(BASE_PROPERTIES + 3);
-    assertThat(sut.getString("wert1")).isEqualTo("einWertwert2");
-    assertThat(sut.getString("wert2")).isEqualTo("x2einWertwert2x3wert2");
-    assertThat(sut.getString("wert3")).isEqualTo("wert2");
+    assertThat(sut.getString("value1")).isEqualTo("aValuevalue2");
+    assertThat(sut.getString("value2")).isEqualTo("x2aValuevalue2x3value2");
+    assertThat(sut.getString("value3")).isEqualTo("value2");
   }
 
   @Test
   public void mapDslValues() {
     sut.initValuesFor(new String[]{"test-03"},noProcessor);
     assertThat(sut.getValueMap()).hasSize(BASE_PROPERTIES + 5);
-    assertThat(sut.getMapEntry("wert", "key1",null)).isSameAs(StoredProperty.NOT_SET_VALUE);
-    assertThat(sut.getMapEntry("werte", "key",null)).isNull();
-    assertThat(sut.getMapEntry("werte", "key",StoredProperty.NOT_SET_VALUE)).isSameAs(StoredProperty.NOT_SET_VALUE);
-    assertThat(sut.getMapEntry("werte", "key1",null)).isEqualTo("wert1");
-    assertThat(sut.getMapEntry("werte", "key2",null)).isEqualTo("wert2");
-    assertThat(sut.getMapEntry("werte", "key3",null)).isEqualTo("wert3rainer_");
-    assertThat(sut.getString("wert2")).isEqualTo("rainer");
-    assertThat(sut.getString("wert3")).isEqualTo("val3wert1");
+    assertThat(sut.getMapEntry("value", "key1",null)).isSameAs(StoredProperty.NOT_SET_VALUE);
+    assertThat(sut.getMapEntry("values", "key",null)).isNull();
+    assertThat(sut.getMapEntry("values", "key",StoredProperty.NOT_SET_VALUE)).isSameAs(StoredProperty.NOT_SET_VALUE);
+    assertThat(sut.getMapEntry("values", "key1",null)).isEqualTo("value1");
+    assertThat(sut.getMapEntry("values", "key2",null)).isEqualTo("value2");
+    assertThat(sut.getMapEntry("values", "key3",null)).isEqualTo("value3rainer_");
+    assertThat(sut.getString("value2")).isEqualTo("rainer");
+    assertThat(sut.getString("value3")).isEqualTo("val3value1");
   }
 
 }
