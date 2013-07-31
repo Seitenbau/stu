@@ -5,6 +5,12 @@
 The project contains simple utils for JUnit and Co.
 
 TODO project description.
+# Documentation
+To generate the documentation please invoke:
+
+	gradlew asciidoctor
+
+The documentation is generated to stu/src/documentation/html/stu.html.
 
 # Eclipse 
 
