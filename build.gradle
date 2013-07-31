@@ -185,7 +185,7 @@ project("documentation") {
   }
   
   asciidoctor {
-    sourceDir = new File("$projectDir/src/asciidoc")
+    sourceDir = new File("$projectDir/asciidoc")
     outputDir = new File("$htmlDir")
     backend = 'html5'
     options = [
