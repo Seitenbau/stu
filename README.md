@@ -10,7 +10,7 @@ To generate the documentation please invoke:
 
 	gradlew asciidoctor
 
-The documentation is generated to stu/src/documentation/html/stu.html.
+The documentation is generated to stu/documentation/html/stu.html.
 
 # Eclipse 
 
