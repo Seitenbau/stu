@@ -9,15 +9,13 @@ import com.seitenbau.testing.dbunit.tester.DatabaseTesterBase;
 import com.seitenbau.testing.util.Future;
 
 /**
- * Klasse für DBUnit Tests welche nicht abgeleitet sein muss. Für eine
- * Klasse die statischen Verbindungsdaten vorhält siehe
- * {@link AbstractDBUnitTests}
+ * Class for DBUbit Tests that does not have to be derived. For class that
+ * holds static connection information see {@link AbstractDBUnitTests}.
  * <p/>
- * Im JUnit Test am besten eine Feldvariable vorhalten: <code><pre>
- *  private DatabaseTester dbTester;
- * </pre></code> Beim Setup des Tests ist eine Instanzieren zu
- * erzeugen: <code><pre>
- *  &#064;Beforeass
+ * It is recommended to store the DatabaseTester as a field inside the JUnit Test:<code><pre>
+ * private DatabaseTester dbTester;
+ * </pre></code>Create an instance while setting up the test: <code><pre>
+ *  &#064;Before
  *  public void setUp()
  *  {
  *     dbTester = new DatabaseTester(
@@ -28,8 +26,7 @@ import com.seitenbau.testing.util.Future;
  *        getClass()
  *       );
  *  }
- * </pre></code> Für einen Test stehen verschiedenste Funktionen
- * bereit :<code><pre>
+ * </pre></code> Inside the test several methods are accessible on the DatabaseTester object:<code><pre>
  *  &#064;Test
  *  public void testDatabaseWhatever() {
  *     dbTester.cleanInsert("testDatabaseWhatever_prepare.xml");
@@ -41,8 +38,7 @@ import com.seitenbau.testing.util.Future;
 public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
 {
   /**
-   * Konstruktor welcher gleich die Verbindungsdaten zur Datenbank
-   * setzt.
+   * Constructor that sets the database connection information.
    * 
    * <code><pre>
    *     dbTester = new DatabaseTester(
@@ -53,13 +49,16 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
    *       );
    * </pre></code>
    * 
-   * @param driverName Klassen - Name für den Datenbank Treiber.
+   * @param driverName Class name for the database driver.
    * 
-   * @param url URL der Datenbank
+   * @param url URL of the database.
    * 
-   * @param username Datenbank Benutzer
+   * @param username The name of the user.
    * 
-   * @param password Datenbank Benutzer Passwort
+   * @param password The password for the user.
+   * 
+   * @param defaultModifiers the default modifiers that should be
+   *        applied to datasets.
    */
   public DatabaseTester(String driverName, String url, String username, String password,
       IDataSetModifier... defaultModifiers)
@@ -68,30 +67,26 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
   }
 
   /**
-   * Konstruktor welcher gleich die Verbindungsdaten zur Datenbank
-   * setzt.
+   * Constructor that sets the database connection information.
    * 
    * <code><pre>
-   *     dbTester = new DatabaseTester(
-   *        "org.gjt.mm.mysql.Driver",
-   *        "jdbc:mysql://192.168.0.42:3306/my_database_name",
-   *        "user",
-   *        "password",
-   *        getClass()
-   *       );
+   * dbTester = new DatabaseTester(
+   * "org.gjt.mm.mysql.Driver",
+   * "jdbc:mysql://192.168.0.42:3306/my_database_name",
+   * "user",
+   * "password",
+   * getClass()
+   * );
    * </pre></code>
    * 
-   * @param driverName Klassen - Name für den Datenbank Treiber.
-   * 
-   * @param url URL der Datenbank
-   * 
-   * @param username Datenbank Benutzer
-   * 
-   * @param clazz Class Objekt dessen package dazu genutzt wird um bei
-   *        Laden von XML-DataSet-Dateien das korrekte
-   *        Unterverzeichnis zu nutzen.
-   * 
-   * @param password Datenbank Benutzer Passwort
+   * @param driverName Class name for the database driver.
+   * @param url URL of the database.
+   * @param username The name of the user.
+   * @param password The password for the user.
+   * @param clazz Class object that is used to determine the proper
+   *        package while loading XML DataSets.
+   * @param defaultModifiers the default modifiers that should be
+   *        applied to datasets.
    */
   public DatabaseTester(String driverName, String url, String username, String password, Class<?> clazz,
       IDataSetModifier... defaultModifiers)
@@ -100,8 +95,7 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
   }
 
   /**
-   * Konstruktor welcher gleich die Verbindungsdaten zur Datenbank
-   * setzt.
+   * Constructor that sets the database connection information.
    * 
    * <code><pre>
    *     dbTester = new DatabaseTester(
@@ -113,15 +107,13 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
    *       );
    * </pre></code>
    * 
-   * @param driverName Klassen - Name für den Datenbank Treiber.
-   * 
-   * @param url URL der Datenbank
-   * 
-   * @param username Datenbank Benutzer
-   * 
-   * @param password Datenbank Benutzer Passwort
-   * 
-   * @param fSchema Datenbank Schema
+   * @param driverName Class name for the database driver.
+   * @param url URL of the database.
+   * @param username The name of the user.
+   * @param password The password for the user.
+   * @param fSchema The database schema.
+   * @param defaultModifiers the default modifiers that should be
+   *        applied to datasets.
    */
   public DatabaseTester(String driverName, String url, String username, String password, String schema,
       IDataSetModifier... defaultModifiers)

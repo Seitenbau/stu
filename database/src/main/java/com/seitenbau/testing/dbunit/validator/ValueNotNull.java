@@ -3,12 +3,12 @@ package com.seitenbau.testing.dbunit.validator;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * DBUnit Value Validator if a given &lt;value/&gt; ist NOT Null.
+ * DBUnit Value Validator if a given &lt;value/&gt; is NOT Null.
  */
 public class ValueNotNull extends AbstractValueValidator
 {
   /**
-   * DBUnit Value Validator if a given <value/> ist NOT equal to the
+   * DBUnit Value Validator if a given <value/> is NOT equal to the
    * given Object.
    * 
    */
@@ -18,7 +18,7 @@ public class ValueNotNull extends AbstractValueValidator
   }
 
   /**
-   * DBUnit Value Validator if a given <value/> ist NOT equal to the
+   * DBUnit Value Validator if a given <value/> is NOT equal to the
    * given Object.
    * 
    * @param markerString Marker in the dbunit XML Dataset File which

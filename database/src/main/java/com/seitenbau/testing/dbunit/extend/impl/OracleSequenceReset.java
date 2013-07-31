@@ -1,9 +1,9 @@
 package com.seitenbau.testing.dbunit.extend.impl;
 
 /**
- * Helper Action to reset Oralce Database Sequences.
+ * Helper Action to reset Oracle Database Sequences.
  * 
- * Either specify seqences by hand . {@code #sequenceName(String...)}
+ * Either specify sequences by hand . {@code #sequenceName(String...)}
  * or automatically create Sequence names by adding a postfix to all
  * tables in your dataset {@code #autoDerivateFromTablename(String)}.
  */

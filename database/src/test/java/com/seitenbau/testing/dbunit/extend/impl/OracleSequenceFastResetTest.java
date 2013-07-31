@@ -1,12 +1,16 @@
 package com.seitenbau.testing.dbunit.extend.impl;
 
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import org.fest.assertions.Fail;
-import static com.seitenbau.testing.asserts.fest.Assertions.*;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
+
 import com.seitenbau.testing.dbunit.tester.DatabaseTesterBase;
 import com.seitenbau.testing.mockito.MockitoRule;
 

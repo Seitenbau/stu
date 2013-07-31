@@ -27,7 +27,7 @@ public class ReplacerTimeStamp extends Replacer
   }
 
   /**
-   * Initializes the class withe the String literal that should be
+   * Initializes the class with the the String literal that should be
    * replaced. The date is set to the given Date.
    * 
    * @param markerString The String literal that should be replaced.

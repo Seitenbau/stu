@@ -3,7 +3,7 @@ package com.seitenbau.testing.dbunit.validator;
 /**
  * Compares Cross Reference IDs between Table Values. In both Values
  * must be a equal object. Which Value it has is not of consideration.
- * The First compare will allways be correct, the second compare will
+ * The First compare will always be correct, the second compare will
  * compare the Value with the first one.
  */
 public class ValueSameID extends AbstractValueValidator
@@ -13,9 +13,8 @@ public class ValueSameID extends AbstractValueValidator
   /**
    * Compares Cross Reference IDs between Table Values. In both Values
    * must be a equal object. Which Value it has is not of
-   * consideration. The First compare will allways be correct, the
-   * second compare will compare the Value with the first one. * @param
-   * markerString
+   * consideration. The First compare will always be correct, the
+   * second compare will compare the Value with the first one.
    */
   public ValueSameID()
   {
@@ -25,9 +24,9 @@ public class ValueSameID extends AbstractValueValidator
   /**
    * Compares Cross Reference IDs between Table Values. In both Values
    * must be a equal object. Which Value it has is not of
-   * consideration. The First compare will allways be correct, the
-   * second compare will compare the Value with the first one. * @param
-   * markerString
+   * consideration. The First compare will always be correct, the
+   * second compare will compare the Value with the first one.
+   * @param markerString
    */
   public ValueSameID(String markerString)
   {
@@ -42,7 +41,7 @@ public class ValueSameID extends AbstractValueValidator
     }
     else if (!firstID.equals(objectToCompareTo))
     {
-      throw new AssertionError("ID's weichen voneinander ab. erwartete = " + firstID + " war = " + objectToCompareTo);
+      throw new AssertionError("ID's are not equal = " + firstID + " was = " + objectToCompareTo);
     }
     return IS_EQUAL;
   }

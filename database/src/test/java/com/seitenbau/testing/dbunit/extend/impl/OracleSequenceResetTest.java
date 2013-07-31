@@ -1,13 +1,7 @@
 package com.seitenbau.testing.dbunit.extend.impl;
 
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.dbunit.dataset.DefaultDataSet;
-import org.dbunit.dataset.DefaultTable;
-import org.dbunit.dataset.IDataSet;
 import org.junit.Test;
 
 public class OracleSequenceResetTest

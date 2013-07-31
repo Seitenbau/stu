@@ -189,14 +189,14 @@ public class ColumnBuilder
   }
 
   /**
-   * Enables the generation of a next value method (depending on the column name)
-   * on the RowBuilder. The next value method will use the {@link DatasetIdGenerator}
-   * from the DataSetModel.
+   * Enables the generation of a next value method (depending on the
+   * column name) on the RowBuilder. The next value method will use
+   * the {@link DatasetIdGenerator} from the DataSetModel.
+   * <p>
+   * Furthermore the next methods of the generated dataset inside the
+   * corresponding builder class are executed when a create call is
+   * given.
    * @return The builder to configure the column
-   *
-   * // TODO NM translate comment
-   * Auﬂerdem werden in der Builder Klasse des erzeugten DataSets bei einem create*() die
-   * nextMethoden automatisch gerufen.
    */
   public ColumnBuilder addNextMethod()
   {

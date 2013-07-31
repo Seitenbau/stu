@@ -1,7 +1,5 @@
 package com.seitenbau.testing.dbunit.generator;
 
-
-
 public class JavaDocBuilder
 {
   private final NameProvider names;

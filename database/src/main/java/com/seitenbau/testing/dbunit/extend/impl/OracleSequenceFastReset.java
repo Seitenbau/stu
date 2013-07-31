@@ -4,7 +4,7 @@ import com.seitenbau.testing.dbunit.tester.DatabaseTesterBase;
 
 /**
  * Based on an idea by CB: Instead of dropping and recreating the
- * sequence, the 'reset' is achived by a negativ increment. <b>The
+ * sequence, the 'reset' is achieved by a negative increment. <b>The
  * sequence MUST exist!</b> <br/>
  * (Not sure if this is really any faster at all ... guess not)
  */

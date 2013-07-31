@@ -7,12 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
 
 /**
- * Annotation, um das Setup für das Einspielen und Testen der
- * Solr-Testdaten festzulegen.
- * 
- * @author rnoerenberg
- * @version $Id: SolrSetup.java 97135 2012-11-28 15:10:17Z rnoerenberg
- *          $
+ * Annotation to enable the setup for insertion and testing of Solr
+ * testdata.
  * 
  */
 @Inherited

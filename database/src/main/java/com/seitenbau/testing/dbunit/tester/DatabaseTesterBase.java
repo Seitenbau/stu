@@ -46,8 +46,8 @@ public class DatabaseTesterBase<MY_TYPE>
 {
 
   /**
-   * Class der 'Umgebung' Benötigt zum finden des korrekten packages
-   * beim Laden von XML Dateien.
+   * Class of the 'environment'. Required to find related packages
+   * while loading XML files.
    */
   private Class<?> fClazz;
 
@@ -84,9 +84,8 @@ public class DatabaseTesterBase<MY_TYPE>
   protected DatabaseOperationFactory _databaseOperationFactory;
 
   /**
-   * Konstruktor welcher gleich die Verbindungsdaten zur Datenbank
-   * setzt.
-   *
+   * Constructor that sets connection data to the database.
+   * 
    * <code><pre>
    *     dbTester = new DatabaseTester(
    *        "org.gjt.mm.mysql.Driver",
@@ -95,14 +94,14 @@ public class DatabaseTesterBase<MY_TYPE>
    *        "password"
    *       );
    * </pre></code>
-   *
-   * @param driverName Klassen - Name für den Datenbank Treiber.
-   *
-   * @param url URL der Datenbank
-   *
-   * @param username Datenbank Benutzer
-   *
-   * @param password Datenbank Benutzer Passwort
+   * 
+   * @param driverName Class name of the database driver.
+   * 
+   * @param url URL of the database.
+   * 
+   * @param username Database user.
+   * 
+   * @param password Database user password.
    */
   public DatabaseTesterBase(String driverName, String url, String username, String password,
       IDataSetModifier... defaultModifiers)
@@ -115,9 +114,8 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Konstruktor welcher gleich die Verbindungsdaten zur Datenbank
-   * setzt.
-   *
+   * Constructor that sets connection data to the database.
+   * 
    * <code><pre>
    *     dbTester = new DatabaseTester(
    *        "org.gjt.mm.mysql.Driver",
@@ -127,18 +125,13 @@ public class DatabaseTesterBase<MY_TYPE>
    *        getClass()
    *       );
    * </pre></code>
-   *
-   * @param driverName Klassen - Name für den Datenbank Treiber.
-   *
-   * @param url URL der Datenbank
-   *
-   * @param username Datenbank Benutzer
-   *
-   * @param clazz Class Objekt dessen package dazu genutzt wird um bei
-   *        Laden von XML-DataSet-Dateien das korrekte
-   *        Unterverzeichnis zu nutzen.
-   *
-   * @param password Datenbank Benutzer Passwort
+   * 
+   * @param driverName Class name of the database driver.
+   * @param url URL of the database.
+   * @param username Database user.
+   * @param clazz calls object that is used to determine the proper
+   *        directory to load XML dataset files.
+   * @param password Database user password.
    */
   public DatabaseTesterBase(String driverName, String url, String username, String password, Class<?> clazz,
       IDataSetModifier... defaultModifiers)
@@ -151,9 +144,8 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Konstruktor welcher gleich die Verbindungsdaten zur Datenbank
-   * setzt.
-   *
+   * Constructor that sets connection data to the database.
+   * 
    * <code><pre>
    *     dbTester = new DatabaseTester(
    *        "org.gjt.mm.mysql.Driver",
@@ -163,16 +155,16 @@ public class DatabaseTesterBase<MY_TYPE>
    *        getClass()
    *       );
    * </pre></code>
-   *
-   * @param driverName Klassen - Name für den Datenbank Treiber.
-   *
-   * @param url URL der Datenbank
-   *
-   * @param username Datenbank Benutzer
-   *
-   * @param password Datenbank Benutzer Passwort
-   *
-   * @param fSchema Datenbank Schema
+   * 
+   * @param driverName Class name of the database driver.
+   * 
+   * @param url URL of the database.
+   * 
+   * @param username Database user.
+   * 
+   * @param password Database user password.
+   * 
+   * @param fSchema Database schema.
    */
   public DatabaseTesterBase(String driverName, String url, String username, String password, String schemema,
       IDataSetModifier... defaultModifiers)
@@ -217,9 +209,8 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Setzt eine Type Factory die registiert auf einer neuen Connection
-   * Registiert wird. Wurde die Connection schon erstell.
-   *
+   * Sets a type factory that is registered on a new connection.
+   * 
    * @param registerTypeFactory
    */
   public MY_TYPE setTypeFactoryToRegister(IDataTypeFactory registerTypeFactory)
@@ -230,7 +221,7 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Setzt das Schema für die Datenbank Connection
+   * Sets the schema for the database connection.
    * @param schema
    * @return
    */
@@ -255,14 +246,13 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Fügt einen Modifier zur Liste der Default modifier hinzu.
+   * Adds a modifier to the list of the default modifiers.
    * <p>
-   * Default Modifier werden immer beim Laden von Datensätzen( bspw.
-   * über {@link #getDataSet(String, IDataSetModifier...)} )
-   * ausgeführt.
+   * The default modifiers are applied whenever datasets are loaded
+   * (e.g. via {@link #getDataSet(String, IDataSetModifier...)}).
    * </p>
-   *
-   * @param aModifier Der hinzuzufügende Modifier.
+   * 
+   * @param aModifier the additional modifier.
    */
   public MY_TYPE addDefaultModifier(IDataSetModifier aModifier)
   {
@@ -275,14 +265,13 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Fügt einen Modifier zur Liste der Default modifier hinzu.
+   * Adds a modifier to the list of the default modifiers.
    * <p>
-   * Default Modifier werden immer beim Laden von Datensätzen( bspw.
-   * über {@link #getDataSet(String, IDataSetModifier...)} )
-   * ausgeführt.
+   * The default modifiers are applied whenever datasets are loaded
+   * (e.g. via {@link #getDataSet(String, IDataSetModifier...)}).
    * </p>
-   *
-   * @param aModifier Der hinzuzufügende Modifier.
+   * 
+   * @param modifiers the additional modifiers.
    */
   public MY_TYPE addDefaultModifier(IDataSetModifier... modifiers)
   {
@@ -297,9 +286,8 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Methode zum vergleichen eines Datasets mit der aktuellen
-   * Datenbank
-   *
+   * Method that compares a dataset to the actual database.
+   * 
    * @param expectedDataSet
    * @param modifiers
    * @throws Exception
@@ -310,9 +298,8 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Methode zum vergleichen eines Datasets mit der aktuellen
-   * Datenbank
-   *
+   * Method that compares a dataset to the actual database.
+   * 
    * @param expectedDataSet
    * @param modifiers
    * @throws Exception
@@ -401,19 +388,18 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Vergleich den Aktuellen Zustand der Datenbank mit der gegebenen
-   * XML Datei. Hauptsächlich eine convenient Methode. Siehe für
-   * weitere Datenbank assert Methoden {@link DBAssertion}.
-   *
-   * @param xmlFileRelativToClass XML Datei relativ zum Package. Wenn
-   *        ein Prefix über {@link #setClassPathPrefix(String)}
-   *        gesetzt wurde, dann wird dies vorrausgestellt.
-   *
-   * @param modifiers Optimale Liste and {@link IDataSetModifier},
-   *        welche vor dem Assert den Inhalt des geladenen DataSets
-   *        manipulieren können.
-   *
-   * @throws Exception Fehler beim laden oder Vergleichen
+   * Compares the current state of the database with the given XML
+   * file. Convenient method. For more database assertion methods see
+   * {@link DBAssertion}.
+   * 
+   * @param xmlFileRelativToClass XML file relative to the package. If
+   *        a prefix is set via {@link #setClassPathPrefix(String)} it
+   *        is put in front.
+   * 
+   * @param modifiers Optional list of {@link IDataSetModifier} that
+   *        can manipulate the content of the loaded dataset.
+   * 
+   * @throws Exception Error that occurs while loading or comparison.
    */
   public void assertDataBase(String xmlFileRelativToClass, IDataSetModifier... modifiers) throws Exception
   {
@@ -429,12 +415,11 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Vergleicht die Datenbank mit dem DataSet welches als letztes über
-   * die cleanInsert Methode eingefügt wurde. Abgeleitete Klassen
-   * könnten den letzten Datensatz aber evlt. auch geändert haben
-   * durch einen Aufruf von {@link #setLastInsertedDataSet(IDataSet)}
-   *
-   * @throws Exception Fehler im Vergleich
+   * Compares the database with the dataset that was last added with
+   * the cleanInsert method. Derived classes may have manipulate the
+   * last dataset via {@link #setLastInsertedDataSet(IDataSet)}.
+   * 
+   * @throws Exception Error during comparison
    */
   public void assertDataBaseStillTheSame() throws Exception
   {
@@ -442,12 +427,13 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Vergleicht die Datenbank mit dem DataSet welches als letztes über
-   * die cleanInsert Methode eingefügt wurde. Abgeleitete Klassen
-   * könnten den letzten Datensatz aber evlt. auch geändert haben
-   * durch einen Aufruf von {@link #setLastInsertedDataSet(IDataSet)}
-   *
-   * @throws Exception Fehler im Vergleich
+   * Compares the database with the dataset that was last added with
+   * the cleanInsert method. The asserion is done according to the
+   * given sorting configuration. Derived classes may have manipulate
+   * the last dataset via {@link #setLastInsertedDataSet(IDataSet)}.
+   * 
+   * @param sortConfig the sorting configuration
+   * @throws Exception Error during comparison
    */
   public void assertDataBaseStillTheSame(SortConfig[] sortConfig) throws Exception
   {
@@ -471,12 +457,12 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Hilfsmethode welche das Laden des DataSets und ein CLEAN_INSERT
-   * wrappt.
-   *
-   * @param datasetFactry This creates the actual dataset on the fly
-   *
-   * @param modifiers Zusätzlich werden die Default-modifier zu
+   * Util method that wraps the loading of the dataset and the
+   * CLEAN_INSERT.
+   * 
+   * @param datasetFactory creates the actual dataset on the fly
+   * 
+   * @param modifiers additional modifiers.
    * @throws Exception
    */
   public void prepare(DbUnitDatasetFactory datasetFactory, DatabaseOperation operation, IDataSetModifier... modifiers)
@@ -486,12 +472,12 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Hilfsmethode welche das Laden des DataSets und ein CLEAN_INSERT
-   * wrappt.
-   *
+   * Util method that wraps the loading of the dataset and the
+   * CLEAN_INSERT.
+   * 
    * @param dataset
-   *
-   * @param modifiers Zusätzlich werden die Default-modifier zu
+   * 
+   * @param modifiers additional modifiers.
    * @throws Exception
    */
   public void prepare(IDataSet dataset, DatabaseOperation operation, IDataSetModifier... modifiers) throws Exception
@@ -504,12 +490,12 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Hilfsmethode welche das Laden des DataSets und ein CLEAN_INSERT
-   * wrappt.
-   *
+   * Util method that wraps the loading of the dataset and the
+   * CLEAN_INSERT.
+   * 
    * @param dataset
-   *
-   * @param modifiers Zusätzlich werden die Default-modifier zu
+   * 
+   * @param modifiers additional modifiers.
    * @throws Exception
    */
   public void cleanInsert(IDataSet dataset, IDataSetModifier... modifiers) throws Exception
@@ -521,13 +507,12 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Hilfsmethode welche das Laden des DataSets und ein CLEAN_INSERT
-   * wrappt.
-   *
-   * @param datasetFactory Factory welche das eigentliche Dataset
-   *        zurückliefert
-   *
-   * @param modifiers Zusätzlich werden die Default-modifier zu
+   * Util method that wraps the loading of the dataset and the
+   * CLEAN_INSERT.
+   * 
+   * @param datasetFactory Factory that return the actual dataset.
+   * 
+   * @param modifiers additional modifiers.
    * @throws Exception
    */
   public void cleanInsert(DbUnitDatasetFactory datasetFactory, IDataSetModifier... modifiers) throws Exception
@@ -600,9 +585,9 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Schließt die Verbindung zur Datenbank
-   *
-   * @throws Exception Fehler die beim Schließen aufgetreten sind.
+   * Closes the connection to the database.
+   * 
+   * @throws Exception Error that occurs while closing the connection.
    */
   public void close() throws Exception
   {
@@ -614,9 +599,9 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Erzeugt ein DataSet mit einem live Abzug der Kompletten Datenbank
-   *
-   * @return Der Datenbank-dump
+   * Creates a dataset with a live snapshot of the entire database.
+   * 
+   * @return the database dump.
    */
   public IDataSet createDatabaseSnapshot() throws Exception
   {
@@ -624,14 +609,14 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Liefert die Verbindung zur Datenbank oder eine Exception
-   *
-   * @return Die Verbindung zur Datenbank
-   *
-   * @throws ClassNotFoundException Datenbank-Treiber konnte nicht
-   *         geladen werden.
-   *
-   * @throws SQLException Fehler beim Verbinden zur Datenbank
+   * Returns the connection to the database or throws an exception.
+   * 
+   * @return The connction to the database-
+   * 
+   * @throws ClassNotFoundException Database driver could not be
+   *         loaded.
+   * 
+   * @throws SQLException Error while connecting to database.
    * @throws DatabaseUnitException
    */
   public IDatabaseConnection getConnection() throws ClassNotFoundException, SQLException, DatabaseUnitException
@@ -734,21 +719,21 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Lädt das DataSet aus der gegebenen XML Datei relativ zum Package.
-   *
-   * @param xmlFileRelativToClass Dateiname. Zusätzlich wird das
-   *        optimale {@link #setClassPathPrefix(String)} davor
-   *        geschrieben.
-   *
-   * @param modifiers Optimale Liste an Modifiern die das geladene
-   *        Dataset manipulieren. Zusätzlich werden optimale durch
-   *        {@link #addDefaultModifier(IDataSetModifier)} hinzugefügte
-   *        'globale' Modifier ausgeführt.
-   *
-   * @return Das DataSet aus der XML Datei. Evtl. verändert durch die
+   * Load the dataset from the given XML file relative to the package
+   * 
+   * @param xmlFileRelativToClass Filename. In addition the optiomal
+   *        {@link #setClassPathPrefix(String)} dcoulf be put in
+   *        front.
+   * 
+   * @param modifiers Optional list of modifiers that manipulate the
+   *        dataset. In addition to the optional modifiers the global
+   *        default modifiers are applied.
+   * 
+   * @return The dataset of the XML file. Could be manipulated by the
    *         modifiers.
-   *
-   * @throws Exception Fehler beim Laden oder Ausführen der Modifier.
+   * 
+   * @throws Exception Error while reading file or applying a
+   *         modifier.
    */
   public IDataSet getDataSet(String xmlFileRelativToClass, IDataSetModifier... modifiers) throws Exception
   {
@@ -757,12 +742,12 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Hilfs-Methode für das als letztes eingespiele DataSet
-   *
-   * @return Liefert das als letztes durch
+   * Util method for the last inserted dataset.
+   * 
+   * @return Returns the last via
    *         {@link #cleanInsert(IDataSet, IDataSetModifier...)}
-   *         eingespielte DataSet. Oder {@code null} falls noch kein
-   *         DataSet eingespielt wurde.
+   *         inserted dataset. {@code null} if no dataset inserted
+   *         yet.
    */
   public IDataSet getLastInsertedDataSet()
   {
@@ -770,12 +755,12 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Methoden zum Zugriff auf die default-Modifier.
-   *
-   * @param modifiers Optimale zusätzliche Liste and Modifiern
-   *
-   * @return Liefert die optimal übergebenen Modifier sowie die evtl.
-   *         gesetzen Default Modifier als Array zurück.
+   * Method to access the default modifiers.
+   * 
+   * @param modifiers optional list of additional modifiers.
+   * 
+   * @return Returns the provided optional modifiers and the default
+   *         modifiers as array.
    */
   public IDataSetModifier[] getModifiers(IDataSetModifier... modifiers)
   {
@@ -793,12 +778,11 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Setzt ein Prefix vor alle Datei-Ladeoperationen
-   *
-   * @param prefixForClasspath Das Prefix. Wird vor jeden Dateinaben
-   *        gehängt. Kann aber auch aus einem Pfad
-   *        ("Test-02-resources/") bestehen. Wird {@code null}
-   *        übergeben wird das Prefix ignoriert.
+   * Sets the prefix in front of all file read operations.
+   * 
+   * @param prefixForClasspath The prefix. Put in front of every
+   *        filename. Can consist of a path ("Test-02-resources/"). If
+   *        {@code null} is provided the prefix is ignored.
    */
   public MY_TYPE setClassPathPrefix(String prefixForClasspath)
   {
@@ -814,19 +798,18 @@ public class DatabaseTesterBase<MY_TYPE>
   {
     if (fClazz == null)
     {
-      throw new IllegalStateException("Das Feld fClass ist null. "
-          + "Vermutlich wurde dem Konstrkutor keine Class Instanz übergeben.");
+      throw new IllegalStateException("The field fClass is null. "
+          + "Probably no class instance was passed to the constructor.");
     }
     return fClazz;
   }
 
   /**
-   * Versucht die Class-Instanz zu finden von der Aufrufenden Klasse.
+   * Tries to find the class instance of the calling class.
    * <p>
-   * Hierzu wird der Stack durchlaufen bis eine nicht von
-   * DatabaseTester abgeleitete Klasse gefunden wird. Daher schlägt
-   * dieser Code fehl wenn die Test-Klasse direkt oder indirekt von
-   * DatabaseTester abgeleitet ist!
+   * Traverses the stack until a class is found that does not derive
+   * from DatabcaeTester class. The method fails if the test class
+   * derives from DatabaseTester class directly or indirectly.
    * </p>
    */
   protected void doMagicClazzFind()
@@ -849,10 +832,9 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Setzen der Clazz Instanz für das Detektieren das Ziel-Package
-   * Verzeichnisses
-   *
-   * @param clazz Die Class Instanz
+   * Sets the clazz instance to detect the target package directory.
+   * 
+   * @param clazz The Class instance.
    */
   protected void setClazz(Class<?> clazz)
   {
@@ -861,9 +843,9 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Setter
-   *
-   * @param loadedDS die DataSet Instanz des als letzten
-   *        eingepspielten DataSets
+   * 
+   * @param loadedDS the dataset instance of the last inserted
+   *        dataset.
    */
   protected void setLastInsertedDataSet(IDataSet loadedDS) throws Exception
   {
@@ -878,7 +860,7 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Clear, in Case Dataset is SOO big
+   * Clear, in case dataset is too big
    */
   protected void clearLastInsertedDataSet()
   {
@@ -891,14 +873,18 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Vergleich den Aktuellen Zustand der Datenbank Tablle mit der
-   * gegebenen XML Datei. Hauptsächlich eine convenient Methode. Siehe
-   * für weitere Datenbank assert Methoden {@link DBAssertion}.
-   *
-   * @param xmlFileRelativToClass
-   * @param tableName
-   * @param modifiers
-   * @throws Exception
+   * Compares the current state of the database with the given XML
+   * file. Convenient method. For more database assertion methods see
+   * {@link DBAssertion}.
+   * 
+   * @param xmlFileRelativToClass XML file relative to the package. If
+   *        a prefix is set via {@link #setClassPathPrefix(String)} it
+   *        is put in front.
+   * @param tableName The name of the table.
+   * @param modifiers Optional list of {@link IDataSetModifier} that
+   *        can manipulate the content of the loaded dataset.
+   * 
+   * @throws Exception Error that occurs while loading or comparison.
    */
   public void assertTable(String xmlFileRelativToClass, String tableName, IDataSetModifier... modifiers)
       throws Exception
@@ -999,10 +985,10 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Get the actual row count of a table.
-   *
+   * 
    * @param tableName the table name
    * @return the count 0 or greater not null
-   *
+   * 
    * @throws Exception
    */
   public int getRowCount(String tableName) throws Exception
@@ -1100,7 +1086,8 @@ public class DatabaseTesterBase<MY_TYPE>
         String clazzName = item.getClassName();
 
         // fix for Spock tests
-        if (clazzName.startsWith("sun.reflect")) {
+        if (clazzName.startsWith("sun.reflect"))
+        {
           continue;
         }
 
@@ -1127,7 +1114,7 @@ public class DatabaseTesterBase<MY_TYPE>
     }
     catch (Throwable t)
     {
-      // verschlucken
+      // swallow
     }
     return potentialClazz;
   }
@@ -1147,7 +1134,7 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Set a config feature on the underlying DBUnit. See
    * {@link DatabaseConfig} for possile features.
-   *
+   * 
    * @param feature feature id
    * @param value activate deactivate feature
    * @return this
@@ -1170,7 +1157,7 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Set a config property on the underlying DBUnit. See
    * {@link DatabaseConfig} for possile features.
-   *
+   * 
    * @param name of the property
    * @param value activate deactivate feature
    * @return this

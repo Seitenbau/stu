@@ -26,21 +26,21 @@ import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.modifier.IDataSetReplacer;
 
 /**
- * Util-Klasse Laden/Modifizieren von DataSet Instanzen.
+ * Util class to load/modify dataset instances.
  */
 public class DataSetUtil
 {
   /**
-   * Lädt die angegebenen Datei als XML DataSet
+   * Load the given file as XML dataset.
    * 
-   * @param fileName Dateiname, relativ zum projekt-root.
+   * @param fileName Filename, relative to project root.
    * 
-   * @return Das gelesene DataSet
+   * @return The dataset read from the file.
    * 
-   * @throws IOException Datei-IO Fehler.
+   * @throws IOException File IO failure.
    * 
-   * @throws org.dbunit.dataset.DataSetException Fehler beim
-   *         interpretieren des Inhaltes als XMLDataSet.
+   * @throws org.dbunit.dataset.DataSetException FError while trying
+   *         to interpret content as XMLDataset.
    */
   static public IDataSet getDataSetFromFile(String fileName) throws IOException, org.dbunit.dataset.DataSetException
   {
@@ -48,21 +48,20 @@ public class DataSetUtil
   }
 
   /**
-   * Lädt die angegebenen Datei als XML DataSet. Allerdings wird als
-   * 'root'- Verzeichnis der 'Classpath + clazz.package' genutzt.
+   * Load the given file as XML dataset. As root directory hte
+   * 'classpath + clazz.package' is used.
    * 
-   * @param clazz Class Instanz aus dem der Package Pfad ausgelesen
-   *        wird.
+   * @param clazz the class instance the package path is read from.
    * 
-   * @param filename Dateiname der zu ladenden XML Datei. Relativ zum
-   *        'ClassPath + PackagePath'
+   * @param filename Filename of the XML file that should be read.
+   *        Relative to 'classpath + packagepath'.
    * 
-   * @param modifiers Optimale Liste an Modifiern die nach dem Laden
-   *        auf dem DataSet angewandt werden.
+   * @param modifiers Optional list of modifiers that should be
+   *        applied to the dataset after it was read.
    * 
-   * @return Das geladene DataSet
+   * @return The read dataset.
    * 
-   * @throws Exception Fehler beim Laden.
+   * @throws Exception Error while reading file.
    */
   static public IDataSet getDataSetFromClasspath(Class<?> clazz, String filename, IDataSetModifier... modifiers)
       throws Exception
@@ -77,7 +76,7 @@ public class DataSetUtil
     URL url = clazz.getResource(resUrl);
     if (url == null)
     {
-      throw new FileNotFoundException("Datei " + resUrl + " existiert nicht");
+      throw new FileNotFoundException("File " + resUrl + " does not exist.");
     }
     XmlDataSet dataSet = new XmlDataSet(clazz.getResourceAsStream(resUrl));
 
@@ -85,19 +84,18 @@ public class DataSetUtil
   }
 
   /**
-   * Verarbeitet die optimale Liste an Modifiern auf dem gegebenen
-   * DataSet.
+   * Processes the optional list of modifiers on the given dataset.
    * 
-   * @param orginalDataSet Das DataSet auf welches die Modifier
-   *        angewandt werden sollen.
+   * @param orginalDataSet The dataset the modifiers should be applied
+   *        to.
    * 
-   * @param modifiers Optimale Liste an Modifiern.
+   * @param modifiers Optional list of modifiers.
    * 
-   * @return Ein modifiziertes Dataset oder falls keine Modifier
-   *         angegeben waren bzw. {@code null} einfach den
-   *         orginalDataSet.
+   * @return A modified dataset. If no modifiers exist or {@code null}
+   *         is provided the original dataset without modifications is
+   *         returned.
    * 
-   * @throws Exception Fehler beim Ausführen der Modifier.
+   * @throws Exception Error while processing modifier.
    */
   static public IDataSet modifyDataSet(IDataSet orginalDataSet, IDataSetModifier... modifiers) throws Exception
   {
@@ -105,7 +103,7 @@ public class DataSetUtil
     {
       return orginalDataSet;
     }
-    // Verarbieten der Replacements
+    // Process replacements
     ReplacementDataSet replacedDataset = new ReplacementDataSet(orginalDataSet);
     for (IDataSetModifier modifier : modifiers)
     {
@@ -122,21 +120,19 @@ public class DataSetUtil
   }
 
   /**
-   * Entfernt im übergebenen DataSet den Inhalt aus den angegebenen
-   * Tabellen.
+   * Removes the content from the specified tables for the given
+   * dataset.
    * 
-   * @param theDataSet Das DataSet in welchem die Tabellen zu leeren
-   *        sind. Nicht {@code null}
+   * @param theDataSet The dataset in which tables should be
+   *        truncated. Not {@code null}.
    * 
-   * @param tableName Optimale Liste an Tabellennamen deren Inhalt
-   *        entfernt werden soll.
-   * @return Das modifizeirte DataSet mit den geleerten Tabellen.
-   *         Wurde keine Liste an Tabellennamen übergeben, oder ist
-   *         diese {@code null} dann wird der unmodifizierte DataSet
-   *         zurückgeliefert.
+   * @param tableName Optional list of table names that should be
+   *        truncated.
+   * @return The modified dataset with the truncated tables. If not
+   *         list of tablenames is provided or list {@code null} the
+   *         datset is returned without modifications.
    * 
-   * @throws Exception Fehler die Fähren der Filterung aufgetreten
-   *         sind.
+   * @throws Exception Error occurred while dataset was modified.
    */
   public static IDataSet filterOutTableRows(IDataSet theDataSet, String... tableName) throws Exception
   {
@@ -167,15 +163,15 @@ public class DataSetUtil
   }
 
   /**
-   * Schreibt das gegebene DataSet in eine Datei.
+   * Writes the given dataset into a file.
    * 
-   * @param snapshot Der zu speichernde Abzug
+   * @param snapshot The dataset.
    * 
-   * @param fileName Die Ziel-Datei
+   * @param fileName The target file.
    * 
-   * @throws DataSetException Fehler im DataSet
+   * @throws DataSetException Error inside the dataset.
    * 
-   * @throws IOException Fehler beim Schreiben der Datei.
+   * @throws IOException Error while writing file.
    */
   public static void saveDataSet(IDataSet snapshot, String fileName) throws DataSetException, IOException
   {
@@ -185,7 +181,7 @@ public class DataSetUtil
   }
 
   /**
-   * Speichert die gegebene Datenbank in eine XML Datei.
+   * Stores the entire database into a XML file.
    * 
    * @param driver
    * @param url
@@ -208,13 +204,13 @@ public class DataSetUtil
   }
 
   /**
-   * Speichert die gegebene Datenbank in eine XML Datei.
+   * Stores the entire database into a XML file.
    * 
-   * @param tester Datenbank deren Inhalt gedumpt wird.
+   * @param tester Database that should be dumped.
    * 
-   * @param fileName Dateiename der zu speichernden Datei.
+   * @param fileName Name of the file.
    * 
-   * @throws Exception bei einem Fehler.
+   * @throws Exception If an error occurs while storing the database to a file.
    */
   public static void dumpDatabase(DatabaseTesterBase<?> tester, String fileName) throws Exception
   {
@@ -267,7 +263,7 @@ public class DataSetUtil
       return orginalDataSet;
     }
     ReplacementDataSet replacedDataset = new ReplacementDataSet(orginalDataSet);
-    // Verarbeiten von Filtern
+    // Process filers
     IDataSet current = replacedDataset;
     for (IDataSetModifier modifier : modifiers)
     {

@@ -9,7 +9,7 @@ public abstract class AbstractValueValidator extends Replacer implements IDataSe
   public AbstractValueValidator(String markerString)
   {
     super(markerString, null);
-    // Da this nicht im super() Aufruf erlaubt ist.
+    // set replace value because it is not allowed in super() call
     setReplaceValue(this);
   }
 

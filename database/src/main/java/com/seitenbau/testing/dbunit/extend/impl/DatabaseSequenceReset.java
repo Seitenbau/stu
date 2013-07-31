@@ -47,7 +47,7 @@ public abstract class DatabaseSequenceReset<THAT> implements DatabaseTesterClean
   }
 
   /**
-   * By default exception occuring when droping a sequence get
+   * By default exception occurring when dropping a sequence get
    * ignored!
    * 
    * @param stop set to true

@@ -288,11 +288,6 @@ public class Table
       return _dataSet.getNames().getRowBuilderClass(foreignColumn.getTable());
     }
 
-//    public String getForeignRefClass()
-//    {
-//      return _dataSet.getNames().getRefClass(foreignAssociationColumn.getTable());
-//    }
-
     public String getForeignRefVariable()
     {
       return _dataSet.getNames().getRefVariable(foreignAssociationColumn.getTable());

@@ -57,7 +57,7 @@ public class TransformDatabase
 
   /**
    * Constructor.
-   * @param configuration TODO
+   * @param configuration
    */
   public TransformDatabase(TransformDatabaseConfigurationBuilder builder)
   {

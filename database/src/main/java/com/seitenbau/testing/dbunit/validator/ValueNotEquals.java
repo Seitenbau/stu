@@ -3,7 +3,7 @@ package com.seitenbau.testing.dbunit.validator;
 import junitx.framework.Assert;
 
 /**
- * DBUnit Value Validator if a given &lt;value/&gt; ist NOT equal to
+ * DBUnit Value Validator if a given &lt;value/&gt; is NOT equal to
  * the given Object.
  */
 public class ValueNotEquals extends AbstractValueValidator
@@ -12,7 +12,7 @@ public class ValueNotEquals extends AbstractValueValidator
   protected Object fNotEquals;
 
   /**
-   * DBUnit Value Validator if a given <value/> ist NOT equal to the
+   * DBUnit Value Validator if a given <value/> is NOT equal to the
    * given Object.
    * 
    * @param notEquals A Object to which the real Database value will
@@ -25,7 +25,7 @@ public class ValueNotEquals extends AbstractValueValidator
   }
 
   /**
-   * DBUnit Value Validator if a given <value/> ist NOT equal to the
+   * DBUnit Value Validator if a given <value/> is NOT equal to the
    * given Object.
    * 
    * @param markerString Marker in the dbunit XML Dataset File which

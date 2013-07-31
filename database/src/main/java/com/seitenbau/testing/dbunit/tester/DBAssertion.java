@@ -26,17 +26,17 @@ import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 public class DBAssertion
 {
   /**
-   * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
-   * XML Datei spezifziert wurden.
-   *
-   * @param tableName Der Tabellennamen. Darf nicht Null sein und
-   *        nicht leer.
-   *
-   * @param expectedDataSetFile Die XML Datei mit dem vergleichs
-   *        DataSet, darf nicht null oder leer sein.
-   *
-   * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
-   *         aufgtetten ist.
+   * Compares the content of a table with the dataset specified inside
+   * a XML file.
+   * 
+   * @param tableName The name of the table. Must not be {@code null}
+   *        or empty.
+   * 
+   * @param expectedDataSetFile The XML file with the dataset that
+   *        should be used for comparison. Must not be {@code null} or
+   *        empty.
+   * 
+   * @throws Exception If an error occurs during comparison.
    */
   static public void assertTable(IDatabaseConnection databaseConnection, DateComparator comparator, String tableName,
       String expectedDataSetFile) throws Exception
@@ -72,17 +72,17 @@ public class DBAssertion
   }
 
   /**
-   * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
-   * XML Datei spezifziert wurden.
-   *
-   * @param tableName Der Tabellennamen. Darf nicht Null sein und
-   *        nicht leer.
-   *
-   * @param expectedDataSetFile Die XML Datei mit dem vergleichs
-   *        DataSet, darf nicht null oder leer sein.
-   *
-   * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
-   *         aufgtetten ist.
+   * Compares the content of a table with the dataset specified inside
+   * a XML file.
+   * 
+   * @param tableName The name of the table. Must not be {@code null}
+   *        or empty.
+   * 
+   * @param expectedDataSetFile The XML file with the dataset that
+   *        should be used for comparison. Must not be {@code null} or
+   *        empty.
+   * 
+   * @throws Exception If an error occurs during comparison.
    */
   static public void assertTable(IDatabaseConnection databaseConnection, String tableName, String expectedDataSetFile)
       throws Exception
@@ -99,18 +99,17 @@ public class DBAssertion
   }
 
   /**
-   * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
-   * XML Datei spezifziert wurden. Weiter wird durch Kommas getrennt
-   * die felder die für den Verglaich relevant sind angegeben.
-   *
-   * @param tableName Der Tabellen Name. Darf nicht Null oder leer
-   *        sein.
-   * @param expectedDataSetFile Die Datei die das XML DataSet für den
-   *        Vergleich beinhaltet. Darf nicht Null oder leer sein.
-   * @param fields Die Felder die für den Vergleich relvant sind durch
-   *        Kommas getrennt. Darf nicht Null oder leer sein.
-   * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
-   *         aufgetretten ist.
+   * Compares the content of a table with the dataset specified inside
+   * a XML file.
+   * 
+   * @param tableName The name of the table. Must not be {@code null}
+   *        or empty.
+   * @param expectedDataSetFile The XML file with the dataset that
+   *        should be used for comparison. Must not be {@code null} or
+   *        empty.
+   * @param fields The fields that should be considered for
+   *        comparison.Mus not be {@code null} or empty.
+   * @throws Exception If an error occurs during comparison.
    */
   static public void assertTable(IDatabaseConnection databaseConnection, String tableName, String expectedDataSetFile,
       String... fields) throws Exception
@@ -121,13 +120,11 @@ public class DBAssertion
   }
 
   /**
-   * Methode erstellt aus einem Array von Strings Einen Komma
-   * getrennten String aus createSQLFields("NAME", "Title") wird =>
-   * "Name, Title"
-   *
-   * @param fields Die einzelenen String Felder
-   * @return Als Rückgabe wird ein Komma getrennter String zurück
-   *         geben der die übergeben Felder beinhaltet.
+   * Creates a comma separated String from an array of Strings.
+   * createSQLFields("NAME", "Title") => "Name, Title"
+   * 
+   * @param fields the single field Strings
+   * @return The fields as comma sepatated String.
    */
   static protected String createSQLFields(String... fields)
   {
@@ -146,17 +143,17 @@ public class DBAssertion
   }
 
   /**
-   * Assert vergleicht eine Tabelle mit Test Daten aus einem DataSet.
-   * Wird genutzt wenn nicht alle Felder genutzt werden sollen.
-   *
-   * @param tableName Name der zuvergleichenden Tabelle
-   * @param expectedDataSet Die Testdaten auf die Tabelle geprüft
-   *        wird.
-   * @param fields Die Felder für den Filter.
-   * @throws Exception Wird geworfen wenn beim Vergleich ein Fehler
-   *         aufgtretten ist oder die Tabelle nicht die Testdaten
-   *         beinhaltet.
-   *
+   * Compares the content of a table with the dataset specified inside
+   * a XML file. Should be used if not all fields should be compared.
+   * 
+   * @param tableName The name of the table. Must not be {@code null}
+   *        or empty.
+   * @param expectedDataSet The testdata that should be used for
+   *        comparison.
+   * @param fields The fields for the filter.
+   * @throws Exception If an error occurs during comparison or table
+   *         does not contain the testdata.
+   * 
    */
   static public void assertTable(IDatabaseConnection databaseConnection, String tableName, IDataSet expectedDataSet,
       String... fields) throws Exception
@@ -176,15 +173,15 @@ public class DBAssertion
   }
 
   /**
-   * Assert Tabelle vergleicht eine Tabelle mit den Daten die in einer
-   * XML Datei spezifziert wurden.
-   *
-   * @param tableName Der Tabellennamen. Darf nicht Null sein und
-   *        nicht leer.
-   * @param expectedDataSetFile Die XML Datei mit dem vergleichs
-   *        DataSet, darf nicht null oder leer sein.
-   * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
-   *         aufgtetten ist.
+   * Compares the content of a table with the dataset specified inside
+   * a XML file.
+   * 
+   * @param tableName The name of the table. Must not be {@code null}
+   *        or empty.
+   * @param expectedDataSetFile The XML file with the dataset that
+   *        should be used for comparison. Must not be {@code null} or
+   *        empty.
+   * @throws Exception If an error occurs during comparison.
    */
   static public void assertTable(IDatabaseConnection databaseConnection, String tableName, IDataSet dataSet)
       throws Exception
@@ -202,14 +199,14 @@ public class DBAssertion
   }
 
   /**
-   * Überprüft eine Tabelle in der DB mit dem übergebenen DatenSet. Es
-   * werden dabei die Spalten gefilter und nur die im DatSet geprüft.
-   *
-   * @param tableName Der Name der Tabelle.
-   * @param expectedDataSet das Daten mit dem erwartet Zustand der
-   *        Tabelle
-   * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
-   *         auftritt.
+   * Compares the content of a table with the provided dataset. The
+   * columns are filtered and only columns that exist inside the
+   * dataset are evaluated.
+   * 
+   * @param tableName The name of the table.
+   * @param expectedDataSet the data with the expected state of the table.
+   * 
+   * @throws Exception If an error occurs during comparison.
    */
   static public void assertDataSetTable(IDataSet actualDataSet, String tableName, IDataSet expectedDataSet)
       throws Exception
@@ -223,15 +220,15 @@ public class DBAssertion
   }
 
   /**
-   * Überprüft alle Tabellen in der DB gegen das übergebenen DatenSet.
-   * Es werden nur die Spalten geprüft welche auch im DatSet vorhanden
-   * sind.
-   *
-   * @param expectedDataSet das Daten mit dem erwartet Zustand der
-   *        Tabelle
-   * @param replacers
-   * @throws Exception Wird geworfen wenn ein Fehler beim Vergleich
-   *         auftritt.
+   * Compares the content of a table with the provided dataset. The
+   * columns are filtered and only columns that exist inside the
+   * dataset are evaluated.
+   * 
+   * @param actualDataSet the actual data set
+   * @param expectedDataSet the data with the expected state of the
+   *        table.
+   * @param modifiers the modifiers
+   * @throws Exception If an error occurs during comparison.
    */
   static public void assertDataSet(IDataSet actualDataSet, IDataSet expectedDataSet, IDataSetModifier... modifiers)
       throws Exception
@@ -268,18 +265,16 @@ public class DBAssertion
   }
 
   /**
-   * @param sorted die Tabellen und Spalten sind nicht sortiert und
-   *        müssen zuerst sortiert werden
-   * @param actualDataSet
-   * @param expectedDataSet die Daten mit dem erwartet Zustand der
-   *        Tabellen
-   * @param modifiers Modifikatoren
-   * @throws Exception
+   * @param sorted determines if the tables and columns are sorted. If false the data is sorted before assertion.
+   * @param actualDataSet the actual dataset
+   * @param expectedDataSet the dataset with the expected state of the tables.
+   * @param modifiers the optional modifiers.
+   * @throws Exception If an error occurs during comparison.
    */
   public static void assertDataSet(boolean sorted, IDataSet actualDataSet, IDataSet expectedDataSet,
       IDataSetModifier[] modifiers) throws Exception
   {
-    // Ausfiltern nicht konfigurierter Spalten
+    // Filter columns not configured
     DefaultDataSet actualFilteredDataSet = new DefaultDataSet();
     DefaultDataSet expectedFilteredDataSet = new DefaultDataSet();
     for (ITableIterator tableIterator = expectedDataSet.iterator(); tableIterator.next();)
@@ -313,7 +308,7 @@ public class DBAssertion
 
   private static IDataSet createSortedDataSet(IDataSet originalDataSet) throws DataSetException
   {
-    // das Flag "useComparable" muss für alle Tabellen gesetzt werden
+    //  the Flag "useComparable" must be set for all tables
     DefaultDataSet resultDataSet = new DefaultDataSet();
     for (ITableIterator i = originalDataSet.iterator(); i.next();)
     {

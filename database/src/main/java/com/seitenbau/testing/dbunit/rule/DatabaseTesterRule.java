@@ -67,7 +67,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
   }
 
   /**
-   * Create a new DatabaseTesterRule by using the configuation via
+   * Create a new DatabaseTesterRule by using the configuration via
    * TestConfiguration
    *
    * <pre>
@@ -314,7 +314,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    * The default DefaultDataset used for cleanInsert when no
    * {@link DatabaseSetup} annotation is found on the Test
    * class/method. This is a future, so the actual creation can be
-   * postboned.
+   * post bounded.
    *
    * @param future the default dataset as Future
    * @return this
@@ -329,7 +329,7 @@ public class DatabaseTesterRule extends DatabaseTesterBase<DatabaseTesterRule> i
    * The default DefaultDatasetFactory used for cleanInsert when no
    * {@link DatabaseSetup} annotation is found on the Test
    * class/method. This is a future, so the actual creation can be
-   * postboned.
+   * post bounded.
    *
    * @param factory the default dataset factory as Future
    * @return this

@@ -14,7 +14,7 @@ public class DbCompare
 {
 
   /**
-   * Prueft DB Feld auf ungefaehr jetzt (+-15s)
+   * Fuzzy checks the database field to the current time (+-15s).
    */
   public static Date warp(DateBuilder datum2wrap)
   {
@@ -22,7 +22,7 @@ public class DbCompare
   }
 
   /**
-   * Prueft DB Feld auf ungefaehr jetzt (+-15s)
+   * Fuzzy checks the database field to the current time (+-15s).
    */
   public static Date jetzt()
   {
@@ -30,8 +30,8 @@ public class DbCompare
   }
 
   /**
-   * Prueft DB Feld auf ungefaehr jetzt (+-15s). Der Milisekunden
-   * Anteil ist 0.
+   * Fuzzy checks the database field to the current time (+-15s).
+   * Milliseconds are set to 0.
    */
   public static Date jetztOhneMS()
   {
@@ -40,8 +40,8 @@ public class DbCompare
   }
 
   /**
-   * Prueft DB Feld auf ungefaehr jetzt (+-15s). Der Zeitaneilt ist
-   * "00:00:00.000".
+   * Fuzzy checks the database field to the current time (+-15s).
+   * HH:mm:ss.SSS time is set to "00:00:00.000".
    */
   public static Date jetztNurDatum()
   {
@@ -58,7 +58,8 @@ public class DbCompare
   }
 
   /**
-   * Prueft DB Feld auf datum (+-15s) Format : "dd.MM.yyyy HH:mm.ss"
+   * Fuzzy checks the database field to the current time (+-15s).
+   * Format : "dd.MM.yyyy HH:mm.ss"
    */
   public static Date datum(String datum) throws ParseException
   {
@@ -74,7 +75,7 @@ public class DbCompare
   }
 
   /**
-   * Prueft DB Feld auf datum (+-15s)
+   * Fuzzy checks the database field to the current time (+-offset).
    */
   public static Date datum(Date now, long offsetInSeconds)
   {
@@ -83,7 +84,7 @@ public class DbCompare
   }
 
   /**
-   * Prueft DB Feld ungefaehr jetzt plus Nsekunden (+-30s)
+   * Fuzzy checks the database field to the given date (+-offset).
    */
   public static Date datum(long offsetInSeconds)
   {
@@ -131,8 +132,8 @@ public class DbCompare
 
         if (diff > fMinusMilliseconds)
         {
-          throw new AssertionError("Zeitstempel - Range Vergleich : erwartete " + actualValue + " nicht mehr als "
-              + fMinusMilliseconds + " ms vor " + new Date(ticksExpect) + ", aber war " + diff + " ms früher");
+          throw new AssertionError("Timestamp - Range Comparison : expected " + actualValue + " less than "
+              + fMinusMilliseconds + " ms vor " + new Date(ticksExpect) + ", but was " + diff + " ms früher");
         }
       }
       if (fPlusMilliseconds != null)
@@ -141,8 +142,8 @@ public class DbCompare
 
         if (diff > fPlusMilliseconds)
         {
-          throw new AssertionError("Zeitstempel - Range Vergleich : erwartete " + actualValue + " nicht mehr als "
-              + fPlusMilliseconds + " ms nach " + new Date(ticksExpect) + ", aber war " + diff + " ms später");
+          throw new AssertionError("Timestamp - Range Comparison : expected " + actualValue + " less than "
+              + fPlusMilliseconds + " ms after " + new Date(ticksExpect) + ", but was " + diff + " ms later");
         }
       }
       return true;
@@ -218,8 +219,6 @@ public class DbCompare
       }
       else
       {
-        // TODO wenn kein Date ? also bsp null -> Fehler Werfen
-        // diff von hier zum obrigen instanceof
         Assert.fail("Column was not of Type Date");
         return 0;
       }

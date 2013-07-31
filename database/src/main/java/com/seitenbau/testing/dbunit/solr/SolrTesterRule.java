@@ -40,36 +40,35 @@ import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
 import com.seitenbau.testing.dbunit.tester.DBAssertion;
 
 /**
- * Rule für das Einspielen der Testdaten in Solr.
+ * Rule to insert the testdata into Solr.
  * 
- * Die <b>solrUrl</b> muss gesetzt sein, und falls nicht alle Felder
- * in Solr für einen Vergleich herangezogen werden sollen, ebenfalls
- * das Attribut <b>tableMetadata</b>.
- * 
- * @author rnoerenberg
- * @version $Id: SolrTesterRule.java 97363 2012-12-04 12:03:58Z
- *          rnoerenberg $
+ * The <b>solrUrl</b> must be set.
+ * <p>
+ * If not all fields should be used inside Solr for comparison the
+ * <b>tableMetadata</b> attribute must be set in addition.
  * 
  */
 public class SolrTesterRule implements MethodRule
 {
-  /** Der Standard-Suchstring für alle Dokumente im Solr-Index. */
+  /** Default search string for all documents inside the Solr index. */
   private static final String SOLR_DEFAULT_QUERY = "*:*";
 
   private static final Logger LOG = LoggerFactory.getLogger(SolrTesterRule.class);
 
   /**
-   * Class der 'Umgebung' Benötigt zum finden des korrekten Packages
-   * beim Laden von XML Dateien.
+   * Class of the 'environment'. Required to find related packages
+   * while loading XML files.
    */
   private Class<?> fClazz;
 
   /**
-   * Das Objekt der Testklasse, in die Objekte injected werden.
+   * Object of the test class. Other objects are injected.
    */
   private Object _target;
 
-  /** Der SolrServer für die Verbindung zu Solr. */
+  /**
+   * The Solr server to establish the connection to Solr.
+   * */
   private SolrServer solrServer;
 
   private String fUrl;
@@ -87,15 +86,14 @@ public class SolrTesterRule implements MethodRule
   private String dataSetTableName;
 
   /**
-   * Die Metadaten der Tabelle, die verglichen werden sollen.
+   * The metadata of the table that should be compared.
    */
   private DefaultTableMetaData dataSetTableMetadata;
 
   /**
-   * Erzeugt eine Instanz von {@link SolrTesterRule} und gibt diese
-   * zurück.
+   * Creates an instance of {@link SolrTesterRule} and returns it.
    * 
-   * @return die erzeugte Instanz.
+   * @return the new instance
    */
   public static SolrTesterRule create()
   {
@@ -103,15 +101,13 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Setzt den Namen der Tabelle, die für das Erstellen des DataSets
-   * beim Auslesen der Daten aus Solr genutzt wird.
+   * Sets the table name, that is used for creation of the data set while reading data from Solr.
    * 
    * <p>
-   * Achtung: Ist der Parameter <b>tableMetadata</b> gesetzt, wird
-   * dieser Parameter ignoriert.
+   * Attention: If the param <b>tableMetadata</b> is set, this param is ignored.
    * </p>
    * 
-   * @param tableName der Name der Tabelle.
+   * @param tableName the name of the table.
    * @return
    */
   public SolrTesterRule tableName(String tableName)
@@ -121,12 +117,12 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Erstellt aus dem Tabellennamen und den Spalten die zu
-   * verwendenden Tabellen-Metadaten.
+   * Creates table metadata based on the table name and corresponding
+   * columns.
    * 
-   * @param tableName der Tabellenname.
-   * @param columns die Spalten der Tabelle.
-   * @return die aktuelle Instanz.
+   * @param tableName the table name.
+   * @param columns the columns of the table.
+   * @return the current instance.
    */
   public SolrTesterRule tableMetadata(String tableName, Column[] columns)
   {
@@ -135,17 +131,16 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Setzt die URL, die für den Aufbau der Verbindung zu Solr genutzt
-   * wird.
+   * Sets the URL, that is used to establish the connection to Solr.
    * 
-   * @param solrUrl die URL zur Solr-Instanz.
-   * @return die aktuelle Instanz.
+   * @param solrUrl the URL to the Solr instance.
+   * @return the current instance.
    */
   public SolrTesterRule solrUrl(String solrUrl)
   {
     if (StringUtils.isBlank(solrUrl))
     {
-      throw new IllegalArgumentException("Parameter solrUrl muss " + "gesetzt und darf nicht leer sein!");
+      throw new IllegalArgumentException("Parameter solrUrl must be set and must not be empty!");
     }
     this.fUrl = solrUrl;
     init(null);
@@ -153,11 +148,10 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Fügt die übergebenen Modifier der Liste an Default-Modifiern
-   * hinzu.
+   * Adds the given modifiers to the list of default modifiers.
    * 
-   * @param defaultModifiers Die hinzuzufügenden Modifier.
-   * @return die aktuelle Instanz.
+   * @param defaultModifiers the modifiers that should be added.
+   * @return the current instance.
    */
   public SolrTesterRule defaultModifiers(IDataSetModifier... defaultModifiers)
   {
@@ -253,8 +247,9 @@ public class SolrTesterRule implements MethodRule
 
   /**
    * Schließt die aktuelle Verbindung, falls nötig.
+   * Closes the current connection if required.
    * 
-   * @throws Exception Fehler die beim Schließen aufgetreten sind.
+   * @throws Exception Error that occurrs while closing connection.
    */
   protected void close() throws Exception
   {
@@ -265,19 +260,18 @@ public class SolrTesterRule implements MethodRule
   {
     if (fClazz == null)
     {
-      throw new IllegalStateException("Das Feld fClass ist null. "
-          + "Vermutlich wurde dem Konstrkutor keine Class Instanz übergeben.");
+      throw new IllegalStateException("The field fClass is null. "
+          + "Probably no class instance was passed to the constructor.");
     }
     return fClazz;
   }
 
   /**
-   * Versucht die Class-Instanz zu finden von der Aufrufenden Klasse.
+   * Tries to find the class instance of the calling class.
    * <p>
-   * Hierzu wird der Stack durchlaufen bis eine nicht von
-   * DatabaseTester abgeleitete Klasse gefunden wird. Daher schlägt
-   * dieser Code fehl wenn die Test-Klasse direkt oder indirekt von
-   * DatabaseTester abgeleitet ist!
+   * Traverses the stack until a class is found that does not derive
+   * from DatabcaeTester class. The method fails if the test class
+   * derives from DatabaseTester class directly or indirectly.
    * </p>
    */
   protected void doMagicClazzFind()
@@ -300,10 +294,9 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Setzen der Clazz Instanz für das Detektieren das Ziel-Package
-   * Verzeichnisses
+   * Sets the clazz instance to detect the target package directory.
    * 
-   * @param clazz Die Class Instanz
+   * @param clazz The Class instance.
    */
   protected void setClazz(Class<?> clazz)
   {
@@ -345,8 +338,7 @@ public class SolrTesterRule implements MethodRule
     }
     catch (Throwable t)
     {
-      LOG.debug(method + "Verschluckt.");
-      // verschlucken
+      LOG.debug(method + "Swallowed up.");
     }
     return potentialClazz;
   }
@@ -380,12 +372,11 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Hilfsmethode welche das Laden des DataSets und ein CLEAN_INSERT
-   * wrappt.
+   * Helper method that wraps dataset loading and the CLEAN_INSERT.
    * 
    * @param dataset
    * 
-   * @param modifiers Zusätzlich werden die Default-modifier zu
+   * @param modifiers additional modifiers.
    * @throws Exception
    */
   public void cleanInsert(IDataSet dataset, IDataSetModifier... modifiers) throws Exception
@@ -470,7 +461,7 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Löscht alle Inhalte aus dem Solr-Index.
+   * Removes all content of the Solr index.
    * 
    * @throws Exception
    */
@@ -489,13 +480,11 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Hilfsmethode welche das Laden des DataSets und ein CLEAN_INSERT
-   * wrappt.
+   * Helper method that wraps dataset loading and the CLEAN_INSERT.
    * 
-   * @param datasetFactory Factory welche das eigentliche Dataset
-   *        zurückliefert
+   * @param datasetFactory Factory that returns the actual dataset.
    * 
-   * @param modifiers Zusätzlich werden die Default-modifier zu
+   * @param modifiers additional modifiers.
    * @throws Exception
    */
   public void cleanInsert(DbUnitDatasetFactory datasetFactory, IDataSetModifier... modifiers) throws Exception
@@ -521,9 +510,9 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Setzt das Default-Datenset.
+   * Sets the default dataset.
    * 
-   * @param datasetFactory das Default-Datenset.
+   * @param datasetFactory the default dataset.
    * @return
    */
   public SolrTesterRule setDefaultDataSet(DbUnitDatasetFactory datasetFactory)
@@ -534,10 +523,9 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Setzt das übergebene Datenset als zuletzt eingespieltes Datenset.
+   * Sets the given ddataset as the last inserted dataset.
    * 
-   * @param loadedDS die DataSet Instanz des als letzten eingespielten
-   *        DataSets.
+   * @param loadedDS the dataset instance of the last inserted dataset.
    */
   protected void setLastInsertedDataSet(IDataSet loadedDS) throws Exception
   {
@@ -545,12 +533,12 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Methoden zum Zugriff auf die default-Modifier.
+   * Method to access the default modifiers.
    * 
-   * @param modifiers Optimale zusätzliche Liste and Modifiern
+   * @param modifiers optional additional list of modifiers.
    * 
-   * @return Liefert die optimal übergebenen Modifier sowie die evtl.
-   *         gesetzen Default Modifier als Array zurück.
+   * @return Returns the provided modifiers and the default modifiers
+   *         if set.
    */
   public IDataSetModifier[] getModifiers(IDataSetModifier... modifiers)
   {
@@ -568,14 +556,13 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Fügt einen Modifier zur Liste der Default modifier hinzu.
+   * Adds a modifier to the list of default modifiers.
    * <p>
-   * Default Modifier werden immer beim Laden von Datensätzen( bspw.
-   * über {@link #getDataSet(String, IDataSetModifier...)} )
-   * ausgeführt.
+   * Default modifiers are used while loading datasets (e.g.
+   * {@link #getDataSet(String, IDataSetModifier...)}).
    * </p>
    * 
-   * @param aModifier Der hinzuzufügende Modifier.
+   * @param aModifier The modifier that should be added.
    */
   public SolrTesterRule addDefaultModifier(IDataSetModifier aModifier)
   {
@@ -588,14 +575,13 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Fügt einen Modifier zur Liste der Default modifier hinzu.
+   * Adds a modifier to the list of default modifiers.
    * <p>
-   * Default Modifier werden immer beim Laden von Datensätzen( bspw.
-   * über {@link #getDataSet(String, IDataSetModifier...)} )
-   * ausgeführt.
+   * Default modifiers are used while loading datasets (e.g.
+   * {@link #getDataSet(String, IDataSetModifier...)}).
    * </p>
    * 
-   * @param modifiers Die hinzuzufügenden Modifier.
+   * @param aModifier The modifier that should be added.
    */
   public SolrTesterRule addDefaultModifier(IDataSetModifier... modifiers)
   {
@@ -636,12 +622,12 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Vergleicht die Datenbank mit dem DataSet welches als letztes über
-   * die cleanInsert Methode eingefügt wurde. Abgeleitete Klassen
-   * könnten den letzten Datensatz aber evlt. auch geändert haben
-   * durch einen Aufruf von {@link #setLastInsertedDataSet(IDataSet)}
+   * Compares tha database with the last inserted dataset that was
+   * inserted via the cleanInsert method. Maybe derived classes
+   * changed the last dataset by calling
+   * {@link #setLastInsertedDataSet(IDataSet)}.
    * 
-   * @throws Exception Fehler im Vergleich
+   * @throws Exception Error during comparison.
    */
   public void assertDataBaseStillTheSame() throws Exception
   {
@@ -649,16 +635,16 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Vergleicht die Datenbank mit dem DataSet welches als letztes über
-   * die cleanInsert Methode eingefügt wurde. Abgeleitete Klassen
-   * könnten den letzten Datensatz aber evlt. auch geändert haben
-   * durch einen Aufruf von {@link #setLastInsertedDataSet(IDataSet)}
+   * Compares tha database with the last inserted dataset that was
+   * inserted via the cleanInsert method. Maybe derived classes
+   * changed the last dataset by calling
+   * {@link #setLastInsertedDataSet(IDataSet)}.
    * 
-   * @throws Exception Fehler im Vergleich
+   * @throws Exception Error during comparison.
    */
   public void assertDataBaseStillTheSame(SortConfig[] sortConfig) throws Exception
   {
-    // Leeres DefaultDataSet erstellen.
+    // create empty DefaultDataSet.
     IDataSet expectedDataset = new DefaultDataSet();
     if (fLastInsertedDataSet != null)
     {
@@ -683,12 +669,10 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Methode zum vergleichen eines Datasets mit der aktuellen
-   * Datenbank
+   * Method to compare a dataset to the actual database.
    * 
-   * @param expectedDataSet das Datenset mit den in Solr erwarteten
-   *        Daten.
-   * @param modifiers Die hinzuzufügenden Modifier.
+   * @param expectedDataSet the dataset with the expected Solr data.
+   * @param modifiers the modifiers that should be added.
    * @throws Exception
    */
   public void assertDataBase(IDataSet expectedDataSet, IDataSetModifier... modifiers) throws Exception
@@ -697,12 +681,10 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Methode zum vergleichen eines Datasets mit der aktuellen
-   * Datenbank.
+   * Method to compare a dataset to the actual database.
    * 
-   * @param factory die DatasetFactory, die das Datenset mit den in
-   *        Solr erwarteten Daten enthält.
-   * @param modifiers Die hinzuzufügenden Modifier.
+   * @param factory the dataset factory that contains the dataset with the expected Solr data.
+   * @param modifiers the modifiers that should be added.
    * @throws Exception
    */
   public void assertDataBase(DbUnitDatasetFactory factory, IDataSetModifier... modifiers) throws Exception
@@ -711,13 +693,12 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Vergleicht das übergebene Dataset mit den in der Datenbank
-   * vorhandenen Daten. Zuvor werden die Daten entsprechend der
-   * übergebenen Sortierung sortiert.
+   * Compares the given dataset with the actual data in the database.
+   * The data is sorted according to the given sorting configuration.
    * 
-   * @param expectedDataSet das Datenset mit den zu erwartenden Daten.
-   * @param config die Sortierung.
-   * @param modifiers Die hinzuzufügenden Modifier.
+   * @param expectedDataSet the dataset with the expected data.
+   * @param config the sorting config.
+   * @param modifiers the additional modifiers.
    * @throws Exception
    */
   public void assertDataBaseSorted(IDataSet expectedDataSet, SortConfig[] config, IDataSetModifier... modifiers)
@@ -728,11 +709,10 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Vergleicht das übergebene Dataset mit den in der Datenbank
-   * vorhandenen Daten. Zuvor werden die Daten entsprechend sortiert.
+   * Compares the given dataset with the actual data in the database.
    * 
-   * @param expectedDataSet das Datenset mit den zu erwartenden Daten.
-   * @param modifiers Die hinzuzufügenden Modifier.
+   * @param expectedDataSet the dataset with the expected data.
+   * @param modifiers the additional modifiers.
    * @throws Exception
    */
   public void assertDataBaseSorted(IDataSet expectedDataSet, IDataSetModifier... modifiers) throws Exception
@@ -741,12 +721,12 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Sortiert ein DataSet anhand der übergebenen Sortierungsangaben.
+   * Sort the dataset based on the given sorting configuration.
    * 
-   * @param ds das DataSet.
-   * @param config die Sortierung.
-   * @return das sortierte DataSet, das Tabellen vom Typ SortTable
-   *         enthält.
+   * @param ds the dataset.
+   * @param config the sorting condiguration.
+   * @return the sorted dataset, that contains tables of type
+   *         SortTable.
    */
   public IDataSet sortTables(IDataSet ds, SortConfig[] config)
   {
@@ -804,9 +784,9 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Erzeugt ein DataSet mit einem live Abzug der Kompletten Datenbank
+   * Creates a dataset with a live snapshot of the entire database.
    * 
-   * @return Der Datenbank-dump
+   * @return the database dump.
    */
   public IDataSet createDatabaseSnapshot() throws Exception
   {
@@ -815,15 +795,15 @@ public class SolrTesterRule implements MethodRule
     // connect to solr server
     this.solrServer = getConnection();
 
-    LOG.debug(method + "Lese vorhandene Daten aus Solr.");
+    LOG.debug(method + "Read existing data from Solr.");
     SolrDocumentList docListInSolr = this.solrServer.query(new SolrQuery(SOLR_DEFAULT_QUERY)).getResults();
 
-    LOG.debug(method + "Erzeuge DataSet.");
+    LOG.debug(method + "Creating dataset.");
     DefaultDataSet dataset = new DefaultDataSet();
     DefaultTable solrDocumentTable = getDefaultTable(docListInSolr);
     insertRowsInTable(solrDocumentTable, docListInSolr);
     dataset.addTable(solrDocumentTable);
-    LOG.debug(method + "DataSet erzeugt.");
+    LOG.debug(method + "Dataset created.");
 
     LOG.trace(method + "End");
     return dataset;
@@ -845,7 +825,7 @@ public class SolrTesterRule implements MethodRule
     }
     else
     {
-      throw new IllegalStateException(method + "Entweder tableMetadata oder " + "tableName muss gesetzt sein.");
+      throw new IllegalStateException(method + "tableMetadata or tableName must be set.");
     }
 
     LOG.trace(method + "End");
@@ -854,7 +834,7 @@ public class SolrTesterRule implements MethodRule
 
   private Column[] retrieveColumns(SolrDocumentList docListInSolr)
   {
-    final String method = "getColumnsInSolr() : ";
+    final String method = "retrieveColumns() : ";
     LOG.trace(method + "Start");
 
     Column[] columns = null;
@@ -912,13 +892,13 @@ public class SolrTesterRule implements MethodRule
       if (column.getColumnName().equalsIgnoreCase(columnName))
       {
         found = true;
-        LOG.debug(method + "Spalte " + columnName + " gefunden.");
+        LOG.debug(method + "Found column " + columnName + ".");
         break;
       }
     }
     if (!found)
     {
-      LOG.debug(method + "Spalte " + columnName + " NICHT gefunden.");
+      LOG.debug(method + "Could NOT find column " + columnName + ".");
     }
 
     LOG.trace(method + "End");
@@ -945,10 +925,9 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Erstellt eine Verbindung zu einer Solr-Instanz unter der
-   * hinterlegten URL.
+   * Creates a connection to a Solr instance based on the stored URL.
    * 
-   * @return die erstellte Connection zum SolrServer.
+   * @return die created connection to the Solr server.
    */
   private SolrServer getConnection()
   {

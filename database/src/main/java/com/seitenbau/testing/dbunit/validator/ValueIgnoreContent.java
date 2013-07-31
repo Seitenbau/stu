@@ -1,13 +1,13 @@
 package com.seitenbau.testing.dbunit.validator;
 
 /**
- * Dosn't Compare Anyithing. eg, Allways Returnts EQUAL
+ * Doesn't compare anything. e.g., always returns EQUAL
  */
 public class ValueIgnoreContent extends AbstractValueValidator
 {
 
   /**
-   * Dosn't Compare Anything. eg, Allways Returnts EQUAL
+   * Doesn't compare anything. e.g., always returns EQUAL
    */
   public ValueIgnoreContent()
   {
@@ -15,7 +15,7 @@ public class ValueIgnoreContent extends AbstractValueValidator
   }
 
   /**
-   * Dosn't Compare Anything. eg, Allways Returnts EQUAL
+   * Doesn't compare anything. e.g., always returns EQUAL
    */
   public ValueIgnoreContent(String markerString)
   {

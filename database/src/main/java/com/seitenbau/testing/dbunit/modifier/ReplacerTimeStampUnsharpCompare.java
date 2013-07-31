@@ -6,15 +6,14 @@ import com.seitenbau.testing.dbunit.util.DbCompare;
 import com.seitenbau.testing.dbunit.util.DbCompare.DateCompareImpl;
 
 /**
- * Ersetzt ein StringLiteral im DataSet durch das aktuelle oder ein
- * spezifisches Datum. Zusätzlich wird
- * {@link IDataSetOverwriteCompare} implementiert um bei Asserts den
- * Vergleich unscharf auszuführen (+-10s).
+ * Replaces a String literal inside the dataset with the current or a
+ * specific date. Furthermore {@link IDataSetOverwriteCompare} is
+ * implemented to enable fuzzy comparison (+-10s) of dates.
  * <p/>
- * Es darf NICHT der orginal DBUnit Assert eingesetzt werden! Sondern
- * die (fast) 1:1 Kopie: {@link DatabaseTesterAwareAssertion} Version.
- * Am Besten per static Import {@link DBAssertion} nutzen.
- */
+ * It is forbidden to use the original DBunit assert! Please make use
+ * of the {@link DatabaseTesterAwareAssertion} instead. It is
+ * recommended to use {@link DBAssertion} as static import.
+ * */
 @Deprecated
 // Renaming zu ValueDateEquals
 public class ReplacerTimeStampUnsharpCompare extends ReplacerTimeStamp implements IDataSetOverwriteCompare
@@ -60,7 +59,8 @@ public class ReplacerTimeStampUnsharpCompare extends ReplacerTimeStamp implement
       Date expect = getUsedDate();
       _compare.compareValues(expect, (Date) objectToCompareTo);
     }
-    // TODO wenn kein Date ? also bsp null -> Fehler Werfen
+    // TODO If no Date is available (e.g. null) an exception could be
+    // thrown
     return 0;
   }
 

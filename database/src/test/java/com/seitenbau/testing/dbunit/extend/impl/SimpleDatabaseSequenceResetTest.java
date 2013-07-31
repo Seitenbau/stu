@@ -10,7 +10,6 @@ import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.junit.Test;
 
-import com.seitenbau.testing.dbunit.DatabaseTester;
 import com.seitenbau.testing.dbunit.tester.DatabaseTesterBase;
 
 public class SimpleDatabaseSequenceResetTest

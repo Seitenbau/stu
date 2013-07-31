@@ -12,7 +12,7 @@ import com.seitenbau.testing.dbunit.tester.DatabaseTesterBase;
 
 /**
  * 
- * Helper action to dis- and reenable the foreign key checks before
+ * Helper action to dis- and enable the foreign key checks before
  * and after making changes to the database
  * 
  */
