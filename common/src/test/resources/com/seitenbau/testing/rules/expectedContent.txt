@@ -1,4 +1,4 @@
-This is a test file
-same content
+Dies ist eine test datei
+gleicher Inhalt
 Hi
-Content 'afterwards'
+Inhalt 'dannach'
