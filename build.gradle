@@ -11,7 +11,6 @@ configure(allprojects) {
   sourceCompatibility   = 1.6
   targetCompatibility   = 1.6
 
-  ext.asciidoctorVersion            = "0.4.1"
   ext.commonLangVersion             = "2.6"
   ext.commonsdbcpVersion            = "1.4"
   ext.dbunitVersion                 = "2.3.0"
@@ -181,9 +180,13 @@ project("documentation") {
 
   apply plugin: 'asciidoctor'
 
+  ext {
+    htmlDir = "$projectDir/html"
+  }
+  
   asciidoctor {
     sourceDir = new File("$projectDir/src/asciidoc")
-    outputDir = new File("$projectDir/html")
+    outputDir = new File("$htmlDir")
     backend = 'html5'
     options = [
       attributes: [
@@ -194,6 +197,10 @@ project("documentation") {
         copycss: ''
       ]
     ]
+  }
+  
+  clean {
+    delete htmlDir
   }
 
 }
