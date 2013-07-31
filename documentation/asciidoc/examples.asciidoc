@@ -1,0 +1,2 @@
+== Examples documentation
+Here comes information to the example classes. 

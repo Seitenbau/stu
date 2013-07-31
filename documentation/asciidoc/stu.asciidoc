@@ -3,7 +3,6 @@ SEITENBAU GmbH <stu@seitenbau.com>
 v1.0, 2013-07-31
 :imagesdir: images
 
-
 == Section Level 1
 
 === Section Level 2
@@ -23,6 +22,12 @@ image::seitenbau-110px.png[SEITENBAU Logo]
 
 Use: hide comments
 ////
+
+include::common.asciidoc[]
+
+include::database.asciidoc[]
+
+include::examples.asciidoc[]
 
 [role="lead"]
 This text will be styled as a lead paragraph (i.e., larger font).
