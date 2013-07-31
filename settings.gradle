@@ -1,3 +1,4 @@
 include "common"
 include "database"
 include "examples"
+include "documentation"

@@ -11,6 +11,7 @@ configure(allprojects) {
   sourceCompatibility   = 1.6
   targetCompatibility   = 1.6
 
+  ext.asciidoctorVersion            = "0.4.1"
   ext.commonLangVersion             = "2.6"
   ext.commonsdbcpVersion            = "1.4"
   ext.dbunitVersion                 = "2.3.0"
@@ -174,4 +175,36 @@ project("examples") {
 
 configure(rootProject) {
   task wrapper(type: Wrapper) { gradleVersion = "1.6" }
+}
+
+project("documentation") {
+
+  apply plugin: 'asciidoctor'
+
+  asciidoctor {
+    sourceDir = new File("$projectDir/src/asciidoc")
+    outputDir = new File("$projectDir/html")
+    backend = 'html5'
+    options = [
+      attributes: [
+        'source-highlighter': 'coderay',
+        toc: '',
+        idprefix: '',
+        idseparator: '-',
+        copycss: ''
+      ]
+    ]
+  }
+
+}
+
+buildscript {
+  repositories {
+      mavenRepo name: 'Bintray Asciidoctor repo', url: 'http://dl.bintray.com/content/aalmiray/asciidoctor'
+      mavenRepo name: 'Bintray JCenter', url: 'http://jcenter.bintray.com'
+  }
+
+  dependencies {
+      classpath 'org.asciidoctor:asciidoctor-gradle-plugin:0.4.1'
+  }
 }
