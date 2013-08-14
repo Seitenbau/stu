@@ -298,4 +298,48 @@ public class Table
       return description;
     }
   }
+
+  public int getIncomingEdgeCount()
+  {
+    int result = 0;
+
+    for (Column col : _columns)
+    {
+      result += col.getReferencedByList().size();
+    }
+
+    return result;
+  }
+
+  public List<Edge> getOutgoingEdges()
+  {
+    List<Edge> result = new LinkedList<Edge>();
+
+    for (Column col : _columns)
+    {
+      if (col.getRelation() == null)
+      {
+        continue;
+      }
+
+      result.add(new Edge(col));
+    }
+
+    return result;
+  }
+
+  public List<Edge> getIncomingEdges()
+  {
+    List<Edge> result = new LinkedList<Edge>();
+
+    for (Column col : _columns)
+    {
+      for (Column ref : col.getReferencedByList())
+      {
+        result.add(new Edge(ref));
+      }
+    }
+
+    return result;
+  }
 }

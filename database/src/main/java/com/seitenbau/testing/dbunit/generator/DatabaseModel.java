@@ -1,6 +1,5 @@
 package com.seitenbau.testing.dbunit.generator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DatabaseModel
@@ -17,8 +16,6 @@ public abstract class DatabaseModel
   boolean isModelClassGeneration;
 
   boolean isTableDSLGeneration;
-
-  final List<Table> tables = new ArrayList<Table>();
 
   protected String __forceCaller;
 
@@ -178,6 +175,11 @@ public abstract class DatabaseModel
       gen.setCaller(__forceCaller);
     }
     return gen;
+  }
+
+  public List<Table> getTables()
+  {
+    return getDataSetGenInstance().getDataSet().getTables();
   }
 
 }

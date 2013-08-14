@@ -82,7 +82,7 @@ public class DataSetJavaAPITest
 
     RowCollection_Persons firstQuery = testDataSet.personsTable.quietFindWhere.firstName("Hans");
     RowCollection_Persons secondQuery = firstQuery.where.name("Wurst");
-    RowCollection_Persons thirdQuery = firstQuery.where.name("invalid name");
+    RowCollection_Persons thirdQuery = secondQuery.where.name("invalid name");
 
     assertThat(firstQuery.getRowCount()).isEqualTo(2);
     assertThat(secondQuery.getRowCount()).isEqualTo(1);

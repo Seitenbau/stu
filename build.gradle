@@ -172,6 +172,75 @@ project("examples") {
   compileTestGroovy.dependsOn("compileDataSetDslJava")
 }
 
+project("hochschule") {
+
+  ext {
+    outputDatasetDslDir = "$projectDir/src/dataset-dsl/java"
+    srcDatasetModelDir  = "$projectDir/src/dataset-model/java"
+  }
+
+  dependencies {
+    compile project(':database')
+    runtime("org.hsqldb:hsqldb:$hsqldbVersion")
+    compile("org.springframework:spring-context:$springVersion")
+    compile("org.springframework:spring-orm:$springVersion")
+    compile("org.springframework:spring-test:$springVersion")
+    compile("org.springframework.data:spring-data-jpa:$springDataVersion")
+    compile("org.hibernate.javax.persistence:hibernate-jpa-2.0-api:$hibernatPersistanceVersion")
+    compile("org.hibernate:hibernate-entitymanager:$hibernatEntityManagerVersion")
+
+    testCompile("org.spockframework:spock-spring:$spockVersion")
+  }
+  
+  sourceSets {
+    dataSetModel {
+      java {
+        srcDir srcDatasetModelDir
+      }
+      compileClasspath += configurations.compile
+      runtimeClasspath += configurations.runtime
+    }
+    dataSetDsl {
+      java {
+        srcDir outputDatasetDslDir
+      }
+      compileClasspath = configurations.compile
+    }
+    test {
+      compileClasspath += sourceSets.dataSetDsl.output
+      runtimeClasspath += sourceSets.dataSetDsl.output
+    }
+  }
+
+  task generateDataSetDsl(dependsOn: 'dataSetModelClasses', type: JavaExec) {
+    ext.destDir   = file(outputDatasetDslDir)
+    inputs.dir      srcDatasetModelDir
+    outputs.dir     destDir
+    main          = 'model.HochschuleGenerator'
+    args          = [destDir]
+    classpath     = sourceSets.dataSetModel.runtimeClasspath
+    doFirst {
+       destDir.mkdirs()
+    }
+  }
+
+  clean {
+    delete outputDatasetDslDir
+  }
+
+  idea {
+     module {
+       sourceDirs += file(srcDatasetModelDir)
+       sourceDirs += file(outputDatasetDslDir)
+     }
+  }
+  ideaModule.dependsOn("generateDataSetDsl")
+
+  eclipseClasspath.dependsOn("generateDataSetDsl")
+  compileDataSetDslJava.dependsOn("generateDataSetDsl")
+  compileTestGroovy.dependsOn("compileDataSetDslJava")
+}
+
 configure(rootProject) {
   task wrapper(type: Wrapper) { gradleVersion = "1.6" }
 }
