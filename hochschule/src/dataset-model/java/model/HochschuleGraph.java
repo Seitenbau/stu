@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.seitenbau.testing.dbunit.generator.Edge;
+import com.seitenbau.testing.dbunit.generator.EntityCreationMode;
+import com.seitenbau.testing.dbunit.generator.EntityFactory;
 import com.seitenbau.testing.dbunit.generator.Table;
 
 public class HochschuleGraph
@@ -17,16 +19,17 @@ public class HochschuleGraph
 
   public static void main(String[] args) throws Exception
   {
+    EntityFactory fab = new EntityFactory();
     HochschuleModel model = new HochschuleModel();
     for (Table table : model.getTables()) {
       //System.out.println(table.getName() + ": " + table.getIncomingEdgeCount());
     }
 
-    visitTable(getStartTable(model));
+    visitTable(getStartTable(model), fab);
     System.out.println("Done");
   }
 
-  static void visitTable(Table table)
+  static void visitTable(Table table, EntityFactory fab)
   {
     //System.out.println("Visiting: " + table.getName());
     TableGenerationData data = new TableGenerationData(table);
@@ -40,10 +43,10 @@ public class HochschuleGraph
         Table next = edge.getDestination().getTable();
         //System.out.println(table.getName() + " ---> " + next.getName());
 
-        new EdgeHandler(edge).handle();
+        new EdgeHandler(edge, fab).handle();
 
         if (!tableGenerationData.containsKey(next)) {
-          visitTable(next);
+          visitTable(next, fab);
         }
       }
     }
@@ -56,10 +59,10 @@ public class HochschuleGraph
         Table next = edge.getSource().getTable();
         //System.out.println(table.getName() + " <--- " + next.getName());
 
-        new EdgeHandler(edge).handle();
+        new EdgeHandler(edge, fab).handle();
 
         if (!tableGenerationData.containsKey(next)) {
-          visitTable(next);
+          visitTable(next, fab);
         }
       }
     }
@@ -97,10 +100,12 @@ public class HochschuleGraph
   {
 
     Edge edge;
+    EntityFactory fab;
     Set<String> generated = new HashSet<String>();
 
-    EdgeHandler(Edge edge) {
+    EdgeHandler(Edge edge, EntityFactory fab) {
       this.edge = edge;
+      this.fab = fab;
     }
 
     void handle()
@@ -112,6 +117,8 @@ public class HochschuleGraph
       generate(edge.getDestination().getMin(), edge.getSource().getMax());
       generate(edge.getDestination().getMax(), edge.getSource().getMin());
       generate(edge.getDestination().getMax(), edge.getSource().getMax());
+
+      // check if existing entities have valid relations
     }
 
     void generate(int destBorder, int sourceBorder)
@@ -122,12 +129,22 @@ public class HochschuleGraph
       }
 
       generated.add(id);
-      System.out.println("  Create: " + id);
+      //System.out.println("  Create: " + id);
 
-      // if destBorder == 1 it is == max
-      //if (destBorder == 0) {
-        //generate(1, sourceBorder);
-      //}
+      if (destBorder == 0) {
+        fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation());
+      } if (sourceBorder == 0) {
+        fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation());
+      } else {
+        fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder));
+        for (int i = 0; i < sourceBorder; i++) {
+          fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1));
+        }
+      }
+
+      if (destBorder == 0) {
+        generate(1, sourceBorder);
+      }
       if (sourceBorder == 0) {
         generate(destBorder, 1);
       }

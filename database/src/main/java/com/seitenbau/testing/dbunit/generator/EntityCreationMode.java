@@ -13,27 +13,27 @@ public class EntityCreationMode
     this.max = max;
   }
 
-  static EntityCreationMode noRelation()
+  public static EntityCreationMode noRelation()
   {
     return new EntityCreationMode(0, 0);
   }
 
-  static EntityCreationMode fixed(int value)
+  public static EntityCreationMode fixed(int value)
   {
     return new EntityCreationMode(value, value);
   }
 
-  static EntityCreationMode min(int min)
+  public static EntityCreationMode min(int min)
   {
     return new EntityCreationMode(min, -1);
   }
 
-  static EntityCreationMode max(int max)
+  public static EntityCreationMode max(int max)
   {
     return new EntityCreationMode(0, max);
   }
 
-  static EntityCreationMode any()
+  public static EntityCreationMode any()
   {
     return new EntityCreationMode(0, -1);
   }
