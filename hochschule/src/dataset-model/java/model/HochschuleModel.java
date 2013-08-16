@@ -12,6 +12,15 @@ public class HochschuleModel extends DatabaseModel
     packageName("com.seitenbau.testing.hochschule.model");
     enableTableModelClassesGeneration();
 
+    Table raum = table("raum")
+        .description("Die Tabelle mit den Räumen der Hochschule")
+        .column("id", DataType.BIGINT)
+          .defaultIdentifier()
+          .autoInvokeNext()
+        .column("gebaude", DataType.VARCHAR)
+        .column("nummer", DataType.VARCHAR)
+      .build();
+
     Table professoren = table("professor")
         .description("Die Tabelle mit den Professoren der Hochschule")
         .column("id", DataType.BIGINT)
@@ -21,6 +30,13 @@ public class HochschuleModel extends DatabaseModel
         .column("vorname", DataType.VARCHAR)
         .column("titel", DataType.VARCHAR)
         .column("fakultaet", DataType.VARCHAR)
+        .column("raum_id", DataType.BIGINT)
+          .reference
+            .local
+              .name("hatRaum")
+            .foreign(raum)
+              .name("gehoert")
+              .multiplicity("0..1")
       .build();
 
     Table lehrveranstaltungen = table("lehrveranstaltung")
@@ -93,14 +109,14 @@ public class HochschuleModel extends DatabaseModel
           .reference
             .foreign(studenten)
               .name("besucht")
+              .multiplicity("0..*")
               .description("Gibt an, welche Lehrveranstaltungen ein Student besucht.")
-              .multiplicity("1")
         .column("lehrveranstaltung_id", DataType.BIGINT)
           .reference
             .foreign(lehrveranstaltungen)
               .name("besuchtVon")
-              .description("Gibt an, welche Studenten eine Lehrveranstaltung besuchen.")
               .multiplicity("3..100")
+              .description("Gibt an, welche Studenten eine Lehrveranstaltung besuchen.")
       .build();
 
     associativeTable("isttutor")
@@ -108,11 +124,13 @@ public class HochschuleModel extends DatabaseModel
           .reference
             .foreign(studenten)
               .name("istTutor")
+              .multiplicity("0..*")
               .description("Gibt an, bei welchen Lehrveranstaltungen ein Student Tutor ist.")
         .column("lehrveranstaltung_id", DataType.BIGINT)
           .reference
             .foreign(lehrveranstaltungen)
               .name("hatTutor")
+              .multiplicity("0..*")
               .description("Gibt an, welche Tutoren eine Lehrveranstaltung hat.")
       .build();
 
@@ -121,11 +139,13 @@ public class HochschuleModel extends DatabaseModel
           .reference
             .foreign(studenten)
               .name("schreibt")
+              .multiplicity("0..*")
               .description("Gibt an, welche Prüfungen ein Student schreibt.")
         .column("pruefung_id", DataType.BIGINT)
           .reference
             .foreign(pruefungen)
               .name("geschriebenVon")
+              .multiplicity("0..*")
               .description("Gibt an, welche Studenten eine Prüfung schreiben.")
         .column("versuch", DataType.INTEGER)
       .build();

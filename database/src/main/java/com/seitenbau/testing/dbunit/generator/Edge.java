@@ -66,7 +66,7 @@ public class Edge
       max = p.max;
 
       if (max == INFINITE) {
-        max = 10;
+        max = 5;
       }
     }
 
@@ -82,15 +82,6 @@ public class Edge
     public int getMax()
     {
       return max;
-    }
-
-    public int getEntitiyCount()
-    {
-      if (min != max) {
-        return 2 * (min + max);
-      } else {
-        return min + max;
-      }
     }
 
   }

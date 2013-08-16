@@ -6,8 +6,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.seitenbau.testing.dbunit.generator.Edge;
+import com.seitenbau.testing.dbunit.generator.EntityBlueprint;
 import com.seitenbau.testing.dbunit.generator.EntityCreationMode;
 import com.seitenbau.testing.dbunit.generator.EntityFactory;
+import com.seitenbau.testing.dbunit.generator.EntityFactory.EntityFactoryResult;
 import com.seitenbau.testing.dbunit.generator.Table;
 
 public class HochschuleGraph
@@ -26,6 +28,9 @@ public class HochschuleGraph
     }
 
     visitTable(getStartTable(model), fab);
+
+    fab.printStats();
+
     System.out.println("Done");
   }
 
@@ -118,7 +123,26 @@ public class HochschuleGraph
       generate(edge.getDestination().getMax(), edge.getSource().getMin());
       generate(edge.getDestination().getMax(), edge.getSource().getMax());
 
+      if (edge.getDestination().getMin() > 0) {
+        System.out.println("*** CHECK IF " + edge.getSource().getTable().getName() + " ENTITIES HAVE TO BE LINKED...");
+        for (EntityBlueprint bp : fab.getUnrelatedBlueprints(edge.getSource().getTable(), edge)) {
+          EntityFactoryResult result = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax()));
+          if (result.isAlreadyExisted()) {
+            continue;
+          }
+
+          System.out.println("  ====NEW BLUEPRINT HAS TO BE LINKED===");
+          //System.out.println("  BP: " + bp);
+        }
+      }
+
       // check if existing entities have valid relations
+      // check if the existing entities need a relation
+      // iterate over these entities
+      // get a relation entity from the fab to link it
+      // check if the new relation entity needs further relations ... :-(
+
+      System.out.println();
     }
 
     void generate(int destBorder, int sourceBorder)
@@ -132,13 +156,19 @@ public class HochschuleGraph
       //System.out.println("  Create: " + id);
 
       if (destBorder == 0) {
-        fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation());
+        EntityFactoryResult result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation());
+        if (!result.isAlreadyExisted()) {
+          System.out.println("  ====NEW BLUEPRINT HAS TO BE LINKED 2===");
+        }
       } if (sourceBorder == 0) {
         fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation());
       } else {
         fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder));
         for (int i = 0; i < sourceBorder; i++) {
-          fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1));
+          EntityFactoryResult result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1));
+          if (!result.isAlreadyExisted()) {
+            System.out.println("  ====NEW BLUEPRINT HAS TO BE LINKED 3===");
+          }
         }
       }
 
