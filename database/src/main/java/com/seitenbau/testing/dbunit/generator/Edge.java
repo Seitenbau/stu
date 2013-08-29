@@ -10,8 +10,11 @@ public class Edge
 
   private final int hashCode;
 
+  private final Column column;
+
   Edge(Column column)
   {
+    this.column = column;
     source = new Node(column.getTable(), column.getRelation().getForeignMultiplicity());
     destination = new Node(column.getRelation().getForeignColumn().getTable(), column.getRelation().getLocalMultiplicity());
     hashCode = source.table.hashCode() * 17 + destination.table.hashCode();
@@ -25,6 +28,11 @@ public class Edge
   public Node getDestination()
   {
     return destination;
+  }
+
+  public Column getColumn()
+  {
+    return column;
   }
 
   @Override

@@ -39,6 +39,20 @@ public class HochschuleModel extends DatabaseModel
               .multiplicity("0..1")
       .build();
 
+    Table raum2 = table("raum2")
+        .column("id", DataType.BIGINT)
+          .defaultIdentifier()
+          .autoInvokeNext()
+        .column("professor_id", DataType.BIGINT)
+          .reference
+            .local
+              .name("hatRaum2")
+              .multiplicity("0..1")
+            .foreign(professoren)
+              .name("gehoert2")
+              .multiplicity("1..1")
+      .build();
+
     Table lehrveranstaltungen = table("lehrveranstaltung")
         .description("Die Tabelle mit den Lehrveranstaltungen der Hochschule")
         .column("id", DataType.BIGINT)
@@ -115,7 +129,7 @@ public class HochschuleModel extends DatabaseModel
           .reference
             .foreign(lehrveranstaltungen)
               .name("besuchtVon")
-              .multiplicity("3..100")
+              .multiplicity("3..10")
               .description("Gibt an, welche Studenten eine Lehrveranstaltung besuchen.")
       .build();
 
