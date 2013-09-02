@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.generator;
 
+import com.seitenbau.testing.dbunit.generator.data.MultiplicityBorder;
+
 public class EntityCreationMode
 {
 
@@ -72,6 +74,11 @@ public class EntityCreationMode
   public static EntityCreationMode minMax(int min, int max)
   {
     return new EntityCreationMode(min, max);
+  }
+
+  public static EntityCreationMode minMax(MultiplicityBorder min, MultiplicityBorder max)
+  {
+    return new EntityCreationMode(min.getValue(), max.getValue());
   }
 
 }

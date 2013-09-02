@@ -64,7 +64,7 @@ public class EntityFactory
       if (!creationInformation.isPresent()) {
         // no relation? use it!
         blueprint.setCreationInformation(edge, mode);
-        System.out.println("---Factory: Returning Entity " + blueprint + "---");
+        //System.out.println("---Factory: Returning Entity " + blueprint + "---");
         return new EntityFactoryResult(blueprint, true);
       }
 
@@ -75,7 +75,7 @@ public class EntityFactory
       }
 
       if (mode.isAny() && existingMode.isAny()) {
-        System.out.println("---Factory: Returning Entity " + blueprint + " [ANY-ANY] ---");
+        //System.out.println("---Factory: Returning Entity " + blueprint + " [ANY-ANY] ---");
         return new EntityFactoryResult(blueprint, true);
       }
 
@@ -96,7 +96,7 @@ public class EntityFactory
     list.add(result);
 
     result.setValue("_ID", list.size());
-    System.out.println("---Factory: Creating Entity " + result + "---");
+    //System.out.println("---Factory: Creating Entity " + result + "---");
     return new EntityFactoryResult(result, false);
   }
 

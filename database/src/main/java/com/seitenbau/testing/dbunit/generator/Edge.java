@@ -1,8 +1,10 @@
 package com.seitenbau.testing.dbunit.generator;
 
+import com.seitenbau.testing.dbunit.generator.data.MultiplicityBorder;
+import com.seitenbau.testing.dbunit.generator.data.MultiplicityParser;
+
 public class Edge
 {
-  private static final int INFINITE = -1;
 
   private final Node source;
 
@@ -12,7 +14,7 @@ public class Edge
 
   private final Column column;
 
-  Edge(Column column)
+  public Edge(Column column)
   {
     this.column = column;
     source = new Node(column.getTable(), column.getRelation().getForeignMultiplicity());
@@ -60,65 +62,34 @@ public class Edge
 
   public static class Node
   {
-    final Table table;
+    private final Table table;
 
-    int min;
+    private final MultiplicityBorder min;
 
-    int max;
+    private final MultiplicityBorder max;
 
     Node(Table table, String multiplicity)
     {
       this.table = table;
       MultiplicityParser p = new MultiplicityParser(multiplicity);
-      min = p.min;
-      max = p.max;
-
-      if (max == INFINITE) {
-        max = 5;
-      }
+      min = p.getMin();
+      max = p.getMax();
     }
 
     public Table getTable() {
       return table;
     }
 
-    public int getMin()
+    public MultiplicityBorder getMin()
     {
       return min;
     }
 
-    public int getMax()
+    public MultiplicityBorder getMax()
     {
       return max;
     }
 
   }
 
-  static class MultiplicityParser
-  {
-    int min;
-    int max;
-
-    MultiplicityParser(String multiplicity)
-    {
-      if (multiplicity.contains("..")) {
-        String[] minmax = multiplicity.split("\\.\\.", 2);
-        min = getValue(minmax[0]);
-        max = getValue(minmax[1]);
-      } else {
-        min = getValue(multiplicity);
-        max = min;
-      }
-    }
-
-    int getValue(String value)
-    {
-      if ("*".equals(value)) {
-        return INFINITE;
-      }
-
-      return Integer.parseInt(value);
-    }
-
-  }
 }

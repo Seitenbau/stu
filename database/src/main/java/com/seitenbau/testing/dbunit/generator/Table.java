@@ -243,15 +243,15 @@ public class Table
 
   public final class AssociativeRelation
   {
-    Column localColumn;
-    String localName;
-    Column localAssociationColumn;
+    private Column localColumn;
+    private String localName;
+    private Column localAssociationColumn;
 
-    Column foreignColumn;
-    String foreignName;
-    Column foreignAssociationColumn;
+    private Column foreignColumn;
+    private String foreignName;
+    private Column foreignAssociationColumn;
 
-    String description;
+    private String description;
 
     public Column getLocalColumn()
     {
