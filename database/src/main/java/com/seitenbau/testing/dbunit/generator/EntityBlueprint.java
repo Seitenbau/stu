@@ -35,6 +35,10 @@ public class EntityBlueprint
     relationInformation.put(edge, mode);
   }
 
+  public Table getTable()
+  {
+    return table;
+  }
 
   @Override
   public String toString()

@@ -51,6 +51,40 @@ public class DataGenerator
 
     fab.printStats();
     System.out.println("Done\t" + count);
+
+    for (Table table : model.getTables()) {
+      System.out.println("TABLE: " + table.getName());
+
+      TabluarStringBuilder builder = new TabluarStringBuilder();
+
+      if (!table.isAssociativeTable()) {
+        builder.appendColumn("REF");
+      }
+      for (Column col : table.getColumns()) {
+        builder.appendColumn(col.getJavaName());
+      }
+      builder.newLine();
+
+      for (EntityBlueprint bp : fab.getTableBlueprints(table)) {
+        if (!table.isAssociativeTable()) {
+          builder.appendColumn(table.getJavaName().toUpperCase() + "_" + bp.getValue("_ID"));
+        }
+        for (Column col : table.getColumns()) {
+          Object value = bp.getValue(col.getJavaName());
+          if (value == null) {
+            value = "_";
+          }
+          if (value instanceof EntityBlueprint) {
+            EntityBlueprint f = (EntityBlueprint)value;
+            value = f.getTable().getJavaName().toUpperCase() + "_" + f.getValue("_ID");
+          }
+          builder.appendColumn(value.toString());
+        }
+        builder.newLine();
+      }
+
+      System.out.println(builder);
+    }
   }
 
   private void visitTable(Table table)
