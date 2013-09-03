@@ -63,7 +63,10 @@ public class EntityBlueprint
 
   public void setValue(String key, Object value)
   {
-    values.put(key, value);
+    Object old = values.put(key, value);
+    if (old != null) {
+      throw new IllegalStateException("Overwrite " + key + " with " + value + " (" + this + ", " + old + ")");
+    }
   }
 
   public Object getValue(String key)

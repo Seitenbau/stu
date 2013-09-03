@@ -57,18 +57,18 @@ public class DataGenerator
 
       TabluarStringBuilder builder = new TabluarStringBuilder();
 
-      if (!table.isAssociativeTable()) {
+      //if (!table.isAssociativeTable()) {
         builder.appendColumn("REF");
-      }
+      //}
       for (Column col : table.getColumns()) {
         builder.appendColumn(col.getJavaName());
       }
       builder.newLine();
 
       for (EntityBlueprint bp : fab.getTableBlueprints(table)) {
-        if (!table.isAssociativeTable()) {
+        //if (!table.isAssociativeTable()) {
           builder.appendColumn(table.getJavaName().toUpperCase() + "_" + bp.getValue("_ID"));
-        }
+        //}
         for (Column col : table.getColumns()) {
           Object value = bp.getValue(col.getJavaName());
           if (value == null) {
@@ -153,8 +153,8 @@ public class DataGenerator
     visitedEdges.add(leftEdge);
     visitedEdges.add(rightEdge);
 
-    int leftCount = getCount(leftBorder);
-    int rightCount = getCount(rightBorder);
+    int leftCount = getCount(rightBorder);
+    int rightCount = getCount(leftBorder);
     System.out.println(leftColumn.getJavaName() + " <---> " + rightColumn.getJavaName() + ": " + leftCount + ":" + rightCount);
 
     EntityBlueprint[] leftBps = new EntityBlueprint[leftCount];
@@ -287,9 +287,17 @@ public class DataGenerator
 
   private boolean validateBlueprintIncoming(EntityBlueprint bp, Table table)
   {
+    if (table.isAssociativeTable()) {
+      return true;
+    }
+
     // source: professor
     // destination: raum2
     for (Edge edge : table.getIncomingEdges()) {
+      if (edge.getSource().getTable().isAssociativeTable()) {
+        return true;
+      }
+
       int min = edge.getSource().getMin().getValue();
 
       if (min == 0) {
@@ -302,6 +310,7 @@ public class DataGenerator
       }
 
       for (int i = count; i < min; i++) {
+        System.out.println(" Creating " + i + "/" + min + ": " + bp);
         //System.out.println("Incomplete: " + bp + " [" + edge.getSource().getTable().getJavaName() + "]: " + i +  " < " + edge.getSource().getMin());
         EntityFactoryResult result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax()));
         result.getEntity().setValue(edge.getColumn().getJavaName(), bp);
