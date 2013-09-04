@@ -1,8 +1,8 @@
 package model;
 
 import com.seitenbau.testing.dbunit.generator.DatabaseModel;
-import com.seitenbau.testing.dbunit.generator.EntityFactory;
 import com.seitenbau.testing.dbunit.generator.data.DataGenerator;
+import com.seitenbau.testing.dbunit.generator.data.EntityFactory;
 
 public class HochschuleGraph
 {

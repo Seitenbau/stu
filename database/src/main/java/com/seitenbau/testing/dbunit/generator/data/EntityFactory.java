@@ -1,4 +1,4 @@
-package com.seitenbau.testing.dbunit.generator;
+package com.seitenbau.testing.dbunit.generator.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Optional;
+import com.seitenbau.testing.dbunit.generator.Edge;
+import com.seitenbau.testing.dbunit.generator.Table;
 
 public class EntityFactory
 {
@@ -74,8 +76,9 @@ public class EntityFactory
         continue;
       }
 
+      // TODO any does not check if constraints are valid...
       if (mode.isAny() && existingMode.isAny()) {
-        //System.out.println("---Factory: Returning Entity " + blueprint + " [ANY-ANY] ---");
+        System.out.println("---Factory: Returning Entity " + blueprint + " [ANY-ANY] ---");
         return new EntityFactoryResult(blueprint, true);
       }
 
@@ -91,11 +94,11 @@ public class EntityFactory
     }
 
 
-    EntityBlueprint result = new EntityBlueprint(table);
+    final String refName = table.getJavaName().toUpperCase() + "_" + String.valueOf(list.size() + 1);
+    EntityBlueprint result = new EntityBlueprint(table, refName);
     result.setCreationInformation(edge, mode);
     list.add(result);
 
-    result.setValue("_ID", list.size());
     //System.out.println("---Factory: Creating Entity " + result + "---");
     return new EntityFactoryResult(result, false);
   }

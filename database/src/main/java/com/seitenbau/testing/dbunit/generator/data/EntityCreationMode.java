@@ -1,6 +1,5 @@
-package com.seitenbau.testing.dbunit.generator;
+package com.seitenbau.testing.dbunit.generator.data;
 
-import com.seitenbau.testing.dbunit.generator.data.MultiplicityBorder;
 
 public class EntityCreationMode
 {

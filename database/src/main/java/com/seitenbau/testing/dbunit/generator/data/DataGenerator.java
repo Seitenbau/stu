@@ -9,19 +9,15 @@ import com.seitenbau.testing.dbunit.generator.AssociativeTable;
 import com.seitenbau.testing.dbunit.generator.Column;
 import com.seitenbau.testing.dbunit.generator.DatabaseModel;
 import com.seitenbau.testing.dbunit.generator.Edge;
-import com.seitenbau.testing.dbunit.generator.EntityBlueprint;
-import com.seitenbau.testing.dbunit.generator.EntityCreationMode;
-import com.seitenbau.testing.dbunit.generator.EntityFactory;
-import com.seitenbau.testing.dbunit.generator.EntityFactory.EntityFactoryResult;
 import com.seitenbau.testing.dbunit.generator.Table;
 import com.seitenbau.testing.dbunit.generator.Table.AssociativeRelation;
+import com.seitenbau.testing.dbunit.generator.data.EntityFactory.EntityFactoryResult;
 
 public class DataGenerator
 {
 
   private final EntityFactory fab;
   private final DatabaseModel model;
-
 
   private final Set<Edge> visitedEdges;
   private final Set<Table> visitedTables;
@@ -52,39 +48,8 @@ public class DataGenerator
     fab.printStats();
     System.out.println("Done\t" + count);
 
-    for (Table table : model.getTables()) {
-      System.out.println("TABLE: " + table.getName());
-
-      TabluarStringBuilder builder = new TabluarStringBuilder();
-
-      //if (!table.isAssociativeTable()) {
-        builder.appendColumn("REF");
-      //}
-      for (Column col : table.getColumns()) {
-        builder.appendColumn(col.getJavaName());
-      }
-      builder.newLine();
-
-      for (EntityBlueprint bp : fab.getTableBlueprints(table)) {
-        //if (!table.isAssociativeTable()) {
-          builder.appendColumn(table.getJavaName().toUpperCase() + "_" + bp.getValue("_ID"));
-        //}
-        for (Column col : table.getColumns()) {
-          Object value = bp.getValue(col.getJavaName());
-          if (value == null) {
-            value = "_";
-          }
-          if (value instanceof EntityBlueprint) {
-            EntityBlueprint f = (EntityBlueprint)value;
-            value = f.getTable().getJavaName().toUpperCase() + "_" + f.getValue("_ID");
-          }
-          builder.appendColumn(value.toString());
-        }
-        builder.newLine();
-      }
-
-      System.out.println(builder);
-    }
+    STUTableOutput output = new STUTableOutput();
+    System.out.println(output.create(fab, model));
   }
 
   private void visitTable(Table table)
@@ -153,6 +118,7 @@ public class DataGenerator
     visitedEdges.add(leftEdge);
     visitedEdges.add(rightEdge);
 
+    // swap border counts :-)
     int leftCount = getCount(rightBorder);
     int rightCount = getCount(leftBorder);
     System.out.println(leftColumn.getJavaName() + " <---> " + rightColumn.getJavaName() + ": " + leftCount + ":" + rightCount);
@@ -277,6 +243,7 @@ public class DataGenerator
       if (bp.getValue(col.getJavaName()) == null) {
         EntityFactoryResult result = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.minMax(edge.getSource().getMin(), edge.getSource().getMax()));
         bp.setValue(col.getJavaName(),  result.getEntity());
+        result.getEntity().appendLog("used for validation");
         //System.out.println("Incomplete: " + bp + " (fixed) " + edge.getSource().getMin() + " - " + edge.getSource().getMax());
         return false;
       }
