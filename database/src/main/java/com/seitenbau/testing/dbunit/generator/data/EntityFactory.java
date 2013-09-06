@@ -76,6 +76,10 @@ public class EntityFactory
         continue;
       }
 
+      if (existingMode.getMax() > 0 && blueprint.getReferencedByList(edge).size() >= existingMode.getMax()) {
+        continue;
+      }
+
       // TODO any does not check if constraints are valid...
       if (mode.isAny() && existingMode.isAny()) {
         System.out.println("---Factory: Returning Entity " + blueprint + " [ANY-ANY] ---");
@@ -85,7 +89,7 @@ public class EntityFactory
       // TODO check if the mode matches with the existing mode
       // if it is an open 0/1..max relation and we want an 0/1..max2 relation, use it ?
       if (mode.getMax() == existingMode.getMax()) {
-        int count = getReferencingCount(blueprint, edge.getColumn().getTable(), edge.getColumn().getJavaName());
+        int count = blueprint.getReferencedByList(edge).size();
         if (count < mode.getMax()) {
           //System.out.println("---Factory: Returning Entity " + blueprint + " [MAX:" + mode.getMax() + ", count:" + count + "] --- " + edge.getColumn().getTable().getJavaName() + " " + edge.getColumn().getJavaName() + " " + blueprint);
           //return new EntityFactoryResult(blueprint, true);
@@ -102,6 +106,7 @@ public class EntityFactory
     //System.out.println("---Factory: Creating Entity " + result + "---");
     return new EntityFactoryResult(result, false);
   }
+
 
   public List<EntityBlueprint> getUnrelatedBlueprints(Table table, Edge edge)
   {
@@ -125,22 +130,6 @@ public class EntityFactory
     List<EntityBlueprint> list = new ArrayList<EntityBlueprint>();
     blueprints.put(table, list);
     return list;
-  }
-
-  public int getReferencingCount(EntityBlueprint bp, Table table, String columnName)
-  {
-    int count = 0;
-    List<EntityBlueprint> bps = getTableBlueprints(table);
-    for (EntityBlueprint remoteBp : bps) {
-      Object relation = remoteBp.getValue(columnName);
-      if (relation == null) {
-        continue;
-      }
-      if (relation == bp) {
-        count++;
-      }
-    }
-    return count;
   }
 
 

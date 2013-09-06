@@ -141,8 +141,8 @@ public class DataGenerator
         }
 
         EntityBlueprint entity = result.getEntity();
-        entity.setValue(leftColumn.getJavaName(), leftBps[l]);
-        entity.setValue(rightColumn.getJavaName(), rightBps[r]);
+        entity.setReference(leftEdge, leftBps[l]);
+        entity.setReference(rightEdge, rightBps[r]);
 
         System.out.println("  " + entity);
       }
@@ -242,7 +242,7 @@ public class DataGenerator
       Column col = edge.getColumn();
       if (bp.getValue(col.getJavaName()) == null) {
         EntityFactoryResult result = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.minMax(edge.getSource().getMin(), edge.getSource().getMax()));
-        bp.setValue(col.getJavaName(),  result.getEntity());
+        bp.setReference(edge, result.getEntity());
         result.getEntity().appendLog("used for validation");
         //System.out.println("Incomplete: " + bp + " (fixed) " + edge.getSource().getMin() + " - " + edge.getSource().getMax());
         return false;
@@ -271,7 +271,8 @@ public class DataGenerator
         continue;
       }
 
-      int count = fab.getReferencingCount(bp, edge.getSource().getTable(), edge.getColumn().getJavaName());
+      List<EntityBlueprint> referencedByList = bp.getReferencedByList(edge);
+      int count = referencedByList.size();
       if (count >= min) {
         continue;
       }
@@ -280,7 +281,7 @@ public class DataGenerator
         System.out.println(" Creating " + i + "/" + min + ": " + bp);
         //System.out.println("Incomplete: " + bp + " [" + edge.getSource().getTable().getJavaName() + "]: " + i +  " < " + edge.getSource().getMin());
         EntityFactoryResult result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax()));
-        result.getEntity().setValue(edge.getColumn().getJavaName(), bp);
+        result.getEntity().setReference(edge, bp);
         //System.out.println("  -> " + result.getEntity() + " | " + edge.getDestination().getMin() +"  - " + edge.getDestination().getMax());
       }
 
@@ -327,7 +328,7 @@ public class DataGenerator
             //continue;
           }
 
-          bp.setValue(edge.getColumn().getJavaName(), result.getEntity());
+          bp.setReference(edge, result.getEntity());
           System.out.println("  Linked " + bp);
         }
       }
@@ -373,7 +374,7 @@ public class DataGenerator
         EntityFactoryResult entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder));
         for (int i = 0; i < sourceBorder; i++) {
           EntityFactoryResult result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1));
-          result.getEntity().setValue(edge.getColumn().getJavaName(), entity.getEntity());
+          result.getEntity().setReference(edge, entity.getEntity());
           System.out.println("  Linked " + result.getEntity());
         }
       }

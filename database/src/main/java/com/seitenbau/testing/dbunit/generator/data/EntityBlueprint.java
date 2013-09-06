@@ -1,6 +1,8 @@
 package com.seitenbau.testing.dbunit.generator.data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -18,6 +20,8 @@ public class EntityBlueprint
 
   private final Map<Edge, EntityCreationMode> relationInformation;
 
+  private final Map<Edge, List<EntityBlueprint>> referencedBy;
+
   // TODO remove again :-)
   private final StringBuilder log;
 
@@ -25,6 +29,7 @@ public class EntityBlueprint
   {
     this.refName = refName;
     this.table = table;
+    referencedBy = new HashMap<Edge, List<EntityBlueprint>>();
     values = new HashMap<String, Object>();
     relationInformation = new HashMap<Edge, EntityCreationMode>();
     log = new StringBuilder();
@@ -96,6 +101,28 @@ public class EntityBlueprint
     }
   }
 
+  public void setReference(Edge edge, EntityBlueprint target)
+  {
+    setValue(edge.getColumn().getJavaName(), target);
+    target.addReferencedBy(edge, this);
+  }
+
+  private void addReferencedBy(Edge edge, EntityBlueprint entityBlueprint)
+  {
+    List<EntityBlueprint> list = getReferencedByList(edge);
+    list.add(entityBlueprint);
+  }
+
+  public List<EntityBlueprint> getReferencedByList(Edge edge)
+  {
+    List<EntityBlueprint> referencedByList = referencedBy.get(edge);
+    if (referencedByList == null) {
+      referencedByList = new ArrayList<EntityBlueprint>();
+      referencedBy.put(edge, referencedByList);
+    }
+    return referencedByList;
+  }
+
   public Object getValue(String key)
   {
     return values.get(key);
@@ -108,4 +135,5 @@ public class EntityBlueprint
     }
     log.append(text);
   }
+
 }
