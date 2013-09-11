@@ -36,13 +36,13 @@ public class $tableClass
 
   public $tableClass set${column.javaName}(String dateString)
   {
-    ${column.getJavaNameFirstLower()} = DateUtil.asDate(dateString);
+    this.${column.getJavaNameFirstLower()} = DateUtil.asDate(dateString);
     return this;
   }
 
   public $tableClass set${column.javaName}(DateBuilder datum)
   {
-    ${column.getJavaNameFirstLower()} = datum.asDate();
+    this.${column.getJavaNameFirstLower()} = datum.asDate();
     return this;
   }
 #end
@@ -50,20 +50,20 @@ public class $tableClass
 
   public $tableClass set${column.javaName}(Integer intValue)
   {
-    ${column.getJavaNameFirstLower()} = (intValue==null?null:Long.valueOf(intValue));
+    this.${column.getJavaNameFirstLower()} = (intValue==null?null:Long.valueOf(intValue));
     return this;
   }
 #end
 
   public $tableClass set${column.javaName}(${column.javaType} value)
   {
-    ${column.getJavaNameFirstLower()} = value;
+    this.${column.getJavaNameFirstLower()} = value;
     return this;
   }
 
   public $tableClass set${column.javaName}Raw(Object value)
   {
-    ${column.getJavaNameFirstLower()} =  value;
+    this.${column.getJavaNameFirstLower()} =  value;
     return this;
   }
 
