@@ -6,7 +6,7 @@ configure(allprojects) {
   apply plugin: "idea"
 
   group     = "com.seitenbau.testing"
-  version   = "1.0.0-SNAPSHOT"
+  version   = "0.1.0-SNAPSHOT"
 
   sourceCompatibility   = 1.6
   targetCompatibility   = 1.6
