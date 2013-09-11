@@ -54,7 +54,8 @@ repositories {
 /**
  * Setup Maven Deploy Repository
  */
-uploadArchives {
+if(bintray_username && bintray_api_key) {
+  uploadArchives {
 	repositories {
 	  mavenDeployer {
 		repository( url: "https://api.bintray.com/maven/seitenbau/utils/stu") {
@@ -65,3 +66,4 @@ uploadArchives {
 	  }
 	}
   }
+}
