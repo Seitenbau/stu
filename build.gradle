@@ -5,7 +5,7 @@ configure(allprojects) {
   apply plugin: "java"
   apply plugin: "idea"
 
-  group     = "com.seitenbau.testing"
+  group     = "com.seitenbau.testing.stu"
   version   = "0.1.0-SNAPSHOT"
 
   sourceCompatibility   = 1.6
