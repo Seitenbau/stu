@@ -115,7 +115,7 @@ public class NameProvider
 
   public Optional<String> getTruncatedGroovyName(Column column)
   {
-    final String groovyName = column.getGroovyName();
+    final String groovyName = column.getHeaderName();
     if (column.getRelation() == null || !groovyName.endsWith(TRUNCABLE_ID_SUFFIX)
         && groovyName.length() > TRUNCABLE_ID_SUFFIX.length())
     {
@@ -125,7 +125,7 @@ public class NameProvider
     final String truncatedName = groovyName.substring(0, groovyName.length() - TRUNCABLE_ID_SUFFIX.length());
     for (Column otherColumn : column.getTable().getColumns())
     {
-      if (truncatedName.equals(otherColumn.getGroovyName()))
+      if (truncatedName.equals(otherColumn.getHeaderName()))
       {
         // column cannot be truncated
         return Optional.absent();

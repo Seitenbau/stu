@@ -55,7 +55,7 @@ public class JavaDocBuilder
         separator = true;
       }
 
-      String head = col.getGroovyName();
+      String head = col.getHeaderName();
       String val = getSampleValue(col);
 
       result.append(head);

@@ -84,13 +84,13 @@ public class ${clsAdapter} {
    */
 #end
 #comments()
-  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.groovyName} = create${col.javaName}Binding();
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.headerName} = create${col.javaName}Binding();
 
 ## check if column is an identifier
 #set( $shortname  = ${names.getTruncatedGroovyName($col)} )
 #if ( ${shortname.isPresent()} )
 #comments()   
-  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${shortname.get()} = ${col.name};
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${shortname.get()} = ${col.headerName};
 
 #end
 #end
