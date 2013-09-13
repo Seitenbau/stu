@@ -54,7 +54,7 @@ repositories {
 /**
  * Setup Maven Deploy Repository
  */
-if(System.properties['bintray_username'] && System.properties['bintray_api_key']) {
+if(project.hasProperty('bintray_username')) {
   uploadArchives {
 	repositories {
 	  mavenDeployer {
