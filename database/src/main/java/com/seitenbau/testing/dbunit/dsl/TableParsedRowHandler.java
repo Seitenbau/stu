@@ -1,6 +1,7 @@
 package com.seitenbau.testing.dbunit.dsl;
 
 import groovy.lang.Closure;
+import groovy.lang.GString;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +68,11 @@ public class TableParsedRowHandler<R, G, D extends DatabaseRef>
     {
       value = new FutureClosure((Closure<?>) value);
     }
-
+    // handle Groovy Strings in the table dsl
+    else if(value instanceof GString)
+    {
+       value = value.toString();
+    }
     try
     {
       column.set(rowbuilder, value);
