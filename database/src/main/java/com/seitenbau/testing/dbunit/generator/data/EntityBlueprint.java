@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.base.Optional;
+import com.seitenbau.testing.dbunit.generator.Column;
 import com.seitenbau.testing.dbunit.generator.Edge;
 import com.seitenbau.testing.dbunit.generator.Table;
+import com.seitenbau.testing.dbunit.generator.values.ValueGenerator;
 
 public class EntityBlueprint
 {
@@ -25,7 +27,7 @@ public class EntityBlueprint
   // TODO remove again :-)
   private final StringBuilder log;
 
-  EntityBlueprint(Table table, String refName)
+  EntityBlueprint(Table table, String refName, EntityFactory fab)
   {
     this.refName = refName;
     this.table = table;
@@ -33,6 +35,15 @@ public class EntityBlueprint
     values = new HashMap<String, Object>();
     relationInformation = new HashMap<Edge, EntityCreationMode>();
     log = new StringBuilder();
+
+    for (Column col : table.getColumns()) {
+      if (col.getRelation() != null) {
+        continue;
+      }
+
+      ValueGenerator g = fab.getValueGenerator(col);
+      values.put(col.getJavaName(), g.nextValue());
+    }
   }
 
   Optional<EntityCreationMode> getCreationInformation(Edge edge)

@@ -8,16 +8,22 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Optional;
+import com.seitenbau.testing.dbunit.generator.Column;
 import com.seitenbau.testing.dbunit.generator.Edge;
 import com.seitenbau.testing.dbunit.generator.Table;
+import com.seitenbau.testing.dbunit.generator.values.StringGenerator;
+import com.seitenbau.testing.dbunit.generator.values.ValueGenerator;
 
 public class EntityFactory
 {
   private final Map<Table, List<EntityBlueprint>> blueprints;
 
+  private final Map<Column, ValueGenerator> valueGenerators;
+
   public EntityFactory()
   {
     blueprints = new HashMap<Table, List<EntityBlueprint>>();
+    valueGenerators = new HashMap<Column, ValueGenerator>();
   }
 
   public void printStats()
@@ -99,7 +105,7 @@ public class EntityFactory
 
 
     final String refName = table.getJavaName().toUpperCase() + "_" + String.valueOf(list.size() + 1);
-    EntityBlueprint result = new EntityBlueprint(table, refName);
+    EntityBlueprint result = new EntityBlueprint(table, refName, this);
     result.setCreationInformation(edge, mode);
     list.add(result);
 
@@ -130,6 +136,19 @@ public class EntityFactory
     List<EntityBlueprint> list = new ArrayList<EntityBlueprint>();
     blueprints.put(table, list);
     return list;
+  }
+
+  public ValueGenerator getValueGenerator(Column column)
+  {
+    if (valueGenerators.containsKey(column)) {
+      return valueGenerators.get(column);
+    }
+
+    ValueGenerator result = new StringGenerator();
+    int seed = column.getTable().getJavaName().hashCode() + column.getJavaName().hashCode();
+    result.initialize(seed);
+    valueGenerators.put(column, result);
+    return result;
   }
 
 

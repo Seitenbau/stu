@@ -31,7 +31,7 @@ public class DataGenerator
 
   public void generate()
   {
-    Table start = getStartTable(model, "schreibt");
+    Table start = getStartTable(model, "beaufsichtigt");
     System.out.println("Start Table: " + start.getJavaName());
     visitTable(start);
 
