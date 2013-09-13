@@ -82,7 +82,7 @@ public class EntityFactory
 
       // TODO any does not check if constraints are valid...
       if (mode.isAny() && existingMode.isAny()) {
-        System.out.println("---Factory: Returning Entity " + blueprint + " [ANY-ANY] ---");
+        //System.out.println("---Factory: Returning Entity " + blueprint + " [ANY-ANY] ---");
         return new EntityFactoryResult(blueprint, true);
       }
 

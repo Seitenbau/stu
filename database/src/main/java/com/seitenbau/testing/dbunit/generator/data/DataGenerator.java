@@ -10,7 +10,6 @@ import com.seitenbau.testing.dbunit.generator.Column;
 import com.seitenbau.testing.dbunit.generator.DatabaseModel;
 import com.seitenbau.testing.dbunit.generator.Edge;
 import com.seitenbau.testing.dbunit.generator.Table;
-import com.seitenbau.testing.dbunit.generator.Table.AssociativeRelation;
 import com.seitenbau.testing.dbunit.generator.data.EntityFactory.EntityFactoryResult;
 
 public class DataGenerator
@@ -32,7 +31,7 @@ public class DataGenerator
 
   public void generate()
   {
-    Table start = getStartTable(model, "pruefung");
+    Table start = getStartTable(model, "schreibt");
     System.out.println("Start Table: " + start.getJavaName());
     visitTable(start);
 
@@ -93,7 +92,7 @@ public class DataGenerator
     MultiplicityParser leftMultiplicity = new MultiplicityParser(leftColumn.getRelation().getForeignMultiplicity());
     MultiplicityParser rightMultiplicity = new MultiplicityParser(rightColumn.getRelation().getForeignMultiplicity());
 
-    System.out.println(leftColumn.getJavaName() + " <---> " + rightColumn.getJavaName());
+    //System.out.println(leftColumn.getJavaName() + " <---> " + rightColumn.getJavaName());
 
     generateAssociative(leftColumn, leftMultiplicity.getMin(), rightColumn, rightMultiplicity.getMin());
     generateAssociative(leftColumn, leftMultiplicity.getMax(), rightColumn, rightMultiplicity.getMin());
@@ -101,10 +100,8 @@ public class DataGenerator
     generateAssociative(leftColumn, leftMultiplicity.getMax(), rightColumn, rightMultiplicity.getMax());
 
     // visit the associated tables :-)
-    for (AssociativeRelation relation : table.getAssociativeRelations())
-    {
-      visitTable(relation.getForeignColumn().getTable());
-    }
+    visitTable(leftColumn.getRelation().getForeignColumn().getTable());
+    visitTable(rightColumn.getRelation().getForeignColumn().getTable());
   }
 
   private void generateAssociative(Column leftColumn, MultiplicityBorder leftBorder, Column rightColumn,
@@ -121,7 +118,7 @@ public class DataGenerator
     // swap border counts :-)
     int leftCount = getCount(rightBorder);
     int rightCount = getCount(leftBorder);
-    System.out.println(leftColumn.getJavaName() + " <---> " + rightColumn.getJavaName() + ": " + leftCount + ":" + rightCount);
+    //System.out.println(leftColumn.getJavaName() + " <---> " + rightColumn.getJavaName() + ": " + leftCount + ":" + rightCount);
 
     EntityBlueprint[] leftBps = new EntityBlueprint[leftCount];
     EntityBlueprint[] rightBps = new EntityBlueprint[rightCount];
@@ -137,14 +134,14 @@ public class DataGenerator
       for (int r = 0; r < rightCount; r++) {
         EntityFactoryResult result = fab.getEntity(leftColumn.getTable(),  leftEdge,  EntityCreationMode.fixed(1));
         if (result.isAlreadyExisted()) {
-          System.out.println("EXISTED");
+          //System.out.println("EXISTED");
         }
 
         EntityBlueprint entity = result.getEntity();
         entity.setReference(leftEdge, leftBps[l]);
         entity.setReference(rightEdge, rightBps[r]);
 
-        System.out.println("  " + entity);
+        //System.out.println("  " + entity);
       }
     }
   }
@@ -152,7 +149,7 @@ public class DataGenerator
   private int getCount(MultiplicityBorder border)
   {
     if (border.isInfinite()) {
-      return 5;
+      return 2;
     }
 
     if (border.getValue() == 0) {
@@ -278,7 +275,7 @@ public class DataGenerator
       }
 
       for (int i = count; i < min; i++) {
-        System.out.println(" Creating " + i + "/" + min + ": " + bp);
+        //System.out.println(" Creating " + i + "/" + min + ": " + bp);
         //System.out.println("Incomplete: " + bp + " [" + edge.getSource().getTable().getJavaName() + "]: " + i +  " < " + edge.getSource().getMin());
         EntityFactoryResult result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax()));
         result.getEntity().setReference(edge, bp);
@@ -312,7 +309,7 @@ public class DataGenerator
 
     void handle()
     {
-      System.out.println("Handling: " + edge.getSource().getTable().getName() + " ---> " + edge.getDestination().getTable().getName());
+      //System.out.println("Handling: " + edge.getSource().getTable().getName() + " ---> " + edge.getDestination().getTable().getName());
 
       // Destination is always m..1
       generate(edge.getDestination().getMin(), edge.getSource().getMin());
@@ -321,7 +318,7 @@ public class DataGenerator
       generate(edge.getDestination().getMax(), edge.getSource().getMax());
 
       if (edge.getDestination().getMin().getValue() > 0) {
-        System.out.println("*** CHECK IF " + edge.getSource().getTable().getName() + " ENTITIES HAVE TO BE LINKED...");
+        //System.out.println("*** CHECK IF " + edge.getSource().getTable().getName() + " ENTITIES HAVE TO BE LINKED...");
         for (EntityBlueprint bp : fab.getUnrelatedBlueprints(edge.getSource().getTable(), edge)) {
           EntityFactoryResult result = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax()));
           if (result.isAlreadyExisted()) {
@@ -329,7 +326,7 @@ public class DataGenerator
           }
 
           bp.setReference(edge, result.getEntity());
-          System.out.println("  Linked " + bp);
+          //System.out.println("  Linked " + bp);
         }
       }
 
@@ -339,7 +336,7 @@ public class DataGenerator
       // get a relation entity from the fab to link it
       // check if the new relation entity needs further relations ... :-(
 
-      System.out.println();
+      //System.out.println();
     }
 
     void generate(MultiplicityBorder destBorder, MultiplicityBorder sourceBorder)
@@ -363,11 +360,11 @@ public class DataGenerator
       }
 
       generated.add(id);
-      System.out.println("  Create: " + id);
+      //System.out.println("  Create: " + id);
 
       if (destBorder == 0) {
         EntityFactoryResult result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation());
-        System.out.println("  Link " + result.getEntity() + "[1]");
+        //System.out.println("  Link " + result.getEntity() + "[1]");
       } else if (sourceBorder == 0) {
         fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation());
       } else {
@@ -375,7 +372,7 @@ public class DataGenerator
         for (int i = 0; i < sourceBorder; i++) {
           EntityFactoryResult result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1));
           result.getEntity().setReference(edge, entity.getEntity());
-          System.out.println("  Linked " + result.getEntity());
+          //System.out.println("  Linked " + result.getEntity());
         }
       }
 
