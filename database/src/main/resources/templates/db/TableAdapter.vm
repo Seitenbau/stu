@@ -84,13 +84,13 @@ public class ${clsAdapter} {
    */
 #end
 #comments()
-  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.groovyName} = create${col.javaName}Binding();
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${col.headerName} = create${col.javaName}Binding();
 
 ## check if column is an identifier
-#set( $shortname  = ${names.getTruncatedGroovyName($col)} )
+#set( $shortname = ${names.getTruncatedHeaderName($col)} )
 #if ( ${shortname.isPresent()} )
 #comments()   
-  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${shortname.get()} = ${col.name};
+  public final ColumnBinding<${clsRowbuilder}, ${clsTableGetWhere}> ${shortname.get()} = ${col.headerName};
 
 #end
 #end
@@ -154,7 +154,7 @@ public class ${clsAdapter} {
    *   <li><strong>{@code REF}</strong>: {@link ${names.getRefClass($model)}}</li>
 #foreach( $col in $model.columns )
 #set( $shortnametext = "" )
-#set( $shortname = ${names.getTruncatedGroovyName($col)} )
+#set( $shortname = ${names.getTruncatedHeaderName($col)} )
 #if ( ${shortname.isPresent()} )
 #set( $shortname  = " (alias: <strong>{@code " + ${shortname.get()} + "}</strong>)")
 #end

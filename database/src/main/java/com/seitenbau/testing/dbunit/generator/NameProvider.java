@@ -34,8 +34,7 @@ public class NameProvider
   }
 
   public String getDataSetModifierClass()
-  {
-    return getDataSetClass() + "Modifier";
+  {    return getDataSetClass() + "Modifier";
   }
 
   public String getTableVariable(Table table)
@@ -113,19 +112,19 @@ public class NameProvider
     return table.getJavaName() + "Model";
   }
 
-  public Optional<String> getTruncatedGroovyName(Column column)
+  public Optional<String> getTruncatedHeaderName(Column column)
   {
-    final String groovyName = column.getGroovyName();
-    if (column.getRelation() == null || !groovyName.endsWith(TRUNCABLE_ID_SUFFIX)
-        && groovyName.length() > TRUNCABLE_ID_SUFFIX.length())
+    final String headerName = column.getHeaderName();
+    if (column.getRelation() == null || !headerName.endsWith(TRUNCABLE_ID_SUFFIX)
+        && headerName.length() > TRUNCABLE_ID_SUFFIX.length())
     {
       return Optional.absent();
     }
 
-    final String truncatedName = groovyName.substring(0, groovyName.length() - TRUNCABLE_ID_SUFFIX.length());
+    final String truncatedName = headerName.substring(0, headerName.length() - TRUNCABLE_ID_SUFFIX.length());
     for (Column otherColumn : column.getTable().getColumns())
     {
-      if (truncatedName.equals(otherColumn.getGroovyName()))
+      if (truncatedName.equals(otherColumn.getHeaderName()))
       {
         // column cannot be truncated
         return Optional.absent();

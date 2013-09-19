@@ -43,7 +43,15 @@ public class DataGenerator
     visitedEdges.clear();
     visitedTables.clear();
 
+    // TODO impvove start to array
     visitTable(start);
+
+    // visit all unvisited Tables...
+    for (Table table : model.getTables()) {
+      visitTable(table);
+    }
+
+
     int count = 0;
     while (count < 2000 && !validateBlueprints(model)) {
       count++;

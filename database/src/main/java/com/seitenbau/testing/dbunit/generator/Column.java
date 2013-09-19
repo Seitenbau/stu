@@ -19,7 +19,7 @@ public class Column
 
   private final String _javaName;
 
-  private final String _groovyName;
+  private final String _headerName;
 
   private final String _description;
 
@@ -35,13 +35,13 @@ public class Column
 
   private final long _seed;
 
-  Column(Table table, String name, String javaName, String groovyName, String description, DataType dataType,
+  Column(Table table, String name, String javaName, String headerName, String description, DataType dataType,
       ColumnReference relation, Set<String> flags, ValueGenerator generator, long seed, Integer infinite)
   {
     _table = table;
     _name = name;
     _javaName = javaName;
-    _groovyName = groovyName;
+    _headerName = headerName;
     _description = description;
     _dataType = dataType;
     _relation = relation;
@@ -93,9 +93,9 @@ public class Column
     return CamelCase.makeFirstLowerCase(getJavaName());
   }
 
-  public String getGroovyName()
+  public String getHeaderName()
   {
-    return _groovyName;
+    return _headerName;
   }
 
   public String getDescription()
