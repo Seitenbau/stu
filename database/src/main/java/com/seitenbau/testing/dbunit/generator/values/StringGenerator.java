@@ -7,10 +7,10 @@ public class StringGenerator implements ValueGenerator
 
   private Random random;
 
-  private final String[] values = { "Hund", "Katze", "Maus", "Alpha", "Beta", "Gamma", "Delta", "Lorem", "ipsum", "dolor", "sit", "amet" };
+  private final String[] values = { "\"Hund\"", "\"Katze\"", "\"Maus\"", "\"Alpha\"", "\"Beta\"", "\"Gamma\"", "\"Delta\"", "\"Lorem\"", "\"ipsum\"", "\"dolor\"", "\"sit\"", "\"amet\"" };
 
   @Override
-  public void initialize(int seed)
+  public void initialize(long seed)
   {
     random = new Random(seed);
   }

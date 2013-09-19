@@ -19,10 +19,15 @@ public abstract class DatabaseModel
 
   protected String __forceCaller;
 
+  long seed;
+
+  int infinite;
+
   public DatabaseModel()
   {
     isModelClassGeneration = false;
     isTableDSLGeneration = true;
+    infinite = 5;
   }
 
   public DataSetGenerator getDataSetGenInstance()
@@ -44,6 +49,17 @@ public abstract class DatabaseModel
   {
     this.packageName = name;
   }
+
+  public void seed(long seed)
+  {
+    this.seed = seed;
+  }
+
+  public void infinite(int infinite)
+  {
+    this.infinite = infinite;
+  }
+
 
   public void generatedSourceFolder(String folder)
   {
@@ -180,6 +196,16 @@ public abstract class DatabaseModel
   public List<Table> getTables()
   {
     return getDataSetGenInstance().getDataSet().getTables();
+  }
+
+  public long getSeed()
+  {
+    return seed;
+  }
+
+  public int getInfinite()
+  {
+    return infinite;
   }
 
 }

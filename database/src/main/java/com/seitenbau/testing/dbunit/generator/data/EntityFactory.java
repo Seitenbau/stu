@@ -1,58 +1,35 @@
 package com.seitenbau.testing.dbunit.generator.data;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Optional;
 import com.seitenbau.testing.dbunit.generator.Column;
+import com.seitenbau.testing.dbunit.generator.DatabaseModel;
 import com.seitenbau.testing.dbunit.generator.Edge;
 import com.seitenbau.testing.dbunit.generator.Table;
-import com.seitenbau.testing.dbunit.generator.values.StringGenerator;
 import com.seitenbau.testing.dbunit.generator.values.ValueGenerator;
 
 public class EntityFactory
 {
-  private final Map<Table, List<EntityBlueprint>> blueprints;
+  private final Entities blueprints;
 
   private final Map<Column, ValueGenerator> valueGenerators;
 
-  public EntityFactory()
+  private final long modelSeed;
+
+  public EntityFactory(DatabaseModel model)
   {
-    blueprints = new HashMap<Table, List<EntityBlueprint>>();
+    modelSeed = model.getSeed();
+    blueprints = new Entities(model);
     valueGenerators = new HashMap<Column, ValueGenerator>();
   }
 
-  public void printStats()
+  public Entities getEntities()
   {
-    System.out.println();
-
-    List<Table> tables = new ArrayList<Table>(blueprints.keySet());
-    Collections.sort(tables, new Comparator<Table>() {
-
-      @Override
-      public int compare(Table arg0, Table arg1)
-      {
-        return arg0.getJavaName().compareTo(arg1.getJavaName());
-      }
-
-    });
-
-    for (Table table : tables) {
-      List<EntityBlueprint> bps = blueprints.get(table);
-      for (EntityBlueprint bp : bps) {
-        System.out.println(bp);
-      }
-    }
-
-    System.out.println();
-    for (Table table : tables) {
-      List<EntityBlueprint> bps = blueprints.get(table);
-      System.out.println(table.getName() + ":\t" + bps.size());
-    }
+    return blueprints;
   }
 
   /**
@@ -62,9 +39,9 @@ public class EntityFactory
    * @param mode
    * @return
    */
-  public EntityFactoryResult getEntity(Table table, Edge edge, EntityCreationMode mode)
+  public EntityBlueprint getEntity(Table table, Edge edge, EntityCreationMode mode)
   {
-    List<EntityBlueprint> list = getTableBlueprints(table);
+    List<EntityBlueprint> list = blueprints.getTableBlueprints(table);
 
     for (EntityBlueprint blueprint : list) {
       // check if blueprint matches...
@@ -73,7 +50,7 @@ public class EntityFactory
         // no relation? use it!
         blueprint.setCreationInformation(edge, mode);
         //System.out.println("---Factory: Returning Entity " + blueprint + "---");
-        return new EntityFactoryResult(blueprint, true);
+        return blueprint;
       }
 
       EntityCreationMode existingMode = creationInformation.get();
@@ -88,8 +65,7 @@ public class EntityFactory
 
       // TODO any does not check if constraints are valid...
       if (mode.isAny() && existingMode.isAny()) {
-        //System.out.println("---Factory: Returning Entity " + blueprint + " [ANY-ANY] ---");
-        return new EntityFactoryResult(blueprint, true);
+        return blueprint;
       }
 
       // TODO check if the mode matches with the existing mode
@@ -97,8 +73,7 @@ public class EntityFactory
       if (mode.getMax() == existingMode.getMax()) {
         int count = blueprint.getReferencedByList(edge).size();
         if (count < mode.getMax()) {
-          //System.out.println("---Factory: Returning Entity " + blueprint + " [MAX:" + mode.getMax() + ", count:" + count + "] --- " + edge.getColumn().getTable().getJavaName() + " " + edge.getColumn().getJavaName() + " " + blueprint);
-          //return new EntityFactoryResult(blueprint, true);
+          //return blueprint;
         }
       }
     }
@@ -109,15 +84,14 @@ public class EntityFactory
     result.setCreationInformation(edge, mode);
     list.add(result);
 
-    //System.out.println("---Factory: Creating Entity " + result + "---");
-    return new EntityFactoryResult(result, false);
+    return result;
   }
 
 
   public List<EntityBlueprint> getUnrelatedBlueprints(Table table, Edge edge)
   {
     List<EntityBlueprint> result = new ArrayList<EntityBlueprint>();
-    List<EntityBlueprint> list = getTableBlueprints(table);
+    List<EntityBlueprint> list = blueprints.getTableBlueprints(table);
     for (EntityBlueprint bp : list) {
       if (!bp.getCreationInformation(edge).isPresent()) {
         result.add(bp);
@@ -127,54 +101,18 @@ public class EntityFactory
     return result;
   }
 
-  public List<EntityBlueprint> getTableBlueprints(Table table)
-  {
-    if (blueprints.containsKey(table)) {
-      return blueprints.get(table);
-    }
-
-    List<EntityBlueprint> list = new ArrayList<EntityBlueprint>();
-    blueprints.put(table, list);
-    return list;
-  }
-
   public ValueGenerator getValueGenerator(Column column)
   {
     if (valueGenerators.containsKey(column)) {
       return valueGenerators.get(column);
     }
 
-    ValueGenerator result = new StringGenerator();
-    int seed = column.getTable().getJavaName().hashCode() + column.getJavaName().hashCode();
+    long seed = modelSeed + column.getTable().getSeed() + column.getSeed();
+
+    ValueGenerator result = column.getGenerator();
     result.initialize(seed);
     valueGenerators.put(column, result);
     return result;
   }
-
-
-  public static class EntityFactoryResult {
-
-    private final EntityBlueprint entity;
-
-    private final boolean alreadyExisted;
-
-    public EntityFactoryResult(EntityBlueprint entity, boolean alreadyExisted)
-    {
-      this.entity = entity;
-      this.alreadyExisted = alreadyExisted;
-    }
-
-    public EntityBlueprint getEntity()
-    {
-      return entity;
-    }
-
-    public boolean isAlreadyExisted()
-    {
-      return alreadyExisted;
-    }
-
-  }
-
 
 }

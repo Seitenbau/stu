@@ -6,8 +6,10 @@ import com.seitenbau.testing.dbunit.generator.Table;
 
 public class STUTableOutput
 {
-  public String create(EntityFactory fab, DatabaseModel model)
+  public String create(Entities entities)
   {
+    DatabaseModel model = entities.getModel();
+
     StringBuilder result = new StringBuilder();
 
     for (Table table : model.getTables()) {
@@ -19,15 +21,21 @@ public class STUTableOutput
         builder.appendColumn("REF");
       }
       for (Column col : table.getColumns()) {
+        if (isSkipColumn(col)) {
+          continue;
+        }
         builder.appendColumn(col.getName());
       }
       builder.newLine();
 
-      for (EntityBlueprint bp : fab.getTableBlueprints(table)) {
+      for (EntityBlueprint bp : entities.getTableBlueprints(table)) {
         if (!table.isAssociativeTable()) {
           builder.appendColumn(bp.getRefName());
         }
         for (Column col : table.getColumns()) {
+          if (isSkipColumn(col)) {
+            continue;
+          }
           builder.appendColumn(getValue(bp, col));
         }
         builder.newLine();
@@ -37,6 +45,11 @@ public class STUTableOutput
       result.append("}\n\n");
     }
     return result.toString();
+  }
+
+  private boolean isSkipColumn(Column col)
+  {
+    return col.isAutoInvokeValueGeneration();
   }
 
   private String getValue(EntityBlueprint bp, Column column)

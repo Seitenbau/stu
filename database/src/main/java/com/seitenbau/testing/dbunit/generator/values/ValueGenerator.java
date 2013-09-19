@@ -2,7 +2,7 @@ package com.seitenbau.testing.dbunit.generator.values;
 
 public interface ValueGenerator
 {
-  void initialize(int seed);
+  void initialize(long seed);
 
   String nextValue();
 }

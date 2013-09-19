@@ -16,12 +16,18 @@ public class TableBuilder
 
   protected final List<ColumnBuilder> columnBuilders;
 
+  protected long seed;
+
+  protected Integer infinite;
+
   TableBuilder(DatabaseModel model, String name)
   {
     this.model = model;
     this.name = name;
+    seed = 0;
     javaName = DataSet.makeNiceJavaName(name);
     columnBuilders = new LinkedList<ColumnBuilder>();
+    infinite = null;
   }
 
   /**
@@ -30,7 +36,7 @@ public class TableBuilder
    */
   public Table build()
   {
-    final Table result = new Table(name, javaName, getTableDescription(), columnBuilders);
+    final Table result = new Table(name, javaName, getTableDescription(), seed, infinite, columnBuilders);
     model.addTable(result);
     return result;
   }
@@ -74,6 +80,19 @@ public class TableBuilder
   public TableBuilder description(String description)
   {
     this.description = description;
+    return this;
+  }
+
+
+  public TableBuilder seed(long seed)
+  {
+    this.seed = seed;
+    return this;
+  }
+
+  public TableBuilder infinite(int infinite)
+  {
+    this.infinite = Integer.valueOf(infinite);
     return this;
   }
 

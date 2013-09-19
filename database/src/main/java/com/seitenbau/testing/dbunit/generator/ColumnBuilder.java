@@ -5,6 +5,8 @@ import java.util.Set;
 
 import com.seitenbau.testing.dbunit.extend.DatabaseTesterCleanAction;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.testing.dbunit.generator.values.StringGenerator;
+import com.seitenbau.testing.dbunit.generator.values.ValueGenerator;
 import com.seitenbau.testing.util.CamelCase;
 
 public class ColumnBuilder
@@ -22,6 +24,10 @@ public class ColumnBuilder
   private String description;
 
   private final Set<String> flags;
+
+  private ValueGenerator generator;
+
+  private Long seed;
 
   /**
    * Allows to configure a reference to another column.
@@ -69,6 +75,8 @@ public class ColumnBuilder
    */
   public final ColumnReferenceBuilder reference;
 
+  private Integer infinite;
+
   public ColumnBuilder(TableBuilder tableBuilder, String name, DataType dataType)
   {
     this.flags = new HashSet<String>();
@@ -78,6 +86,7 @@ public class ColumnBuilder
     this.javaName = null;
     this.tableName = null;
     this.dataType = dataType;
+    this.infinite = null;
 
     this.reference = new ColumnReferenceBuilder(this);
     tableBuilder.addColumnBuilder(this);
@@ -107,8 +116,19 @@ public class ColumnBuilder
       p_tableName = name.toLowerCase();
     }
 
+    ValueGenerator p_generator = generator;
+    if (p_generator == null)
+    {
+      p_generator = new StringGenerator();
+    }
+
+    Long p_seed = seed;
+    if (p_seed == null) {
+      p_seed = (long)table.getJavaName().hashCode() + p_javaName.hashCode();
+    }
+
     return new Column(table, name, p_javaName, p_tableName, description, dataType, reference.getReference(),
-        flags);
+        flags, p_generator, p_seed, infinite);
   }
 
   /**
@@ -154,6 +174,25 @@ public class ColumnBuilder
   public ColumnBuilder description(String description)
   {
     this.description = description;
+    return this;
+  }
+
+  public ColumnBuilder generator(ValueGenerator generator)
+  {
+    this.generator = generator;
+    return this;
+  }
+
+  public ColumnBuilder seed(long seed)
+  {
+    this.seed = Long.valueOf(seed);
+    return this;
+  }
+
+
+  public ColumnBuilder infinite(int infinite)
+  {
+    this.infinite = Integer.valueOf(infinite);
     return this;
   }
 

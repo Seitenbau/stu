@@ -10,9 +10,9 @@ public class AssociativeTable extends Table
   private final List<Column> _associativeColumns;
   private final List<Column> _dataColumns;
 
-  public AssociativeTable(String name, String javaName, String description, List<ColumnBuilder> columnBuilders)
+  public AssociativeTable(String name, String javaName, String description, long seed, Integer infinite, List<ColumnBuilder> columnBuilders)
   {
-    super(name, javaName, description, columnBuilders);
+    super(name, javaName, description, seed, infinite, columnBuilders);
 
     _associativeColumns = new ArrayList<Column>();
     _dataColumns = new ArrayList<Column>();

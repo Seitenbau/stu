@@ -65,6 +65,9 @@ public class TabluarStringBuilder
         appendSpaces(result, columnWidths.get(i++) - value.length());
         result.append(margin);
       }
+
+      trimSpaces(result);
+
       result.append("\n");
     }
 
@@ -75,6 +78,13 @@ public class TabluarStringBuilder
   {
     for (int i = 0; i < count; i++) {
       builder.append(' ');
+    }
+  }
+
+  private void trimSpaces(StringBuilder builder)
+  {
+    while (builder.length() > 0 && builder.charAt(builder.length()-1) == ' ') {
+      builder.setLength(builder.length() - 1);
     }
   }
 }

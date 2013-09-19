@@ -75,7 +75,7 @@ public class EntityCreationMode
     return new EntityCreationMode(min, max);
   }
 
-  public static EntityCreationMode minMax(MultiplicityBorder min, MultiplicityBorder max)
+  public static EntityCreationMode minMax(Multiplicity.Border min, Multiplicity.Border max)
   {
     return new EntityCreationMode(min.getValue(), max.getValue());
   }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.seitenbau.testing.dbunit.generator.values.ValueGenerator;
 import com.seitenbau.testing.util.CamelCase;
 
 public class Column
@@ -28,8 +29,14 @@ public class Column
 
   private final List<Column> _referencedBy;
 
+  private final ValueGenerator _generator;
+
+  private final Integer _infinite;
+
+  private final long _seed;
+
   Column(Table table, String name, String javaName, String groovyName, String description, DataType dataType,
-      ColumnReference relation, Set<String> flags)
+      ColumnReference relation, Set<String> flags, ValueGenerator generator, long seed, Integer infinite)
   {
     _table = table;
     _name = name;
@@ -38,6 +45,9 @@ public class Column
     _description = description;
     _dataType = dataType;
     _relation = relation;
+    _generator = generator;
+    _seed = seed;
+    _infinite = infinite;
 
     _metaData = new ColumnMetaData(flags);
 
@@ -141,6 +151,21 @@ public class Column
   public boolean isFutureValueSupported()
   {
     return !isImmutable() && _relation == null;
+  }
+
+  public ValueGenerator getGenerator()
+  {
+    return _generator;
+  }
+
+  public long getSeed()
+  {
+    return _seed;
+  }
+
+  public Integer getInfinite()
+  {
+    return _infinite;
   }
 
 }

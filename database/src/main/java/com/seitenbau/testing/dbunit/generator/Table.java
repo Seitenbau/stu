@@ -22,14 +22,21 @@ public class Table
 
   private final String _description;
 
+  private final long _seed;
+
+  private final Integer _infinite;
+
   private final List<Column> _columns;
 
-  public Table(String name, String javaName, String description, List<ColumnBuilder> columnBuilders)
+  public Table(String name, String javaName, String description, long seed, Integer infinite, List<ColumnBuilder> columnBuilders)
   {
     _name = name;
     _javaName = javaName;
     _description = description;
+    _seed = seed;
     _columns = new ArrayList<Column>();
+    _infinite = infinite;
+
     for (ColumnBuilder columnBuilder : columnBuilders) {
       _columns.add(columnBuilder.buildColumn(this));
     }
@@ -43,6 +50,11 @@ public class Table
   public String getDescription()
   {
     return _description;
+  }
+
+  public long getSeed()
+  {
+    return _seed;
   }
 
   public List<Column> getColumns()
@@ -68,6 +80,11 @@ public class Table
   public String getSuffix()
   {
     return NAME_SUFFIX;
+  }
+
+  public Integer getInfinite()
+  {
+    return _infinite;
   }
 
   void setParent(DataSet dataSet)

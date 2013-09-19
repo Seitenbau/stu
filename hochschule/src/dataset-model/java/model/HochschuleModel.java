@@ -3,6 +3,10 @@ package model;
 import com.seitenbau.testing.dbunit.generator.DataType;
 import com.seitenbau.testing.dbunit.generator.DatabaseModel;
 import com.seitenbau.testing.dbunit.generator.Table;
+import com.seitenbau.testing.dbunit.generator.values.DateGenerator;
+import com.seitenbau.testing.dbunit.generator.values.IntegerGenerator;
+import com.seitenbau.testing.dbunit.generator.values.NachnameGenerator;
+import com.seitenbau.testing.dbunit.generator.values.VornameGenerator;
 
 public class HochschuleModel extends DatabaseModel
 {
@@ -11,9 +15,12 @@ public class HochschuleModel extends DatabaseModel
     database("Hochschule");
     packageName("com.seitenbau.testing.hochschule.model");
     enableTableModelClassesGeneration();
+    seed(0);
+    infinite(2);
 
     Table raum = table("raum")
         .description("Die Tabelle mit den Räumen der Hochschule")
+        .seed(0)
         .column("id", DataType.BIGINT)
           .defaultIdentifier()
           .autoInvokeNext()
@@ -27,7 +34,9 @@ public class HochschuleModel extends DatabaseModel
           .defaultIdentifier()
           .autoInvokeNext()
         .column("name", DataType.VARCHAR)
+          .generator(new NachnameGenerator())
         .column("vorname", DataType.VARCHAR)
+          .generator(new VornameGenerator())
         .column("titel", DataType.VARCHAR)
         .column("fakultaet", DataType.VARCHAR)
         .column("raum_id", DataType.BIGINT)
@@ -69,6 +78,7 @@ public class HochschuleModel extends DatabaseModel
               .multiplicity("0..*")
         .column("name", DataType.VARCHAR)
         .column("sws", DataType.INTEGER)
+          .generator(new IntegerGenerator(2, 6))
         .column("ects", DataType.DOUBLE)
       .build();
 
@@ -89,6 +99,7 @@ public class HochschuleModel extends DatabaseModel
               .description("Ordnet Prüfungen einer Lehrveranstaltung zu.")
         .column("typ", DataType.VARCHAR)
         .column("zeitpunkt", DataType.DATE)
+          .generator(new DateGenerator())
       .build();
 
     Table studenten = table("student")
@@ -97,10 +108,14 @@ public class HochschuleModel extends DatabaseModel
           .defaultIdentifier()
           .autoInvokeNext()
         .column("name", DataType.VARCHAR)
+          .generator(new NachnameGenerator())
         .column("vorname", DataType.VARCHAR)
+          .generator(new VornameGenerator())
         .column("studiengang", DataType.VARCHAR)
         .column("semester", DataType.INTEGER)
+          .generator(new IntegerGenerator(1, 8))
         .column("immatrikuliert_seit", DataType.DATE)
+          .generator(new DateGenerator())
       .build();
 
     associativeTable("beaufsichtigt")
@@ -162,6 +177,7 @@ public class HochschuleModel extends DatabaseModel
               .multiplicity("0..*")
               .description("Gibt an, welche Studenten eine Prüfung schreiben.")
         .column("versuch", DataType.INTEGER)
+          .generator(new IntegerGenerator(1, 3))
       .build();
   }
 

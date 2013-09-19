@@ -1,7 +1,6 @@
 package com.seitenbau.testing.dbunit.generator;
 
-import com.seitenbau.testing.dbunit.generator.data.MultiplicityBorder;
-import com.seitenbau.testing.dbunit.generator.data.MultiplicityParser;
+import com.seitenbau.testing.dbunit.generator.data.Multiplicity;
 
 public class Edge
 {
@@ -19,7 +18,9 @@ public class Edge
     this.column = column;
     source = new Node(column.getTable(), column.getRelation().getForeignMultiplicity());
     destination = new Node(column.getRelation().getForeignColumn().getTable(), column.getRelation().getLocalMultiplicity());
-    hashCode = source.table.hashCode() * 17 + destination.table.hashCode();
+
+    // use column to identify Edge
+    hashCode = column.hashCode();
   }
 
   public Node getSource()
@@ -51,7 +52,7 @@ public class Edge
     }
 
     Edge e = (Edge)o;
-    return source.table == e.source.table && destination.table == e.destination.table;
+    return column == e.column;
   }
 
   @Override
@@ -64,30 +65,26 @@ public class Edge
   {
     private final Table table;
 
-    private final MultiplicityBorder min;
-
-    private final MultiplicityBorder max;
+    private final Multiplicity multiplicity;
 
     Node(Table table, String multiplicity)
     {
       this.table = table;
-      MultiplicityParser p = new MultiplicityParser(multiplicity);
-      min = p.getMin();
-      max = p.getMax();
+      this.multiplicity = Multiplicity.parse(multiplicity);
     }
 
     public Table getTable() {
       return table;
     }
 
-    public MultiplicityBorder getMin()
+    public Multiplicity.Border getMin()
     {
-      return min;
+      return multiplicity.getMin();
     }
 
-    public MultiplicityBorder getMax()
+    public Multiplicity.Border getMax()
     {
-      return max;
+      return multiplicity.getMax();
     }
 
   }
