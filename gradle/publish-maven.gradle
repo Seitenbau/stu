@@ -51,3 +51,19 @@ repositories {
   maven { url "http://repo1.maven.org/maven2/" }
 }
 
+/**
+ * Setup Maven Deploy Repository
+ */
+if(project.hasProperty('bintray_username')) {
+  uploadArchives {
+	repositories {
+	  mavenDeployer {
+		repository( url: "https://api.bintray.com/maven/seitenbau/utils/stu") {
+		  authentication(
+			  userName: bintray_username,
+			  password: bintray_api_key)
+		}
+	  }
+	}
+  }
+}

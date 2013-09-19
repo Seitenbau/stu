@@ -31,9 +31,9 @@ public class Column
 
   private final ValueGenerator _generator;
 
-  private final Integer _infinite;
-
   private final long _seed;
+
+  private final Integer _infinite;
 
   Column(Table table, String name, String javaName, String headerName, String description, DataType dataType,
       ColumnReference relation, Set<String> flags, ValueGenerator generator, long seed, Integer infinite)

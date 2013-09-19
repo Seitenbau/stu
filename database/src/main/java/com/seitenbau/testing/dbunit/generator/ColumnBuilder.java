@@ -19,7 +19,7 @@ public class ColumnBuilder
 
   private String javaName;
 
-  private String tableName;
+  private String headerName;
 
   private String description;
 
@@ -84,7 +84,7 @@ public class ColumnBuilder
     this.name = name;
     this.description = null;
     this.javaName = null;
-    this.tableName = null;
+    this.headerName = null;
     this.dataType = dataType;
     this.infinite = null;
 
@@ -110,10 +110,10 @@ public class ColumnBuilder
     }
     p_javaName = CamelCase.makeFirstUpperCase(p_javaName);
 
-    String p_tableName = tableName;
-    if (p_tableName == null)
+    String p_headerName = headerName;
+    if (p_headerName == null)
     {
-      p_tableName = name.toLowerCase();
+      p_headerName = name; //.toLowerCase();
     }
 
     ValueGenerator p_generator = generator;
@@ -127,7 +127,7 @@ public class ColumnBuilder
       p_seed = (long)table.getJavaName().hashCode() + p_javaName.hashCode();
     }
 
-    return new Column(table, name, p_javaName, p_tableName, description, dataType, reference.getReference(),
+    return new Column(table, name, p_javaName, p_headerName, description, dataType, reference.getReference(),
         flags, p_generator, p_seed, infinite);
   }
 
@@ -161,7 +161,7 @@ public class ColumnBuilder
    */
   public ColumnBuilder tableName(String tableName)
   {
-    this.tableName = tableName;
+    this.headerName = tableName;
     return this;
   }
 
