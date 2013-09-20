@@ -42,7 +42,7 @@ public class $tableClass
 
   public $tableClass set${column.javaName}(DateBuilder datum)
   {
-    ${column.getJavaNameFirstLower()} = datum.asDate();
+    this.${column.getJavaNameFirstLower()} = datum.asDate();
     return this;
   }
 #end
