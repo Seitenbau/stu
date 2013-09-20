@@ -21,8 +21,9 @@ public enum ValueGeneratorRegistry {
 	 */
 	{
 		register(new IntegerGenerator(Integer.MIN_VALUE, Integer.MAX_VALUE))	.forType(DataType.INTEGER);
-		register(new StringGenerator())											.forType(DataType.VARCHAR);;
-		register(new BooleanGenerator())										.forType(DataType.BOOLEAN);;
+		register(new StringGenerator())											.forType(DataType.VARCHAR);
+		register(new BooleanGenerator())										.forType(DataType.BOOLEAN);
+		register(new DateGenerator())											.forType(DataType.DATE);
 	}
 	
 	public class ForDataType {
