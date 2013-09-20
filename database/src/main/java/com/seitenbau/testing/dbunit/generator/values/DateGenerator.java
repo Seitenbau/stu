@@ -35,7 +35,7 @@ public class DateGenerator implements ValueGenerator
     int iMonth = gc.get(GregorianCalendar.MONTH);
     int iDay = gc.get(GregorianCalendar.DAY_OF_MONTH);
 
-    return "\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\"";
+    return "asDate(\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\")";
   }
 
   public int randBetween(int start, int end) {
