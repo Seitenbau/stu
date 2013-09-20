@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.seitenbau.testing.dbunit.extend.DatabaseTesterCleanAction;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
-import com.seitenbau.testing.dbunit.generator.values.StringGenerator;
+import com.seitenbau.testing.dbunit.generator.values.ValueGeneratorRegistry;
 import com.seitenbau.testing.dbunit.generator.values.ValueGenerator;
 import com.seitenbau.testing.util.CamelCase;
 
@@ -19,7 +19,7 @@ public class ColumnBuilder
 
   private String javaName;
 
-  private String headerName;
+  private String tableName;
 
   private String description;
 
@@ -84,7 +84,7 @@ public class ColumnBuilder
     this.name = name;
     this.description = null;
     this.javaName = null;
-    this.headerName = null;
+    this.tableName = null;
     this.dataType = dataType;
     this.infinite = null;
 
@@ -110,16 +110,16 @@ public class ColumnBuilder
     }
     p_javaName = CamelCase.makeFirstUpperCase(p_javaName);
 
-    String p_headerName = headerName;
-    if (p_headerName == null)
+    String p_tableName = tableName;
+    if (p_tableName == null)
     {
-      p_headerName = name; //.toLowerCase();
+      p_tableName = name.toLowerCase();
     }
 
     ValueGenerator p_generator = generator;
     if (p_generator == null)
     {
-      p_generator = new StringGenerator();
+      p_generator = ValueGeneratorRegistry.INSTANCE.getValueGeneratorFor(dataType);
     }
 
     Long p_seed = seed;
@@ -127,7 +127,7 @@ public class ColumnBuilder
       p_seed = (long)table.getJavaName().hashCode() + p_javaName.hashCode();
     }
 
-    return new Column(table, name, p_javaName, p_headerName, description, dataType, reference.getReference(),
+    return new Column(table, name, p_javaName, p_tableName, description, dataType, reference.getReference(),
         flags, p_generator, p_seed, infinite);
   }
 
@@ -161,7 +161,7 @@ public class ColumnBuilder
    */
   public ColumnBuilder tableName(String tableName)
   {
-    this.headerName = tableName;
+    this.tableName = tableName;
     return this;
   }
 
