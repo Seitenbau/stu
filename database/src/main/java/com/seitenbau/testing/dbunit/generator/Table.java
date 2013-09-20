@@ -26,9 +26,12 @@ public class Table
 
   private final Integer _infinite;
 
+  private final int _minEntities;
+
   private final List<Column> _columns;
 
-  public Table(String name, String javaName, String description, long seed, Integer infinite, List<ColumnBuilder> columnBuilders)
+  public Table(String name, String javaName, String description, long seed, Integer infinite,
+      int minEntities, List<ColumnBuilder> columnBuilders)
   {
     _name = name;
     _javaName = javaName;
@@ -36,6 +39,7 @@ public class Table
     _seed = seed;
     _columns = new ArrayList<Column>();
     _infinite = infinite;
+    _minEntities = minEntities;
 
     for (ColumnBuilder columnBuilder : columnBuilders) {
       _columns.add(columnBuilder.buildColumn(this));
@@ -55,6 +59,11 @@ public class Table
   public long getSeed()
   {
     return _seed;
+  }
+
+  public int getMinEntities()
+  {
+    return _minEntities;
   }
 
   public List<Column> getColumns()

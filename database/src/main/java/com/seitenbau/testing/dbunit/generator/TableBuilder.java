@@ -18,6 +18,8 @@ public class TableBuilder
 
   protected long seed;
 
+  protected int minEntities;
+
   protected Integer infinite;
 
   TableBuilder(DatabaseModel model, String name)
@@ -25,6 +27,7 @@ public class TableBuilder
     this.model = model;
     this.name = name;
     seed = 0;
+    minEntities = 0;
     javaName = DataSet.makeNiceJavaName(name);
     columnBuilders = new LinkedList<ColumnBuilder>();
     infinite = null;
@@ -36,7 +39,8 @@ public class TableBuilder
    */
   public Table build()
   {
-    final Table result = new Table(name, javaName, getTableDescription(), seed, infinite, columnBuilders);
+    final Table result = new Table(name, javaName, getTableDescription(), seed, infinite,
+        minEntities, columnBuilders);
     model.addTable(result);
     return result;
   }
@@ -90,6 +94,12 @@ public class TableBuilder
     return this;
   }
 
+  public TableBuilder minEntities(int count)
+  {
+    this.minEntities = count;
+    return this;
+  }
+
   public TableBuilder infinite(int infinite)
   {
     this.infinite = Integer.valueOf(infinite);
@@ -111,5 +121,6 @@ public class TableBuilder
   {
     columnBuilders.add(columnBuilder);
   }
+
 
 }

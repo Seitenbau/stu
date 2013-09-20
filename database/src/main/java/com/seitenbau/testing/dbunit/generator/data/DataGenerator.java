@@ -61,6 +61,8 @@ public class DataGenerator
       visitTable(table);
     }
 
+    fab.ensureEntityCount();
+
     int count = 0;
     while (count < 2000 && !validateBlueprints(model)) {
       count++;

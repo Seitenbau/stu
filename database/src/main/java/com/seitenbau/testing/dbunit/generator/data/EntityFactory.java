@@ -18,10 +18,13 @@ public class EntityFactory
 
   private final Map<Column, ValueGenerator> valueGenerators;
 
+  private final DatabaseModel model;
+
   private final long modelSeed;
 
   public EntityFactory(DatabaseModel model)
   {
+    this.model = model;
     modelSeed = model.getSeed();
     blueprints = new Entities(model);
     valueGenerators = new HashMap<Column, ValueGenerator>();
@@ -85,6 +88,18 @@ public class EntityFactory
     list.add(result);
 
     return result;
+  }
+
+  public void ensureEntityCount()
+  {
+    for (Table table : model.getTables()) {
+      List<EntityBlueprint> list = blueprints.getTableBlueprints(table);
+      while (list.size() < table.getMinEntities()) {
+        final String refName = table.getJavaName().toUpperCase() + "_" + String.valueOf(list.size() + 1);
+        EntityBlueprint result = new EntityBlueprint(table, refName, this);
+        list.add(result);
+      }
+    }
   }
 
 

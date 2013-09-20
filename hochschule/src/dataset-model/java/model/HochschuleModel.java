@@ -21,6 +21,7 @@ public class HochschuleModel extends DatabaseModel
     Table raum = table("raum")
         .description("Die Tabelle mit den Räumen der Hochschule")
         .seed(0)
+        .minEntities(20)
         .column("id", DataType.BIGINT)
           .defaultIdentifier()
           .autoInvokeNext()

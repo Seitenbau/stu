@@ -15,7 +15,8 @@ public class AssociativeTableBuilder extends TableBuilder
   @Override
   public Table build()
   {
-    final Table result = new AssociativeTable(name, javaName, getTableDescription(), seed, infinite, columnBuilders);
+    final Table result = new AssociativeTable(name, javaName, getTableDescription(), seed,
+        infinite, minEntities, columnBuilders);
     model.addTable(result);
     return result;
   }
