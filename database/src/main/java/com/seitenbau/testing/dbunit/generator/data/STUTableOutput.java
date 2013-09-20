@@ -2,10 +2,38 @@ package com.seitenbau.testing.dbunit.generator.data;
 
 import com.seitenbau.testing.dbunit.generator.Column;
 import com.seitenbau.testing.dbunit.generator.DatabaseModel;
+import com.seitenbau.testing.dbunit.generator.NameProvider;
 import com.seitenbau.testing.dbunit.generator.Table;
 
 public class STUTableOutput
 {
+  public String createRefs(Entities entities)
+  {
+    DatabaseModel model = entities.getModel();
+    // TODO initialize correctly
+    NameProvider names = new NameProvider("", "");
+
+    StringBuilder result = new StringBuilder();
+
+    for (Table table : model.getTables()) {
+      if (table.isAssociativeTable()) {
+        continue;
+      }
+
+      final String prefix = names.getRefClass(table) + " ";
+      final String suffix = " = new " + names.getRefClass(table) + "();\n";
+      for (EntityBlueprint bp : entities.getTableBlueprints(table)) {
+        result.append(prefix);
+        result.append(bp.getRefName());
+        result.append(suffix);
+      }
+
+      result.append("\n");
+    }
+
+    return result.toString();
+  }
+
   public String create(Entities entities)
   {
     DatabaseModel model = entities.getModel();

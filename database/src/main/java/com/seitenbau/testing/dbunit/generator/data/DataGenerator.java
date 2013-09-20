@@ -1,5 +1,7 @@
 package com.seitenbau.testing.dbunit.generator.data;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,28 +31,35 @@ public class DataGenerator
 
   public Entities generate()
   {
-    return generate(getStartTable(model));
+    return generate(new LinkedList<Table>());
   }
 
   public Entities generate(String startTable)
   {
-    return generate(getStartTable(model, startTable));
+    return generate(getTable(model, startTable));
   }
 
   public Entities generate(Table start)
+  {
+    List<Table> list = new LinkedList<Table>();
+    list.add(start);
+    return generate(list);
+  }
+
+  public Entities generate(List<Table> order)
   {
     fab = new EntityFactory(model);
     visitedEdges.clear();
     visitedTables.clear();
 
-    // TODO impvove start to array
-    visitTable(start);
-
-    // visit all unvisited Tables...
-    for (Table table : model.getTables()) {
+    for (Table table : order) {
       visitTable(table);
     }
 
+    // visit all unvisited Tables...
+    for (Table table : getTableOrder(model)) {
+      visitTable(table);
+    }
 
     int count = 0;
     while (count < 2000 && !validateBlueprints(model)) {
@@ -180,7 +189,7 @@ public class DataGenerator
     visitTable(next);
   }
 
-  private Table getStartTable(DatabaseModel model, String name)
+  private Table getTable(DatabaseModel model, String name)
   {
     for (Table table : model.getTables()) {
       if (table.getJavaName().equalsIgnoreCase(name)) {
@@ -191,21 +200,25 @@ public class DataGenerator
     return null;
   }
 
-  private Table getStartTable(DatabaseModel model)
+  private List<Table> getTableOrder(DatabaseModel model)
   {
-    Table result = null;
-    int value = Integer.MAX_VALUE;
-    for (Table table : model.getTables()) {
-      int count = table.getIncomingEdgeCount();
-      if (count == 0) {
-        return table;
-      }
+    List<Table> result = new LinkedList<Table>();
 
-      if (count < value) {
-        value = count;
-        result = table;
-      }
+    for (Table table : model.getTables()) {
+      result.add(table);
     }
+
+    Collections.sort(result, new Comparator<Table>() {
+
+      @Override
+      public int compare(Table left, Table right)
+      {
+        int l = left.getIncomingEdgeCount();
+        int r = right.getIncomingEdgeCount();
+        return l < r ? -1 : l == r ? 0 : 1;
+      }
+    });
+
     return result;
   }
 
