@@ -49,4 +49,14 @@ public class DateGenerator implements ValueGenerator
     }
     return String.valueOf(i);
   }
+
+  public static class Factory implements ValueGeneratorFactory {
+
+    @Override
+    public ValueGenerator createGenerator()
+    {
+      return new DateGenerator();
+    }
+
+  }
 }

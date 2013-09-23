@@ -30,4 +30,23 @@ public class IntegerGenerator implements ValueGenerator
     return String.valueOf(value);
   }
 
+  public static class Factory implements ValueGeneratorFactory {
+
+    private final int min;
+
+    private final int max;
+
+    public Factory(int min, int max)
+    {
+      this.min = min;
+      this.max = max;
+    }
+
+    @Override
+    public ValueGenerator createGenerator()
+    {
+      return new IntegerGenerator(min, max);
+    }
+
+  }
 }

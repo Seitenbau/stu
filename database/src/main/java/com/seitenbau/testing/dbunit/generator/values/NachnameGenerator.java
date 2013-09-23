@@ -21,4 +21,13 @@ public class NachnameGenerator implements ValueGenerator
     return values[random.nextInt(values.length)];
   }
 
+  public static class Factory implements ValueGeneratorFactory {
+
+    @Override
+    public ValueGenerator createGenerator()
+    {
+      return new NachnameGenerator();
+    }
+
+  }
 }
