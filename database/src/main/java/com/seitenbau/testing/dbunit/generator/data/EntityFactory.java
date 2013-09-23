@@ -81,12 +81,8 @@ public class EntityFactory
       }
     }
 
-
-    final String refName = table.getJavaName().toUpperCase() + "_" + String.valueOf(list.size() + 1);
-    EntityBlueprint result = new EntityBlueprint(table, refName, this);
+    EntityBlueprint result = createEntity(table);
     result.setCreationInformation(edge, mode);
-    list.add(result);
-
     return result;
   }
 
@@ -95,13 +91,19 @@ public class EntityFactory
     for (Table table : model.getTables()) {
       List<EntityBlueprint> list = blueprints.getTableBlueprints(table);
       while (list.size() < table.getMinEntities()) {
-        final String refName = table.getJavaName().toUpperCase() + "_" + String.valueOf(list.size() + 1);
-        EntityBlueprint result = new EntityBlueprint(table, refName, this);
-        list.add(result);
+        createEntity(table);
       }
     }
   }
 
+  private EntityBlueprint createEntity(Table table)
+  {
+    List<EntityBlueprint> list = blueprints.getTableBlueprints(table);
+    final String refName = table.getJavaName().toUpperCase() + "_" + String.valueOf(list.size() + 1);
+    EntityBlueprint result = new EntityBlueprint(table, refName, this);
+    list.add(result);
+    return result;
+  }
 
   public List<EntityBlueprint> getUnrelatedBlueprints(Table table, Edge edge)
   {

@@ -208,4 +208,14 @@ public abstract class DatabaseModel
     return infinite;
   }
 
+  public String getPackageName()
+  {
+    return packageName;
+  }
+
+  public String getName()
+  {
+    return databaseName;
+  }
+
 }

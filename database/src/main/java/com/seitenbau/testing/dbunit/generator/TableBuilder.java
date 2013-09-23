@@ -27,7 +27,7 @@ public class TableBuilder
     this.model = model;
     this.name = name;
     seed = 0;
-    minEntities = 0;
+    minEntities = 1;
     javaName = DataSet.makeNiceJavaName(name);
     columnBuilders = new LinkedList<ColumnBuilder>();
     infinite = null;

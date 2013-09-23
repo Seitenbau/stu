@@ -25,7 +25,7 @@ public class HochschuleGraph
       if (isFirst) {
         System.out.println("Start Table: " + table.getJavaName());
         System.out.println(generatedDSL);
-        System.out.println(output.createRefs(entities));
+        //System.out.println(output.createRefs(entities));
         entities.printStats();
         System.out.println();
         isFirst = false;

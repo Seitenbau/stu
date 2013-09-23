@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TabluarStringBuilder
 {
-  final String indentation = "  ";
+  final String indentation = "      ";
 
   final String separator = "|";
 

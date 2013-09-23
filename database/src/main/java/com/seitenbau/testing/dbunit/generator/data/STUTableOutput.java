@@ -9,9 +9,13 @@ public class STUTableOutput
 {
   public String createRefs(Entities entities)
   {
+    return createRefs(entities, "");
+  }
+
+  private String createRefs(Entities entities, String linePrefix)
+  {
     DatabaseModel model = entities.getModel();
-    // TODO initialize correctly
-    NameProvider names = new NameProvider("", "");
+    NameProvider names = new NameProvider(model.getName(), model.getPackageName());
 
     StringBuilder result = new StringBuilder();
 
@@ -23,6 +27,7 @@ public class STUTableOutput
       final String prefix = names.getRefClass(table) + " ";
       final String suffix = " = new " + names.getRefClass(table) + "();\n";
       for (EntityBlueprint bp : entities.getTableBlueprints(table)) {
+        result.append(linePrefix);
         result.append(prefix);
         result.append(bp.getRefName());
         result.append(suffix);
@@ -34,14 +39,30 @@ public class STUTableOutput
     return result.toString();
   }
 
+
+
   public String create(Entities entities)
   {
     DatabaseModel model = entities.getModel();
 
+    NameProvider names = new NameProvider(model.getName(), model.getPackageName());
+    final String builderClass = names.getBuilderClass();
+
     StringBuilder result = new StringBuilder();
 
+    result.append("package dataset\n\n");
+    //result.append("import static " + model.getPackageName() + ".HochschuleRefs.*\n\n");
+    result.append("import " + model.getPackageName() + ".*\n\n");
+    result.append("class DataSet extends " + builderClass + "\n");
+    result.append("{\n");
+    result.append("\n");
+    //result.append(createRefs(entities, "  "));
+    result.append("  def tables() {\n\n");
+
     for (Table table : model.getTables()) {
-      result.append(table.getJavaNameFirstLower() + "Table.rows() {\n");
+      result.append("    ");
+      result.append(table.getJavaNameFirstLower());
+      result.append("Table.rows() {\n");
 
       TabluarStringBuilder builder = new TabluarStringBuilder();
 
@@ -70,8 +91,10 @@ public class STUTableOutput
       }
 
       result.append(builder);
-      result.append("}\n\n");
+      result.append("    }\n\n");
     }
+    result.append("  }\n");
+    result.append("}\n");
     return result.toString();
   }
 

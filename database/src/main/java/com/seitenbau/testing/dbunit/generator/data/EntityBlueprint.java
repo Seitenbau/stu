@@ -42,6 +42,8 @@ public class EntityBlueprint
       }
 
       ValueGenerator g = fab.getValueGenerator(col);
+
+      // TODO NM if unique flag (add) is set, ensure value is unique
       values.put(col.getJavaName(), g.nextValue());
     }
   }
