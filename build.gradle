@@ -11,8 +11,9 @@ configure(allprojects) {
   sourceCompatibility   = 1.6
   targetCompatibility   = 1.6
 
-  ext.commonLangVersion             = "2.6"
   ext.commonsdbcpVersion            = "1.4"
+  ext.commonsIoVersion              = "2.4"
+  ext.commonsLangVersion            = "2.6"
   ext.dbunitVersion                 = "2.3.0"
   ext.easymockVersion               = "3.0"
   ext.festAssertVersion             = "1.4"
@@ -64,7 +65,8 @@ configure(subprojects) {
 project("common") {
   dependencies {
     compile("org.apache.velocity:velocity:$velocityVersion")
-    compile("commons-lang:commons-lang:$commonLangVersion")
+    compile("commons-io:commons-io:$commonsIoVersion")
+    compile("commons-lang:commons-lang:$commonsLangVersion")
     compile("org.easytesting:fest-assert:$festAssertVersion")
     compile("org.hamcrest:hamcrest-all:$hamcrestVersion", optional)
     compile("org.easymock:easymock:$easymockVersion", optional)
@@ -91,7 +93,7 @@ project("database") {
     compile("org.easytesting:fest-assert:${festAssertVersion}")
     compile("org.apache.solr:solr-solrj:$solrjVersion", optional)
     compile("org.apache.velocity:velocity:$velocityVersion")
-    compile("commons-lang:commons-lang:$commonLangVersion")
+    compile("commons-lang:commons-lang:$commonsLangVersion")
     compile("org.slf4j:slf4j-api:$slf4jVersion")
 
     runtime("mysql:mysql-connector-java:$mysqlConnVersion")
