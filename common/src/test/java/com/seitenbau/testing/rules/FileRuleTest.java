@@ -16,18 +16,20 @@ import org.junit.rules.ExpectedException;
 
 public class FileRuleTest
 {
+  private static final String OUTPUT_TXT = "target/output.txt";
+
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
   @Rule
-  public FileRule output = new FileRule("target/output.txt")
+  public FileRule output = new FileRule(OUTPUT_TXT)
       .checkFileExistsAfterTest()
       .compareAfter("classpath:expectedContent.txt");
 
   @Test
   public void successTest() throws FileNotFoundException, IOException
   {
-    FileOutputStream fos = new FileOutputStream(new File("target/output.txt"));
+    FileOutputStream fos = new FileOutputStream(new File(OUTPUT_TXT));
     fos.write("Dies ist eine test datei\r".getBytes());
     fos.write("gleicher Inhalt\r".getBytes());
     fos.write("Hi\r".getBytes());
@@ -51,12 +53,12 @@ public class FileRuleTest
         String act = clean(item.getActual());
         String exp = clean(item.getExpected());
         String msg = clean(item.getMessage());
-        assertThat(act).isEqualTo("Line <3>\nnull\n");
-        assertThat(exp).isEqualTo("Line <3>\nInhalt 'dannach'\n");
+        assertThat(act).isEqualTo("'Dies ist eine test datei\rgleicher Inhalt\rHi\r'");
+        assertThat(exp).isEqualTo("'Dies ist eine test datei\rgleicher Inhalt\rHi\rInhalt 'dannach''");
         assertThat(msg)
             .isEqualTo(
-                "File content comparison failed expected:<Line <3>\n[Inhalt 'dannach']\n> but was:<Line <3>\n[null]\n>");
-        return true;
+                "[file content file-input-stream] expected:<...\rgleicher Inhalt\rHi\r[Inhalt 'dannach']'> but was:<...\rgleicher Inhalt\rHi\r[]'>");
+            return true;
       }
 
       private String clean(String msg)
@@ -67,7 +69,7 @@ public class FileRuleTest
     );
 
     // execute
-    FileOutputStream fos = new FileOutputStream(new File("target/output.txt"));
+    FileOutputStream fos = new FileOutputStream(new File(OUTPUT_TXT));
     fos.write("Dies ist eine test datei\r".getBytes());
     fos.write("gleicher Inhalt\r".getBytes());
     fos.write("Hi\r".getBytes());
