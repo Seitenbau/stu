@@ -8,6 +8,11 @@ import com.seitenbau.testing.util.DateUtil;
 public class DateBuilder
 {
   Calendar calendar;
+  
+  public DateBuilder()
+  {
+    calendar = Calendar.getInstance();
+  }
 
   public DateBuilder(Calendar current)
   {
@@ -24,7 +29,9 @@ public class DateBuilder
   }
 
   /**
-   * Get as formatted String
+   * Get as formatted String eg."dd.MM.yyyy HH:mm:ss.SSS" or
+   * "dd.MM.yyyy' 23:59'".
+   * @see {@link DateUtil#formatDate(String)}
    * @param format
    * @return
    */
