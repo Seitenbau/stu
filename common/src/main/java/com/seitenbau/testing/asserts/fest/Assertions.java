@@ -14,9 +14,11 @@ import com.seitenbau.testing.asserts.fest.impl.DateAssert;
 import com.seitenbau.testing.asserts.fest.impl.ExtendedFileAssert;
 import com.seitenbau.testing.asserts.fest.impl.ExtendedFileAssert.ProvidesFile;
 import com.seitenbau.testing.asserts.fest.impl.ExtendedStringAssert;
+import com.seitenbau.testing.asserts.fest.impl.FileReferenceAssert;
 import com.seitenbau.testing.asserts.fest.impl.TicketAssert;
 import com.seitenbau.testing.asserts.fest.impl.UriAssert;
 import com.seitenbau.testing.asserts.fest.impl.UrlAssert;
+import com.seitenbau.testing.io.files.FileReference;
 import com.seitenbau.testing.util.date.DateBuilder;
 
 public class Assertions extends org.fest.assertions.Assertions
@@ -77,6 +79,14 @@ public class Assertions extends org.fest.assertions.Assertions
    * Fluent assertions of the given file
    */
   public static ExtendedFileAssert assertThat(ProvidesFile file)
+  {
+    return AssertionsFactory.get().create(file);
+  }
+  
+  /**
+   * Fluent assertions of the given file
+   */
+  public static FileReferenceAssert assertThat(FileReference file)
   {
     return AssertionsFactory.get().create(file);
   }

@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.seitenbau.testing.logger.Logger;
+import com.seitenbau.testing.logger.TestLoggerFactory;
+
 public class ReflectionUtils
 {
-
+  static Logger logger =  TestLoggerFactory.get(ReflectionUtils.class);
   /**
    * Find's all methods with the given annotation. <br/>
    * The list is ordered by hierarchy : First methods from children than
@@ -132,5 +135,26 @@ public class ReflectionUtils
     {
       return false;
     }
+  }
+  
+  public static Class<?> magicClassFind(String... ignoreMethodsWithThisPart) throws ClassNotFoundException
+  {
+    StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+    Class<?> clazz = null;
+    inStacktrace: for (int i = 2; i < trace.length; i++)
+    {
+      StackTraceElement el = trace[i];
+      for (String in : ignoreMethodsWithThisPart)
+      {
+        if (el.getMethodName().contains(in))
+        {
+          continue inStacktrace;
+        }
+      }
+      clazz = Class.forName(el.getClassName());
+      logger.debug("Did magic magicClassFind and found = " + clazz);
+      break;
+    }
+    return clazz;
   }
 }

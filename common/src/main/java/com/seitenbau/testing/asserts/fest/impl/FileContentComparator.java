@@ -74,6 +74,24 @@ public class FileContentComparator {
       close(ais);
     }
   }
+  
+  public LineDiff[] compareContents(InputStream ais, File expected) throws IOException
+  {
+    InputStream eis = null;
+    try {
+      eis = new FileInputStream(expected);
+      List<LineDiff> diffs = verifyEqualContent(readerFor(ais), readerFor(eis));
+      return diffs.toArray(new LineDiff[diffs.size()]);
+    } finally {
+      close(eis);
+    }
+  }
+  
+  protected LineDiff[] compareContents(InputStream ais, InputStream eis) throws IOException
+  {
+    List<LineDiff> diffs = verifyEqualContent(readerFor(ais), readerFor(eis));
+    return diffs.toArray(new LineDiff[diffs.size()]);
+  }
 
   public LineNumberReader readerFor(InputStream inputStream) {
     return new LineNumberReader(new BufferedReader(new InputStreamReader(inputStream)));
