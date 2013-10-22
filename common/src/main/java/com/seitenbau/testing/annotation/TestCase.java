@@ -9,5 +9,9 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestCase
 {
+  /**
+   * get the values for the annotation
+   * @return values in String Array
+   */
     String[] value();
 }
