@@ -69,7 +69,8 @@ public class FileRule extends BeforeAfterRule implements ProvidesFile
     File f = new File(fileName);
     if (f.exists())
     {
-      Assert.assertTrue("Not able to delete file before test : " + fileName, f.delete());
+      boolean deleted = f.delete();
+      Assert.assertTrue("Not able to delete file before test : " + fileName, deleted);
     }
   }
 
