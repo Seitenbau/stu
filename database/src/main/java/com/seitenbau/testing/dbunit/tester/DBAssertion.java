@@ -3,7 +3,12 @@ package com.seitenbau.testing.dbunit.tester;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import junit.framework.ComparisonFailure;
 
 import org.dbunit.Assertion;
 import org.dbunit.database.IDatabaseConnection;
@@ -22,9 +27,13 @@ import com.seitenbau.testing.dbunit.internal.DateColumnRangeTableDecorator;
 import com.seitenbau.testing.dbunit.internal.DateComparator;
 import com.seitenbau.testing.dbunit.internal.TableCompareDecorator;
 import com.seitenbau.testing.dbunit.modifier.IDataSetModifier;
+import com.seitenbau.testing.util.DateUtil;
 
 public class DBAssertion
 {
+  /** option to suppress dump of tables */
+  public static boolean dumpTablesOnError = true;
+
   /**
    * Compares the content of a table with the dataset specified inside
    * a XML file.
@@ -265,45 +274,165 @@ public class DBAssertion
   }
 
   /**
-   * @param sorted determines if the tables and columns are sorted. If false the data is sorted before assertion.
+   * @param sorted determines if the tables and columns are sorted. If
+   *        false the data is sorted before assertion.
    * @param actualDataSet the actual dataset
-   * @param expectedDataSet the dataset with the expected state of the tables.
+   * @param expectedDataSet the dataset with the expected state of the
+   *        tables.
    * @param modifiers the optional modifiers.
    * @throws Exception If an error occurs during comparison.
    */
   public static void assertDataSet(boolean sorted, IDataSet actualDataSet, IDataSet expectedDataSet,
       IDataSetModifier[] modifiers) throws Exception
   {
-    // Filter columns not configured
-    DefaultDataSet actualFilteredDataSet = new DefaultDataSet();
-    DefaultDataSet expectedFilteredDataSet = new DefaultDataSet();
-    for (ITableIterator tableIterator = expectedDataSet.iterator(); tableIterator.next();)
+    IDataSet expect = null;
+    IDataSet actual = null;
+    try
     {
-      ITable expectedTable = tableIterator.getTable();
-      ITable actualTable = getActualTableForExpectedTable(actualDataSet, expectedTable);
-      ITable filteredTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable.getTableMetaData()
-          .getColumns());
+      // Filter columns not configured
+      DefaultDataSet actualFilteredDataSet = new DefaultDataSet();
+      DefaultDataSet expectedFilteredDataSet = new DefaultDataSet();
+      for (ITableIterator tableIterator = expectedDataSet.iterator(); tableIterator.next();)
+      {
+        ITable expectedTable = tableIterator.getTable();
+        ITable actualTable = getActualTableForExpectedTable(actualDataSet, expectedTable);
+        ITable filteredTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable.getTableMetaData()
+            .getColumns());
 
-      actualFilteredDataSet.addTable(new TableCompareDecorator(filteredTable));
-      expectedFilteredDataSet.addTable(new TableCompareDecorator(expectedTable));
+        actualFilteredDataSet.addTable(new TableCompareDecorator(filteredTable));
+        expectedFilteredDataSet.addTable(new TableCompareDecorator(expectedTable));
+      }
+      IDataSet expectedFilteredDataSet2 = expectedFilteredDataSet;
+      IDataSet actualFilteredDataSet2 = actualFilteredDataSet;
+      if (modifiers != null)
+      {
+        expectedFilteredDataSet2 = DataSetUtil.modifyDataSet(expectedFilteredDataSet2, modifiers);
+        actualFilteredDataSet2 = DataSetUtil.runDataSetFilters(actualFilteredDataSet2, modifiers);
+      }
+      if (sorted)
+      {
+        expect = createSortedDataSet(expectedFilteredDataSet2);
+        actual = createSortedDataSet(actualFilteredDataSet2);
+
+      }
+      else
+      {
+        expect = expectedFilteredDataSet2;
+        actual = actualFilteredDataSet2;
+      }
+      Assertion.assertEquals(expect, actual);
     }
-    IDataSet expectedFilteredDataSet2 = expectedFilteredDataSet;
-    IDataSet actualFilteredDataSet2 = actualFilteredDataSet;
-    if (modifiers != null)
+    catch (ComparisonFailure error)
     {
-      expectedFilteredDataSet2 = DataSetUtil.modifyDataSet(expectedFilteredDataSet2, modifiers);
-      actualFilteredDataSet2 = DataSetUtil.runDataSetFilters(actualFilteredDataSet2, modifiers);
+      throwPrettyError(error, expect, actual);
+      throw error;
     }
-    if (sorted)
+  }
+
+  protected static void throwPrettyError(ComparisonFailure error, IDataSet expect, IDataSet actual)
+      throws DataSetException
+  {
+    if (expect == null || actual == null || !dumpTablesOnError || error == null)
     {
-      Assertion
-          .assertEquals(createSortedDataSet(expectedFilteredDataSet2), createSortedDataSet(actualFilteredDataSet2));
+      return;
+    }
+    StringBuffer act = new StringBuffer();
+    StringBuffer exp = new StringBuffer();
+    try
+    {
+      String tableName = findTable(error);
+      if (tableName == null)
+      {
+        return;
+      }
+
+      printTable(exp, expect, tableName);
+      printTable(act, actual, tableName);
+
+    }
+    catch (Throwable t)
+    {
+      System.err.println("Inner error occured, suppresss because this is just for debugging : " + t.toString());
+    }
+    if (act != null && exp != null && act.length() > 0 && exp.length() > 0)
+    {
+      throw new ComparisonFailure(error.toString(), exp.toString(), act.toString());
+    }
+  }
+
+  private static String findTable(ComparisonFailure error)
+  {
+    String msg = error.getMessage();
+    Pattern p = Pattern.compile(".*?table=(.*?),.*");
+    Matcher m = p.matcher(msg);
+    if (!m.find())
+    {
+      return null;
     }
     else
     {
-      Assertion.assertEquals(expectedFilteredDataSet2, actualFilteredDataSet2);
+      String table = m.group(1);
+      return table;
     }
+  }
 
+  protected static String formatTables(ComparisonFailure error, IDataSet expect, IDataSet actual)
+      throws DataSetException
+  {
+    if (expect == null || actual == null || !dumpTablesOnError)
+    {
+      return null;
+    }
+    String msg = error.getMessage();
+    Pattern p = Pattern.compile(".*?table=(.*?),.*");
+    Matcher m = p.matcher(msg);
+    if (m.find())
+    {
+      return null;
+    }
+    else
+    {
+      String table = m.group(1);
+      StringBuffer sb = new StringBuffer();
+      sb.append("Tables of compared Datasets were ( tableName = " + table + " )\r\n");
+      sb.append("--- expected ---\r\n");
+      printTable(sb, expect, table);
+      sb.append("--- actual ---\r\n");
+      printTable(sb, actual, table);
+      return sb.toString();
+    }
+  }
+
+  protected static void printTable(StringBuffer sb, IDataSet dataSet, String table) throws DataSetException
+  {
+    ITable t = dataSet.getTable(table);
+    int c = t.getRowCount();
+    Column[] cols = t.getTableMetaData().getColumns();
+    for (int row = 0; row < c; row++)
+    {
+      sb.append(row);
+      sb.append("='");
+      for (Column col : cols)
+      {
+        Object v = t.getValue(row, col.getColumnName());
+        sb.append(formatCell(v));
+        sb.append("','");
+      }
+      sb.append("\r\n");
+    }
+  }
+  
+  public static String formatCell(Object value)
+  {
+    if (value == null)
+    {
+      return "null";
+    }
+    if (value instanceof Date)
+    {
+      return DateUtil.formatDate((Date) value, "dd.MM.yyyy HH:mm:ss.SSS");
+    }
+    return value.toString();
   }
 
   private static IDataSet createSortedDataSet(IDataSet originalDataSet) throws DataSetException

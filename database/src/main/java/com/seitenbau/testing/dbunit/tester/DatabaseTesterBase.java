@@ -231,6 +231,11 @@ public class DatabaseTesterBase<MY_TYPE>
     return myself();
   }
 
+  /**
+   * Initialize the instance.
+   * @param defaultModifiers array of modifiers for the dataset
+   * @param clazz a class to find out the path
+   */
   public void init(IDataSetModifier[] defaultModifiers, Class<?> clazz)
   {
     setDbUnitFeature("http://www.dbunit.org/features/caseSensitiveTableNames", false);
@@ -253,6 +258,7 @@ public class DatabaseTesterBase<MY_TYPE>
    * </p>
    * 
    * @param aModifier the additional modifier.
+   * @return instance of the generic type
    */
   public MY_TYPE addDefaultModifier(IDataSetModifier aModifier)
   {
@@ -272,6 +278,7 @@ public class DatabaseTesterBase<MY_TYPE>
    * </p>
    * 
    * @param modifiers the additional modifiers.
+   * @return instance of the generic type
    */
   public MY_TYPE addDefaultModifier(IDataSetModifier... modifiers)
   {
@@ -288,9 +295,9 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Method that compares a dataset to the actual database.
    * 
-   * @param expectedDataSet
-   * @param modifiers
-   * @throws Exception
+   * @param expectedDataSet the expected dataset
+   * @param modifiers to modify the dataset
+   * @throws Exception if the assertion fails
    */
   public void assertDataBase(IDataSet expectedDataSet, IDataSetModifier... modifiers) throws Exception
   {
@@ -300,9 +307,9 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Method that compares a dataset to the actual database.
    * 
-   * @param expectedDataSet
-   * @param modifiers
-   * @throws Exception
+   * @param factory factory for the dataset
+   * @param modifiers to modify the dataset
+   * @throws Exception if the assertion fails
    */
   public void assertDataBase(DbUnitDatasetFactory factory, IDataSetModifier... modifiers) throws Exception
   {
@@ -351,17 +358,25 @@ public class DatabaseTesterBase<MY_TYPE>
             sortConfig = cfg;
           }
         }
-        ITable table = ds.getTable(tableName);
-        ITable wrapped;
-        if (sortConfig == null)
+        try
         {
-          wrapped = createSortTable(table, null);
+          ITable table = ds.getTable(tableName);
+          ITable wrapped;
+          if (sortConfig == null)
+          {
+            wrapped = createSortTable(table, null);
+          }
+          else
+          {
+            wrapped = createSortTable(table, sortConfig.getColumnOrder());
+          }
+          dataSet.addTable(wrapped);
         }
-        else
+        catch (DataSetException ex)
         {
-          wrapped = createSortTable(table, sortConfig.getColumnOrder());
+          // do nothing - snapshot may contain more tables than
+          // necessary
         }
-        dataSet.addTable(wrapped);
       }
     }
     catch (DataSetException e)
