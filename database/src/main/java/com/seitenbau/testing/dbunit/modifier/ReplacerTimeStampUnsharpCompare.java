@@ -57,7 +57,7 @@ public class ReplacerTimeStampUnsharpCompare extends ReplacerTimeStamp implement
     if (objectToCompareTo instanceof Date)
     {
       Date expect = getUsedDate();
-      _compare.compareValues(expect, (Date) objectToCompareTo);
+      _compare.compare(expect, (Date) objectToCompareTo);
     }
     // TODO If no Date is available (e.g. null) an exception could be
     // thrown

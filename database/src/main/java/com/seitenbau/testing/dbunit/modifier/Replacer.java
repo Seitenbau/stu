@@ -16,10 +16,23 @@ public class Replacer implements IDataSetReplacer
    * 
    * @param replaceValue The replacement String that replaces the marker String.
    */
+  @Deprecated
   public Replacer(String markerString, Object replaceValue)
   {
     fMarkerString = markerString;
     fReplaceValue = replaceValue;
+  }
+  
+  /**
+   * Specifies the marker String inside the XML DBUnit file and the
+   * replacement String that should be inserted.
+   * 
+   * @param replaceValue The replacement String that replaces the
+   *        marker String.
+   */
+  public Replacer(Object replaceValue)
+  {
+    this("fake", replaceValue);
   }
 
   /**

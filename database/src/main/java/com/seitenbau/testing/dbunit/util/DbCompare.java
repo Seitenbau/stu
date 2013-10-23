@@ -5,14 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.junit.Assert;
-
 import com.seitenbau.testing.dbunit.modifier.IDataSetOverwriteCompare;
+import com.seitenbau.testing.logger.Logger;
+import com.seitenbau.testing.logger.TestLoggerFactory;
 import com.seitenbau.testing.util.date.DateBuilder;
 
 public class DbCompare
 {
-
+  static Logger logger = TestLoggerFactory.get(DbCompare.class);
+  
   /**
    * Fuzzy checks the database field to the current time (+-15s).
    */
@@ -121,6 +122,47 @@ public class DbCompare
       fMinusMilliseconds = minusMilliseconds;
     }
 
+    public int compare(Date expectedDate, Date actualValue)
+    {
+        long ticksExpect = expectedDate.getTime();
+        long ticksActual = actualValue.getTime();
+
+        if (fMinusMilliseconds != null)
+        {
+          long diff = ticksExpect - ticksActual;
+
+          if (diff > fMinusMilliseconds)
+          {
+              logger.error("Timestamp - Range Comparison : expected "
+                + actualValue + " less than " + fMinusMilliseconds
+                + " ms before " + new Date(ticksExpect) + ", but was " + diff
+                + " ms earlier");
+              return -1;
+          }
+        }
+        if (fPlusMilliseconds != null)
+        {
+          long diff = ticksActual - ticksExpect;
+
+          if (diff > fPlusMilliseconds)
+          {
+              logger.error("Timestamp - Range Comparison : expected "
+                + actualValue + " less than " + fPlusMilliseconds
+                + " ms after " + new Date(ticksExpect) + ", but was " + diff
+                + " ms later");
+              return 1;
+          }
+        }
+        return 0;
+    }
+    
+    /**
+     * Use compare instead
+     * @param expectedDate
+     * @param actualValue
+     * @return
+     */
+    @Deprecated
     public boolean compareValues(Date expectedDate, Date actualValue)
     {
       long ticksExpect = expectedDate.getTime();
@@ -133,7 +175,7 @@ public class DbCompare
         if (diff > fMinusMilliseconds)
         {
           throw new AssertionError("Timestamp - Range Comparison : expected " + actualValue + " less than "
-              + fMinusMilliseconds + " ms vor " + new Date(ticksExpect) + ", but was " + diff + " ms früher");
+              + fMinusMilliseconds + " ms before " + new Date(ticksExpect) + ", but was " + diff + " ms frï¿½her");
         }
       }
       if (fPlusMilliseconds != null)
@@ -179,7 +221,7 @@ public class DbCompare
     {
       if (actual instanceof Date)
       {
-        return _compare.compareValues(getDatum(), (Date) actual);
+        return (_compare.compare(getDatum(), (Date) actual) == 0);
       }
       return super.equals(actual);
     }
@@ -193,34 +235,18 @@ public class DbCompare
           return 0;
         }
       }
-      else
-      {
-        if (_compare.compareValues(getDatum(), actual))
-        {
-          return 0;
-        }
-      }
-      return -1;
+      return _compare.compare(getDatum(), actual);
     }
 
     public int compareDataSetElementTo(Object objectToCompareTo)
     {
       if (objectToCompareTo instanceof Date)
       {
-        if (_compare.compareValues(getDatum(), (Date) objectToCompareTo))
-        {
-          return 0;
-        }
-        else
-        {
-          Assert.fail("Date values not equal");
-          return 0;
-        }
+        return _compare.compare(getDatum(), (Date) objectToCompareTo);
       }
       else
       {
-        Assert.fail("Column was not of Type Date");
-        return 0;
+        throw new UnsupportedOperationException("Object is not of Type Date, but we need to compare Dates here.");
       }
     }
 
