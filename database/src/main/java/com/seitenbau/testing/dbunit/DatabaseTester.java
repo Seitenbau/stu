@@ -111,7 +111,7 @@ public class DatabaseTester extends DatabaseTesterBase<DatabaseTester>
    * @param url URL of the database.
    * @param username The name of the user.
    * @param password The password for the user.
-   * @param fSchema The database schema.
+   * @param schema The database schema.
    * @param defaultModifiers the default modifiers that should be
    *        applied to datasets.
    */
