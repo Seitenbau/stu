@@ -2,6 +2,7 @@ package com.seitenbau.testing.dbunit.solr;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,9 +10,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.client.params.ClientParamBean;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
@@ -69,10 +74,17 @@ public class SolrTesterRule implements MethodRule
   /**
    * The Solr server to establish the connection to Solr.
    * */
-  private SolrServer solrServer;
+  private HttpSolrServer solrServer;
 
+  /** URL of the solr server. */
   private String fUrl;
 
+  /** Username, if solr is protected with HTTP basic auth.*/
+  private String fBasicAuthUsername;
+
+  /** Password, if solr is protected with HTTP basic auth.*/
+  private String fBasicAuthPassword;
+  
   private List<IDataSetModifier> fDefaultModifierList = new ArrayList<IDataSetModifier>();
 
   private IDataSet defaultDataset;
@@ -144,6 +156,35 @@ public class SolrTesterRule implements MethodRule
     }
     this.fUrl = solrUrl;
     init(null);
+    close();
+    return this;
+  }
+  
+  /**
+   * Sets the username if solr is protected with HTTP basic auth.
+   * 
+   * @param username the username for HTTP basic auth.
+   * 
+   * @return the current instance.
+   */
+  public SolrTesterRule solrBasicAuthUsername(String username)
+  {
+    this.fBasicAuthUsername = username;
+    close();
+    return this;
+  }
+  
+  /**
+     * Sets the password if solr is protected with HTTP basic auth.
+   * 
+   * @param password the password for HTTP basic auth.
+   * 
+   * @return the current instance.
+   */
+  public SolrTesterRule solrBasicAuthPassword(String password)
+  {
+    this.fBasicAuthPassword = password;
+    close();
     return this;
   }
 
@@ -246,14 +287,16 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Schließt die aktuelle Verbindung, falls nötig.
    * Closes the current connection if required.
    * 
-   * @throws Exception Error that occurrs while closing connection.
    */
-  protected void close() throws Exception
+  protected void close()
   {
-    this.solrServer = null;
+    if (solrServer != null)
+    {
+      solrServer.shutdown();
+      solrServer = null;
+    }
   }
 
   protected Class<?> getClazz()
@@ -386,8 +429,7 @@ public class SolrTesterRule implements MethodRule
 
     trySetAnnotatedField(dataset);
 
-    // connect to solr server
-    this.solrServer = getConnection();
+    connectToSolr();
 
     // clean solr index
     cleanSolrIndex();
@@ -470,8 +512,7 @@ public class SolrTesterRule implements MethodRule
     final String method = "truncate() : ";
     LOG.trace(method + "Start");
 
-    // connect to solr server
-    this.solrServer = getConnection();
+    connectToSolr();
 
     // clean solr index
     cleanSolrIndex();
@@ -792,8 +833,8 @@ public class SolrTesterRule implements MethodRule
   {
     final String method = "createDatabaseSnapshot() : ";
     LOG.trace(method + "Start");
-    // connect to solr server
-    this.solrServer = getConnection();
+    
+    connectToSolr();
 
     LOG.debug(method + "Read existing data from Solr.");
     SolrDocumentList docListInSolr = this.solrServer.query(new SolrQuery(SOLR_DEFAULT_QUERY)).getResults();
@@ -925,20 +966,51 @@ public class SolrTesterRule implements MethodRule
   }
 
   /**
-   * Creates a connection to a Solr instance based on the stored URL.
+   * Establish the connection to the solr instance.
    * 
-   * @return die created connection to the Solr server.
+   * @return creates the connection to the solr server.
    */
-  private SolrServer getConnection()
+  private void connectToSolr()
   {
-    final String method = "getConnection() : ";
+    final String method = "connectToSolr() : ";
     LOG.trace(method + "Start");
 
-    LOG.debug(method + "Connecting to solr server with URL " + this.fUrl);
-    SolrServer solrServer = new HttpSolrServer(this.fUrl);
-    LOG.debug(method + "Connection established.");
+    if (this.solrServer == null)
+    {
+      LOG.debug(method + "Connecting to solr server with URL " + this.fUrl);
+      solrServer = new HttpSolrServer(this.fUrl);
+      if (fBasicAuthPassword != null && fBasicAuthUsername != null)
+      {
+        LOG.debug(method + "Configuring username " + this.fBasicAuthUsername
+            + " and password (not shown) via Basic Auth");
+        DefaultHttpClient httpClient = (DefaultHttpClient) solrServer.getHttpClient();
+        String credentials = fBasicAuthUsername + ":" + fBasicAuthPassword;
+        try
+        {
+          credentials = Base64.encodeBase64String(credentials.getBytes("ISO-8859-1"));
+        }
+        catch (UnsupportedEncodingException e)
+        {
+          throw new RuntimeException(e);
+        }
+        credentials = credentials.replace("\r", "").replace("\n", "");
+        Header header = new BasicHeader("Authorization", "Basic " + credentials);
+        List<Header> headerList = new ArrayList<Header>();
+        headerList.add(header);
+        new ClientParamBean(httpClient.getParams()).setDefaultHeaders(headerList);
+      }
+      LOG.debug(method + "Connection established.");
+    }
+    else
+    {
+      LOG.trace(method + "Reusing existing connection.");
+    }
 
     LOG.trace(method + "End");
+  }
+  
+  public HttpSolrServer getSolrServer()
+  {
     return solrServer;
   }
 }
