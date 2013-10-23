@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import java.util.Comparator;
+
 import com.seitenbau.testing.dbunit.modifier.IDataSetOverwriteCompare;
 import com.seitenbau.testing.logger.Logger;
 import com.seitenbau.testing.logger.TestLoggerFactory;
@@ -93,8 +95,10 @@ public class DbCompare
     return new ReplaceDate(expect, new DateCompareImpl());
   }
 
-  public static class DateCompareImpl
+  public static class DateCompareImpl implements Comparator<Date>
   {
+    static Logger logger = TestLoggerFactory.get(DateCompareImpl.class);
+    
     private static final int ONE_SECOND = 1000;
 
     private Integer fPlusMilliseconds = null;
