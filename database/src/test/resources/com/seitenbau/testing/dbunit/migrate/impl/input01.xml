@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <table name="ANHANG">
+        <column>VORGANG_ID</column>
+        <column>TITEL</column>
+        <column>BESCHREIBUNG</column>
+        <column>FILENAME</column>
+        <column>FILESIZE</column>
+        <column>TYPE</column>
+        <row>
+            <value>2</value>
+            <value>Der erste Anhang kommt sofort</value>
+            <value>Eine Beschreibung</value>
+            <value>AnhangDokumentWord.doc</value>
+            <value>0 kB</value>
+            <value>application/msword</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>Ein netter Artikel</value>
+            <value>Eine Beschreibung</value>
+            <value>AnhangWord.doc</value>
+            <value>33 kB</value>
+            <value>application/msword</value>
+        </row>
+    </table>
+
+    <table name="ANHANG_DOKUMENT">
+        <column>ID</column>
+        <row>
+            <value>1</value>
+        </row>
+        <row>
+            <value>2</value>
+        </row>
+    </table>
+
+    <table name="NULL" />
+    <table name="EMPTY">
+        <row></row>
+    </table>
+    <table name="COLS">
+        <column>VORGANG_ID</column>
+    </table>
+</dataset>
