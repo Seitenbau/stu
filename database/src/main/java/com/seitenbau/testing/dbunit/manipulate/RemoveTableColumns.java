@@ -102,7 +102,7 @@ public class RemoveTableColumns implements IDataSetFilter
           {
             for (String col : fToExcludeColumns)
             {
-              if (col.equals(column.getColumnName()))
+              if (col.equalsIgnoreCase(column.getColumnName()))
               {
                 filterOut = true;
                 break;
