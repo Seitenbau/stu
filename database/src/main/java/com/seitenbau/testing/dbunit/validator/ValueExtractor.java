@@ -5,7 +5,7 @@ import org.junit.Assert;
 import com.seitenbau.testing.dbunit.modifier.IDataSetOverwriteCompare;
 
 /**
- * Extracts the first occurants of the Value into the lastValue field
+ * Extracts the first occurrence of the Value into the lastValue field
  */
 public class ValueExtractor extends AbstractValueValidator implements IDataSetOverwriteCompare
 {
