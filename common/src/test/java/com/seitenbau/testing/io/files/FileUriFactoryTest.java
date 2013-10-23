@@ -22,7 +22,7 @@ public class FileUriFactoryTest
     // verify
     assertThat(ref.exists()).isTrue();
     assertThat(ref).hasContentEqualsTo("fun\r\n" +
-        "with �\r\n" +
+        "with \r\n" +
         "?");
   }
 
@@ -37,7 +37,7 @@ public class FileUriFactoryTest
     // verify
     assertThat(ref.exists()).isTrue();
     assertThat(ref).hasContentEqualsTo("fun\r\n" +
-        "with �\r\n" +
+        "with \r\n" +
         "?");
   }
 
@@ -120,7 +120,7 @@ public class FileUriFactoryTest
     // verify
     assertThat(ref.exists()).isTrue();
     assertThat(ref).hasContentEqualsTo("fun\r\n" +
-        "with �\r\n" +
+        "with \r\n" +
         "?");
   }
 

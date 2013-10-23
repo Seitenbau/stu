@@ -53,20 +53,18 @@ public class FileRuleTest
         String act = clean(item.getActual());
         String exp = clean(item.getExpected());
         String msg = clean(item.getMessage());
-        assertThat(act).isEqualTo("'Dies ist eine test datei\rgleicher Inhalt\rHi\r'");
-        assertThat(exp).isEqualTo("'Dies ist eine test datei\rgleicher Inhalt\rHi\rInhalt 'dannach''");
-        assertThat(msg)
-            .isEqualTo(
-                "[file content file-input-stream] expected:<...\rgleicher Inhalt\rHi\r[Inhalt 'dannach']'> but was:<...\rgleicher Inhalt\rHi\r[]'>");
-            return true;
+        assertThat(act).isEqualTo("Line <3>\nnull\n");
+        assertThat(exp).isEqualTo("Line <3>\nInhalt 'dannach'\n");
+        assertThat(msg).isEqualTo(
+            "File content comparison failed expected:<Line <3>\n[Inhalt 'dannach']\n> but was:<Line <3>\n[null]\n>");
+        return true;
       }
 
       private String clean(String msg)
       {
         return msg.replace("\r\n", "\n");
       }
-    }
-    );
+    });
 
     // execute
     FileOutputStream fos = new FileOutputStream(new File(OUTPUT_TXT));
