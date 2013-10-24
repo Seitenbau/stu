@@ -37,22 +37,22 @@ import org.dbunit.dataset.datatype.DataType;
 
 import com.google.common.base.Optional;
 #if( ${model.hasDataColumns()} )
-import com.seitenbau.stu.dbunit.dsl.CastUtil;
+import com.seitenbau.stu.database.dsl.CastUtil;
 #end
-import com.seitenbau.stu.dbunit.dsl.DataSetIdentificator;
-import com.seitenbau.stu.dbunit.dsl.DataSetRegistry;
-import com.seitenbau.stu.dbunit.dsl.DatabaseRef;
+import com.seitenbau.stu.database.dsl.DataSetIdentificator;
+import com.seitenbau.stu.database.dsl.DataSetRegistry;
+import com.seitenbau.stu.database.dsl.DatabaseRef;
 #foreach( $column in $model.columns )
 #if( ${column.isNextValueMethodGenerated()} )
-import com.seitenbau.stu.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.stu.database.extend.DatasetIdGenerator;
 #break
 #end
 #end
-import com.seitenbau.stu.dbunit.generator.ColumnMetaData;
-import com.seitenbau.stu.dbunit.generator.ColumnMetaDataBuilder;
+import com.seitenbau.stu.database.generator.ColumnMetaData;
+import com.seitenbau.stu.database.generator.ColumnMetaDataBuilder;
 #foreach( $column in $model.columns )
 #if( ${column.isImmutable()})
-import com.seitenbau.stu.dbunit.util.NullCompatibleEquivalence;
+import com.seitenbau.stu.database.util.NullCompatibleEquivalence;
 #break
 #end
 #end
@@ -337,7 +337,7 @@ public class ${clsTable} implements ITable
         @SuppressWarnings("unchecked")
         Future<Object> futureValue = (Future<Object>)value;
         ${column.javaType} result = (${column.javaType})CastUtil.cast(futureValue.getFuture(), 
-          com.seitenbau.stu.dbunit.generator.${column.type});
+          com.seitenbau.stu.database.generator.${column.type});
         DataSetRegistry.use(last);
         return result;
       }

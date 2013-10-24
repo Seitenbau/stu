@@ -23,16 +23,16 @@ import com.google.common.base.Optional;
 #end
 #end
 
-import com.seitenbau.stu.dbunit.dsl.CastUtil;
-import com.seitenbau.stu.dbunit.dsl.ColumnBinding;
-import com.seitenbau.stu.dbunit.dsl.DatabaseRef;
-import com.seitenbau.stu.dbunit.dsl.NoValue;
-import com.seitenbau.stu.dbunit.dsl.RefColumnBinding;
-import com.seitenbau.stu.dbunit.dsl.TableParser;
-import com.seitenbau.stu.dbunit.dsl.TableParserAdapter;
-import com.seitenbau.stu.dbunit.generator.ColumnMetaData;
-import com.seitenbau.stu.dbunit.generator.DataType;
-import com.seitenbau.stu.dbunit.modifier.IDataSetModifier;
+import com.seitenbau.stu.database.dsl.CastUtil;
+import com.seitenbau.stu.database.dsl.ColumnBinding;
+import com.seitenbau.stu.database.dsl.DatabaseRef;
+import com.seitenbau.stu.database.dsl.NoValue;
+import com.seitenbau.stu.database.dsl.RefColumnBinding;
+import com.seitenbau.stu.database.dsl.TableParser;
+import com.seitenbau.stu.database.dsl.TableParserAdapter;
+import com.seitenbau.stu.database.generator.ColumnMetaData;
+import com.seitenbau.stu.database.generator.DataType;
+import com.seitenbau.stu.database.modifier.IDataSetModifier;
 import com.seitenbau.stu.util.Action;
 import com.seitenbau.stu.util.Filter;
 import com.seitenbau.stu.util.Future;

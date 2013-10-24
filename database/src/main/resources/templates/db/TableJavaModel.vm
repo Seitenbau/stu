@@ -12,7 +12,7 @@ import com.seitenbau.stu.util.date.DateBuilder;
 #break
 #end
 #end
-import com.seitenbau.stu.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.stu.database.extend.DatasetIdGenerator;
 
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses

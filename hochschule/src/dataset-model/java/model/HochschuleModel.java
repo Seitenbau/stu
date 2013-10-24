@@ -1,12 +1,12 @@
 package model;
 
-import com.seitenbau.stu.dbunit.generator.DataType;
-import com.seitenbau.stu.dbunit.generator.DatabaseModel;
-import com.seitenbau.stu.dbunit.generator.Table;
-import com.seitenbau.stu.dbunit.generator.values.DateGenerator;
-import com.seitenbau.stu.dbunit.generator.values.IntegerGenerator;
-import com.seitenbau.stu.dbunit.generator.values.NachnameGenerator;
-import com.seitenbau.stu.dbunit.generator.values.VornameGenerator;
+import com.seitenbau.stu.database.generator.DataType;
+import com.seitenbau.stu.database.generator.DatabaseModel;
+import com.seitenbau.stu.database.generator.Table;
+import com.seitenbau.stu.database.generator.values.DateGenerator;
+import com.seitenbau.stu.database.generator.values.IntegerGenerator;
+import com.seitenbau.stu.database.generator.values.NachnameGenerator;
+import com.seitenbau.stu.database.generator.values.VornameGenerator;
 
 public class HochschuleModel extends DatabaseModel
 {

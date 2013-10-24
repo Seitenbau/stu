@@ -11,12 +11,12 @@
 package ${package};
 #end
 
-import com.seitenbau.stu.dbunit.dsl.DataSetIdentificator;
-import com.seitenbau.stu.dbunit.dsl.DataSetRegistry;
+import com.seitenbau.stu.database.dsl.DataSetIdentificator;
+import com.seitenbau.stu.database.dsl.DataSetRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
-import com.seitenbau.stu.dbunit.dsl.DatabaseRef;
+import com.seitenbau.stu.database.dsl.DatabaseRef;
 
 import ${model.package}.${clsTable}.${clsRowbuilder};
 

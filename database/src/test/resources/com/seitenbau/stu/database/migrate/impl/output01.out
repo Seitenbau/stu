@@ -1,0 +1,35 @@
+package com.seitenbau.stu.database.migrate.impl;
+
+class Input01 extends com.example.BaseDataset {
+  
+  protected void initDataSet()
+  {
+    table_Anhang
+      .insertRow()
+        .setVorgangId(2)
+        .setTitel("Der erste Anhang kommt sofort")
+        .setBeschreibung("Eine Beschreibung")
+        .setFilename("AnhangDokumentWord.doc")
+        .setFilesize("0 kB")
+        .setType("application/msword")
+      ;
+    table_Anhang
+      .insertRow()
+        .setVorgangId(2)
+        .setTitel("Ein netter Artikel")
+        .setBeschreibung("Eine Beschreibung")
+        .setFilename("AnhangWord.doc")
+        .setFilesize("33 kB")
+        .setType("application/msword")
+      ;
+    table_AnhangDokument
+      .insertRow()
+        .setId(1)
+      ;
+    table_AnhangDokument
+      .insertRow()
+        .setId(2)
+      ;
+    
+  }
+}
