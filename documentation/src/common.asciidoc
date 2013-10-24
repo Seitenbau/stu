@@ -1,2 +1,0 @@
-== Common documentation
-Here comes information to the common classes. 

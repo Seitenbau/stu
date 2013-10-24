@@ -1,2 +1,0 @@
-== Database documentation
-Here comes information to the database classes. 

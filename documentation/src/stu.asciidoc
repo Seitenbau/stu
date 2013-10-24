@@ -1,33 +1,36 @@
-= Simple Test Utils Users Documentation Test
+= Simple Test Utils Users Documentation
 SEITENBAU GmbH <stu@seitenbau.com>
 v1.0, 2013-07-31
 :imagesdir: images
-
-== Section Level 1
-
-=== Section Level 2
-
-==== Section Level 3
-
-===== Section Level 4
-
-====== Section Level 5 (Asciidoctor only)
 
 '''
 
 image::seitenbau-110px.png[SEITENBAU Logo]
 
-////
-*Comment* block
+== Common package documentation
 
-Use: hide comments
-////
+=== Overview
+Here comes information to the common classes. 
 
-include::common.asciidoc[]
+=== Functionality
 
-include::database.asciidoc[]
+==== Annotations
 
-include::examples.asciidoc[]
+==== Asserts
+
+==== Config
+
+==== Crypto
+
+== Database package documentation
+
+=== Overview
+Here comes information to the database classes. 
+
+== Examples package documentation
+
+=== Overview
+Here comes information to the example classes. 
 
 [role="lead"]
 This text will be styled as a lead paragraph (i.e., larger font).
