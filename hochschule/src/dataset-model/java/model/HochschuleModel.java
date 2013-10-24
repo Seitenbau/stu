@@ -1,19 +1,19 @@
 package model;
 
-import com.seitenbau.testing.dbunit.generator.DataType;
-import com.seitenbau.testing.dbunit.generator.DatabaseModel;
-import com.seitenbau.testing.dbunit.generator.Table;
-import com.seitenbau.testing.dbunit.generator.values.DateGenerator;
-import com.seitenbau.testing.dbunit.generator.values.IntegerGenerator;
-import com.seitenbau.testing.dbunit.generator.values.NachnameGenerator;
-import com.seitenbau.testing.dbunit.generator.values.VornameGenerator;
+import com.seitenbau.stu.dbunit.generator.DataType;
+import com.seitenbau.stu.dbunit.generator.DatabaseModel;
+import com.seitenbau.stu.dbunit.generator.Table;
+import com.seitenbau.stu.dbunit.generator.values.DateGenerator;
+import com.seitenbau.stu.dbunit.generator.values.IntegerGenerator;
+import com.seitenbau.stu.dbunit.generator.values.NachnameGenerator;
+import com.seitenbau.stu.dbunit.generator.values.VornameGenerator;
 
 public class HochschuleModel extends DatabaseModel
 {
   public HochschuleModel()
   {
     database("Hochschule");
-    packageName("com.seitenbau.testing.hochschule.model");
+    packageName("com.seitenbau.stu.hochschule.model");
     enableTableModelClassesGeneration();
     seed(0);
     infinite(2);

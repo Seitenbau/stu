@@ -4,8 +4,8 @@
 package ${package};
 #end
 
-import com.seitenbau.testing.dbunit.generator.DataType;
-import com.seitenbau.testing.dbunit.generator.DatabaseModel;
+import com.seitenbau.stu.dbunit.generator.DataType;
+import com.seitenbau.stu.dbunit.generator.DatabaseModel;
 
 public class ${model.outputClass} extends DatabaseModel
 {

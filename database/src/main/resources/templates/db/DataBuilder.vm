@@ -5,7 +5,7 @@ package ${package};
 #end
 
 #if( ${model.hasPlaceholders()} )
-import com.seitenbau.testing.dbunit.util.DbCompare;
+import com.seitenbau.stu.dbunit.util.DbCompare;
 #end
 import ${model.dataSetClass};
 

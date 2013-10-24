@@ -3,11 +3,11 @@ package model;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.seitenbau.testing.dbunit.generator.DatabaseModel;
-import com.seitenbau.testing.dbunit.generator.Table;
-import com.seitenbau.testing.dbunit.generator.data.DataGenerator;
-import com.seitenbau.testing.dbunit.generator.data.Entities;
-import com.seitenbau.testing.dbunit.generator.data.STUTableOutput;
+import com.seitenbau.stu.dbunit.generator.DatabaseModel;
+import com.seitenbau.stu.dbunit.generator.Table;
+import com.seitenbau.stu.dbunit.generator.data.DataGenerator;
+import com.seitenbau.stu.dbunit.generator.data.Entities;
+import com.seitenbau.stu.dbunit.generator.data.STUTableOutput;
 
 public class HochschuleGraph
 {

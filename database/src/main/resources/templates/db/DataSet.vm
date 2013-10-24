@@ -11,14 +11,14 @@ package ${package};
 ## *                   Begin of File                          *
 ## ************************************************************
 ##
-import com.seitenbau.testing.dbunit.util.DbCompare;
-import com.seitenbau.testing.dbunit.dsl.DataSetIdentificator;
-import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
-import com.seitenbau.testing.util.DateUtil;
-import com.seitenbau.testing.util.date.DateBuilder;
-import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
-import com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory;
-import com.seitenbau.testing.dbunit.extend.impl.DefaultIdGenerator;
+import com.seitenbau.stu.dbunit.util.DbCompare;
+import com.seitenbau.stu.dbunit.dsl.DataSetIdentificator;
+import com.seitenbau.stu.dbunit.dsl.DataSetRegistry;
+import com.seitenbau.stu.util.DateUtil;
+import com.seitenbau.stu.util.date.DateBuilder;
+import com.seitenbau.stu.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.stu.dbunit.extend.DbUnitDatasetFactory;
+import com.seitenbau.stu.dbunit.extend.impl.DefaultIdGenerator;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.IDataSet;
 import java.util.Date;

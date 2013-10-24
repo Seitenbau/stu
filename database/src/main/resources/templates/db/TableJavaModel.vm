@@ -7,12 +7,12 @@ package ${package};
 
 #foreach( $column in $model.columns )
 #if( $column.javaType.contains("Date") )
-import com.seitenbau.testing.util.DateUtil;
-import com.seitenbau.testing.util.date.DateBuilder;
+import com.seitenbau.stu.util.DateUtil;
+import com.seitenbau.stu.util.date.DateBuilder;
 #break
 #end
 #end
-import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
+import com.seitenbau.stu.dbunit.extend.DatasetIdGenerator;
 
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses

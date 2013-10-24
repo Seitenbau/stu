@@ -1,15 +1,15 @@
 package model;
 
-import com.seitenbau.testing.dbunit.generator.DataType;
-import com.seitenbau.testing.dbunit.generator.DatabaseModel;
-import com.seitenbau.testing.dbunit.generator.Table;
+import com.seitenbau.stu.dbunit.generator.DataType;
+import com.seitenbau.stu.dbunit.generator.DatabaseModel;
+import com.seitenbau.stu.dbunit.generator.Table;
 
 public class PersonDatabaseModel extends DatabaseModel
 {
   public PersonDatabaseModel()
   {
     database("PersonDatabase");
-    packageName("com.seitenbau.testing.dbunit.model");
+    packageName("com.seitenbau.stu.dbunit.model");
     enableTableModelClassesGeneration();
     //disbaleTableDSLGeneration();
 
