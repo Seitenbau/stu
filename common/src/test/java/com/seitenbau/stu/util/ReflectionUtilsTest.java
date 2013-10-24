@@ -70,8 +70,8 @@ public class ReflectionUtilsTest
     List<Method> result = ReflectionUtils.findMethodByAnnotation(Class2.class, MyAnnotation.class, true);
     // verify
     assertThat(result).hasSize(3);
-    assertThat(result).onProperty("name")
-        .containsSequence("method_with_Annotation", "method_k2_Annotation", "method_k1_Annotation");
+    assertThat(result).onProperty("name").contains("method_with_Annotation", "method_k2_Annotation",
+        "method_k1_Annotation");
   }
 
   @Test
@@ -80,9 +80,8 @@ public class ReflectionUtilsTest
     List<Method> result = ReflectionUtils.findMethodByAnnotation(Class3.class, MyAnnotation.class, true);
     // verify
     assertThat(result).hasSize(4);
-    assertThat(result).onProperty("name")
-        .containsSequence("method_with_Annotation", "method_with_Annotation", "method_k2_Annotation",
-            "method_k1_Annotation");
+    assertThat(result).onProperty("name").contains("method_with_Annotation", "method_with_Annotation",
+        "method_k2_Annotation", "method_k1_Annotation");
   }
   
   @Test
