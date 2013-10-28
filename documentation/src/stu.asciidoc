@@ -2,35 +2,335 @@
 SEITENBAU GmbH <stu@seitenbau.com>
 v1.0, 2013-07-31
 :imagesdir: images
-
 '''
 
 image::seitenbau-110px.png[SEITENBAU Logo]
 
-== Common package documentation
+== Overview
+TODO general projekt description
 
-=== Overview
-Here comes information to the common classes. 
+== Common STU features
+In this chapter common functionality of STU is described. The presented features are not related to
+database testing only, but can be used for general test setup. 
 
-=== Functionality
+=== TestConfiguration
+To provide a unique configuration for tests for each developer, the +TestConfiguration+ class should be used.
+With help of the +TestConfiguration+ you can store configuration values to a static or non-static class dependent
+on the current environment.
 
-==== Annotations
+==== Setting up TestConfigurations
+An example for a static configuration:
+[source,java]
+----
+public class TestConfig
+{
+  @StoredProperty(key = "fs.root")
+  public static String FS_CONNECTION;
+  static
+  {
+    TestConfiguration.load(TestConfig.class);
+  }
+}
+----
+In that case the variable +FS_CONNECTION+ is initialized with the property value for +fs.root+.
 
-==== Asserts
+===== Determine the environemnt
+Configurations are loaded via the directory +src/test/resources/tets/*+ in the order logged to the console:
 
-==== Config
+* +default-test.properties+
+* +<your-username>.properties+
+* +<your-compuername>.properties+
 
-==== Crypto
+The data is loaded in the order stated above. Later loaded data replaces already loaded data.
+The notation +${varname}+ can be used to keep parts of values exchangeable.
 
-== Database package documentation
+In addition a specific environment can be determined by setting the environment variable +SB_CONFIG_TARGET+.
+In that case the default-properties and afterwards the specific configuration is loaded.
 
-=== Overview
-Here comes information to the database classes. 
+==== Special variables
+Here are some special variables that are initialized by default:
+[cols="2", options="header"]
+|===
+|Variable
+|Description
 
-== Examples package documentation
+|+_host.ip+
+|Ip of the computer.
 
-=== Overview
-Here comes information to the example classes. 
+|+_host.name+
+|Host name of the computer.
+
+|+_host.dns+
+|DNS name of the computer.
+
+|+_username+
+|The name of the current user. Works with Windows and Ubuntu/Debian.
+
+|+_host.ipV4+
+|IP v4 address of the computer.
+
+|+_host.ipV6+
+|IP v6 address of the computer.
+|===
+
+==== Special configuration preferences
+[cols="2", options="header"]
+|===
+|Key
+|Description
+
+|+_debug+
+|Determines if the loaded configuration properties are logged to the console.
+
+|+_debug.loglevel+
+|Loglevel of the +TestLogger+ of STU. Allowed levels are: +TRACE+, +DEBUG+, +INFO+, +WARN+, +ERROR+ and +FATAL+.
+|===
+
+==== Examples for supported notations
+The +TestConfiguration+ supports the following data types:
+
+* +Boolean+
+* +Enum+
+* +Integer+
+* +Map+
+* +String+
+
+[source,java]
+----
+public class TestConfig
+{
+  @StoredProperty(key="a-default-value")
+  public static String STRING_VALUE;
+   
+  @StoredProperty(key="aNumber")
+  public static Integer NUMBER;
+   
+  @StoredProperty(key="aMap")
+  public static Map<String, String> MAP;
+   
+  public enum State {START,STOP}
+   
+  @StoredProperty(key="anEnum")
+  public static State STATUS;
+   
+  static
+  {
+    TestConfiguration.load(TestConfig.class);
+  }
+}
+----
+
+The corresponding properties file format:
+
+[source,text]
+----
+# Variable that is replaced with assigned value, but not referenced in TestConfig.
+var=someValue
+ 
+# A String. The second var expression is escaped and therefore not replaced. 
+a-default-value= The default ${var} \\${var}
+ 
+# A number. Read as Integer if specified in corresponding TestConfig class.
+aNumber=42
+ 
+# A Map<String,String>
+aMap[Martin]= ${var}: Fowler
+aMap[Max]= ${var}: Power \\${var}
+ 
+# A mapped ENUM
+anEnum=START
+----
+
+=== STU Annotations for Tests
+The STU project provides annotations that makes the maintenance of tests easier and offers
+the possibility to determine the execution of (single) tests by annotations, dependent on configuration
+values. 
+
+==== Basic concepts
+If tests failing, the cause should be annotated directly at the failing test. Therefore the annotation
++@TestIssue+ is provided. A String can be passed as parameter to the annotation. The annotation supports
+the minimalistic +TicketDSL+. The annotation is recorded by the Test-State recorder by default.
+In addition a similar concept is provided as +RequirementDSL+. The purpose for the requirments annotation is
+to disable tests in a specific environment. 
+
+==== +TickeDSL+
+
+Extended Backus-Naur Form of the +TicketDSL+
+[cols="2", options="header"]
+|===
+|Token
+|EBNF
+
+|+TickeDSL+
+|[+CONDITION+] +TICKET_ID+
+
+|+CONDITION+
+|+STATE+ ":"
+
+|+STATE+
+|"open" {brvbar} "fixed" {brvbar} "ignored"
+
+|+TICKET_ID+
+|RegEx = [A-Za-z0-9_-]*
+|===
+
+Supported states are:
+
+* +open+ : The ticket is new or in process. The test is exected to fail.
+* +fixed+ : The ticket is closed. The test is expected to success.
+* +ignored+ : The related ticket is referenced. The expected behavior is the same as +fixed+. 
+
+[cols="2", options="header"]
+|===
+|Example
+|Description
+
+|"STUTESTING-123"
+|open ticket (default, no +STATE+ provided)
+
+|"open:STUTESTING-123"
+|open ticket
+
+|"fixed:STUTESTING-123"
+|closed ticket
+|===
+
+==== Example use of +TicketDSL+
+
+To make it easy to find Tickets inside an IDE, it is recommended to define all ticket ids as constants inside
+an interface.
+
+[source,java]
+----
+public interface ProjectTickets {
+  /** SampleService Impl, Call of service method returns null */
+  String SBTESTING_123 = "SBTESTING-123";
+}
+----
+
+Inside a test only the constants should be referenced.
+
+[source,java]
+----
+@Test
+@TestIssue(ProjectTickets.SBTESTING_123)
+public void test_0101_ValidCall() throws Throwable {
+    ...
+}
+----
+
+==== +RequirementDSL+
+
+Extended Backus-Naur Form of the +RequirementDSL+
+[cols="2", options="header"]
+|===
+|Token
+|EBNF
+
+|+RequirementDSL+
+|[+CONDITION+] +REQUIRMENT+
+
+|+CONDITION+
+|+STATE+ ":"
+
+|+STATE+
+|"impl" {brvbar} "notimpl" {brvbar} "implemented" {brvbar} "notimplemented" {brvbar} "custom"
+
+|+REQUIREMENT+
+|any non whitespace characters
+|===
+
+Supported states are:
+
+* +impl/implemented+ : The requirement is implemented. The test shpuld be executed.
+* +notimpl/notimplemented+ : The requirement is not implemented yet. The test should not be executed.
+* +custom+ : Marked as first-hand +FeatureDetector+. See +FeatureDetector+ explanation.
+
+[cols="2", options="header"]
+|===
+|Example
+|Description
+
+|"MYSQL_DB_3"
+|Feature MYSQL_DB is not implemented yet (default, if no +STATE+ provided).
+
+|"notimpl:MYSQL_DB_3"
+|Feature MYSQL_DB_3 is not implemented yet.
+
+|"impl:MYSQL_DB_3"
+|Feature MYSQL_DB_3 is implemented.
+
+|"custom:com.seitenbau.stu.dsl.requirement.RequirementDslTest.ActiveDetector"
+|The +FeatureDetector+ is used to determine if the feature is active.
+|===
+
+==== Example for a +FeatureDetector+
+The +TestPropertyIs+ +FeatureDetector+ validates if a given test configuration value is set:
+
+[source,text]
+----
+custom:com.seitenbau.stu.dsl.requirement.TestPropertyIs:key=rainer
+--> Verifies that the TestConfiguration value for parameter "key" equals "rainer"
+
+custom:com.seitenbau.stu.dsl.requirement.TestPropertyIs:!key=rainer
+--> Verifies that the TestConfiguration value for parameter "key" is not equal to "rainer"
+----
+
+==== Example use of +RequirmentDSL+
+
+The +@Requires+ annotation can be used to check if a +TestConfig+ value is set for example.
+Only if the particular value is set, the test is executed.
+
+[source,java]
+----
+@RunWith(SBTestRunner.class)
+public class RequiresTest
+{
+   
+  @Rule
+  public RequiresRule req = new RequiresRule();
+   
+  @Test
+  @Requires(TestRequirement.SOLAR)
+  public void sonar() throws Exception
+  {
+    fail("Requires sonar server");
+  }
+   
+}
+ 
+public class TestRequirement
+{
+  public static final String SOLAR = "custom:com.seitenbau.stu.dsl.requirement.TestPropertyIs:testinstance.solar.available=true";
+}
+----
+
+A corresponding +TestConfig+ class :
+
+[source,java]
+@StoredProperty(key = "testinstance.solar.available", defaultValue="false")
+public static boolean requiresSolar;
+----
+
+=== JUnitRules
+
+== Testing databases 
+Here comes information for the database classes. 
+
+=== Modeling of databases
+
+=== Migration of generated DataSets
+
+=== Connecting to a (Test-)Database
+
+=== Verify Database state
+
+== Example implementation
+Here comes information about the example implementation.
+
+
+
+=== 
 
 [role="lead"]
 This text will be styled as a lead paragraph (i.e., larger font).
