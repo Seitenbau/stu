@@ -4,7 +4,8 @@
 
 The project contains simple utils for JUnit and Co.
 
-TODO project description.
+TODO: project description.
+
 # Documentation
 To generate the documentation please invoke:
 
