@@ -1160,6 +1160,10 @@ public class ${clsTable} implements ITable
   
   static Date toDate(DateBuilder date)
   {
+    if(date == null)
+    {
+      return null;
+    }
     return date.asDate();
   }
 #if( ${model.isAssociativeTable()})
