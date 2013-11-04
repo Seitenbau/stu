@@ -63,7 +63,7 @@ configure(subprojects) {
   }
 }
 
-project("common") {
+project("stu-common") {
   dependencies {
     compile("org.apache.velocity:velocity:$velocityVersion")
     compile("commons-io:commons-io:$commonsIoVersion")
@@ -80,9 +80,9 @@ project("common") {
   }
 }
 
-project("database") {
+project("stu-database") {
   dependencies {
-    compile project(':common')
+    compile project(':stu-common')
 
     compile("junit:junit:$junitVersion", optional)
     compile("commons-dbcp:commons-dbcp:$commonsdbcpVersion", optional)
@@ -107,7 +107,7 @@ project("database") {
   }
 }
 
-project("examples") {
+project("stu-examples") {
 
   ext {
     outputDatasetDslDir = "$projectDir/src/dataset-dsl/java"
@@ -115,7 +115,7 @@ project("examples") {
   }
 
   dependencies {
-    compile project(':database')
+    compile project(':stu-database')
     runtime("org.hsqldb:hsqldb:$hsqldbVersion")
     compile("org.springframework:spring-context:$springVersion")
     compile("org.springframework:spring-orm:$springVersion")
@@ -176,7 +176,7 @@ project("examples") {
   compileTestGroovy.dependsOn("compileDataSetDslJava")
 }
 
-project("hochschule") {
+project("stu-examples-hochschule") {
 
   ext {
     outputDatasetDslDir = "$projectDir/src/dataset-dsl/java"
@@ -184,7 +184,7 @@ project("hochschule") {
   }
 
   dependencies {
-    compile project(':database')
+    compile project(':stu-database')
     runtime("org.hsqldb:hsqldb:$hsqldbVersion")
     compile("org.springframework:spring-context:$springVersion")
     compile("org.springframework:spring-orm:$springVersion")
@@ -249,7 +249,7 @@ configure(rootProject) {
   task wrapper(type: Wrapper) { gradleVersion = "1.6" }
 }
 
-project("documentation") {
+project("stu-documentation") {
 
   apply plugin: 'asciidoctor'
 
