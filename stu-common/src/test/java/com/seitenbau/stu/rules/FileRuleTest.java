@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,7 +19,10 @@ import com.seitenbau.stu.rules.FileRule;
 
 public class FileRuleTest
 {
-  private static final String OUTPUT_TXT = "target/output.txt";
+ 
+  private static final String TEST_FOLDER = "build/test/filerule/";
+  
+  private static final String OUTPUT_TXT = TEST_FOLDER + "output.txt";
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
@@ -27,6 +31,14 @@ public class FileRuleTest
   public FileRule output = new FileRule(OUTPUT_TXT)
       .checkFileExistsAfterTest()
       .compareAfter("classpath:expectedContent.txt");
+  
+  @Before 
+  public void setup() 
+  {
+    File testFolder = new File(TEST_FOLDER);
+    testFolder.delete();
+    assertThat(testFolder.mkdirs()).isTrue();
+  }
 
   @Test
   public void successTest() throws FileNotFoundException, IOException
@@ -79,6 +91,6 @@ public class FileRuleTest
   @Test
   public void failTestNoFile() throws FileNotFoundException, IOException
   {
-    exception.expectMessage("File didn't exist after Tests Execution : target/output.txt");
+    exception.expectMessage("File didn't exist after Tests Execution : " + OUTPUT_TXT);
   }
 }

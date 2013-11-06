@@ -15,11 +15,11 @@ public class VelocityGeneratorTest
 
   @Rule
   public FileRule javaFile = new FileRule(
-      "target/gen/test/sample/theFilename.java");
+      "build/gen/test/sample/theFilename.java");
 
   @Rule
   public FileRule xmlFile = new FileRule(
-      "target/gen/test/sample/theFilename.xml");
+      "build/gen/test/sample/theFilename.xml");
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
@@ -36,7 +36,7 @@ public class VelocityGeneratorTest
 
     // execute
     sut.executeTemplate(model,
-        "com/seitenbau/stu/templates/templateNone.vm", "target/gen/");
+        "com/seitenbau/stu/templates/templateNone.vm", "build/gen/");
   }
 
   @Test
@@ -45,12 +45,12 @@ public class VelocityGeneratorTest
     // prepare
     Model model = new Model(null, "theFilename");
     VelocityGenerator sut = new VelocityGenerator();
-    FileRule noPackageFile = new FileRule("target/gen/theFilename.java");
+    FileRule noPackageFile = new FileRule("build/gen/theFilename.java");
     noPackageFile.prepareTest();
     
     // execute
     sut.executeTemplate(model,
-        "com/seitenbau/stu/templates/templateJava.vm", "target/gen/");
+        "com/seitenbau/stu/templates/templateJava.vm", "build/gen/");
 
     // verify
     assertThat(noPackageFile.getFile()).exists().linesAreEqualTo(
@@ -65,12 +65,12 @@ public class VelocityGeneratorTest
     // prepare
     Model model = new Model("", "theFilename");
     VelocityGenerator sut = new VelocityGenerator();
-    FileRule noPackageFile = new FileRule("target/gen/theFilename.java");
+    FileRule noPackageFile = new FileRule("build/gen/theFilename.java");
     noPackageFile.prepareTest();
     
     // execute
     sut.executeTemplate(model,
-        "com/seitenbau/stu/templates/templateJava.vm", "target/gen/");
+        "com/seitenbau/stu/templates/templateJava.vm", "build/gen/");
     
     // verify
     assertThat(noPackageFile).exists().linesAreEqualTo(
@@ -91,7 +91,7 @@ public class VelocityGeneratorTest
 
     // execute
     sut.executeTemplate(model,
-        "com/seitenbau/stu/templates/templateJava.vm", "target/gen/");
+        "com/seitenbau/stu/templates/templateJava.vm", "build/gen/");
   }
 
   @Test
@@ -103,7 +103,7 @@ public class VelocityGeneratorTest
 
     // execute
     sut.executeTemplate(model,
-        "com/seitenbau/stu/templates/templateJava.vm", "target/gen/");
+        "com/seitenbau/stu/templates/templateJava.vm", "build/gen/");
 
     // verify
     assertThat(javaFile).exists().linesAreEqualTo(
@@ -121,7 +121,7 @@ public class VelocityGeneratorTest
 
     // execute
     sut.executeTemplate(model,
-        "com/seitenbau/stu/templates/templateJava.vm", "target/gen/");
+        "com/seitenbau/stu/templates/templateJava.vm", "build/gen/");
 
     // verify
     assertThat(javaFile).exists().linesAreEqualTo(
@@ -139,7 +139,7 @@ public class VelocityGeneratorTest
 
     // execute
     sut.executeTemplate(model,
-        "com/seitenbau/stu/templates/templateXML.vm", "target/gen/");
+        "com/seitenbau/stu/templates/templateXML.vm", "build/gen/");
 
     // verify
     assertThat(xmlFile.getFile()).exists().linesAreEqualTo(
