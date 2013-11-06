@@ -54,7 +54,7 @@ public abstract class ${clsDataSet} implements DbUnitDatasetFactory, DataSetIden
    * adding multiple lines, it's still kind of 'now' but can be predicted.
    */
   // TODO NM rename this variable
-  DateBuilder _jetzt = DateUtil.datum();
+  DateBuilder _currentTime = DateUtil.datum();
   
   /**
    * Reference to an {@link DatasetIdGenerator}. Used to set IDs.
@@ -190,9 +190,9 @@ public abstract class ${clsDataSet} implements DbUnitDatasetFactory, DataSetIden
    * Factory was created!!</b> 
    * </p>
    */
-  public DateBuilder jetzt()
+  public DateBuilder currentTime()
   {
-    return _jetzt;
+    return _currentTime;
   }
   
   /**

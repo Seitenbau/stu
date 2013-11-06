@@ -27,7 +27,7 @@ public class DbCompare
   /**
    * Fuzzy checks the database field to the current time (+-15s).
    */
-  public static Date jetzt()
+  public static Date currentTime()
   {
     return new ReplaceDate(new Date(), new DateCompareImpl());
   }
@@ -36,28 +36,28 @@ public class DbCompare
    * Fuzzy checks the database field to the current time (+-15s).
    * Milliseconds are set to 0.
    */
-  public static Date jetztOhneMS()
+  public static Date currentTimeOhneMS()
   {
-    Date jetzt = new Date((System.currentTimeMillis() / 1000) * 1000);
-    return new ReplaceDate(jetzt, new DateCompareImpl());
+    Date currentTime = new Date((System.currentTimeMillis() / 1000) * 1000);
+    return new ReplaceDate(currentTime, new DateCompareImpl());
   }
 
   /**
    * Fuzzy checks the database field to the current time (+-15s).
    * HH:mm:ss.SSS time is set to "00:00:00.000".
    */
-  public static Date jetztNurDatum()
+  public static Date currentTimeNurDatum()
   {
-    Date jetzt = new Date((System.currentTimeMillis() / 1000) * 1000);
+    Date currentTime = new Date((System.currentTimeMillis() / 1000) * 1000);
 
     Calendar calendar = Calendar.getInstance();
-    calendar.setTime(jetzt);
+    calendar.setTime(currentTime);
     calendar.set(Calendar.HOUR_OF_DAY, 0);
     calendar.set(Calendar.MINUTE, 0);
     calendar.set(Calendar.SECOND, 0);
 
-    jetzt.setTime(calendar.getTimeInMillis());
-    return new ReplaceDate(jetzt, new DateCompareImpl());
+    currentTime.setTime(calendar.getTimeInMillis());
+    return new ReplaceDate(currentTime, new DateCompareImpl());
   }
 
   /**

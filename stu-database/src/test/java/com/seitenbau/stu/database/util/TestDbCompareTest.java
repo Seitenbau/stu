@@ -13,7 +13,7 @@ public class TestDbCompareTest
   @Test
   public void test()
   {
-    DbCompare.jetztNurDatum();
+    DbCompare.currentTimeNurDatum();
   }
   
   @Test
