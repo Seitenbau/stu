@@ -3,6 +3,7 @@ package com.seitenbau.stu.database.extend.impl;
 import static org.fest.assertions.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.DefaultTable;
@@ -34,7 +35,7 @@ public class DatasetFactoryCompositeTest
   DbUnitDatasetFactory datasetFactory2;
 
   @Before
-  public void setupMocks()
+  public void setupMocks() throws AmbiguousTableNameException
   {
     DefaultDataSet ds1 = new DefaultDataSet();
     ds1.addTable(new DefaultTable("rainer"));

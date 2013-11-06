@@ -5,6 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
@@ -27,7 +28,7 @@ public class MySQLAutoIncrementResetTest
   private IDataSet _dataSet;
 
   @Before
-  public void setUp()
+  public void setUp() throws AmbiguousTableNameException
   {
     _tables = new ArrayList<String>();
 

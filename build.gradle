@@ -14,7 +14,7 @@ configure(allprojects) {
   ext.commonsdbcpVersion            = "1.4"
   ext.commonsIoVersion              = "2.4"
   ext.commonsLangVersion            = "2.6"
-  ext.dbunitVersion                 = "2.3.0"
+  ext.dbunitVersion                 = "2.4.9"
   ext.easymockVersion               = "3.0"
   ext.festAssertVersion             = "1.4"
   ext.guavaVersion                  = "14.0.1"

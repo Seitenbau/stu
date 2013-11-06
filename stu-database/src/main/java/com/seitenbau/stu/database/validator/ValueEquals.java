@@ -1,6 +1,6 @@
 package com.seitenbau.stu.database.validator;
 
-import junitx.framework.Assert;
+import static org.junit.Assert.*;
 
 import com.seitenbau.stu.database.modifier.IDataSetOverwriteCompare;
 import com.seitenbau.stu.database.modifier.Replacer;
@@ -54,7 +54,7 @@ public class ValueEquals extends AbstractValueValidator
    */
   public int compareDataSetElementTo(Object objectToCompareTo)
   {
-    Assert.assertEquals(_Equals, objectToCompareTo);
+    assertEquals(_Equals, objectToCompareTo);
     return IS_EQUAL;
   }
 

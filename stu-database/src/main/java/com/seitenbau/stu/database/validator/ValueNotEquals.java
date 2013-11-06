@@ -1,6 +1,8 @@
 package com.seitenbau.stu.database.validator;
 
-import junitx.framework.Assert;
+import static org.junit.Assert.*;
+
+import org.apache.commons.lang.ObjectUtils;
 
 /**
  * DBUnit Value Validator if a given &lt;value/&gt; is NOT equal to
@@ -46,7 +48,7 @@ public class ValueNotEquals extends AbstractValueValidator
    */
   public int compareDataSetElementTo(Object objectToCompareTo)
   {
-    Assert.assertNotEquals(fNotEquals, objectToCompareTo);
+    assertFalse(ObjectUtils.equals(fNotEquals, objectToCompareTo));
     return IS_EQUAL;
   }
 

@@ -5,9 +5,11 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.seitenbau.stu.database.extend.impl.SimpleDatabaseSequenceReset;
@@ -37,15 +39,16 @@ public class SimpleDatabaseSequenceResetTest
     };
   };
 
-  IDataSet dataset = new DefaultDataSet()
+  DefaultDataSet dataset = new DefaultDataSet();
+  
+  @Before
+  public void setup() throws AmbiguousTableNameException 
   {
-    {
-      addTable(new DefaultTable("Tabelle1"));
-      addTable(new DefaultTable("Tabelle2"));
-      addTable(new DefaultTable("Tabelle3"));
-    }
-  };
-
+    dataset.addTable(new DefaultTable("Tabelle1"));
+    dataset.addTable(new DefaultTable("Tabelle2"));
+    dataset.addTable(new DefaultTable("Tabelle3"));
+  }
+ 
   @Test
   public void testEmptyDatabase() throws Exception
   {

@@ -1,5 +1,6 @@
 package com.seitenbau.stu.database.manipulate;
 
+import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.DefaultTable;
@@ -8,6 +9,7 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.datatype.DataType;
 import org.junit.Test;
+
 import static org.fest.assertions.Assertions.*;
 
 import com.seitenbau.stu.database.manipulate.RemoveTableColumns;
@@ -61,7 +63,7 @@ public class RemoveTableColumnsTest
     assertThat(cols).onProperty("columnName").containsOnly("c2");
   }
 
-  private IDataSet createDS(final String tablename, final String... columns)
+  private IDataSet createDS(final String tablename, final String... columns) throws AmbiguousTableNameException
   {
     DefaultDataSet ds = new DefaultDataSet();
     DefaultTable table = new DefaultTable(tablename)
