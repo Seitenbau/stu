@@ -46,44 +46,64 @@ public class EntityFactory
   {
     List<EntityBlueprint> list = blueprints.getTableBlueprints(table);
 
+    // check if there is a blueprint, which can be used
     for (EntityBlueprint blueprint : list) {
-      // check if blueprint matches...
       Optional<EntityCreationMode> creationInformation = blueprint.getCreationInformation(edge);
-      if (!creationInformation.isPresent()) {
-        // no relation? use it!
+
+      // if the blueprint does not have any relation, use it...
+      if (!creationInformation.isPresent())
+      {
         blueprint.setCreationInformation(edge, mode);
-        //System.out.println("---Factory: Returning Entity " + blueprint + "---");
         return blueprint;
       }
 
       EntityCreationMode existingMode = creationInformation.get();
-
-      if (existingMode.getMax() == 0) {
-        continue;
-      }
-
-      if (existingMode.getMax() > 0 && blueprint.getReferencedByList(edge).size() >= existingMode.getMax()) {
-        continue;
-      }
+      int referencedCount = blueprint.getReferencedByList(edge).size();
 
       // TODO any does not check if constraints are valid...
-      if (mode.isAny() && existingMode.isAny()) {
+      if (isValidMode(mode, existingMode, referencedCount))
+      {
         return blueprint;
-      }
-
-      // TODO check if the mode matches with the existing mode
-      // if it is an open 0/1..max relation and we want an 0/1..max2 relation, use it ?
-      if (mode.getMax() == existingMode.getMax()) {
-        int count = blueprint.getReferencedByList(edge).size();
-        if (count < mode.getMax()) {
-          //return blueprint;
-        }
       }
     }
 
     EntityBlueprint result = createEntity(table);
     result.setCreationInformation(edge, mode);
     return result;
+  }
+
+  private boolean isValidMode(EntityCreationMode mode, EntityCreationMode existingMode, int referencedCount)
+  {
+    if (existingMode.getMax() > 0 && referencedCount >= existingMode.getMax())
+    {
+      return false;
+    }
+
+    if (isBothAny(mode, existingMode) || isBothNoRelation(mode, existingMode))
+    {
+      return true;
+    }
+
+    // TODO check if the mode matches with the existing mode
+    // if it is an open 0/1..max relation and we want an 0/1..max2 relation, use it ?
+    if (mode.getMax() == existingMode.getMax())
+    {
+      if (referencedCount < mode.getMax()) {
+        //return true;
+      }
+    }
+
+    return false;
+  }
+
+  private boolean isBothAny(EntityCreationMode mode, EntityCreationMode existingMode)
+  {
+    return mode.isAny() && existingMode.isAny();
+  }
+
+  private boolean isBothNoRelation(EntityCreationMode mode, EntityCreationMode existingMode)
+  {
+    return mode.getMax() == 0 && existingMode.getMax() == 0;
   }
 
   public void ensureEntityCount()

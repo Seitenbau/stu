@@ -136,13 +136,24 @@ public class DataGenerator
     int rightCount = getCount(leftBorder, leftColumn);
     //System.out.println(leftColumn.getJavaName() + " <---> " + rightColumn.getJavaName() + ": " + leftCount + ":" + rightCount);
 
+    if (isOptional(rightBorder))
+    {
+      fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation());
+    }
+    if (isOptional(leftBorder))
+    {
+      fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation());
+    }
+
     EntityBlueprint[] leftBps = new EntityBlueprint[leftCount];
     EntityBlueprint[] rightBps = new EntityBlueprint[rightCount];
 
-    for (int l = 0; l < leftCount; l++) {
+    for (int l = 0; l < leftCount; l++)
+    {
       leftBps[l] = fab.getEntity(leftTable, leftEdge, EntityCreationMode.fixed(1));
     }
-    for (int r = 0; r < rightCount; r++) {
+    for (int r = 0; r < rightCount; r++)
+    {
       rightBps[r] = fab.getEntity(rightTable, rightEdge, EntityCreationMode.fixed(1));
     }
 
@@ -154,6 +165,11 @@ public class DataGenerator
         entity.setReference(rightEdge, rightBps[r]);
       }
     }
+  }
+
+  private boolean isOptional(Multiplicity.Border border)
+  {
+    return border.getValue() == 0;
   }
 
   private int getCount(Multiplicity.Border border, Column column)
@@ -181,13 +197,11 @@ public class DataGenerator
       return;
     }
 
-    if (next.isAssociativeTable()) {
-      handleAssociativeTable((AssociativeTable)next);
-      return;
+    if (!next.isAssociativeTable()) {
+      visitedEdges.add(edge);
+      new EdgeHandler(edge, fab).handle();
     }
 
-    visitedEdges.add(edge);
-    new EdgeHandler(edge, fab).handle();
     visitTable(next);
   }
 
