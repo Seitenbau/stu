@@ -1,5 +1,4 @@
 include "stu-common"
 include "stu-database"
 include "stu-examples"
-include "stu-examples-hochschule"
 include "stu-documentation"
