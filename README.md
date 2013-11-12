@@ -6,6 +6,22 @@ The project contains simple utils for JUnit and Co.
 
 TODO: project description.
 
+# Use stu with Gradle 
+
+
+    apply plugin: 'java'
+    
+    repositories {
+      mavenCentral()
+      maven { url "http://dl.bintray.com/seitenbau/utils" }
+    }
+    
+    dependencies {
+      compile("com.seitenbau.stu:stu-database:0.2.0-RC2")
+      compile("com.seitenbau.stu:stu-common:0.2.0-RC2")
+    }
+
+
 # Documentation
 To generate the documentation please invoke:
 
