@@ -4,8 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 import java.util.Comparator;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.seitenbau.stu.database.modifier.IDataSetOverwriteCompare;
 import com.seitenbau.stu.logger.Logger;
@@ -97,6 +98,8 @@ public class DbCompare
 
   public static class DateCompareImpl implements Comparator<Date>
   {
+    public static final String FUZZY_OFFSET_PROPERTY = "database.util.fuzzy.offset";
+
     static Logger logger = TestLoggerFactory.get(DateCompareImpl.class);
     
     private static final int ONE_SECOND = 1000;
@@ -112,7 +115,9 @@ public class DbCompare
 
     public DateCompareImpl()
     {
-      init(15 * ONE_SECOND, 15 * ONE_SECOND);
+      String fuzzyoffsetStr = System.getProperty(FUZZY_OFFSET_PROPERTY, "15");
+      int fuzzyoffset = Integer.valueOf(fuzzyoffsetStr);
+      init(fuzzyoffset * ONE_SECOND, fuzzyoffset * ONE_SECOND);
     }
 
     public DateCompareImpl(int minusMilliseconds, int plusMilliseconds)
