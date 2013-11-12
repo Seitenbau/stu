@@ -3,11 +3,12 @@ package com.seitenbau.stu.database.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Comparator;
+import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
-
+import com.seitenbau.stu.config.TestConfiguration;
+import com.seitenbau.stu.config.ValueProvider;
+import com.seitenbau.stu.database.TestConfigFuzzy;
 import com.seitenbau.stu.database.modifier.IDataSetOverwriteCompare;
 import com.seitenbau.stu.logger.Logger;
 import com.seitenbau.stu.logger.TestLoggerFactory;
@@ -96,9 +97,14 @@ public class DbCompare
     return new ReplaceDate(expect, new DateCompareImpl());
   }
 
+  public static Integer getFuzzyOffset() {
+    ValueProvider valueProvider = TestConfiguration.load(TestConfigFuzzy.class);
+    Integer fuzzyoffset = valueProvider.getInteger(TestConfigFuzzy.DB_FUZZY_OFFSET_KEY, 15);
+    return fuzzyoffset;
+  }
+  
   public static class DateCompareImpl implements Comparator<Date>
   {
-    public static final String FUZZY_OFFSET_PROPERTY = "database.util.fuzzy.offset";
 
     static Logger logger = TestLoggerFactory.get(DateCompareImpl.class);
     
@@ -115,8 +121,7 @@ public class DbCompare
 
     public DateCompareImpl()
     {
-      String fuzzyoffsetStr = System.getProperty(FUZZY_OFFSET_PROPERTY, "15");
-      int fuzzyoffset = Integer.valueOf(fuzzyoffsetStr);
+      Integer fuzzyoffset = getFuzzyOffset();
       init(fuzzyoffset * ONE_SECOND, fuzzyoffset * ONE_SECOND);
     }
 
