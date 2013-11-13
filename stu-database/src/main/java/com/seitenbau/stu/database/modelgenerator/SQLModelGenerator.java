@@ -4,105 +4,153 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SQLModelGenerator {
 
   private static final int TABLE_NAME = 3;
 
-  public static void createModel()
+  private static class ModelGenerator
   {
-    final Connection connection = createConnection();
-    if (connection == null) {
-      return;
+    private final Connection connection;
+    private final DatabaseMetaData md;
+
+    private ModelGenerator(final Connection connection)
+    {
+      this.connection = connection;
+      md = getMetaData(connection);
     }
 
-    ResultSet rs = null;
-    ResultSet table_rs = null;
-    try {
-      final DatabaseMetaData md = connection.getMetaData();
+    private static DatabaseMetaData getMetaData(Connection connection)
+    {
+      try {
+        return connection.getMetaData();
+      }
+      catch (Exception e)
+      {
+        return null;
+      }
+    }
 
-      rs = md.getTables(null, null, "%", null);
-      while (rs.next()) {
-        String table = rs.getString(TABLE_NAME);
-        System.out.println("TABLE: " + table);
-        table_rs = md.getColumns(null, null, table, "%");
-        while(table_rs.next()) {
-          ColumnMetaData metaData = new ColumnMetaData(table_rs);
-          final SQLColumnType dataType = metaData.getDataType();
-          final String columnName = metaData.getColumnName();
-          System.out.println("  COLUMN: " + columnName);
-          System.out.println("    dataType:" + dataType);
-          System.out.println("    dataTypeName:" + metaData.getDataTypeName());
-          System.out.println("    Column Size: " + metaData.getColumnSize());
-          System.out.println("    getDecimalDigits: " + metaData.getDecimalDigits());
-          System.out.println("    getCharOctedLength: " + metaData.getCharOctedLength());
-          System.out.println("    Column Default: " + metaData.getColumnDefault());
-          System.out.println("    isAutoIncrement: " + metaData.isAutoIncrement());
-          System.out.println("    isGeneradedColumn: " + metaData.isGeneradedColumn());
-          System.out.println("    isNullable: " + metaData.isNullable());
-          System.out.println("    getNullable: " + metaData.getNullable());
+    private String generate()
+    {
+      ResultSet rs = null;
+      try {
+        Map<String, TableModel> tables = new HashMap<String, TableModel>();
 
-          ResultSet foreignKeys = md.getImportedKeys(connection.getCatalog(), null, table);
-          while (foreignKeys.next()) {
-              if (columnName.equals(foreignKeys.getString("FKCOLUMN_NAME"))) {
-                String pkTableName = foreignKeys.getString("PKTABLE_NAME");
-                String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
-                System.out.println("    Foreign-Key to " + pkTableName + "." + pkColumnName);
-              }
+        List<TableModel> order = new ArrayList<TableModel>();
+
+        rs = md.getTables(null, null, "%", null);
+        while (rs.next()) {
+          String tableName = rs.getString(TABLE_NAME);
+          TableModel tableModel = new TableModel(tableName);
+          tables.put(tableName, tableModel);
+          order.add(tableModel);
+          handleTable(tableModel);
+        }
+        rs.close();
+        rs = null;
+
+        // handle foreign keys
+        try {
+          for (TableModel table : order)
+          {
+            ResultSet foreignKeys = connection.getMetaData().getImportedKeys(connection.getCatalog(), null, table.getName());
+            while (foreignKeys.next()) {
+              String columnName = foreignKeys.getString("FKCOLUMN_NAME");
+              TableModel pkTable = tables.get(foreignKeys.getString("PKTABLE_NAME"));
+              String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
+              table.addForeignKey(columnName, pkTable, pkColumnName);
+            }
           }
         }
-        table_rs.close();
-        table_rs = null;
+        catch (Exception e)
+        {
+        }
 
-        System.out.println();
+        StringBuilder result = new StringBuilder();
+        for (TableModel table : order)
+        {
+          if (table.isCreated())
+          {
+            continue;
+          }
+          result.append(table.createJavaSource());
+        }
+
+        return result.toString();
       }
-      rs.close();
-      rs = null;
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+      finally {
+        try {
+          if (rs != null) {
+            rs.close();
+          }
+        }
+        catch (Exception e)
+        {
+        }
+        try {
+          connection.close();
+        }
+        catch (Exception e)
+        {
+        }
+      }
+      return "";
     }
-    catch (Exception e)
+
+    private void handleTable(TableModel table)
     {
-    }
-    finally {
+      ResultSet table_rs = null;
       try {
-        if (table_rs != null) {
-          table_rs.close();
+        table_rs = md.getColumns(null, null, table.getName(), "%");
+        while(table_rs.next()) {
+          ColumnMetaData metaData = new ColumnMetaData(table_rs);
+          ColumnModel columnModel = new ColumnModel(metaData);
+          table.addColumn(columnModel);
         }
+        table_rs.close();
       }
       catch (Exception e)
       {
       }
-      try {
-        if (rs != null) {
-          rs.close();
+      finally {
+        try {
+          if (table_rs != null) {
+            table_rs.close();
+          }
         }
-      }
-      catch (Exception e)
-      {
-      }
-      try {
-        connection.close();
-      }
-      catch (Exception e)
-      {
+        catch (Exception e)
+        {
+        }
       }
     }
   }
 
-  private static Connection createConnection()
+  public static String createModel(final Connection connection)
   {
+    return new ModelGenerator(connection).generate();
+  }
+
+  public static void main(String[] args) {
     try
     {
       Class.forName("com.mysql.jdbc.Driver");
-      return DriverManager.getConnection("jdbc:mysql://localhost/tests?user=root&password=");
+      Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/tests?user=root&password=");
+      //Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/bigdb?user=root&password=");
+      System.out.println(SQLModelGenerator.createModel(connection));
     }
     catch (Exception e)
     {
       throw new RuntimeException("Cannot connect", e);
     }
-  }
-
-  public static void main(String[] args) {
-    SQLModelGenerator.createModel();
   }
 
 }
