@@ -143,8 +143,8 @@ public class SQLModelGenerator {
     try
     {
       Class.forName("com.mysql.jdbc.Driver");
-      Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/tests?user=root&password=");
-      //Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/bigdb?user=root&password=");
+      //Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/tests?user=root&password=");
+      Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/bigdb?user=root&password=");
       System.out.println(SQLModelGenerator.createModel(connection));
     }
     catch (Exception e)

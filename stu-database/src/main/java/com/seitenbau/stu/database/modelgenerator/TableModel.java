@@ -30,16 +30,15 @@ public class TableModel
 
   public String createJavaSource()
   {
-    isAboutToGenerate = true;
-
-
     StringBuilder result = new StringBuilder();
+    isAboutToGenerate = true;
+    String tableType = getTableType();
 
-    // TODO NM check if the table depends on other tables...
+    // table order
     for (TableModel other : getTableDependencies())
     {
       if (other.isAboutToGenerate) {
-        throw new RuntimeException("Cyclomatic dependency handling " + this.name);
+        // throw new RuntimeException("Cyclomatic dependency handling " + this.name);
       }
       if (other.hasBeenCreated) {
         continue;
@@ -47,9 +46,6 @@ public class TableModel
 
       result.append(other.createJavaSource());
     }
-
-    String tableType = getTableType();
-
 
     result.append("    ");
 
@@ -69,11 +65,6 @@ public class TableModel
 //          .defaultIdentifier() //
 //          .autoInvokeNext() //
 //          // .autoIncrement() // requires DBUnit 2.4.3 or later
-//        .column("title", DataType.VARCHAR) //
-//          .description("The job title") //
-//          .setFlag("any_custom_flag") //
-//        .column("description", DataType.VARCHAR) //
-//          .description("The description of the job") //
     result.append("\n");
 
     hasBeenCreated = true;
