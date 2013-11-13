@@ -12,6 +12,8 @@ public interface ValueProvider
   Boolean getBoolean(String key);
 
   Integer getInteger(String key);
+  
+  Integer getInteger(String key, Integer defaultValue);
 
   ValueProvider set(String key, String value);
 

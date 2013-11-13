@@ -35,4 +35,5 @@ public interface TestConfigDatabase
 
   @StoredProperty(key = "db.schema", defaultValue = "")
   Holder<String> DB_SHEMA = new Holder<String>();
+  
 }

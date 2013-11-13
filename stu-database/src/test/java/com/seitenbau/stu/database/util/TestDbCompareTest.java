@@ -28,7 +28,7 @@ public class TestDbCompareTest
   public void testDateCompareGreater() throws Exception {
       DbCompare.DateCompareImpl sut = new DbCompare.DateCompareImpl();
       Date expectedDate = new Date();
-      Date actualValue = new Date(expectedDate.getTime() + 16000);
+      Date actualValue = new Date(expectedDate.getTime() + fuzzyOffsetMS());
       assertEquals(1, sut.compare(expectedDate, actualValue));
   }
   
@@ -36,7 +36,11 @@ public class TestDbCompareTest
   public void testDateCompareLower() throws Exception {
       DbCompare.DateCompareImpl sut = new DbCompare.DateCompareImpl();
       Date expectedDate = new Date();
-      Date actualValue = new Date(expectedDate.getTime() - 16000);
+      Date actualValue = new Date(expectedDate.getTime() - fuzzyOffsetMS());
       assertEquals(-1, sut.compare(expectedDate, actualValue));
+  }
+
+  int fuzzyOffsetMS() {
+    return DbCompare.getFuzzyOffset()*1000 + 1000;
   }
 }

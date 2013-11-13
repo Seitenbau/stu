@@ -316,4 +316,17 @@ public class PersistentConfiguration implements ValueProvider,
     _configPath = path;
   }
 
+  @Override
+  public Integer getInteger(String key, Integer defaultValue) {
+    Integer value = getInteger(key);
+    if(value != null)
+    {
+      return value;
+    } 
+    else 
+    {
+      return defaultValue;
+    }
+  }
+
 }
