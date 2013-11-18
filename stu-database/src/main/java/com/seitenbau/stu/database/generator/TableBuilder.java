@@ -3,8 +3,12 @@ package com.seitenbau.stu.database.generator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.seitenbau.stu.util.Future;
+
 public class TableBuilder
 {
+  
+  private Table builtTable;
 
   protected final DatabaseModel model;
 
@@ -24,6 +28,7 @@ public class TableBuilder
 
   TableBuilder(DatabaseModel model, String name)
   {
+    this.builtTable = null;
     this.model = model;
     this.name = name;
     seed = 0;
@@ -39,10 +44,10 @@ public class TableBuilder
    */
   public Table build()
   {
-    final Table result = new Table(name, javaName, getTableDescription(), seed, infinite,
+    builtTable = new Table(name, javaName, getTableDescription(), seed, infinite,
         minEntities, columnBuilders);
-    model.addTable(result);
-    return result;
+    model.addTable(builtTable);
+    return builtTable;
   }
 
   protected String getTableDescription()
@@ -120,6 +125,44 @@ public class TableBuilder
   void addColumnBuilder(ColumnBuilder columnBuilder)
   {
     columnBuilders.add(columnBuilder);
+  }
+
+  public FutureColumn ref(String colName)
+  {
+    final String finalColName = colName;
+    return new FutureColumn() {
+
+      @Override
+      public Column getFuture()
+      {
+        return builtTable.ref(finalColName);
+      }
+
+      @Override
+      public boolean isAvailable()
+      {
+        return builtTable != null;
+      }
+    };
+  }
+
+  public FutureColumn refDefaultIdentifierColumn()
+  {
+    return new FutureColumn() {
+
+      @Override
+      public Column getFuture()
+      {
+        return builtTable.getDefaultIdentifierColumn();
+      }
+
+      @Override
+      public boolean isAvailable()
+      {
+        return builtTable != null;
+      }
+      
+    };
   }
 
 

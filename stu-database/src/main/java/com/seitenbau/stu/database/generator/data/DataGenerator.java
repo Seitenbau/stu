@@ -64,7 +64,7 @@ public class DataGenerator
     fab.ensureEntityCount();
 
     int count = 0;
-    while (count < 2000 && !validateBlueprints(model)) {
+    while (count < 5 && !validateBlueprints(model)) {
       count++;
     }
 
@@ -343,7 +343,7 @@ public class DataGenerator
 
     void handle()
     {
-      //System.out.println("Handling: " + edge.getSource().getTable().getName() + " ---> " + edge.getDestination().getTable().getName());
+      System.out.println("Handling: " + edge.getSource().getTable().getName() + " ---> " + edge.getDestination().getTable().getName());
 
       // Destination is always m..1
       generate(edge.getDestination().getMin(), edge.getSource().getMin());
@@ -388,19 +388,23 @@ public class DataGenerator
       }
 
       generated.add(id);
-      //System.out.println("  Create: " + id);
+      System.out.println("  Create: " + id);
 
       if (destBorder == 0) {
         fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation());
       } else if (sourceBorder == 0) {
         fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation());
       } else {
+        System.out.println("getting left");
         EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder));
+        System.out.println("getting right");
         for (int i = 0; i < sourceBorder; i++) {
           EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1));
           result.setReference(edge, entity);
         }
       }
+      
+      System.out.println("  Done Create");
 
       if (destBorder == 0) {
         generate(1, sourceBorder);

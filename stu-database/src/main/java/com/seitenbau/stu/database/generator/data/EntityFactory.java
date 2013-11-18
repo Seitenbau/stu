@@ -67,8 +67,11 @@ public class EntityFactory
       }
     }
 
+    
     EntityBlueprint result = createEntity(table);
     result.setCreationInformation(edge, mode);
+
+    System.out.println("Creating " + mode + ": " + result);
     return result;
   }
 

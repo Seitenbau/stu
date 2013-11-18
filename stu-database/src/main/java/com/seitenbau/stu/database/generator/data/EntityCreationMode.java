@@ -19,6 +19,12 @@ public class EntityCreationMode
   }
 
   @Override
+  public String toString()
+  {
+    return "(" + min + ".." + max + ")";
+  }
+  
+  @Override
   public int hashCode()
   {
     return hashCode;

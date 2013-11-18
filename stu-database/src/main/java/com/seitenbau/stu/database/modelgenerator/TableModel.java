@@ -42,7 +42,9 @@ public class TableModel
     {
       if (other.isAboutToGenerate)
       {
-        throw new RuntimeException("Cyclomatic dependency handling " + this.name);
+        //throw new RuntimeException("Cyclomatic dependency handling " + this.name);
+        // TODO NM fix this
+        continue;
       }
       if (other.hasBeenCreated)
       {

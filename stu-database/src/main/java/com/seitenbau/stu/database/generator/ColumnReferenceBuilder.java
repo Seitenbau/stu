@@ -1,12 +1,13 @@
 package com.seitenbau.stu.database.generator;
 
 import com.seitenbau.stu.util.CamelCase;
+import com.seitenbau.stu.util.Future;
 
 public class ColumnReferenceBuilder
 {
   private final ColumnBuilder columnBuilder;
 
-  private Column foreignColumn;
+  private FutureColumn foreignColumn;
 
   /**
    * Describes the relation from the perspective of the current table.
@@ -165,6 +166,26 @@ public class ColumnReferenceBuilder
    */
   public ForeignReferenceBuilder foreign(Column foreignColumn)
   {
+    final Column futureColumn = foreignColumn;
+    return foreign(new FutureColumn() {
+
+      @Override
+      public Column getFuture()
+      {
+        return futureColumn;
+      }
+      
+      @Override
+      public boolean isAvailable()
+      {
+        return true;
+      }
+
+    });
+  }
+
+  public ForeignReferenceBuilder foreign(FutureColumn foreignColumn)
+  {
     if (foreign != null)
     {
       throw new IllegalArgumentException("Multiple definition of target not allowed");
@@ -173,6 +194,7 @@ public class ColumnReferenceBuilder
     foreign = new ForeignReferenceBuilder(this);
     return foreign;
   }
+
 
   /**
    * Describes the relation from the perspective of the foreign table. The given name
@@ -261,6 +283,11 @@ public class ColumnReferenceBuilder
     return foreign(table.getDefaultIdentifierColumn());
   }
 
+  public ForeignReferenceBuilder foreign(TableBuilder tableBuilder)
+  {
+    return foreign(tableBuilder.refDefaultIdentifierColumn());
+  }
+  
   /**
    * Adds a further column to the table.
    * @param name The database name of the column.
@@ -445,6 +472,16 @@ public class ColumnReferenceBuilder
     public ForeignReferenceBuilder foreign(Column foreignColumn)
     {
       return parent.foreign(foreignColumn);
+    }
+
+    public ForeignReferenceBuilder foreign(FutureColumn foreignColumn)
+    {
+      return parent.foreign(foreignColumn);
+    }
+
+    public ForeignReferenceBuilder foreign(TableBuilder tableBuilder)
+    {
+      return parent.foreign(tableBuilder);
     }
 
     /**

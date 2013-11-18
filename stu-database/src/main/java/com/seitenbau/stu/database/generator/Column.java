@@ -27,7 +27,7 @@ public class Column
 
   private final ColumnMetaData _metaData;
 
-  private final List<Column> _referencedBy;
+  final List<Column> _referencedBy;
 
   private final ValueGenerator _generator;
 
@@ -52,9 +52,8 @@ public class Column
     _metaData = new ColumnMetaData(flags);
 
     _referencedBy = new ArrayList<Column>();
-    if (relation != null)
-    {
-      _relation.getForeignColumn()._referencedBy.add(this);
+    if (_relation != null) {
+      _relation.addReferencedBy(this);
     }
   }
 
