@@ -5,13 +5,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 public class TableModel
 {
   private final String name;
+
   private final String javaVariableName;
+
   private final List<ColumnModel> columns;
+
   private boolean hasBeenCreated;
+
   private boolean isAboutToGenerate;
 
   public TableModel(String name)
@@ -37,10 +40,12 @@ public class TableModel
     // table order
     for (TableModel other : getTableDependencies())
     {
-      if (other.isAboutToGenerate) {
-        // throw new RuntimeException("Cyclomatic dependency handling " + this.name);
+      if (other.isAboutToGenerate)
+      {
+        throw new RuntimeException("Cyclomatic dependency handling " + this.name);
       }
-      if (other.hasBeenCreated) {
+      if (other.hasBeenCreated)
+      {
         continue;
       }
 
@@ -53,18 +58,19 @@ public class TableModel
     result.append("Table " + javaVariableName + " = ");
 
     result.append(tableType + "(\"" + name + "\")\n");
-    //result.append("        // .description(\"\");\n");
+    // result.append("        // .description(\"\");\n");
 
-    for (ColumnModel column : columns) {
+    for (ColumnModel column : columns)
+    {
       result.append(column.getJavaCode());
     }
 
     result.append("      .build();\n");
 
-//        .column("id", DataType.BIGINT) //
-//          .defaultIdentifier() //
-//          .autoInvokeNext() //
-//          // .autoIncrement() // requires DBUnit 2.4.3 or later
+    // .column("id", DataType.BIGINT) //
+    // .defaultIdentifier() //
+    // .autoInvokeNext() //
+    // // .autoIncrement() // requires DBUnit 2.4.3 or later
     result.append("\n");
 
     hasBeenCreated = true;
@@ -75,7 +81,8 @@ public class TableModel
 
   private String getTableType()
   {
-    if (getForeignKeyCount() == 2) {
+    if (getForeignKeyCount() == 2)
+    {
       return "associativeTable";
     }
     return "table";
@@ -117,7 +124,8 @@ public class TableModel
   {
     for (ColumnModel column : columns)
     {
-      if (column.getName().equals(columnName)) {
+      if (column.getName().equals(columnName))
+      {
         column.addForeignKey(pkTable, pkColumnName);
       }
     }

@@ -6,9 +6,10 @@ import com.seitenbau.stu.database.generator.DataType;
 public class ColumnModel
 {
   private final String name;
-  private final DataType dataType;
-  private Optional<ForeignKeyModel> foreignKey;
 
+  private final DataType dataType;
+
+  private Optional<ForeignKeyModel> foreignKey;
 
   public ColumnModel(ColumnMetaData metaData)
   {
@@ -24,18 +25,26 @@ public class ColumnModel
 
   public void printStats()
   {
-    //System.out.println("  COLUMN: " + name);
-    //System.out.println("    dataType:" + dataType);
-    //System.out.println("    Column Size: " + metaData.getColumnSize());
-    //System.out.println("    getDecimalDigits: " + metaData.getDecimalDigits());
-    //System.out.println("    getCharOctedLength: " + metaData.getCharOctedLength());
-    //System.out.println("    Column Default: " + metaData.getColumnDefault());
-    //System.out.println("    isAutoIncrement: " + metaData.isAutoIncrement());
-    //System.out.println("    isGeneradedColumn: " + metaData.isGeneradedColumn());
-    //System.out.println("    isNullable: " + metaData.isNullable());
-    //System.out.println("    getNullable: " + metaData.getNullable());
-    if (foreignKey.isPresent()) {
-      //System.out.println("    Foreign Key -> " + foreignKey.get());
+    // System.out.println("  COLUMN: " + name);
+    // System.out.println("    dataType:" + dataType);
+    // System.out.println("    Column Size: " +
+    // metaData.getColumnSize());
+    // System.out.println("    getDecimalDigits: " +
+    // metaData.getDecimalDigits());
+    // System.out.println("    getCharOctedLength: " +
+    // metaData.getCharOctedLength());
+    // System.out.println("    Column Default: " +
+    // metaData.getColumnDefault());
+    // System.out.println("    isAutoIncrement: " +
+    // metaData.isAutoIncrement());
+    // System.out.println("    isGeneradedColumn: " +
+    // metaData.isGeneradedColumn());
+    // System.out.println("    isNullable: " + metaData.isNullable());
+    // System.out.println("    getNullable: " +
+    // metaData.getNullable());
+    if (foreignKey.isPresent())
+    {
+      // System.out.println("    Foreign Key -> " + foreignKey.get());
     }
   }
 
@@ -47,15 +56,16 @@ public class ColumnModel
     result.append("\", DataType.");
     result.append(dataType.toString());
     result.append(") //\n");
-    //result.append("          // .description(\"\") //\n");
-    if (foreignKey.isPresent()) {
+    // result.append("          // .description(\"\") //\n");
+    if (foreignKey.isPresent())
+    {
       result.append("          .reference //\n");
       result.append("            .local //\n");
-      //result.append("              // .name(\"\") //\n");
-      //result.append("              // .description(\"\") //\n");
+      // result.append("              // .name(\"\") //\n");
+      // result.append("              // .description(\"\") //\n");
       result.append("            .foreign(" + foreignKey.get() + ") //\n");
-      //result.append("              // .name(\"\") //\n");
-      //result.append("              // .description(\"\") //\n");
+      // result.append("              // .name(\"\") //\n");
+      // result.append("              // .description(\"\") //\n");
     }
     return result.toString();
   }
@@ -67,7 +77,8 @@ public class ColumnModel
 
   public ForeignKeyModel getForeignKey()
   {
-    if (!hasForeignKey()) {
+    if (!hasForeignKey())
+    {
       throw new RuntimeException("No foreign key");
     }
 
@@ -78,7 +89,5 @@ public class ColumnModel
   {
     return name;
   }
-
-
 
 }

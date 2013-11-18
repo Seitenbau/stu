@@ -3,6 +3,7 @@ package com.seitenbau.stu.database.modelgenerator;
 public class ForeignKeyModel
 {
   TableModel pkTable;
+
   String pkColumnName;
 
   public ForeignKeyModel(TableModel pkTable, String pkColumnName)

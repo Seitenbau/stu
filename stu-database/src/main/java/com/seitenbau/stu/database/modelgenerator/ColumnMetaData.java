@@ -13,7 +13,8 @@ public class ColumnMetaData
 
   private String getString(int index)
   {
-    try {
+    try
+    {
       return rs.getString(index);
     }
     catch (Exception e)
@@ -24,7 +25,8 @@ public class ColumnMetaData
 
   private Integer getInt(int index)
   {
-    try {
+    try
+    {
       return rs.getInt(index);
     }
     catch (Exception e)
@@ -35,7 +37,8 @@ public class ColumnMetaData
 
   private Short getShort(int index)
   {
-    try {
+    try
+    {
       return rs.getShort(index);
     }
     catch (Exception e)
@@ -94,10 +97,9 @@ public class ColumnMetaData
   }
 
   /*
-NULLABLE int => is NULL allowed.
-columnNoNulls - might not allow NULL values
-columnNullable - definitely allows NULL values
-columnNullableUnknown - nullability unknown
+   * NULLABLE int => is NULL allowed. columnNoNulls - might not allow
+   * NULL values columnNullable - definitely allows NULL values
+   * columnNullableUnknown - nullability unknown
    */
   public Integer getNullable()
   {
@@ -110,25 +112,26 @@ columnNullableUnknown - nullability unknown
     return getString(12);
   }
 
-  //default value for the column, which should be interpreted as a string when the value is enclosed in single quotes (may be null)
+  // default value for the column, which should be interpreted as a
+  // string when the value is enclosed in single quotes (may be null)
   public String getColumnDefault()
   {
     return getString(13);
   }
 
-  //for char types the maximum number of bytes in the column
+  // for char types the maximum number of bytes in the column
   public Integer getCharOctedLength()
   {
     return getInt(16);
   }
 
-  //index of column in table (starting at 1)
+  // index of column in table (starting at 1)
   public Integer getOrdinalPosition()
   {
     return getInt(17);
   }
 
-  //ISO rules are used to determine the nullability for a column.
+  // ISO rules are used to determine the nullability for a column.
   public String isNullable()
   {
     return getString(18);
