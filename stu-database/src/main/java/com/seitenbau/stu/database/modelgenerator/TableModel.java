@@ -137,4 +137,9 @@ public class TableModel
   {
     return hasBeenCreated;
   }
+
+  public List<ColumnModel> getColumns()
+  {
+    return columns;
+  }
 }

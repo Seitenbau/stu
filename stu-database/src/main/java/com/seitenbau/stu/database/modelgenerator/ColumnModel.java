@@ -23,6 +23,12 @@ public class ColumnModel
     foreignKey = Optional.of(new ForeignKeyModel(pkTable, pkColumnName));
   }
 
+  @Override
+  public String toString()
+  {
+    return name;
+  }
+
   public void printStats()
   {
     // System.out.println("  COLUMN: " + name);
