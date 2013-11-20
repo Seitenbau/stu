@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
@@ -17,6 +19,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.seitenbau.stu.database.modelgenerator.ColumnModel;
 import com.seitenbau.stu.database.modelgenerator.DatabaseModel;
 import com.seitenbau.stu.database.modelgenerator.ModelReader;
+import com.seitenbau.stu.database.modelgenerator.STUModelWriter;
 import com.seitenbau.stu.database.modelgenerator.TableModel;
 
 public class ModelGeneratorFrame extends JFrame
@@ -30,12 +33,30 @@ public class ModelGeneratorFrame extends JFrame
 
   private final JLabel columnName;
 
+  private final JTabbedPane tabbedPane;
+
+  private final JTextArea source;
+
+  private final STUModelWriter writer = new STUModelWriter();
+
   public ModelGeneratorFrame()
   {
-    setLayout(new BorderLayout());
+    setTitle("STU Database Tool");
+
+    JPanel tabDatabase = new JPanel();
+    //JPanel tabSTUModel = new JPanel();
+
+    source = new JTextArea();
+    source.setEditable(false);
+    JScrollPane souceView = new JScrollPane(source);
+
+    tabbedPane = new JTabbedPane();
+
 
     rootNode = new DefaultMutableTreeNode("Database");
     databaseTree = new JTree(rootNode);
+    databaseTree.setMinimumSize(new Dimension(200, 200));
+    databaseTree.setPreferredSize(new Dimension(200, 200));
     JScrollPane treeView = new JScrollPane(databaseTree);
 
     JPanel columnView = new JPanel();
@@ -45,8 +66,15 @@ public class ModelGeneratorFrame extends JFrame
     columnName = new JLabel();
     columnView.add(columnName);
 
-    add(treeView, BorderLayout.CENTER);
-    add(columnView, BorderLayout.EAST);
+    tabDatabase.setLayout(new BorderLayout());
+    tabDatabase.add(treeView, BorderLayout.CENTER);
+    tabDatabase.add(columnView, BorderLayout.EAST);
+
+    tabbedPane.addTab("Database", tabDatabase);
+    tabbedPane.addTab("Source", souceView);
+    //tabbedPane.addTab("Data Generator", new JPanel());
+    add(tabbedPane);
+
     pack();
 
     databaseTree.addTreeSelectionListener(new ColumnSelectionListener());
@@ -98,6 +126,8 @@ public class ModelGeneratorFrame extends JFrame
     }
 
     databaseTree.expandRow(0);
+
+    source.setText(writer.generate(model));
   }
 
   private class ColumnSelectionListener implements TreeSelectionListener

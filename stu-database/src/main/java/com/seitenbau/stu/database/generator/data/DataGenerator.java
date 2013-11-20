@@ -12,6 +12,7 @@ import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
+import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 
 public class DataGenerator
 {
@@ -150,16 +151,16 @@ public class DataGenerator
 
     for (int l = 0; l < leftCount; l++)
     {
-      leftBps[l] = fab.getEntity(leftTable, leftEdge, EntityCreationMode.fixed(1));
+      leftBps[l] = fab.getEntity(leftTable, leftEdge, EntityCreationMode.fixed(1, Direction.IN));
     }
     for (int r = 0; r < rightCount; r++)
     {
-      rightBps[r] = fab.getEntity(rightTable, rightEdge, EntityCreationMode.fixed(1));
+      rightBps[r] = fab.getEntity(rightTable, rightEdge, EntityCreationMode.fixed(1, Direction.IN));
     }
 
     for (int l = 0; l < leftCount; l++) {
       for (int r = 0; r < rightCount; r++) {
-        EntityBlueprint entity = fab.getEntity(leftColumn.getTable(),  leftEdge,  EntityCreationMode.fixed(1));
+        EntityBlueprint entity = fab.getEntity(leftColumn.getTable(),  leftEdge,  EntityCreationMode.fixed(1, Direction.OUT));
 
         entity.setReference(leftEdge, leftBps[l]);
         entity.setReference(rightEdge, rightBps[r]);
@@ -272,7 +273,9 @@ public class DataGenerator
 
       Column col = edge.getColumn();
       if (bp.getValue(col.getJavaName()) == null) {
-        EntityBlueprint entity= fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.minMax(edge.getSource().getMin(), edge.getSource().getMax()));
+        EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge,
+            EntityCreationMode.minMax(edge.getSource().getMin(), edge.getSource().getMax(),
+                Direction.OUT));
         bp.setReference(edge, entity);
         entity.appendLog("used for validation");
         //System.out.println("Incomplete: " + bp + " (fixed) " + edge.getSource().getMin() + " - " + edge.getSource().getMax());
@@ -311,7 +314,9 @@ public class DataGenerator
       for (int i = count; i < min; i++) {
         //System.out.println(" Creating " + i + "/" + min + ": " + bp);
         //System.out.println("Incomplete: " + bp + " [" + edge.getSource().getTable().getJavaName() + "]: " + i +  " < " + edge.getSource().getMin());
-        EntityBlueprint entity= fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax()));
+        EntityBlueprint entity = fab.getEntity(edge.getSource().getTable(), edge,
+            EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax(),
+                Direction.OUT));
         entity.setReference(edge, bp);
         //System.out.println("  -> " + result.getEntity() + " | " + edge.getDestination().getMin() +"  - " + edge.getDestination().getMax());
       }
@@ -353,7 +358,9 @@ public class DataGenerator
 
       if (edge.getDestination().getMin().getValue() > 0) {
         for (EntityBlueprint bp : fab.getUnrelatedBlueprints(edge.getSource().getTable(), edge)) {
-          EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax()));
+          EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge,
+              EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax(),
+                  Direction.IN));
           bp.setReference(edge, entity);
         }
       }
@@ -396,14 +403,16 @@ public class DataGenerator
         fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation());
       } else {
         System.out.println("getting left");
-        EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder));
+        EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder,
+            Direction.IN));
         System.out.println("getting right");
         for (int i = 0; i < sourceBorder; i++) {
-          EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1));
+          EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1,
+              Direction.OUT));
           result.setReference(edge, entity);
         }
       }
-      
+
       System.out.println("  Done Create");
 
       if (destBorder == 0) {
@@ -413,6 +422,11 @@ public class DataGenerator
         generate(destBorder, 1);
       }
     }
+  }
+
+  public Entities generate(DatabaseModel model)
+  {
+    return generate(model.getTables().get(0));
   }
 
 }

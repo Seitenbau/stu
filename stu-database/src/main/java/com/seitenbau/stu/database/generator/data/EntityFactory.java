@@ -67,7 +67,7 @@ public class EntityFactory
       }
     }
 
-    
+
     EntityBlueprint result = createEntity(table);
     result.setCreationInformation(edge, mode);
 
@@ -77,6 +77,10 @@ public class EntityFactory
 
   private boolean isValidMode(EntityCreationMode mode, EntityCreationMode existingMode, int referencedCount)
   {
+    if (!mode.getDirection().equals(existingMode.getDirection())) {
+      return true;
+    }
+
     if (existingMode.getMax() > 0 && referencedCount >= existingMode.getMax())
     {
       return false;
