@@ -135,15 +135,14 @@ public class DataGenerator
     // swap border counts :-)
     int leftCount = getCount(rightBorder, rightColumn);
     int rightCount = getCount(leftBorder, leftColumn);
-    //System.out.println(leftColumn.getJavaName() + " <---> " + rightColumn.getJavaName() + ": " + leftCount + ":" + rightCount);
 
     if (isOptional(rightBorder))
     {
-      fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation());
+      fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation(), null);
     }
     if (isOptional(leftBorder))
     {
-      fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation());
+      fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation(), null);
     }
 
     EntityBlueprint[] leftBps = new EntityBlueprint[leftCount];
@@ -151,16 +150,16 @@ public class DataGenerator
 
     for (int l = 0; l < leftCount; l++)
     {
-      leftBps[l] = fab.getEntity(leftTable, leftEdge, EntityCreationMode.fixed(1, Direction.IN));
+      leftBps[l] = fab.getEntity(leftTable, leftEdge, EntityCreationMode.fixed(1, Direction.IN), null);
     }
     for (int r = 0; r < rightCount; r++)
     {
-      rightBps[r] = fab.getEntity(rightTable, rightEdge, EntityCreationMode.fixed(1, Direction.IN));
+      rightBps[r] = fab.getEntity(rightTable, rightEdge, EntityCreationMode.fixed(1, Direction.IN), null);
     }
 
     for (int l = 0; l < leftCount; l++) {
       for (int r = 0; r < rightCount; r++) {
-        EntityBlueprint entity = fab.getEntity(leftColumn.getTable(),  leftEdge,  EntityCreationMode.fixed(1, Direction.OUT));
+        EntityBlueprint entity = fab.getEntity(leftColumn.getTable(),  leftEdge,  EntityCreationMode.fixed(1, Direction.OUT), null);
 
         entity.setReference(leftEdge, leftBps[l]);
         entity.setReference(rightEdge, rightBps[r]);
@@ -275,10 +274,9 @@ public class DataGenerator
       if (bp.getValue(col.getJavaName()) == null) {
         EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge,
             EntityCreationMode.minMax(edge.getSource().getMin(), edge.getSource().getMax(),
-                Direction.OUT));
+                Direction.IN), bp);
         bp.setReference(edge, entity);
         entity.appendLog("used for validation");
-        //System.out.println("Incomplete: " + bp + " (fixed) " + edge.getSource().getMin() + " - " + edge.getSource().getMax());
         return false;
       }
     }
@@ -292,8 +290,6 @@ public class DataGenerator
       return true;
     }
 
-    // source: professor
-    // destination: raum2
     for (Edge edge : table.getIncomingEdges()) {
       if (edge.getSource().getTable().isAssociativeTable()) {
         return true;
@@ -312,13 +308,10 @@ public class DataGenerator
       }
 
       for (int i = count; i < min; i++) {
-        //System.out.println(" Creating " + i + "/" + min + ": " + bp);
-        //System.out.println("Incomplete: " + bp + " [" + edge.getSource().getTable().getJavaName() + "]: " + i +  " < " + edge.getSource().getMin());
         EntityBlueprint entity = fab.getEntity(edge.getSource().getTable(), edge,
             EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax(),
-                Direction.OUT));
+                Direction.OUT), bp);
         entity.setReference(edge, bp);
-        //System.out.println("  -> " + result.getEntity() + " | " + edge.getDestination().getMin() +"  - " + edge.getDestination().getMax());
       }
 
       return false;
@@ -360,7 +353,7 @@ public class DataGenerator
         for (EntityBlueprint bp : fab.getUnrelatedBlueprints(edge.getSource().getTable(), edge)) {
           EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge,
               EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax(),
-                  Direction.IN));
+                  Direction.IN), bp);
           bp.setReference(edge, entity);
         }
       }
@@ -398,17 +391,17 @@ public class DataGenerator
       System.out.println("  Create: " + id);
 
       if (destBorder == 0) {
-        fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation());
+        fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation(), null);
       } else if (sourceBorder == 0) {
-        fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation());
+        fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation(), null);
       } else {
         System.out.println("getting left");
         EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder,
-            Direction.IN));
+            Direction.IN), null);
         System.out.println("getting right");
         for (int i = 0; i < sourceBorder; i++) {
           EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1,
-              Direction.OUT));
+              Direction.OUT), entity);
           result.setReference(edge, entity);
         }
       }

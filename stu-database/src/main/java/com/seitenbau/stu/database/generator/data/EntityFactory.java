@@ -42,12 +42,17 @@ public class EntityFactory
    * @param mode
    * @return
    */
-  public EntityBlueprint getEntity(Table table, Edge edge, EntityCreationMode mode)
+  public EntityBlueprint getEntity(Table table, Edge edge, EntityCreationMode mode, EntityBlueprint referencedEntity)
   {
     List<EntityBlueprint> list = blueprints.getTableBlueprints(table);
 
     // check if there is a blueprint, which can be used
     for (EntityBlueprint blueprint : list) {
+      if (blueprint == referencedEntity) {
+        System.out.println("Skipping " + blueprint + " because of " + referencedEntity);
+        continue;
+      }
+      
       Optional<EntityCreationMode> creationInformation = blueprint.getCreationInformation(edge);
 
       // if the blueprint does not have any relation, use it...
