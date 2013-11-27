@@ -162,7 +162,7 @@ public class ColumnMetaData
     return getString(23);
   }
 
-  public String isGeneradedColumn()
+  public String isGeneratedColumn()
   {
     return getString(24);
   }

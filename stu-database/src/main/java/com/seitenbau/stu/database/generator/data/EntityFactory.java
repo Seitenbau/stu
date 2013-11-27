@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.google.common.base.Optional;
 import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.DatabaseModel;
@@ -14,6 +16,8 @@ import com.seitenbau.stu.database.generator.values.ValueGenerator;
 
 public class EntityFactory
 {
+  private static final Logger log = Logger.getLogger(EntityFactory.class.getName());
+
   private final Entities blueprints;
 
   private final Map<Column, ValueGenerator> valueGenerators;
@@ -44,12 +48,12 @@ public class EntityFactory
    */
   public EntityBlueprint getEntity(Table table, Edge edge, EntityCreationMode mode, EntityBlueprint referencedEntity)
   {
+    log.info("Requesting blueprint for table " + table.getName() + " and edge " + edge + " and mode " + mode + ", to be referenced by " + referencedEntity);
     List<EntityBlueprint> list = blueprints.getTableBlueprints(table);
 
     // check if there is a blueprint, which can be used
     for (EntityBlueprint blueprint : list) {
       if (blueprint == referencedEntity) {
-        System.out.println("Skipping " + blueprint + " because of " + referencedEntity);
         continue;
       }
       
@@ -58,6 +62,7 @@ public class EntityFactory
       // if the blueprint does not have any relation, use it...
       if (!creationInformation.isPresent())
       {
+        log.info("Returning existing but unrelated blueprint " + blueprint);
         blueprint.setCreationInformation(edge, mode);
         return blueprint;
       }
@@ -68,6 +73,7 @@ public class EntityFactory
       // TODO any does not check if constraints are valid...
       if (isValidMode(mode, existingMode, referencedCount))
       {
+        log.info("Returning existing blueprint " + blueprint);
         return blueprint;
       }
     }
@@ -76,7 +82,8 @@ public class EntityFactory
     EntityBlueprint result = createEntity(table);
     result.setCreationInformation(edge, mode);
 
-    System.out.println("Creating " + mode + ": " + result);
+    log.info("Returning new blueprint " + result);
+
     return result;
   }
 

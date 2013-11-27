@@ -109,8 +109,8 @@ public class EntityBlueprint
   public void setValue(String key, Object value)
   {
     Object old = values.put(key, value);
-    if (old != null) {
-      throw new IllegalStateException("Overwrite " + key + " with " + value + " (" + this + ", " + old + ")");
+    if (old != null && old != value) {
+      throw new IllegalStateException("Overwrite " + key + " with " + value + " in " + this + ", existing value: " + old);
     }
   }
 

@@ -5,22 +5,46 @@ import com.seitenbau.stu.database.generator.DataType;
 
 public class ColumnModel
 {
-  private final String name;
-
-  private final DataType dataType;
-
   private Optional<ForeignKeyModel> foreignKey;
+  
+  private String name;
+  
+  private DataType dataType;
 
+  private Integer columnSize;
+  
+  private Integer decimalDigits;
+
+  private Integer charOctedLength;
+
+  private String columnDefault;
+
+  private String isAutoIncrement;
+  
+  private String isGeneratedColumn;
+
+  private String isNullable;
+
+  private Integer nullable;
+  
   public ColumnModel(ColumnMetaData metaData)
   {
-    this.name = metaData.getColumnName();
-    this.dataType = metaData.getDataType().getDataType();
+    name = metaData.getColumnName();
+    dataType = metaData.getDataType().getDataType();
+    columnSize = metaData.getColumnSize();
+    decimalDigits = metaData.getDecimalDigits();
+    charOctedLength = metaData.getCharOctedLength();
+    columnDefault = metaData.getColumnDefault();
+    isAutoIncrement = metaData.isAutoIncrement();
+    isGeneratedColumn = metaData.isGeneratedColumn();
+    isNullable = metaData.isNullable();
+    nullable = metaData.getNullable();
     foreignKey = Optional.absent();
   }
 
   public void addForeignKey(TableModel pkTable, String pkColumnName)
   {
-    foreignKey = Optional.of(new ForeignKeyModel(pkTable, pkColumnName));
+    foreignKey = Optional.of(new ForeignKeyModel(pkTable, pkColumnName, isNullable));
   }
 
   @Override
@@ -29,38 +53,13 @@ public class ColumnModel
     return name;
   }
 
-  public void printStats()
-  {
-    // System.out.println("  COLUMN: " + name);
-    // System.out.println("    dataType:" + dataType);
-    // System.out.println("    Column Size: " +
-    // metaData.getColumnSize());
-    // System.out.println("    getDecimalDigits: " +
-    // metaData.getDecimalDigits());
-    // System.out.println("    getCharOctedLength: " +
-    // metaData.getCharOctedLength());
-    // System.out.println("    Column Default: " +
-    // metaData.getColumnDefault());
-    // System.out.println("    isAutoIncrement: " +
-    // metaData.isAutoIncrement());
-    // System.out.println("    isGeneradedColumn: " +
-    // metaData.isGeneradedColumn());
-    // System.out.println("    isNullable: " + metaData.isNullable());
-    // System.out.println("    getNullable: " +
-    // metaData.getNullable());
-    if (foreignKey.isPresent())
-    {
-      // System.out.println("    Foreign Key -> " + foreignKey.get());
-    }
-  }
-
   public String getJavaCode()
   {
     StringBuilder result = new StringBuilder();
     result.append("        .column(\"");
-    result.append(name);
+    result.append(getName());
     result.append("\", DataType.");
-    result.append(dataType.toString());
+    result.append(getDataType().toString());
     result.append(") //\n");
     // result.append("          // .description(\"\") //\n");
     if (foreignKey.isPresent())
@@ -69,9 +68,11 @@ public class ColumnModel
       result.append("            .local //\n");
       // result.append("              // .name(\"\") //\n");
       // result.append("              // .description(\"\") //\n");
+      result.append("              .multiplicity(\"" + getForeignKey().getLocalString() + "\") //\n");
       result.append("            .foreign(" + foreignKey.get() + ") //\n");
       // result.append("              // .name(\"\") //\n");
       // result.append("              // .description(\"\") //\n");
+      result.append("              .multiplicity(\"" + getForeignKey().getForeignString() + "\") //\n");
     }
     return result.toString();
   }
@@ -95,5 +96,50 @@ public class ColumnModel
   {
     return name;
   }
+  
+  public DataType getDataType()
+  {
+    return dataType;
+  }
 
+  public int getColumnSize()
+  {
+    return columnSize;
+  }
+  
+  public int getDecimalDigits()
+  {
+    return decimalDigits;
+  }
+
+  public int getCharOctedLength()
+  {
+    return charOctedLength;
+  }
+
+  public String getColumnDefault()
+  {
+    return columnDefault;
+  }
+
+  public String isAutoIncrement()
+  {
+    return isAutoIncrement;
+  }
+
+  public String isGeneratedColumn()
+  {
+    return isGeneratedColumn;
+  }
+
+  public String isNullable()
+  {
+    return isNullable;
+  }
+
+  public int getNullable()
+  {
+    return nullable;
+  }
+  
 }

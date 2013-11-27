@@ -25,6 +25,7 @@ configure(allprojects) {
   ext.jodaTimeVersion               = "2.2"
   ext.junitVersion                  = "4.10"
   ext.logbackVersion                = "1.0.6"
+  ext.miglayoutVersion              = "4.2"
   ext.mockitoVersion                = "1.9.5"
   ext.mysqlConnVersion              = "5.0.5"
   ext.slf4jVersion                  = "1.6.1"
@@ -96,6 +97,7 @@ project("stu-database") {
     compile("commons-lang:commons-lang:$commonsLangVersion")
     compile("org.slf4j:slf4j-api:$slf4jVersion")
     compile("com.thoughtworks.xstream:xstream:$thoughtworksXstreamVersion")
+	compile("com.miglayout:miglayout-swing:$miglayoutVersion")
 
     runtime("mysql:mysql-connector-java:$mysqlConnVersion")
 

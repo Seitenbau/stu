@@ -1,11 +1,8 @@
 package com.seitenbau.stu.database.modelgenerator.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.sql.Connection;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -16,6 +13,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.zookeeper.proto.SetWatches;
+
+import net.miginfocom.swing.MigLayout;
+
+import com.google.common.base.Optional;
 import com.seitenbau.stu.database.modelgenerator.ColumnModel;
 import com.seitenbau.stu.database.modelgenerator.DatabaseModel;
 import com.seitenbau.stu.database.modelgenerator.ModelReader;
@@ -31,17 +33,20 @@ public class ModelGeneratorFrame extends JFrame
 
   private final JTree databaseTree;
 
-  private final JLabel columnName;
+  private final ColumnView columnView;
 
   private final JTabbedPane tabbedPane;
 
   private final JTextArea source;
 
   private final STUModelWriter writer = new STUModelWriter();
+  
+  private Optional<ColumnModel> activeColumn = Optional.absent();
 
   public ModelGeneratorFrame()
   {
     setTitle("STU Database Tool");
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
     JPanel tabDatabase = new JPanel();
     //JPanel tabSTUModel = new JPanel();
@@ -55,20 +60,13 @@ public class ModelGeneratorFrame extends JFrame
 
     rootNode = new DefaultMutableTreeNode("Database");
     databaseTree = new JTree(rootNode);
-    databaseTree.setMinimumSize(new Dimension(200, 200));
-    databaseTree.setPreferredSize(new Dimension(200, 200));
     JScrollPane treeView = new JScrollPane(databaseTree);
 
-    JPanel columnView = new JPanel();
-    columnView.setMinimumSize(new Dimension(200, 200));
-    columnView.setPreferredSize(new Dimension(200, 200));
+    columnView = new ColumnView();
 
-    columnName = new JLabel();
-    columnView.add(columnName);
-
-    tabDatabase.setLayout(new BorderLayout());
-    tabDatabase.add(treeView, BorderLayout.CENTER);
-    tabDatabase.add(columnView, BorderLayout.EAST);
+    tabDatabase.setLayout(new MigLayout("", "[200::, grow, fill][250::]", "[250::, grow, fill]"));
+    tabDatabase.add(treeView);
+    tabDatabase.add(columnView);
 
     tabbedPane.addTab("Database", tabDatabase);
     tabbedPane.addTab("Source", souceView);
@@ -136,20 +134,44 @@ public class ModelGeneratorFrame extends JFrame
     @Override
     public void valueChanged(TreeSelectionEvent event)
     {
-      columnName.setText("");
-      if (!(event.getNewLeadSelectionPath().getLastPathComponent() instanceof DefaultMutableTreeNode))
-      {
-        return;
+      ColumnModel column = getSelectedColumnModel(event);
+      if (columnChanged(column)) {
+        if (column != null) {
+          columnView.updateView(column);
+          activeColumn = Optional.of(column);
+        } else {
+          columnView.clearView();
+          activeColumn = Optional.absent();
+        }
       }
-
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) event.getNewLeadSelectionPath().getLastPathComponent();
-      if (!(node.getUserObject() instanceof ColumnModel)) {
-        return;
-      }
-
-      ColumnModel column = (ColumnModel)node.getUserObject();
-      columnName.setText(column.getName());
     }
-
+    
+    private ColumnModel getSelectedColumnModel(TreeSelectionEvent event)
+    {
+      if (event.getNewLeadSelectionPath() == null) {
+        return null;
+      }
+      
+      if (!(event.getNewLeadSelectionPath().getLastPathComponent() instanceof DefaultMutableTreeNode)) {
+        return null;
+      }
+      
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) event.getNewLeadSelectionPath().getLastPathComponent();
+      if ((node.getUserObject() instanceof ColumnModel)) {
+        return (ColumnModel)node.getUserObject();
+      }
+      
+      return null;
+    }
+  }
+  
+  private boolean columnChanged(ColumnModel newModel)
+  {
+    boolean isPresent = newModel != null;
+    if (activeColumn.isPresent() != isPresent) {
+      return true;
+    }
+    
+    return !(isPresent && activeColumn.get() == newModel);
   }
 }

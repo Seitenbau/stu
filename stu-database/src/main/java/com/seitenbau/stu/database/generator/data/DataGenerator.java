@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.seitenbau.stu.database.generator.AssociativeTable;
 import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.DatabaseModel;
@@ -16,6 +18,8 @@ import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 
 public class DataGenerator
 {
+  private static final Logger log = Logger.getLogger(DataGenerator.class.getName());
+  
 
   private final DatabaseModel model;
   private EntityFactory fab;
@@ -53,17 +57,21 @@ public class DataGenerator
     visitedEdges.clear();
     visitedTables.clear();
 
+    log.info("visiting tables");
     for (Table table : order) {
       visitTable(table);
     }
 
+    log.info("ensure all tables have been visitied");
     // visit all unvisited Tables...
     for (Table table : getTableOrder(model)) {
       visitTable(table);
     }
 
+    log.info("ensureEntityCount");
     fab.ensureEntityCount();
 
+    log.info("validate blueprints");
     int count = 0;
     while (count < 5 && !validateBlueprints(model)) {
       count++;
@@ -92,6 +100,7 @@ public class DataGenerator
 
   private void handleTable(Table table)
   {
+    log.info("handleTable " + table.getName());
     for (Edge edge : table.getOutgoingEdges())
     {
       handleEdge(edge, edge.getDestination().getTable());
@@ -105,6 +114,7 @@ public class DataGenerator
 
   private void handleAssociativeTable(AssociativeTable table)
   {
+    log.info("handleAssociativeTable " + table.getName());
     Column leftColumn = table.getAssociativeColumns().get(0);
     Column rightColumn = table.getAssociativeColumns().get(1);
 
@@ -341,8 +351,6 @@ public class DataGenerator
 
     void handle()
     {
-      System.out.println("Handling: " + edge.getSource().getTable().getName() + " ---> " + edge.getDestination().getTable().getName());
-
       // Destination is always m..1
       generate(edge.getDestination().getMin(), edge.getSource().getMin());
       generate(edge.getDestination().getMin(), edge.getSource().getMax());
@@ -363,8 +371,6 @@ public class DataGenerator
       // iterate over these entities
       // get a relation entity from the fab to link it
       // check if the new relation entity needs further relations ... :-(
-
-      //System.out.println();
     }
 
     void generate(Multiplicity.Border destBorder, Multiplicity.Border sourceBorder)
@@ -386,27 +392,23 @@ public class DataGenerator
       if (generated.contains(id)) {
         return;
       }
-
+      
       generated.add(id);
-      System.out.println("  Create: " + id);
+      log.info("generate " + id + " for " + edge);
 
       if (destBorder == 0) {
         fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation(), null);
       } else if (sourceBorder == 0) {
         fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation(), null);
       } else {
-        System.out.println("getting left");
         EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder,
             Direction.IN), null);
-        System.out.println("getting right");
         for (int i = 0; i < sourceBorder; i++) {
           EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1,
               Direction.OUT), entity);
           result.setReference(edge, entity);
         }
       }
-
-      System.out.println("  Done Create");
 
       if (destBorder == 0) {
         generate(1, sourceBorder);
