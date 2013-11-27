@@ -7,19 +7,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import com.seitenbau.stu.database.generator.AssociativeTable;
 import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
+import com.seitenbau.stu.logger.Logger;
+import com.seitenbau.stu.logger.TestLoggerFactory;
 
 public class DataGenerator
 {
-  private static final Logger log = Logger.getLogger(DataGenerator.class.getName());
-  
+  private final Logger log = TestLoggerFactory.get(DataGenerator.class);
 
   private final DatabaseModel model;
   private EntityFactory fab;
@@ -57,21 +56,21 @@ public class DataGenerator
     visitedEdges.clear();
     visitedTables.clear();
 
-    log.info("visiting tables");
+    log.debug("visiting tables");
     for (Table table : order) {
       visitTable(table);
     }
 
-    log.info("ensure all tables have been visitied");
+    log.debug("ensure all tables have been visitied");
     // visit all unvisited Tables...
     for (Table table : getTableOrder(model)) {
       visitTable(table);
     }
 
-    log.info("ensureEntityCount");
+    log.debug("ensureEntityCount");
     fab.ensureEntityCount();
 
-    log.info("validate blueprints");
+    log.debug("validate blueprints");
     int count = 0;
     while (count < 5 && !validateBlueprints(model)) {
       count++;
@@ -337,7 +336,7 @@ public class DataGenerator
     }
   }
 
-  static class EdgeHandler
+  class EdgeHandler
   {
 
     Edge edge;

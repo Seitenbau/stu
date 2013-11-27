@@ -5,18 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import com.google.common.base.Optional;
 import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
+import com.seitenbau.stu.logger.Logger;
+import com.seitenbau.stu.logger.TestLoggerFactory;
 
 public class EntityFactory
 {
-  private static final Logger log = Logger.getLogger(EntityFactory.class.getName());
+  private final Logger log = TestLoggerFactory.get(EntityFactory.class);
 
   private final Entities blueprints;
 
