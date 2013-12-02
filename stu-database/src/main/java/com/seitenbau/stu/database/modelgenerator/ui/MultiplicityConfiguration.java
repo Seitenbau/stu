@@ -49,6 +49,19 @@ public class MultiplicityConfiguration extends JPanel
   {
     minimum.setText(String.valueOf(i));
   }
+  
+  public int getMinimum()
+  {
+    return Integer.valueOf(minimum.getText());
+  }
+
+  public int getMaximum()
+  {
+    if ("*".equals(maximum.getText())) {
+      return -1;
+    }
+    return Integer.valueOf(maximum.getText());
+  }
 
   public static MultiplicityConfiguration createLocal()
   {

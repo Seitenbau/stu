@@ -72,6 +72,21 @@ public class ForeignKeyModel
     return foreignMinimum;
   }
 
+  public void setLocalMinimum(int minimum)
+  {
+    localMinimum = minimum;
+  }
+
+  public void setForeignMinimum(int minimum)
+  {
+    foreignMinimum = minimum;
+  }
+
+  public void setForeignMaximum(int maximum)
+  {
+    foreignMaximum = maximum;
+  }
+
   public String getLocalString()
   {
     return String.valueOf(localMinimum) + "..1";
@@ -89,4 +104,6 @@ public class ForeignKeyModel
     }
     return result.toString();
   }
+
+
 }

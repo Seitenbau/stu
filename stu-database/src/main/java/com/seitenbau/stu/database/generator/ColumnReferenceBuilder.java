@@ -1,9 +1,8 @@
 package com.seitenbau.stu.database.generator;
 
 import com.seitenbau.stu.util.CamelCase;
-import com.seitenbau.stu.util.Future;
 
-public class ColumnReferenceBuilder
+public class ColumnReferenceBuilder implements TableBuilderCommon
 {
   private final ColumnBuilder columnBuilder;
 
@@ -322,7 +321,7 @@ public class ColumnReferenceBuilder
     return reference;
   }
 
-  public static class LocalReferenceBuilder
+  public static class LocalReferenceBuilder implements TableBuilderCommon
   {
 
     private final ColumnReferenceBuilder parent;
@@ -592,7 +591,7 @@ public class ColumnReferenceBuilder
 
   }
 
-  public static class ForeignReferenceBuilder
+  public static class ForeignReferenceBuilder implements TableBuilderCommon
   {
     private final ColumnReferenceBuilder parent;
 

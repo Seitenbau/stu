@@ -7,6 +7,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import com.seitenbau.stu.database.modelgenerator.ui.ModelGeneratorFrame;
+import com.seitenbau.stu.logger.LogManager;
+import com.seitenbau.stu.logger.LogManager.Levels;
 
 public class ModelGeneratorUI
 {
@@ -15,6 +17,8 @@ public class ModelGeneratorUI
   {
     try
     {
+      LogManager.setLevel(Levels.INFO);
+
       Class.forName("com.mysql.jdbc.Driver");
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 

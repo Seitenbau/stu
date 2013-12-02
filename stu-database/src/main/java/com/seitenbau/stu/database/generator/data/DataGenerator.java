@@ -72,7 +72,7 @@ public class DataGenerator
 
     log.debug("validate blueprints");
     int count = 0;
-    while (count < 5 && !validateBlueprints(model)) {
+    while (count < 150 && !validateBlueprints(model)) {
       count++;
     }
 

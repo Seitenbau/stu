@@ -25,6 +25,12 @@ public class TableModel
     isAboutToGenerate = false;
     columns = new ArrayList<ColumnModel>();
   }
+  
+  @Override
+  public String toString()
+  {
+    return name;
+  }
 
   public String getName()
   {
@@ -141,5 +147,10 @@ public class TableModel
   public List<ColumnModel> getColumns()
   {
     return columns;
+  }
+
+  public void setCreated(boolean b)
+  {
+    hasBeenCreated = b;
   }
 }

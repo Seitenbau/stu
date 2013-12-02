@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.seitenbau.stu.util.Future;
 
-public class TableBuilder
+public class TableBuilder implements TableBuilderCommon
 {
   
   private Table builtTable;

@@ -50,7 +50,7 @@ public class STUTableOutput
 
     StringBuilder result = new StringBuilder();
 
-    result.append("package dataset\n\n");
+    result.append("package dataset;\n\n");
     //result.append("import static " + model.getPackageName() + ".HochschuleRefs.*\n\n");
     result.append("import " + model.getPackageName() + ".*\n\n");
     result.append("class DataSet extends " + builderClass + "\n");

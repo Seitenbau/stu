@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
+import com.google.common.base.Optional;
 import com.seitenbau.stu.database.modelgenerator.ColumnModel;
 import com.seitenbau.stu.database.modelgenerator.ForeignKeyModel;
 
@@ -23,6 +24,8 @@ public class ColumnView extends JPanel
   private final JLabel foreignKey;
   private final MultiplicityConfiguration local;
   private final MultiplicityConfiguration foreign;
+  
+  private Optional<ColumnModel> model = Optional.absent();
 
 
   public ColumnView()
@@ -51,6 +54,8 @@ public class ColumnView extends JPanel
   public void updateView(ColumnModel column)
   {
     clearView();
+    model = Optional.of(column);
+    
     columnName.setText(column.getName());
     dataType.setDataType(column.getDataType());
     isAutoIncrement.setText(column.isAutoIncrement());
@@ -69,9 +74,25 @@ public class ColumnView extends JPanel
       foreign.setMaximum(foreignKeyModel.getForeignMaximum());
     }
   }
+  
+  public void applyValues()
+  {
+    if (!model.isPresent()) {
+      return;
+    }
+    
+    ColumnModel column = model.get();
+    if (column.hasForeignKey()) {
+      ForeignKeyModel foreignKeyModel = column.getForeignKey();
+      foreignKeyModel.setLocalMinimum(local.getMinimum());
+      foreignKeyModel.setForeignMinimum(foreign.getMinimum());
+      foreignKeyModel.setForeignMaximum(foreign.getMaximum());
+    }
+  }
 
   public void clearView()
   {
+    model = Optional.absent();
     dataType.setEnabled(false);
 
     columnName.setText("");

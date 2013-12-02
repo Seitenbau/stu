@@ -8,6 +8,11 @@ public class STUModelWriter
     StringBuilder result = new StringBuilder();
     for (TableModel table : model.getTables())
     {
+      table.setCreated(false);
+    }
+
+    for (TableModel table : model.getTables())
+    {
       if (table.isCreated())
       {
         continue;

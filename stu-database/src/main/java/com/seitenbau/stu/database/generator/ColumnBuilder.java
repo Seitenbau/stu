@@ -9,7 +9,7 @@ import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.ValueGeneratorRegistry;
 import com.seitenbau.stu.util.CamelCase;
 
-public class ColumnBuilder
+public class ColumnBuilder implements TableBuilderCommon
 {
   private final TableBuilder tableBuilder;
 
