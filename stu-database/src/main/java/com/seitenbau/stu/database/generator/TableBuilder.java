@@ -3,8 +3,6 @@ package com.seitenbau.stu.database.generator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.seitenbau.stu.util.Future;
-
 public class TableBuilder implements TableBuilderCommon
 {
   
