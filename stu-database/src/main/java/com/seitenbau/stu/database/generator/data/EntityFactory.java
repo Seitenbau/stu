@@ -10,6 +10,7 @@ import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
+import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.logger.Logger;
 import com.seitenbau.stu.logger.TestLoggerFactory;
@@ -56,7 +57,7 @@ public class EntityFactory
       if (blueprint == referencedEntity) {
         continue;
       }
-      
+
       Optional<EntityCreationMode> creationInformation = blueprint.getCreationInformation(edge);
 
       // if the blueprint does not have any relation, use it...
@@ -89,7 +90,7 @@ public class EntityFactory
 
   private boolean isValidMode(EntityCreationMode mode, EntityCreationMode existingMode, int referencedCount)
   {
-    if (!mode.getDirection().equals(existingMode.getDirection())) {
+    if (!mode.getDirection().equals(existingMode.getDirection()) && !existingMode.getDirection().equals(Direction.ANY)) {
       return true;
     }
 
