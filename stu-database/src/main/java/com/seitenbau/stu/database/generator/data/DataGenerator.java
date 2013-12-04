@@ -151,7 +151,7 @@ public class DataGenerator
     }
     if (isOptional(leftBorder))
     {
-      fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation(), null);
+      fab.getEntity(rightTable, rightEdge, EntityCreationMode.noRelation(), null);
     }
 
     EntityBlueprint[] leftBps = new EntityBlueprint[leftCount];
@@ -391,7 +391,7 @@ public class DataGenerator
       if (generated.contains(id)) {
         return;
       }
-      
+
       generated.add(id);
       log.info("generate " + id + " for " + edge);
 
