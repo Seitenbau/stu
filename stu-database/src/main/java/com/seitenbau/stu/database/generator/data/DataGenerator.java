@@ -142,8 +142,8 @@ public class DataGenerator
     visitedEdges.add(rightEdge);
 
     // swap border counts :-)
-    int leftCount = getCount(rightBorder, rightColumn);
-    int rightCount = getCount(leftBorder, leftColumn);
+    int leftCount = Math.max(1, getCount(rightBorder, rightColumn));
+    int rightCount = Math.max(1, getCount(leftBorder, leftColumn));
 
     if (isOptional(rightBorder))
     {
@@ -191,10 +191,6 @@ public class DataGenerator
         return column.getTable().getInfinite();
       }
       return model.getInfinite();
-    }
-
-    if (border.getValue() == 0) {
-      return 1;
     }
 
     return border.getValue();
@@ -374,14 +370,8 @@ public class DataGenerator
 
     void generate(Multiplicity.Border destBorder, Multiplicity.Border sourceBorder)
     {
-      int dbValue = destBorder.getValue();
-      int sbValue = sourceBorder.getValue();
-      if (destBorder.isInfinite()) {
-        dbValue = 5;
-      }
-      if (sourceBorder.isInfinite()) {
-        sbValue = 5;
-      }
+      int dbValue = getCount(destBorder, edge.getColumn().getRelation().getForeignColumn());
+      int sbValue = getCount(sourceBorder, edge.getColumn());
       generate(dbValue, sbValue);
     }
 
