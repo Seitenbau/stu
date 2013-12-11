@@ -54,7 +54,7 @@ public class EntityFactory
 
     // check if there is a blueprint, which can be used
     for (EntityBlueprint blueprint : list) {
-      if (blueprint == referencedEntity) {
+      if (blueprint == referencedEntity || blueprint.isReferencing(edge)) {
         continue;
       }
 
@@ -71,14 +71,15 @@ public class EntityFactory
       EntityCreationMode existingMode = creationInformation.get();
       int referencedCount = blueprint.getReferencedByList(edge).size();
 
+
       // TODO any does not check if constraints are valid...
       if (isValidMode(mode, existingMode, referencedCount))
       {
         log.info("Returning existing blueprint " + blueprint);
         return blueprint;
       }
-    }
 
+    }
 
     EntityBlueprint result = createEntity(table);
     result.setCreationInformation(edge, mode);
@@ -94,9 +95,9 @@ public class EntityFactory
       return true;
     }
 
-    if (existingMode.getMax() > 0 && referencedCount >= existingMode.getMax())
+    if (matchesMaxBorder(existingMode.getMax(), referencedCount))
     {
-      return false;
+      return true;
     }
 
     if (isBothAny(mode, existingMode) || isBothNoRelation(mode, existingMode))
@@ -104,16 +105,19 @@ public class EntityFactory
       return true;
     }
 
-    // TODO check if the mode matches with the existing mode
-    // if it is an open 0/1..max relation and we want an 0/1..max2 relation, use it ?
-    if (mode.getMax() == existingMode.getMax())
-    {
-      if (referencedCount < mode.getMax()) {
-        //return true;
-      }
+    return false;
+  }
+
+  private boolean matchesMaxBorder(BorderValue max, int referencedCount)
+  {
+    if (max.isInifinite()) {
+      return true;
+    }
+    if (max.getValue() == 0) {
+      return false;
     }
 
-    return false;
+    return referencedCount < max.getValue();
   }
 
   private boolean isBothAny(EntityCreationMode mode, EntityCreationMode existingMode)
@@ -123,7 +127,7 @@ public class EntityFactory
 
   private boolean isBothNoRelation(EntityCreationMode mode, EntityCreationMode existingMode)
   {
-    return mode.getMax() == 0 && existingMode.getMax() == 0;
+    return mode.getMax().getValue() == 0 && existingMode.getMax().getValue() == 0;
   }
 
   public void ensureEntityCount()

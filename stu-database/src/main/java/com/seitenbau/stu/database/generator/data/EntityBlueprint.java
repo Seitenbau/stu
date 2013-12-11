@@ -29,6 +29,7 @@ public class EntityBlueprint
 
   EntityBlueprint(Table table, String refName, EntityFactory fab)
   {
+    if (refName.equals("VERLAG_4")) throw new RuntimeException("x");
     this.refName = refName;
     this.table = table;
     referencedBy = new HashMap<Edge, List<EntityBlueprint>>();
@@ -108,16 +109,34 @@ public class EntityBlueprint
 
   public void setValue(String key, Object value)
   {
-    Object old = values.put(key, value);
-    if (old != null && old != value) {
-      throw new IllegalStateException("Overwrite " + key + " with " + value + " in " + this + ", existing value: " + old);
+    if (value instanceof EntityBlueprint) {
+      throw new RuntimeException("Cannot set reference via setValue");
     }
+    putValue(key, value);
+  }
+
+  public void setReferencing(Edge edge)
+  {
+    values.put(edge.getColumn().getJavaName(), null);
+  }
+
+  public boolean isReferencing(Edge edge)
+  {
+    return values.containsKey(edge.getColumn().getJavaName());
   }
 
   public void setReference(Edge edge, EntityBlueprint target)
   {
-    setValue(edge.getColumn().getJavaName(), target);
+    putValue(edge.getColumn().getJavaName(), target);
     target.addReferencedBy(edge, this);
+  }
+
+  private void putValue(String key, Object value)
+  {
+    Object old = values.put(key, value);
+    if (old != null && old != value) {
+      throw new IllegalStateException("Overwrite " + key + " with " + value + " in " + this + ", existing value: " + old);
+    }
   }
 
   private void addReferencedBy(Edge edge, EntityBlueprint entityBlueprint)

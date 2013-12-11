@@ -6,15 +6,15 @@ public class EntityCreationMode
 
   public enum Direction { IN, OUT, ANY }
 
-  private final int min;
+  private final BorderValue min;
 
-  private final int max;
+  private final BorderValue max;
 
   private final Direction direction;
 
   private final int hashCode;
 
-  private EntityCreationMode(int min, int max, Direction direction)
+  private EntityCreationMode(BorderValue min, BorderValue max, Direction direction)
   {
     this.min = min;
     this.max = max;
@@ -23,11 +23,11 @@ public class EntityCreationMode
     hashCode = calculateHashcode(min, max, direction);
   }
 
-  private static int calculateHashcode(int min, int max, Direction direction)
+  private static int calculateHashcode(BorderValue min, BorderValue max, Direction direction)
   {
     int result = 17;
-    result = 31 * result + min;
-    result = 31 * result + min;
+    result = 31 * result + min.hashCode();
+    result = 31 * result + min.hashCode();
     result = 31 * result + direction.ordinal();
     return result;
   }
@@ -57,10 +57,10 @@ public class EntityCreationMode
 
   public boolean isAny()
   {
-    return (min == 0) && (max == -1);
+    return (min.getValue() == 0) && (max.isInifinite());
   }
 
-  public int getMax()
+  public BorderValue getMax()
   {
     return max;
   }
@@ -72,37 +72,41 @@ public class EntityCreationMode
 
   public static EntityCreationMode noRelation()
   {
-    return new EntityCreationMode(0, 0, Direction.ANY);
+    return new EntityCreationMode(BorderValue.valueOf(0), BorderValue.valueOf(0), Direction.ANY);
   }
 
-  public static EntityCreationMode fixed(int value, Direction direction)
+  public static EntityCreationMode fixedInt(int value, Direction direction)
+  {
+    return new EntityCreationMode(BorderValue.valueOf(value), BorderValue.valueOf(value), direction);
+  }
+
+  public static EntityCreationMode fixed(BorderValue value, Direction direction)
   {
     return new EntityCreationMode(value, value, direction);
   }
 
   public static EntityCreationMode min(int min, Direction direction)
   {
-    return new EntityCreationMode(min, -1, direction);
+    return new EntityCreationMode(BorderValue.valueOf(min), BorderValue.infinite(-1), direction);
   }
 
   public static EntityCreationMode max(int max, Direction direction)
   {
-    return new EntityCreationMode(0, max, direction);
+    return new EntityCreationMode(BorderValue.valueOf(0), BorderValue.valueOf(max), direction);
   }
 
   public static EntityCreationMode any()
   {
-    return new EntityCreationMode(-1, -1, Direction.ANY);
-  }
-
-  public static EntityCreationMode minMax(int min, int max, Direction direction)
-  {
-    return new EntityCreationMode(min, max, direction);
+    return new EntityCreationMode(BorderValue.valueOf(-1), BorderValue.valueOf(-1), Direction.ANY);
   }
 
   public static EntityCreationMode minMax(Multiplicity.Border min, Multiplicity.Border max, Direction direction)
   {
-    return new EntityCreationMode(min.getValue(), max.getValue(), direction);
+    if (max.isInfinite()) {
+      return new EntityCreationMode(BorderValue.valueOf(min.getValue()), BorderValue.infinite(max.getValue()), direction);
+    } else {
+      return new EntityCreationMode(BorderValue.valueOf(min.getValue()), BorderValue.valueOf(max.getValue()), direction);
+    }
   }
 
 }
