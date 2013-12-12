@@ -6,6 +6,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -43,6 +44,7 @@ public class DatabaseModelView extends JPanel
 
   void applyScheme(DatabaseModel model)
   {
+    clear();
     for (TableModel table : model.getTables()) {
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(table);
       rootNode.add(node);
@@ -54,6 +56,10 @@ public class DatabaseModelView extends JPanel
       }
     }
 
+    DefaultTreeModel treemodel = (DefaultTreeModel)databaseTree.getModel();
+    DefaultMutableTreeNode root = (DefaultMutableTreeNode)treemodel.getRoot();
+    treemodel.reload(root);
+   
     databaseTree.expandRow(0);
     modelView.setView(rootNode.getUserObject());
   }

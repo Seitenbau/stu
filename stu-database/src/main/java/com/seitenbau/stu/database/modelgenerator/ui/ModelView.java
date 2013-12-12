@@ -41,7 +41,7 @@ public class ModelView extends JPanel
     }
     
     activeModel = Optional.of(model);
-    System.out.println("setting");
+    System.out.println("setting new view");
     
     columnView.applyValues();
     

@@ -2,6 +2,7 @@ package com.seitenbau.stu.database.modelgenerator.ui;
 
 import java.awt.Component;
 
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -22,6 +23,8 @@ public class TableView extends JPanel
     setLayout(new MigLayout("", "[][120::, grow, fill]"));
     
     tableName = addLabeledComponent("Name",  new JLabel());
+    
+    addLabeledComponent("Associative Table", new JCheckBox());
   }
   
   private <T extends Component> T addLabeledComponent(String text, T c)

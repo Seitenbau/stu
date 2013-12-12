@@ -1,13 +1,20 @@
 package com.seitenbau.stu.database.modelgenerator.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.google.common.base.Optional;
 import com.seitenbau.stu.database.modelgenerator.DatabaseModel;
 import com.seitenbau.stu.database.modelgenerator.ModelReader;
 
@@ -59,7 +66,45 @@ public class ModelGeneratorFrame extends JFrame
       }
     });
 
+    setJMenuBar(createMenu());
+    
     pack();
+  }
+  
+  private JMenuBar createMenu()
+  {
+    JMenuBar result = new JMenuBar();
+    
+    JMenu menuFile = new JMenu("File");
+    
+    menuFile.add(createMenuItem("Query Database", new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        DatabaseConnectionDialog dialog = new DatabaseConnectionDialog(ModelGeneratorFrame.this);
+        dialog.setVisible(true);
+        if (dialog.hasResult()) {
+          Optional<Connection> connection = dialog.getConnection();
+          if (connection.isPresent()) {
+            readScheme(connection.get());
+          } else {
+            JOptionPane.showMessageDialog(null, "Error connection to database.");
+          }
+        }
+      }
+      
+    }));
+    
+    result.add(menuFile);
+    return result;
+  }
+  
+  private JMenuItem createMenuItem(String caption, ActionListener listener)
+  {
+    JMenuItem result = new JMenuItem(caption);
+    result.addActionListener(listener);
+    return result;
   }
 
   public void readScheme(Connection connection)
@@ -77,6 +122,7 @@ public class ModelGeneratorFrame extends JFrame
         try
         {
           final DatabaseModel model = ModelReader.readModel(finalConnection);
+          finalConnection.close();
           SwingUtilities.invokeLater(new Runnable()
           {
 

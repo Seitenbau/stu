@@ -1,46 +1,62 @@
 package com.seitenbau.stu.database.modelgenerator.ui;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import groovy.ui.ConsoleTextEditor;
+
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import net.miginfocom.swing.MigLayout;
 
 import com.seitenbau.stu.database.modelgenerator.DatabaseModel;
 import com.seitenbau.stu.database.modelgenerator.STUModelWriter;
 
-public class ModelSourceView extends JScrollPane
+public class ModelSourceView extends JPanel
 {
 
   private static final long serialVersionUID = 1L;
 
   private final STUModelWriter writer = new STUModelWriter();
 
-  private final JTextArea source;
+  // private final JTextArea source;
+  private final ConsoleTextEditor source;
 
   public ModelSourceView()
   {
-    source = new JTextArea();
+    setLayout(new MigLayout("fill", "0[grow, fill]0", "0[grow, fill]0"));
+    source = new ConsoleTextEditor();
+
+    // source = new JTextArea();
     source.setEditable(false);
-    setViewportView(source);
+    // setViewportView(source);
+
+    add(source, "grow");
   }
 
   public void setModel(DatabaseModel model)
   {
-    String text = writer.generate(model);
-    source.setText(text);
-
-    SwingUtilities.invokeLater(new Runnable()
+    source.getTextEditor().setText("// please wait...");
+    final String text = writer.generate(model);
+    new Thread(new Runnable()
     {
+
+      @Override
       public void run()
       {
-        getHorizontalScrollBar().setValue(0);
-        getVerticalScrollBar().setValue(0);
+        SwingUtilities.invokeLater(new Runnable()
+        {
+          public void run()
+          {
+            source.getTextEditor().setText(text);
+          }
+        });
       }
-    });
+    }).start();
+
   }
 
   public void clear()
   {
-    source.setText("");
+    source.getTextEditor().setText("");
   }
 
 }
