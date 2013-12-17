@@ -3,6 +3,7 @@ package model;
 import com.seitenbau.stu.database.generator.DataType;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.TableBuilder;
+import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
 import com.seitenbau.stu.database.generator.values.NachnameGenerator;
 import com.seitenbau.stu.database.generator.values.VerlagNameGenerator;
 import com.seitenbau.stu.database.generator.values.VornameGenerator;
@@ -15,6 +16,7 @@ public class BookDatabaseModel extends DatabaseModel
     packageName("com.seitenbau.stu.bookdatabase.model");
     enableTableModelClassesGeneration();
     //disbaleTableDSLGeneration();
+    infinite(4);
 
     TableBuilder buch = table("buch"); 
     TableBuilder verlag = table("verlag"); 
@@ -25,10 +27,12 @@ public class BookDatabaseModel extends DatabaseModel
           .defaultIdentifier() //
           .autoInvokeNext() //
         .column("name", DataType.VARCHAR) //
+          .generator(new BuchNameGenerator())
         .column("verlag", DataType.BIGINT) //
           .reference
+            .local
             .foreign(verlag.ref("id"))
-              .multiplicity("1..1")
+              .multiplicity("0..*")
       .build();
 
     verlag //
