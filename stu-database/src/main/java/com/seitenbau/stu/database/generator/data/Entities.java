@@ -63,8 +63,6 @@ public class Entities
 
   public void printStats()
   {
-    System.out.println();
-
     List<Table> tables = new ArrayList<Table>(blueprints.keySet());
     Collections.sort(tables, new Comparator<Table>() {
 
@@ -76,7 +74,6 @@ public class Entities
 
     });
 
-    System.out.println();
     for (Table table : tables) {
       List<EntityBlueprint> bps = blueprints.get(table);
       System.out.println(table.getName() + ":\t" + bps.size());

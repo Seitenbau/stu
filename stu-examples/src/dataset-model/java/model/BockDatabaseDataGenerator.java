@@ -1,10 +1,6 @@
 package model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.seitenbau.stu.database.generator.DatabaseModel;
-import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.DataGenerator;
 import com.seitenbau.stu.database.generator.data.Entities;
 import com.seitenbau.stu.database.generator.data.STUTableOutput;
@@ -14,35 +10,21 @@ public class BockDatabaseDataGenerator
 
   public static void main(String[] args) throws Exception
   {
-    DatabaseModel model = new BookDatabaseModel();
+    final DatabaseModel model = new BookDatabaseModel();
 
-    Set<Integer> hashes = new HashSet<Integer>();
+    final DataGenerator generator = new DataGenerator(model);
 
-    DataGenerator generator = new DataGenerator(model);
+    final Entities entities = generator.generate("buch");
 
-    StringBuilder summary = new StringBuilder();
-    for (Table table : model.getTables()) {
+    STUTableOutput output = new STUTableOutput();
+    final String generatedDSL = output.create(entities);
+    System.out.println(generatedDSL);
 
-      Entities entities = generator.generate(table);
+    System.out.println("-----------------------------");
+    entities.printStats();
+    System.out.println();
 
-      STUTableOutput output = new STUTableOutput();
-      final String generatedDSL = output.create(entities);
-      int hash = generatedDSL.hashCode();
-
-      if (!hashes.contains(hash)) {
-        hashes.add(hash);
-        System.out.println("Start Table: " + table.getJavaName());
-        System.out.println(generatedDSL);
-        entities.printStats();
-        System.out.println();
-      }
-
-      summary.append("generated DSL-Hash: " + hash + "\t");
-      summary.append("Loop Count: " + entities.getLoopCount() + "\t");
-      summary.append("Start Table: " + table.getJavaName() + "\n");
-    }
-
-    System.out.println(summary.toString());
+    System.out.println("Verification Loop Iterations: " + entities.getLoopCount() + "\t");
   }
 
 }
