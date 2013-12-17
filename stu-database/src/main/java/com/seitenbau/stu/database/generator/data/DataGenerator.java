@@ -363,12 +363,6 @@ public class DataGenerator
           bp.setReference(edge, entity);
         }
       }
-
-      // check if existing entities have valid relations
-      // check if the existing entities need a relation
-      // iterate over these entities
-      // get a relation entity from the fab to link it
-      // check if the new relation entity needs further relations ... :-(
     }
 
     void generate(Multiplicity.Border destBorder, Multiplicity.Border sourceBorder)
