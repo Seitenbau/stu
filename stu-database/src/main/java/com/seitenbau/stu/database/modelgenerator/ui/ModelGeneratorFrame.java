@@ -17,6 +17,9 @@ import javax.swing.event.ChangeListener;
 import com.google.common.base.Optional;
 import com.seitenbau.stu.database.modelgenerator.DatabaseModel;
 import com.seitenbau.stu.database.modelgenerator.ModelReader;
+import com.seitenbau.stu.database.modelgenerator.examples.CyclicExampleModel;
+import com.seitenbau.stu.database.modelgenerator.examples.PersonDatabaseModel;
+import com.seitenbau.stu.database.modelgenerator.examples.RecursiveExampleModel;
 
 public class ModelGeneratorFrame extends JFrame
 {
@@ -96,6 +99,36 @@ public class ModelGeneratorFrame extends JFrame
       
     }));
     
+    JMenu examplesMenu = new JMenu("Examples");
+    examplesMenu.add(createMenuItem("Cyclic", new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        applyScheme(new CyclicExampleModel());
+      }
+      
+    }));
+    examplesMenu.add(createMenuItem("Recursive", new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        applyScheme(new RecursiveExampleModel());
+      }
+      
+    }));
+    examplesMenu.add(createMenuItem("Persons", new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        applyScheme(new PersonDatabaseModel());
+      }
+      
+    }));
+    
+    menuFile.add(examplesMenu);
     result.add(menuFile);
     return result;
   }

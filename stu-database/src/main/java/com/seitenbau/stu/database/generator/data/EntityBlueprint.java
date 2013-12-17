@@ -29,7 +29,6 @@ public class EntityBlueprint
 
   EntityBlueprint(Table table, String refName, EntityFactory fab)
   {
-    if (refName.equals("VERLAG_4")) throw new RuntimeException("x");
     this.refName = refName;
     this.table = table;
     referencedBy = new HashMap<Edge, List<EntityBlueprint>>();

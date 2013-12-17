@@ -16,6 +16,8 @@ public class TableView extends JPanel
   private static final long serialVersionUID = 1L;
   
   private final JLabel tableName;
+  
+  private final JCheckBox associative;;
 
 
   public TableView()
@@ -24,7 +26,7 @@ public class TableView extends JPanel
     
     tableName = addLabeledComponent("Name",  new JLabel());
     
-    addLabeledComponent("Associative Table", new JCheckBox());
+    associative = addLabeledComponent("Associative Table", new JCheckBox());
   }
   
   private <T extends Component> T addLabeledComponent(String text, T c)
@@ -40,6 +42,7 @@ public class TableView extends JPanel
   {
     clearView();
     tableName.setText(table.getName());
+    associative.setSelected(table.isAssociative());
   }
 
   public void clearView()

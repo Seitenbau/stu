@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 import com.seitenbau.stu.database.generator.ColumnBuilder;
 import com.seitenbau.stu.database.generator.TableBuilder;
@@ -19,23 +19,19 @@ import com.seitenbau.stu.database.modelgenerator.DatabaseModel;
 import com.seitenbau.stu.database.modelgenerator.ForeignKeyModel;
 import com.seitenbau.stu.database.modelgenerator.TableModel;
 
-public class DataGeneratorView extends JScrollPane
+public class DataGeneratorView extends CodeView
 {
 
   private static final long serialVersionUID = 1L;
 
-  private final JTextArea source;
-  
   private int lastModelHash = 0;
   
   private AtomicBoolean generating;
 
   public DataGeneratorView()
   {
+    super(SyntaxConstants.SYNTAX_STYLE_GROOVY);
     generating = new AtomicBoolean(false);
-    source = new JTextArea();
-    source.setEditable(false);
-    setViewportView(source);
   }
 
   public void setModel(DatabaseModel model)
@@ -52,7 +48,7 @@ public class DataGeneratorView extends JScrollPane
     
     lastModelHash = genModel.hashCode();
     
-    source.setText("Please wait...");
+    setSource("// Please wait...");
     
     new Thread(new Runnable() {
 
@@ -78,26 +74,13 @@ public class DataGeneratorView extends JScrollPane
         {
           public void run()
           {
-            source.setText(generatedDSL);
-            SwingUtilities.invokeLater(new Runnable()
-            {
-              public void run() {
-                getHorizontalScrollBar().setValue(0);
-                getVerticalScrollBar().setValue(0);
-              }
-            });
+            setSource(generatedDSL);
           }
         });
       }
       
     }).start();
 
-  }
-  
-  
-  public void clear()
-  {
-    source.setText("");
   }
   
   private class GeneratorModel extends com.seitenbau.stu.database.generator.DatabaseModel {
@@ -110,7 +93,11 @@ public class DataGeneratorView extends JScrollPane
       Map<TableModel, TableBuilder> builders = new HashMap<TableModel, TableBuilder>();
      
       for (TableModel tableModel : model.getTables()) {
-        builders.put(tableModel, table(tableModel.getName()));
+        if (tableModel.isAssociative()) {
+          builders.put(tableModel, associativeTable(tableModel.getName()));
+        } else {
+          builders.put(tableModel, table(tableModel.getName()));
+        }
       }
       
       
@@ -118,7 +105,9 @@ public class DataGeneratorView extends JScrollPane
         TableBuilderCommon activeBuilder = builders.get(tableModel);
         
         for (ColumnModel columnModel : tableModel.getColumns()) {
+          System.out.println("Adding builder " + columnModel.getName() + " with " + columnModel.getDataType());
           ColumnBuilder columnBuilder = activeBuilder.column(columnModel.getName(), columnModel.getDataType());
+          
           activeBuilder = columnBuilder;
           
           if (columnModel.hasForeignKey()) {

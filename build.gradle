@@ -28,6 +28,7 @@ configure(allprojects) {
   ext.miglayoutVersion              = "4.2"
   ext.mockitoVersion                = "1.9.5"
   ext.mysqlConnVersion              = "5.0.5"
+  ext.rsyntaxtextareaVersion        = "2.5.0"
   ext.slf4jVersion                  = "1.6.1"
   ext.solrjVersion                  = "4.0.0"
   ext.spockVersion                  = "0.7-groovy-2.0"
@@ -98,6 +99,7 @@ project("stu-database") {
     compile("org.slf4j:slf4j-api:$slf4jVersion")
     compile("com.thoughtworks.xstream:xstream:$thoughtworksXstreamVersion")
 	compile("com.miglayout:miglayout-swing:$miglayoutVersion")
+	compile("com.fifesoft:rsyntaxtextarea:$rsyntaxtextareaVersion")
 
     runtime("mysql:mysql-connector-java:$mysqlConnVersion")
 

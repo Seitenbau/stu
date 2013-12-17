@@ -26,11 +26,17 @@ public class ColumnModel
   private String isNullable;
 
   private Integer nullable;
+
+  public ColumnModel(String name, DataType dataType)
+  {
+    this.name = name;
+    this.dataType = dataType;
+    foreignKey = Optional.absent();
+  }
   
   public ColumnModel(ColumnMetaData metaData)
   {
-    name = metaData.getColumnName();
-    dataType = metaData.getDataType().getDataType();
+    this(metaData.getColumnName(), metaData.getDataType().getDataType());
     columnSize = metaData.getColumnSize();
     decimalDigits = metaData.getDecimalDigits();
     charOctedLength = metaData.getCharOctedLength();
@@ -136,10 +142,20 @@ public class ColumnModel
   {
     return isNullable;
   }
+  
+  public void setIsNullable(String isNullable)
+  {
+    this.isNullable = isNullable;
+  }
 
   public int getNullable()
   {
     return nullable;
   }
   
+  public void setNullable(int nullable)
+  {
+    this.nullable = nullable;
+  }
+
 }

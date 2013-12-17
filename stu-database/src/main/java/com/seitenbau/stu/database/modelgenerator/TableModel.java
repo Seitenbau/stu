@@ -16,6 +16,8 @@ public class TableModel
   private boolean hasBeenCreated;
 
   private boolean isAboutToGenerate;
+  
+  private boolean isAssociative;
 
   public TableModel(String name)
   {
@@ -89,7 +91,7 @@ public class TableModel
 
   private String getTableType()
   {
-    if (getForeignKeyCount() == 2)
+    if (isAssociative)
     {
       return "associativeTable";
     }
@@ -153,4 +155,15 @@ public class TableModel
   {
     hasBeenCreated = b;
   }
+
+  public void setAssociative(boolean b)
+  {
+    isAssociative = b;
+  }
+
+  public boolean isAssociative()
+  {
+    return isAssociative;
+  }
+  
 }
