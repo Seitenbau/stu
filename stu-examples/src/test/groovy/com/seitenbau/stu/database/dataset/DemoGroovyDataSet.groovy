@@ -32,7 +32,7 @@ class DemoGroovyDataSet extends PersonDatabaseBuilder
   }
 
   def relations() {
-    QA.hasMembers_belongsTo()(KAULBERSCH, GUITTON, BARANOWSKI)
+    QA.hasMembers_belongsTo(KAULBERSCH, GUITTON, BARANOWSKI)
     KAULBERSCH.worksAs(SWD).engagementStart(DateUtil.getDate(2013, 4, 1, 14, 0, 0))
     GUITTON.worksAs(SWT)
     BARANOWSKI.worksAs(TM)
