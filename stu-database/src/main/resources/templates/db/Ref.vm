@@ -194,7 +194,7 @@ public class ${clsRef} extends DatabaseRef
    * @param refs A list of references, which are related to the current entity
    * @return The reference to the current entity
    */
-  public ${clsRef} ${foreignCol.relation.foreignName}(${names.getRefClass(${foreignCol.table})} ... refs)
+  public ${clsRef} ${foreignCol.relation.foreignName}_${foreignCol.relation.localName}(${names.getRefClass(${foreignCol.table})} ... refs)
   {
     for (${names.getRefClass(${foreignCol.table})} ref : refs)
     {

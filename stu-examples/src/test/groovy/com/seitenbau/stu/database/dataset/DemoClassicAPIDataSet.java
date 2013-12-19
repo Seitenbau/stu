@@ -18,7 +18,7 @@ public class DemoClassicAPIDataSet extends PersonDatabaseDataSet
   @Override
   protected void initDataSet()
   {
-    QA.hasMembers(KAULBERSCH, GUITTON, BARANOWSKI);
+    QA.hasMembers_belongsTo(KAULBERSCH, GUITTON, BARANOWSKI);
 
     table_Teams
       .insertRow()
