@@ -141,7 +141,7 @@ public class ${clsRef} extends DatabaseRef
     }
 #foreach( $col in ${model.foreignColumns} )
 #set( $map = ${privateListPrefix} + ${col.relation.localName} + "Map" )
-#set( $refVar = ${names.getRefVariable(${col.relation.foreignColumn.table})})
+#set( $refVar = ${names.getRefVariable(${col.relation.foreignColumn.table})} + "_" + ${col.relation.localName} )
 
     ${names.getRefClass(${col.relation.foreignColumn.table})} ${refVar} = ${map}.get(dataSet);
     if (${refVar} != null)
