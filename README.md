@@ -17,8 +17,8 @@ TODO: project description.
     }
     
     dependencies {
-      compile("com.seitenbau.stu:stu-common:0.2.0-RC2")
-      compile("com.seitenbau.stu:stu-database:0.2.0-RC2")
+      compile("com.seitenbau.stu:stu-common:0.2.0-RC3")
+      compile("com.seitenbau.stu:stu-database:0.2.0-RC3")
     }
 
 
