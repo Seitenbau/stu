@@ -35,7 +35,7 @@ public class TestConfig
 In that case the variable +FS_CONNECTION+ is initialized with the property value for +fs.root+.
 
 ===== Determine the environemnt
-Configurations are loaded via the directory +src/test/resources/tets/*+ in the order logged to the console:
+Configurations are loaded via the directory +src/test/resources/test/*+ in the order logged to the console:
 
 * +default-test.properties+
 * +<your-username>.properties+
