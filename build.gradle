@@ -98,8 +98,8 @@ project("stu-database") {
     compile("commons-lang:commons-lang:$commonsLangVersion")
     compile("org.slf4j:slf4j-api:$slf4jVersion")
     compile("com.thoughtworks.xstream:xstream:$thoughtworksXstreamVersion")
-	compile("com.miglayout:miglayout-swing:$miglayoutVersion")
-	compile("com.fifesoft:rsyntaxtextarea:$rsyntaxtextareaVersion")
+    compile("com.miglayout:miglayout-swing:$miglayoutVersion")
+    compile("com.fifesoft:rsyntaxtextarea:$rsyntaxtextareaVersion")
 
     runtime("mysql:mysql-connector-java:$mysqlConnVersion")
 

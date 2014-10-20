@@ -1,0 +1,15 @@
+buildscript {
+  repositories {
+     maven { url "http://maven2/artifactory/all" }
+  }
+  dependencies {
+     classpath 'com.seitenbau.ploy:ploy-plugins-gradle:0.6.0.397'
+  }
+}
+
+apply plugin: 'scm-tag-continuous'
+
+tagger {
+  processGradlePropertyFile()
+  suppressTagging = true
+}

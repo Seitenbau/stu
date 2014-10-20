@@ -66,4 +66,12 @@ if(project.hasProperty('bintray_username')) {
 	  }
 	}
   }
+} else {
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        repository( url: project.getRootProject().file("build").toURI().toString() ) {}
+      }
+    }
+  }
 }
