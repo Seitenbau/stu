@@ -1,0 +1,13 @@
+= Changelog
+
+== upcomming
+
+* Improved page documentation
+
+== 0.2.0-RC4
+
+* solrj dependency now optional
+
+== 0.2.0-RCx
+
+* initial release
