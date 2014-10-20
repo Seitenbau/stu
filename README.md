@@ -23,7 +23,7 @@ TODO: project description.
 
 # Build STU
 
-Either use provided gradlew or you need gradle (<2.0) 1.8 installed. STU cannot currently only compile with an JDK 1.7.
+Either use provided gradlew or you need gradle (<2.0) 1.8 installed. STU currently only compiles with a JDK 1.7.
 
 	gradlew build
 
