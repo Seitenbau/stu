@@ -1,10 +1,10 @@
 = Changelog
 
-== upcomming
+== upcomming (2014-mm-dd)
 
 * Improved page documentation
 
-== 0.2.0-RC4
+== 0.2.0-RC4 (2014-08)
 
 * solrj dependency now optional
 
