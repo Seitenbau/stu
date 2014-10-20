@@ -21,6 +21,12 @@ TODO: project description.
       compile("com.seitenbau.stu:stu-database:0.2.0-RC3")
     }
 
+# Build STU
+
+Either use provided gradlew or you need gradle (<2.0) 1.8 installed. STU cannot currently only compile with an JDK 1.7.
+
+	gradlew build
+
 
 # Documentation
 To generate the documentation please invoke:
