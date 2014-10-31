@@ -4,7 +4,7 @@ import javax.swing.JComboBox;
 
 import com.seitenbau.stu.database.generator.DataType;
 
-public class DataTypeComboBox extends JComboBox<DataType>
+public class DataTypeComboBox extends JComboBox
 {
 
   private static final long serialVersionUID = 1L;
