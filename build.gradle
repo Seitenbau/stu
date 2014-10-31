@@ -47,6 +47,10 @@ configure(allprojects) {
 
   apply from: "$gradleScriptDir/publish-maven.gradle"
   apply from: "$gradleScriptDir/eclipse.gradle"
+  
+  test {
+        reports.html.enabled = false
+  }
 }
 
 configure(subprojects) {
