@@ -5,7 +5,6 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 import com.seitenbau.stu.annotation.TestIssue;
-import com.seitenbau.stu.rules.RecordAnnotationRule;
 
 public class RecordAnnotationRuleTest
 {

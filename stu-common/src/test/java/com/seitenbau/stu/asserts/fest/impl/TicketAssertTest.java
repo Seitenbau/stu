@@ -1,12 +1,10 @@
 package com.seitenbau.stu.asserts.fest.impl;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import com.seitenbau.stu.asserts.fest.impl.TicketAssert;
 
 public class TicketAssertTest
 {

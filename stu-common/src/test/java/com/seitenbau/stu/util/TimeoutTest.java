@@ -1,12 +1,10 @@
 package com.seitenbau.stu.util;
 
+import static org.fest.assertions.Assertions.*;
+
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
-
-import com.seitenbau.stu.util.Timeout;
-
-import static com.seitenbau.stu.asserts.fest.Assertions.*;
 
 public class TimeoutTest
 {

@@ -1,20 +1,14 @@
 package com.seitenbau.stu.testdata;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.seitenbau.stu.testdata.InvalidValues;
-import com.seitenbau.stu.testdata.Optional;
-import com.seitenbau.stu.testdata.ParameterDescriptor;
-import com.seitenbau.stu.testdata.ParameterDescriptorFactory;
-import com.seitenbau.stu.testdata.ValidValues;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ParameterDescriptorFactoryTest
 {

@@ -1,14 +1,11 @@
 package com.seitenbau.stu.testdata;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import org.junit.Test;
-
-import com.seitenbau.stu.testdata.ClassFieldInvoker;
-import com.seitenbau.stu.testdata.FieldInvoker;
 
 public class ClassFieldInvokerTest
 {

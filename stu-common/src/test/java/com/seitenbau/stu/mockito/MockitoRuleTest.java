@@ -10,8 +10,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.exceptions.verification.NoInteractionsWanted;
 
-import com.seitenbau.stu.mockito.MockitoRule;
-
 public class MockitoRuleTest {
 
     @Rule

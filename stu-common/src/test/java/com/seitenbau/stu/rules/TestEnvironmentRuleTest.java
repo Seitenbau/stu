@@ -4,8 +4,6 @@ import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import com.seitenbau.stu.rules.TestEnvironmentRule;
-
 public class TestEnvironmentRuleTest
 {
 

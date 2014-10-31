@@ -9,9 +9,6 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.io.files.FileReference;
-import com.seitenbau.stu.io.files.FileUriFactory;
-
 public class FileUriFactoryTest
 {
   @Test

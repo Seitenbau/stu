@@ -10,7 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.seitenbau.stu.config.impl.DefaultValueProcessor;
 import com.seitenbau.stu.config.injectors.ValueInjector;
 import com.seitenbau.stu.mockito.MockitoRule;
 

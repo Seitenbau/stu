@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.seitenbau.stu.annotation.TestIssue;
-import com.seitenbau.stu.rules.CompositeRule;
-import com.seitenbau.stu.rules.TestIssueRule;
 import com.seitenbau.stu.rules.TestIssueRule.DisableTestIssueRule;
 import com.seitenbau.stu.rules.TestIssueRule.TestIssueRuleException;
 

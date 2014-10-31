@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import com.seitenbau.stu.data.detail.Representant;
 import com.seitenbau.stu.data.detail.Representant.RepresentantType;
-import com.seitenbau.stu.data.specs.OfTypeInteger;
 
 public class OfTypeIntegerTest extends OfTypeTestBase
 {

@@ -8,8 +8,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.seitenbau.stu.annotation.TestIssue;
-import com.seitenbau.stu.dsl.tickets.TicketDsl;
-import com.seitenbau.stu.dsl.tickets.TicketList;
 import com.seitenbau.stu.dsl.tickets.TicketDsl.TicketState;
 
 public class TicketListTest

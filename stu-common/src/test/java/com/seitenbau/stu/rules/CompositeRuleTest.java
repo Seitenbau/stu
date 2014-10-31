@@ -1,6 +1,6 @@
 package com.seitenbau.stu.rules;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 
 import java.util.Stack;
 
@@ -9,8 +9,6 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
-
-import com.seitenbau.stu.rules.CompositeRule;
 
 public class CompositeRuleTest
 {

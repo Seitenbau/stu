@@ -9,8 +9,6 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.config.injectors.HostAndIpInjector;
-
 public class HostAndIpInjectorTest
 {
   @Test

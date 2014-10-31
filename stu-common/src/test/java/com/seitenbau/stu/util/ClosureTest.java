@@ -4,8 +4,6 @@ import static org.fest.assertions.Assertions.*;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.util.Closure;
-
 public class ClosureTest
 {
   private Object cap_inObject;

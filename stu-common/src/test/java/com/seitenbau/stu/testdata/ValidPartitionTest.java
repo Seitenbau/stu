@@ -1,7 +1,7 @@
 package com.seitenbau.stu.testdata;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.seitenbau.stu.testdata.NoValuesForParameterException;
-import com.seitenbau.stu.testdata.ParameterDescriptor;
-import com.seitenbau.stu.testdata.PartitionValue;
-import com.seitenbau.stu.testdata.ValidPartition;
 
 public class ValidPartitionTest
 {

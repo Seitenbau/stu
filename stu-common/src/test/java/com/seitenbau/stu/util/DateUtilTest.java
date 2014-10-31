@@ -1,7 +1,7 @@
 package com.seitenbau.stu.util;
 
-import static com.seitenbau.stu.asserts.fest.Assertions.assertThat;
-import static org.fest.assertions.Assertions.assertThat;
+import static com.seitenbau.stu.asserts.fest.Assertions.*;
+import static org.fest.assertions.Assertions.*;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -9,7 +9,6 @@ import java.util.Date;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import com.seitenbau.stu.util.DateUtil;
 import com.seitenbau.stu.util.date.DateBuilder;
 
 public class DateUtilTest

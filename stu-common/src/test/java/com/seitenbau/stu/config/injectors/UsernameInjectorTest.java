@@ -7,8 +7,6 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.config.injectors.UsernameInjector;
-
 public class UsernameInjectorTest
 {
   @Test

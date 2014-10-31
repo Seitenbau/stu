@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.testdata.Cardinality;
-
 public class CardinalityTest
 {
 

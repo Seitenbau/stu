@@ -1,15 +1,16 @@
 package com.seitenbau.stu.data;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.util.List;
+
 import org.junit.Test;
 
 import com.seitenbau.stu.data.detail.Representant;
 import com.seitenbau.stu.data.detail.Representant.RepresentantType;
 import com.seitenbau.stu.data.impl.RepresentativeList;
 import com.seitenbau.stu.data.specs.OfTypeTestBase;
-
-import java.util.List;
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 
 public class RepresentativeListTest extends OfTypeTestBase
 {

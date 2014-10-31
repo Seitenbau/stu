@@ -7,13 +7,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.stu.testdata.FieldReadException;
-import com.seitenbau.stu.testdata.ModifierInvalidValues;
-import com.seitenbau.stu.testdata.ModifierValidValues;
-import com.seitenbau.stu.testdata.ModifyGroupValues;
-import com.seitenbau.stu.testdata.TestParameterGenerator;
-import com.seitenbau.stu.testdata.ValidValues;
-
 public class TestDataGruppeTest
 {
   TestParameterGenerator parameterGenerator;

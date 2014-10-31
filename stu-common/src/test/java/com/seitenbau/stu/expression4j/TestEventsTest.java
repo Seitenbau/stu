@@ -1,14 +1,14 @@
 package com.seitenbau.stu.expression4j;
 
+import static org.mockito.Mockito.*;
+
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
 
-import com.seitenbau.stu.expression4j.TestEvents;
 import com.seitenbau.stu.expression4j.TestEvents.Listeners;
 import com.seitenbau.stu.expression4j.TestEvents.TestFlowListener;
 import com.seitenbau.stu.mockito.MockitoRule;

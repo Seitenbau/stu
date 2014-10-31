@@ -3,8 +3,6 @@ package com.seitenbau.stu.asserts.fest;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.seitenbau.stu.asserts.fest.Assertions;
-import com.seitenbau.stu.asserts.fest.AssertionsFactory;
 import com.seitenbau.stu.asserts.fest.impl.ExtendedStringAssert;
 
 

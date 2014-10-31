@@ -1,6 +1,6 @@
 package com.seitenbau.stu.config.impl;
 
-import static com.seitenbau.stu.asserts.fest.Assertions.assertThat;
+import static com.seitenbau.stu.asserts.fest.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +9,6 @@ import junit.framework.TestCase;
 
 import org.fest.assertions.StringAssert;
 import org.junit.Test;
-
-import com.seitenbau.stu.config.impl.VariableDslProcessor;
 
 public class VariableDslProcessorTest extends TestCase
 {

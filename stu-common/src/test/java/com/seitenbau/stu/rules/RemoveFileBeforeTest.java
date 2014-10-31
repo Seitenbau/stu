@@ -1,14 +1,12 @@
 package com.seitenbau.stu.rules;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
-
-import com.seitenbau.stu.rules.RemoveFileBefore;
 
 public class RemoveFileBeforeTest
 {

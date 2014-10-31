@@ -1,8 +1,8 @@
 package com.seitenbau.stu.rules.impl;
 
-import static com.seitenbau.stu.asserts.fest.Assertions.assertThat;
-import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static com.seitenbau.stu.asserts.fest.Assertions.*;
+import static org.fest.assertions.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Method;
 
@@ -17,7 +17,6 @@ import com.seitenbau.stu.annotation.TestDesc;
 import com.seitenbau.stu.annotation.TestID;
 import com.seitenbau.stu.mockito.MockitoRule;
 import com.seitenbau.stu.rules.ITestMethodDescriptor;
-import com.seitenbau.stu.rules.impl.JUnitTestMethodDescriptor;
 
 public class JUnitTestMethodDescriptorTest
 {

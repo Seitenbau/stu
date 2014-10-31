@@ -8,7 +8,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.seitenbau.stu.data.detail.Representant;
-import com.seitenbau.stu.data.specs.OfTypeEMail;
 
 
 public class OfTypeEMailTest extends OfTypeTestBase

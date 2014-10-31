@@ -21,11 +21,11 @@ import org.junit.Test;
 import com.seitenbau.stu.asserts.fest.impl.AtomicIntegerAssert;
 import com.seitenbau.stu.asserts.fest.impl.DateAssert;
 import com.seitenbau.stu.asserts.fest.impl.ExtendedFileAssert;
+import com.seitenbau.stu.asserts.fest.impl.ExtendedFileAssert.ProvidesFile;
 import com.seitenbau.stu.asserts.fest.impl.ExtendedStringAssert;
 import com.seitenbau.stu.asserts.fest.impl.TicketAssert;
 import com.seitenbau.stu.asserts.fest.impl.UriAssert;
 import com.seitenbau.stu.asserts.fest.impl.UrlAssert;
-import com.seitenbau.stu.asserts.fest.impl.ExtendedFileAssert.ProvidesFile;
 import com.seitenbau.stu.util.DateUtil;
 
 

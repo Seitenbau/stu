@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.seitenbau.stu.asserts.fest.Assertions;
-import com.seitenbau.stu.asserts.fest.impl.DateAssert;
 import com.seitenbau.stu.util.DateUtil;
 
 public class DateAssertTest

@@ -1,6 +1,7 @@
 package com.seitenbau.stu.rules;
 
 import static com.seitenbau.stu.asserts.fest.Assertions.*;
+import static org.fest.assertions.Assertions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,8 +15,6 @@ import org.junit.ComparisonFailure;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import com.seitenbau.stu.rules.FileRule;
 
 public class FileRuleTest
 {

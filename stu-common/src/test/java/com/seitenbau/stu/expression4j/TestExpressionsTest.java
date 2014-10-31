@@ -1,13 +1,8 @@
 package com.seitenbau.stu.expression4j;
 
+import static org.fest.assertions.Assertions.*;
+
 import org.junit.Test;
-
-import com.seitenbau.stu.expression4j.Actionable;
-import com.seitenbau.stu.expression4j.Assertable;
-import com.seitenbau.stu.expression4j.Expectable;
-import com.seitenbau.stu.expression4j.TestExpressions;
-
-import static com.seitenbau.stu.asserts.fest.Assertions.*;
 
 public class TestExpressionsTest
 {

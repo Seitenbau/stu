@@ -1,14 +1,13 @@
 package com.seitenbau.stu.templates;
 
+import static com.seitenbau.stu.asserts.fest.Assertions.*;
+
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.seitenbau.stu.rules.FileRule;
-import com.seitenbau.stu.templates.VelocityGenerator;
-
-import static com.seitenbau.stu.asserts.fest.Assertions.*;
 
 public class VelocityGeneratorTest
 {

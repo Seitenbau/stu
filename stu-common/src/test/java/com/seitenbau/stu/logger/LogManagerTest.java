@@ -1,14 +1,12 @@
 package com.seitenbau.stu.logger;
 
+import static com.seitenbau.stu.asserts.fest.Assertions.*;
+import static org.fest.assertions.Assertions.*;
+
 import org.junit.After;
 import org.junit.Test;
 
-import com.seitenbau.stu.logger.ConsoleLoggerImpl;
-import com.seitenbau.stu.logger.LogManager;
-import com.seitenbau.stu.logger.Logger;
 import com.seitenbau.stu.logger.LogManager.Levels;
-
-import static com.seitenbau.stu.asserts.fest.Assertions.*;
 
 public class LogManagerTest
 {

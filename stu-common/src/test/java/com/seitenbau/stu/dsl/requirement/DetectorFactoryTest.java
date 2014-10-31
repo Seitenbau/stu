@@ -1,11 +1,9 @@
 package com.seitenbau.stu.dsl.requirement;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.dsl.requirement.AbstractDetector;
-import com.seitenbau.stu.dsl.requirement.DetectorFactory;
 import com.seitenbau.stu.dsl.requirement.RequirementDsl.RequirementState;
 
 public class DetectorFactoryTest

@@ -1,13 +1,10 @@
 package com.seitenbau.stu.config;
 
+import static org.fest.assertions.Assertions.*;
+
 import org.fest.assertions.Fail;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.seitenbau.stu.config.StoredProperty;
-import com.seitenbau.stu.config.TestConfigurationBuilder;
-
-import static org.fest.assertions.Assertions.*;
 
 public class TestConfigurationBuilderTest
 {

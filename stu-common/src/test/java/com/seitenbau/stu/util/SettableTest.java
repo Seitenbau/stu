@@ -4,8 +4,6 @@ import static org.fest.assertions.Assertions.*;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.util.Settable;
-
 public class SettableTest {
 
     @Test

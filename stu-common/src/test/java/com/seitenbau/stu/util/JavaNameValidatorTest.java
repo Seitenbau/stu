@@ -1,8 +1,7 @@
 package com.seitenbau.stu.util;
 
-import static com.seitenbau.stu.util.JavaNameValidator.isValidIdentifier;
-import static com.seitenbau.stu.util.JavaNameValidator.isValidPackageName;
-import static org.fest.assertions.Assertions.assertThat;
+import static com.seitenbau.stu.util.JavaNameValidator.*;
+import static org.fest.assertions.Assertions.*;
 
 import org.junit.Test;
 

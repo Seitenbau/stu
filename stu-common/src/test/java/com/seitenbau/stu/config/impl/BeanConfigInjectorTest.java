@@ -1,7 +1,7 @@
 package com.seitenbau.stu.config.impl;
 
-import static com.seitenbau.stu.asserts.fest.Assertions.assertThat;
-import static org.fest.assertions.Assertions.assertThat;
+import static com.seitenbau.stu.asserts.fest.Assertions.*;
+import static org.fest.assertions.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +14,6 @@ import org.mockito.Mock;
 
 import com.seitenbau.stu.config.StoredProperty;
 import com.seitenbau.stu.config.ValueProcessor;
-import com.seitenbau.stu.config.impl.BeanConfigInjector;
-import com.seitenbau.stu.config.impl.PersistentConfiguration;
-import com.seitenbau.stu.config.impl.VariableDslProcessor;
 import com.seitenbau.stu.mockito.MockitoRule;
 import com.seitenbau.stu.util.Holder;
 

@@ -1,13 +1,9 @@
 package com.seitenbau.stu.config;
 
+import static org.fest.assertions.Assertions.*;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import com.seitenbau.stu.config.EnvironmentDetector;
-import com.seitenbau.stu.config.StoredProperty;
-import com.seitenbau.stu.config.TestConfiguration;
-
-import static org.fest.assertions.Assertions.*;
 
 public class TestConfigurationTest
 {

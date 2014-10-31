@@ -1,15 +1,11 @@
 package com.seitenbau.stu.testdata;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import org.junit.Test;
-
-import com.seitenbau.stu.testdata.AbstractPartition;
-import com.seitenbau.stu.testdata.NullPartitionValue;
-import com.seitenbau.stu.testdata.PartitionValue;
 
 public class AbstractPartitionTest
 {

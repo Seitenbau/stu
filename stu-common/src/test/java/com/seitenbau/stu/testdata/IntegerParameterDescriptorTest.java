@@ -9,11 +9,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.stu.testdata.IntegerParameterDescriptor;
-import com.seitenbau.stu.testdata.InvalidValues;
-import com.seitenbau.stu.testdata.MetaValue;
-import com.seitenbau.stu.testdata.Value;
-
 public class IntegerParameterDescriptorTest
 {
 

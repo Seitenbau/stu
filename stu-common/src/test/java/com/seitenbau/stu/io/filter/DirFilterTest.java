@@ -1,14 +1,14 @@
 package com.seitenbau.stu.io.filter;
 
-import java.io.File;
+import static org.fest.assertions.Assertions.*;
 import static org.mockito.Mockito.*;
-import static com.seitenbau.stu.asserts.fest.Assertions.*;
+
+import java.io.File;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.seitenbau.stu.io.filter.DirFilter;
 import com.seitenbau.stu.mockito.MockitoRule;
 
 public class DirFilterTest

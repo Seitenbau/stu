@@ -4,10 +4,6 @@ import static org.fest.assertions.Assertions.*;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.logger.ConsoleLoggerImpl;
-import com.seitenbau.stu.logger.Logger;
-import com.seitenbau.stu.logger.TestLoggerFactory;
-
 public class LoggerFactoryTest {
     @Test
     public void getTest() {

@@ -1,7 +1,7 @@
 package com.seitenbau.stu.config;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.MapAssert.entry;
+import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.MapAssert.*;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -9,10 +9,6 @@ import java.util.concurrent.TimeUnit;
 import org.fest.assertions.Fail;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.seitenbau.stu.config.EnvironmentDetector;
-import com.seitenbau.stu.config.StoredProperty;
-import com.seitenbau.stu.config.TestConfiguration;
 
 public class TestConfigurationCompatabilityTest
 {

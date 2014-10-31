@@ -1,16 +1,14 @@
 package com.seitenbau.stu.rules;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static com.seitenbau.stu.asserts.fest.Assertions.*;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 import com.seitenbau.stu.expression4j.TestEvents;
-import com.seitenbau.stu.rules.BeforeAfterRule;
-import com.seitenbau.stu.rules.ITestMethodDescriptor;
 
 public class BeforeAfterRuleTest 
 {

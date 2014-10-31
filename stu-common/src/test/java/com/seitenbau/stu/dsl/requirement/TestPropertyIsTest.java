@@ -1,10 +1,8 @@
 package com.seitenbau.stu.dsl.requirement;
 
+import static org.fest.assertions.Assertions.*;
+
 import org.junit.Test;
-
-import com.seitenbau.stu.dsl.requirement.TestPropertyIs;
-
-import static com.seitenbau.stu.asserts.fest.Assertions.*;
 
 public class TestPropertyIsTest
 {

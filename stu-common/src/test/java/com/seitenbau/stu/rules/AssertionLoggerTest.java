@@ -1,10 +1,8 @@
 package com.seitenbau.stu.rules;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 
 import org.junit.Test;
-
-import com.seitenbau.stu.rules.AssertionLogger;
 
 public class AssertionLoggerTest {
 

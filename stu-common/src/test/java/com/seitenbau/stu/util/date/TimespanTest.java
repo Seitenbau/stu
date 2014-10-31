@@ -1,10 +1,8 @@
 package com.seitenbau.stu.util.date;
 
-import org.junit.Test;
-
-import com.seitenbau.stu.util.date.Timespan;
-
 import static org.fest.assertions.Assertions.*;
+
+import org.junit.Test;
 
 public class TimespanTest
 {

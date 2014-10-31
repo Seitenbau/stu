@@ -1,8 +1,7 @@
 package com.seitenbau.stu.data.specs;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +14,6 @@ import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import com.seitenbau.stu.data.detail.Representant;
-import com.seitenbau.stu.data.specs.OfTypeDate;
 import com.seitenbau.stu.util.DelegateEqualsToComparable;
 
 public class OfTypeDateTest extends OfTypeTestBase

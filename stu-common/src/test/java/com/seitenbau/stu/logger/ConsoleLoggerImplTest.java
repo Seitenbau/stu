@@ -1,15 +1,14 @@
 package com.seitenbau.stu.logger;
 
-import java.io.PrintStream;
-
 import static com.seitenbau.stu.asserts.fest.Assertions.*;
+import static org.fest.assertions.Assertions.*;
+
+import java.io.PrintStream;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.stu.logger.ConsoleLoggerImpl;
-import com.seitenbau.stu.logger.LogManager;
 import com.seitenbau.stu.logger.LogManager.Levels;
 import com.seitenbau.stu.util.StringOutputStream;
 

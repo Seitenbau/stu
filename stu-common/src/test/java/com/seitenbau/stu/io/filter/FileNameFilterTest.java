@@ -9,7 +9,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.seitenbau.stu.io.filter.FileNameFilter;
 import com.seitenbau.stu.mockito.MockitoRule;
 
 public class FileNameFilterTest

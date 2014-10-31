@@ -1,10 +1,8 @@
 package com.seitenbau.stu.dsl.tickets;
 
-import org.junit.Test;
-
-import com.seitenbau.stu.dsl.tickets.Ticket;
-
 import static org.fest.assertions.Assertions.*;
+
+import org.junit.Test;
 
 public class TicketTest
 {

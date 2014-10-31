@@ -6,7 +6,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.seitenbau.stu.dsl.tickets.TicketDsl;
 import com.seitenbau.stu.dsl.tickets.TicketDsl.TicketState;
 
 public class TicketDslTest

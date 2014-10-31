@@ -1,8 +1,7 @@
 package com.seitenbau.stu.testdata;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,8 +11,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.seitenbau.stu.testdata.Filters;
-import com.seitenbau.stu.testdata.PartitionValue;
 import com.seitenbau.stu.testdata.Filters.EmptyValueFilter;
 
 public class FiltersTest

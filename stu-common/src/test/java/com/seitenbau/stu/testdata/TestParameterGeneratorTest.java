@@ -1,7 +1,6 @@
 package com.seitenbau.stu.testdata;
 
-import static com.seitenbau.stu.testdata.Filters.displayText;
-import static com.seitenbau.stu.testdata.Filters.nullFilter;
+import static com.seitenbau.stu.testdata.Filters.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
@@ -13,22 +12,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.stu.testdata.AbstractParameterDescriptor;
-import com.seitenbau.stu.testdata.CanNotInstanceModelClassException;
-import com.seitenbau.stu.testdata.Cardinality;
-import com.seitenbau.stu.testdata.FieldReadException;
-import com.seitenbau.stu.testdata.Index;
-import com.seitenbau.stu.testdata.InitiateParameterDescriptorException;
-import com.seitenbau.stu.testdata.InvalidValues;
-import com.seitenbau.stu.testdata.MetaValue;
-import com.seitenbau.stu.testdata.NoValuesForParameterException;
-import com.seitenbau.stu.testdata.NotEmpty;
-import com.seitenbau.stu.testdata.Optional;
-import com.seitenbau.stu.testdata.TestDataFilters;
-import com.seitenbau.stu.testdata.TestParameterGenerator;
-import com.seitenbau.stu.testdata.TextValue;
-import com.seitenbau.stu.testdata.ValidValues;
-import com.seitenbau.stu.testdata.Value;
 import com.seitenbau.stu.testdata.Filters.EmptyValueFilter;
 import com.seitenbau.stu.testdata.Filters.NullFilter;
 import com.seitenbau.stu.util.StringGenerator;

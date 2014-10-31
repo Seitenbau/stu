@@ -1,15 +1,13 @@
 package com.seitenbau.stu.util;
 
+import static org.fest.assertions.Assertions.*;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import static com.seitenbau.stu.asserts.fest.Assertions.*;
-
 import org.junit.Test;
-
-import com.seitenbau.stu.util.ReflectionUtils;
 
 @Retention(RetentionPolicy.RUNTIME)
 @interface MyAnnotation {}

@@ -1,7 +1,6 @@
 package com.seitenbau.stu.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,8 +10,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
-import com.seitenbau.stu.data.Builder;
-import com.seitenbau.stu.data.Specs;
 import com.seitenbau.stu.data.specs.OfTypeElements;
 
 public class BuilderTest

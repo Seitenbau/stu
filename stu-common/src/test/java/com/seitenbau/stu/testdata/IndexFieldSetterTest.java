@@ -4,10 +4,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.seitenbau.stu.testdata.Index;
-import com.seitenbau.stu.testdata.IndexFieldSetter;
-import com.seitenbau.stu.testdata.SetupIndexFieldFailedException;
-
 public class IndexFieldSetterTest
 {
 

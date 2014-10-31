@@ -2,8 +2,6 @@ package com.seitenbau.stu.testdata;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.testdata.PartitionIterator;
-
 public class PartitionIteratorTest
 {
 

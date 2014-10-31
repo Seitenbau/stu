@@ -1,9 +1,8 @@
 package com.seitenbau.stu.util;
 
 import static org.fest.assertions.Assertions.*;
-import org.junit.Test;
 
-import com.seitenbau.stu.util.CamelCase;
+import org.junit.Test;
 
 public class CamelCaseTest {
 

@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.seitenbau.stu.testdata.AbstractParameterDescriptor;
-import com.seitenbau.stu.testdata.CanNotInjectValueException;
-
 public class AbstractParameterDescriptorTest
 {
  

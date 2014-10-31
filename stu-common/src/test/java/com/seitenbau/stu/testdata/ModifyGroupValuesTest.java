@@ -3,9 +3,6 @@ package com.seitenbau.stu.testdata;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.stu.testdata.FieldReadException;
-import com.seitenbau.stu.testdata.ModifyGroupValues;
-
 public class ModifyGroupValuesTest
 {
 

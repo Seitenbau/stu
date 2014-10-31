@@ -1,10 +1,8 @@
 package com.seitenbau.stu.rules;
 
-import static com.seitenbau.stu.asserts.fest.Assertions.assertThat;
+import static com.seitenbau.stu.asserts.fest.Assertions.*;
 
 import org.junit.Test;
-
-import com.seitenbau.stu.rules.RequiresRule;
 
 public class RequiresRuleTest
 {
