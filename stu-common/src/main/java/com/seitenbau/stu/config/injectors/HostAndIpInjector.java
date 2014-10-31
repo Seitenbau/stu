@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.seitenbau.stu.logger.Logger;
 import com.seitenbau.stu.logger.TestLoggerFactory;
@@ -34,7 +36,8 @@ public class HostAndIpInjector implements ValueInjector
       String ip = InetAddress.getLocalHost().getHostAddress();
       if (ip.matches("192\\.168\\.\\d{1,3}\\.\\d+"))
       {
-        oldStyleIpDetection(prop);
+        // oldStyleIpDetection(prop);
+        newStyleIpDetection(prop);
       }
       else
       {
@@ -42,6 +45,7 @@ public class HostAndIpInjector implements ValueInjector
             + "' doesn't match : \"192\\.168\\.\\d{1,3}\\.\\d+\" -> try heuristic to detect your real ip");
         newStyleIpDetection(prop);
       }
+      processDerivates(prop);
     }
     catch (Exception e)
     {
@@ -49,6 +53,39 @@ public class HostAndIpInjector implements ValueInjector
     }
   }
 
+ protected void processDerivates(Properties prop)
+  {
+    Object hostName = prop.get("_host.name");
+    if (hostName instanceof String)
+    {
+      String clean = getCleanBauBauName((String) hostName);
+      prop.put("_host.hostname", clean);
+    }
+    System.out.println(" # ploy DNS = " + prop.get("_host.dns"));
+  }
+
+  Pattern p = Pattern.compile("b\\d+-(.*?)");
+  Pattern pNeu = Pattern.compile("b\\d+(-[^-]+)?-(.*?)");
+
+  // TODO : merge into ploy-core
+  public String getCleanBauBauName(String host)
+  {
+    Matcher mNeu = pNeu.matcher(host);
+    if (mNeu.matches())
+    {
+      host = mNeu.group(2);
+      logger.info("BauBau host detected : " + host);
+    } else {
+      Matcher m = p.matcher(host);
+      if (m.matches())
+      {
+        host = m.group(1);
+        logger.info("baubau host detected : " + host);
+      }
+    }
+    return host;
+  }
+  
   protected void newStyleIpDetection(Properties prop) throws SocketException
   {
     List<NetworkInterface> ipInterfaces = findAllIpInterfaces();
@@ -92,59 +129,85 @@ public class HostAndIpInjector implements ValueInjector
     return sb.toString();
   }
 
+  class Rank {
+    int rank = 0;
+    boolean changed=false;
+    public void add(int i) {rank += i; changed=true;}
+    public boolean changed()
+    {
+      return changed;
+    }
+    public int intValue()
+    {
+      return rank;
+    }
+  }
+  
   protected int rank(NetworkInterface o1)
   {
-    int rank = 0;
+    Rank rank = new Rank();
     // *********** Displayname ranking
-    String dpn = o1.getDisplayName();
+    String dpn = o1.getDisplayName().toLowerCase();
     // Virtual adapters
-    if (dpn.contains("Loopback"))
+    if (dpn.contains("loopback"))
     {
-      rank -= 5;
+      rank.add(-5);
     }
-    if (dpn.contains("Host-Only Network"))
+    if (dpn.contains("host-only network"))
     {
-      rank -= 5;
+      rank.add(-5);
     }
-    if (dpn.contains("Microsoft"))
+    if (dpn.contains("microsoft"))
     {
-      rank -= 1;
+      rank.add(-1);
     }
-    if (dpn.contains("VMware Virtual Ethernet Adapter"))
+    if (dpn.contains("virtual"))
     {
-      rank -= 1;
+      rank.add(-1);
     }
-    else if (dpn.contains("VMware"))
+    else if (dpn.contains("vmware"))
     {
-      rank -= 1;
+      rank.add(-1);
     }
-    if (dpn.contains("VirtualBox"))
+    if (dpn.contains("virtualbox"))
     {
-      rank -= 1;
+      rank.add(-1);
+    }
+    if (dpn.contains("teredo"))
+    {
+      rank.add(-1);
+    }
+    if (dpn.contains("pseudo"))
+    {
+      rank.add(-1);
     }
 
     // Physical Adapters
-    if (dpn.contains("Intel"))
+    if (dpn.contains("intel"))
     {
-      rank += 1;
+      rank.add(+1);
     }
-    if (dpn.contains("Gigabit Network Connection"))
+    if (dpn.contains("gigabit network connection"))
     {
-      rank += 1;
+      rank.add(+1);
     }
     // *********** Name ranking
     String name = o1.getName();
     // Virtual adapters
     if (name.equalsIgnoreCase("Lo")) // debian loopback name
     {
-      rank -= 5;
+      rank.add(-5);
     }
     // Physical dapters
     if (name.startsWith("eth"))
     {
-      rank += 1;
+      rank.add(+1);
     }
-    return rank;
+    if (!rank.changed())
+    {
+      logger.warn("Did not detect rank for '" + dpn + "' '" + name + "'");
+    }
+    return rank.intValue();
   }
 
   protected List<NetworkInterface> findAllIpInterfaces() throws SocketException

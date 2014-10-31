@@ -97,18 +97,27 @@ public class BeanConfigInjector implements ConfigInjector
       value = toMap(values, key);
       if(_failOnNotSet && value == null)
       {
-        throw new RuntimeException("Unable to find a map for the property : " + key);
+        throw new ConfigValueNotSetException("Unable to find a map for the property : " + key);
       }
     } else {
       String valueAsString = values.getString(key, defaultvalue);
       // TODO : NOT_SET_VALUE should actually be == not equals, the DSL parsing seems to be buggy
       if(_failOnNotSet && StoredProperty.NOT_SET_VALUE.equals(valueAsString))
       {
-        throw new RuntimeException("Unable to find a value for the property : " + key);
+        throw new ConfigValueNotSetException("Unable to find a value for the property : " + key);
       }
       value = parseInputType(type, valueAsString, errorDetail);
     }
     return value ;
+  }
+  
+  public static class ConfigValueNotSetException extends RuntimeException {
+
+    public ConfigValueNotSetException(String message)
+    {
+      super(message);
+    }
+    
   }
 
   static class FieldSetter

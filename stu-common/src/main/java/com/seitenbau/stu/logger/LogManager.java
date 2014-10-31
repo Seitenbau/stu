@@ -33,6 +33,9 @@ public abstract class LogManager
     if(name.startsWith(SEITENBAU_PACKAGE_IDENTIFIER)) {
       return "c.s." + name.substring(SEITENBAU_PACKAGE_IDENTIFIER.length());
     }
+    if(name.startsWith("com.seitenbau.testing.")) {
+      return "c.s.t." + name.substring(22);
+    }
     return name;
   }
 

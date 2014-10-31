@@ -10,6 +10,7 @@ public class TestConfiguration
   static TestConfigurationIntern implementation;
 
   public static final String ENV_PROPERTY_NAME = "SB_CONFIG_TARGET";
+  public static final String ENV_PROPERTY_TYPE = "SB_CONFIG_TYPE";
 
   synchronized static protected TestConfigurationIntern getIntern()
   {

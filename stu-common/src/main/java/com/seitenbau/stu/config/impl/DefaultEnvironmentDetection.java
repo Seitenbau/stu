@@ -3,7 +3,11 @@ package com.seitenbau.stu.config.impl;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -27,14 +31,18 @@ public class DefaultEnvironmentDetection implements EnvironmentDetector
   private List<String> createEnvironmentIds()
   {
     List<String> result = new ArrayList<String>();
-    if (detectEnvironmentVariable(result))
+    if (detectEnvironmentForceVariable(result))
     {
       return result;
     }
-
+    
     result = new ArrayList<String>();
+    detectLowPrioity(result);
+    detectJenkinsNodeTypes(result);
+    detectConfigType(result);
     detectUserName(result);
     detectHostname(result);
+    detectHighPrioity(result);
     if (detectJUnitMax())
     {
       for (String env : new ArrayList<String>(result))
@@ -49,9 +57,70 @@ public class DefaultEnvironmentDetection implements EnvironmentDetector
         result.add(env + "-infini");
       }
     }
+    removeDuplicates(result);
+    detectProcess(result);
     return result;
   }
 
+ protected void removeDuplicates(List<String> result)
+  {
+    // 1st reverse to get highes prio on top ->
+    Collections.reverse(result);
+
+    // LinkedHashSet for : Set interface, with predictable iteration
+    // order.
+    Set<String> clean = new LinkedHashSet<String>();
+    clean.addAll(result);
+    result.clear();
+    result.addAll(clean);
+
+    // 2st reverse to get highes prio on bottom again
+    Collections.reverse(result);
+  }
+
+  protected void detectJenkinsNodeTypes(List<String> result)
+  {
+    String value = getProperty("NODE_LABELS");
+    if (StringUtils.isNotBlank(value))
+    {
+      String[] labels = value.split(" ");
+      for (String label : labels)
+      {
+        result.add(label);
+      }
+    }
+  }
+
+  protected boolean detectConfigType(List<String> result)
+  {
+    String value = getProperty(TestConfiguration.ENV_PROPERTY_TYPE);
+    if (StringUtils.isNotBlank(value))
+    {
+      String[] data = value.split(":");
+      if (data != null && data.length > 0)
+      {
+        result.addAll(Arrays.asList(data));
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected void detectProcess(List<String> result)
+  {
+
+  }
+
+  protected void detectHighPrioity(List<String> result)
+  {
+
+  }
+
+  protected void detectLowPrioity(List<String> result)
+  {
+
+  }
+  
   protected boolean detectUserName(List<String> result)
   {
     String user = SystemTools.get().getUsername();
@@ -105,7 +174,7 @@ public class DefaultEnvironmentDetection implements EnvironmentDetector
     }
   }
 
-  protected boolean detectEnvironmentVariable(List<String> result)
+  protected boolean detectEnvironmentForceVariable(List<String> result)
   {
     String value = getProperty(TestConfiguration.ENV_PROPERTY_NAME);
     if (StringUtils.isNotBlank(value))

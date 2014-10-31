@@ -36,7 +36,7 @@ public class DefaultEnvironmentDetectionTest
     DefaultEnvironmentDetection detector = new DefaultEnvironmentDetection()
     {
       @Override
-      protected boolean detectEnvironmentVariable(List<String> result)
+      protected boolean detectEnvironmentForceVariable(List<String> result)
       {
         result.add("GotEnvVar");
         return true;

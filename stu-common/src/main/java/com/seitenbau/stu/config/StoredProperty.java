@@ -12,9 +12,7 @@ public @interface StoredProperty {
    * your test configuration .property file.
    */
   static final String NOT_SET_VALUE =
-      "MAGIC_INSTANCE: " +
-      "see JavaDoc at: com.seitenbau.stu.config.StoredProperty " +
-      "-> 'NOT_SET_VALUE for details.";
+      "MAGIC MARKER STRING, see JavaDoc at: com.seitenbau.stu.config.StoredProperty -> 'NOT_SET_VALUE for details.";
 
   String key();
 
