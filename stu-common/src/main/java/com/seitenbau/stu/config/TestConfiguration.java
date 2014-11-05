@@ -54,6 +54,7 @@ public class TestConfiguration
   {
     return load(target, false, null);
   }
+  
 
   /**
    * Load configuration from properties files based on the current
@@ -66,8 +67,8 @@ public class TestConfiguration
   public static ValueProvider load(Object target, boolean print, String type)
   {
     ValueProvider provider = getIntern().load(target, print, type);
-    Boolean falg = provider.getBoolean("_debug");
-    if (falg != null && falg && provider instanceof ValuesPrintable)
+    Boolean flag = provider.getBoolean("_debug.config.print");
+    if (flag != null && flag && provider instanceof ValuesPrintable)
     {
       ((ValuesPrintable) provider).printValues();
     }
@@ -79,11 +80,6 @@ public class TestConfiguration
     }
 
     return provider;
-  }
-
-  public static ValueProvider load(Object target, String type)
-  {
-    return load(target, false, type);
   }
 
   public static ValueProvider getInstance()

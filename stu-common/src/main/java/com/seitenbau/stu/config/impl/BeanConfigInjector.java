@@ -7,13 +7,17 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import com.seitenbau.stu.config.ConfigInjector;
+import com.seitenbau.stu.config.OptionalProperty;
 import com.seitenbau.stu.config.StoredProperty;
 import com.seitenbau.stu.config.ValueProvider;
+import com.seitenbau.stu.logger.Logger;
+import com.seitenbau.stu.logger.TestLoggerFactory;
 import com.seitenbau.stu.util.Holder;
 
 public class BeanConfigInjector implements ConfigInjector
 {
-
+  Logger logger = TestLoggerFactory.get(BeanConfigInjector.class);
+  
   boolean _failOnNotSet;
 
   public BeanConfigInjector()
@@ -72,6 +76,12 @@ public class BeanConfigInjector implements ConfigInjector
       {
         continue;
       }
+      
+      boolean isOptional = false;
+      OptionalProperty optinal = field.getAnnotation(OptionalProperty.class);
+      if(optinal!=null) {
+        isOptional = true;
+      }
 
       if (isStaticField(field) && instance == null)
       {
@@ -83,15 +93,18 @@ public class BeanConfigInjector implements ConfigInjector
 
       FieldSetter f = new FieldSetter(field);
       Class<?> type = f.getType();
-      Object value = transformValue(values,type,anno,field.getName());
+      Object value = transformValue(values,type,anno,field.getName(),isOptional);
       f.setValue(instance,value);
     }
   }
 
-  protected Object transformValue(ValueProvider values, Class<?> type, StoredProperty anno,String errorDetail)
+  protected Object transformValue(ValueProvider values, Class<?> type, StoredProperty anno,String errorDetail,boolean isOptional)
   {
-    String key = anno.key();
-    String defaultvalue = anno.defaultValue();
+    String key = anno.value();
+    if(key == null) {
+      key = anno.key();
+    }
+    String defaultvalue = StoredProperty.NOT_SET_VALUE;
     Object value = null;
     if (type.isAssignableFrom(Map.class)) {
       value = toMap(values, key);
@@ -104,9 +117,18 @@ public class BeanConfigInjector implements ConfigInjector
       // TODO : NOT_SET_VALUE should actually be == not equals, the DSL parsing seems to be buggy
       if(_failOnNotSet && StoredProperty.NOT_SET_VALUE.equals(valueAsString))
       {
-        throw new ConfigValueNotSetException("Unable to find a value for the property : " + key);
+        value = null;
+        if(isOptional) 
+        {
+          logger.debug("optional property '" + key + "' is not set");
+        } else 
+        {
+          System.err.println("TestConfiguration : Unable to find a value for the property : " + key);
+          throw new ConfigValueNotSetException("Unable to find a value for the property : " + key);
+        }
+      } else {
+        value = parseInputType(type, valueAsString, errorDetail);
       }
-      value = parseInputType(type, valueAsString, errorDetail);
     }
     return value ;
   }

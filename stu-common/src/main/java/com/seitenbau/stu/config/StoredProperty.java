@@ -14,8 +14,9 @@ public @interface StoredProperty {
   static final String NOT_SET_VALUE =
       "MAGIC MARKER STRING, see JavaDoc at: com.seitenbau.stu.config.StoredProperty -> 'NOT_SET_VALUE for details.";
 
-  String key();
+  String value() default NOT_SET_VALUE;
 
-  String defaultValue() default NOT_SET_VALUE;
+  /**  oldscool fallback, use value() instead. Will be removed*/ 
+  @Deprecated String key()  default NOT_SET_VALUE; 
 
 }

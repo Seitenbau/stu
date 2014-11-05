@@ -85,7 +85,7 @@ public class TestConfigurationTest
     @StoredProperty(key = "property3")
     String prop3;
 
-    @StoredProperty(key = "property4")
+    @StoredProperty("property4")
     String prop4;
 
     @StoredProperty(key = "overwritten")
@@ -102,7 +102,7 @@ public class TestConfigurationTest
     @StoredProperty(key = "property2")
     String prop2;
 
-    @StoredProperty(key = "${property2}")
+    @StoredProperty( "${property2}")
     String prop3;
 
     @StoredProperty(key = "property4${property2}")

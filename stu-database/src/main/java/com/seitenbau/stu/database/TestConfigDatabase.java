@@ -1,5 +1,6 @@
 package com.seitenbau.stu.database;
 
+import com.seitenbau.stu.config.OptionalProperty;
 import com.seitenbau.stu.config.StoredProperty;
 import com.seitenbau.stu.util.Holder;
 
@@ -33,7 +34,8 @@ public interface TestConfigDatabase
   @StoredProperty(key = "db.password")
   Holder<String> DB_PWD = new Holder<String>();
 
-  @StoredProperty(key = "db.schema", defaultValue = "")
+  @StoredProperty(key = "db.schema")
+  @OptionalProperty
   Holder<String> DB_SHEMA = new Holder<String>();
   
 }

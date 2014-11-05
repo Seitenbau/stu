@@ -61,7 +61,7 @@ public class HostAndIpInjector implements ValueInjector
       String clean = getCleanBauBauName((String) hostName);
       prop.put("_host.hostname", clean);
     }
-    System.out.println(" # ploy DNS = " + prop.get("_host.dns"));
+    logger.debug("ploy DNS = " + prop.get("_host.dns"));
   }
 
   Pattern p = Pattern.compile("b\\d+-(.*?)");

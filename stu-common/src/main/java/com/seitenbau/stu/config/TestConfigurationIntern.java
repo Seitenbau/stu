@@ -1,7 +1,9 @@
 package com.seitenbau.stu.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import com.seitenbau.stu.config.impl.BeanConfigInjector;
@@ -14,6 +16,8 @@ public class TestConfigurationIntern
 {
   protected EnvironmentDetector defaultEnvProvider;
 
+  protected Map<String,ValueProvider> providers = new HashMap<String,ValueProvider>();
+  
   protected ValueProvider config;
 
   protected ValueProvider defaultValueProvider;
@@ -63,6 +67,10 @@ public class TestConfigurationIntern
       }
       cfg.initValuesFor(environment,getProcessor());
       config = cfg;
+      if(defaultValueProvider == null) 
+      {
+        defaultValueProvider=config;
+      }
     }
     return config;
   }

@@ -108,16 +108,16 @@ public class BeanConfigInjectorTest
 
   class Simple
   {
-    @StoredProperty(key = "value", defaultValue = "default-value1")
+    @StoredProperty(key = "value")
     String value;
 
-    @StoredProperty(key = "value2", defaultValue = "default-value2")
+    @StoredProperty(key = "value2")
     String value2;
   }
 
   class Expand 
   {
-    @StoredProperty(key = "ItIs${value},and$_another:${value}_${none}", defaultValue = "default-value2")
+    @StoredProperty(key = "ItIs${value},and$_another:${value}_${none}")
     String value;
   }
 

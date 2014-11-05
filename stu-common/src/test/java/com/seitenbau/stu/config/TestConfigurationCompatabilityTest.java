@@ -159,13 +159,13 @@ public class TestConfigurationCompatabilityTest
     @StoredProperty(key = "num.integer")
     Integer integer;
 
-    @StoredProperty(key = "num.long")
+    @StoredProperty("num.long")
     Long along;
 
     @StoredProperty(key = "enum.time")
     TimeUnit timeUnit;
 
-    @StoredProperty(key = "enum.time.ms")
+    @StoredProperty("enum.time.ms")
     TimeUnit timeUnitMs;
 
     @StoredProperty(key = "map.stringmap")
