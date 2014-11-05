@@ -12,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.seitenbau.stu.config.OptionalProperty;
 import com.seitenbau.stu.config.StoredProperty;
 import com.seitenbau.stu.config.ValueProcessor;
 import com.seitenbau.stu.mockito.MockitoRule;
@@ -55,7 +56,7 @@ public class BeanConfigInjectorTest
     Simple into = new Simple();
     new BeanConfigInjector().injectValuesInto(values, into);
     assertThat(into.value).isEqualTo("aValue");
-    assertThat(into.value2).isEqualTo("default-value2");
+    assertThat(into.value2).isNull();
   }
 
   @Test
@@ -112,6 +113,7 @@ public class BeanConfigInjectorTest
     String value;
 
     @StoredProperty(key = "value2")
+    @OptionalProperty
     String value2;
   }
 

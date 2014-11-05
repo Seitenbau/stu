@@ -186,7 +186,7 @@ project("stu-examples") {
 }
 
 configure(rootProject) {
-  task wrapper(type: Wrapper) { gradleVersion = "1.6" }
+  task wrapper(type: Wrapper) { gradleVersion = "1.10" }
 }
 
 project("stu-documentation") {

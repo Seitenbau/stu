@@ -101,9 +101,10 @@ public class BeanConfigInjector implements ConfigInjector
   protected Object transformValue(ValueProvider values, Class<?> type, StoredProperty anno,String errorDetail,boolean isOptional)
   {
     String key = anno.value();
-    if(key == null) {
+    if(key == null || key.equals(StoredProperty.NOT_SET_VALUE)) {
       key = anno.key();
     }
+    System.out.println(key);
     String defaultvalue = StoredProperty.NOT_SET_VALUE;
     Object value = null;
     if (type.isAssignableFrom(Map.class)) {
