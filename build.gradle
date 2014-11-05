@@ -105,6 +105,7 @@ project("stu-database") {
     compile("com.miglayout:miglayout-swing:$miglayoutVersion")
     compile("com.fifesoft:rsyntaxtextarea:$rsyntaxtextareaVersion")
     compile("org.codehaus.groovy:groovy-all:$groovyVersion")
+    compile("com.google.guava:guava:$guavaVersion")
     
     runtime("mysql:mysql-connector-java:$mysqlConnVersion")
 
