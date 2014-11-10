@@ -181,12 +181,12 @@ public class FileAssertSB extends FileAssert
     return this;
   }
 
-  protected FileAssertSB hasSameContentAsFileFromClasspath(String classpathLocation) throws IOException
+  protected FileAssertSB hasSameContentAsFileFromClasspath(String classpathLocation,boolean cleanNewLine) throws IOException
   {
-    return hasSameContentAsFileFromClasspath(FileAssertSB.class, classpathLocation);
+    return hasSameContentAsFileFromClasspath(FileAssertSB.class, classpathLocation,cleanNewLine);
   }
 
-  protected FileAssertSB hasSameContentAsFileFromClasspath(Class relativeTo, String file) throws IOException
+  protected FileAssertSB hasSameContentAsFileFromClasspath(Class relativeTo, String file,boolean cleanNewLine) throws IOException
   {
     if (file == null)
     {
@@ -194,10 +194,10 @@ public class FileAssertSB extends FileAssert
     }
     isNotNull();
     InputStream expected = relativeTo.getResourceAsStream(file);
-    return hasSameContentAs(expected, file);
+    return hasSameContentAs(expected, file,cleanNewLine);
   }
 
-  protected FileAssertSB hasSameContentAs(InputStream stream, String fileName) throws IOException
+  protected FileAssertSB hasSameContentAs(InputStream stream, String fileName,boolean cleanNewLine) throws IOException
   {
     Assertions.assertThat(stream)
         .as("file in classpath does not exist at :" + fileName)
@@ -208,7 +208,14 @@ public class FileAssertSB extends FileAssert
     try
     {
       String act = IOUtils.toString(in);
-      assertThat(normalizeCrLfToCr(act)).as("file content " + fileName).isEqualTo(normalizeCrLfToCr(expect));
+      String expected = expect;
+      String actual  = act;
+      if(cleanNewLine) 
+      {
+        expected = normalizeCrLfToCr(expected);
+        actual  = normalizeCrLfToCr(actual);
+      }
+      assertThat(actual).as("file content " + fileName).isEqualTo(expected);
     }
     finally
     {
@@ -227,6 +234,7 @@ public class FileAssertSB extends FileAssert
       return null;
     }
     String out = in.replace("\r\n", "\r");
+    out = out.replace("\r", "\n");
     return out;
   }
 
@@ -372,36 +380,54 @@ public class FileAssertSB extends FileAssert
     File getFile();
   }
 
+//  /**
+//   * Check if the file hast the given Content, while ignoring NL
+//   * supports classpath: locations
+//   * 
+//   * @param fileLocator
+//   * @throws ClassNotFoundException
+//   * @throws IOException
+//   */
+//  public void hasContent(String fileLocator) throws ClassNotFoundException, IOException
+//  {
+//    if (fileLocator.startsWith("classpath:"))
+//    {
+//      String file = fileLocator.substring(10);
+//      
+//      Class<?> clazz = ReflectionUtils.magicClassFind("hasContent");
+//      hasSameContentAsFileFromClasspath(clazz, file,true);
+//    }
+//    else
+//    {
+//      hasSameContentAs(new File(fileLocator));
+//    }
+//  }
+  
   /**
-   * supports classpath: locations
-   * @param fileLocator
+   * Check if the given file content does match
+   * 
+   * @param fileLocation
+   * @param ignoreNewLine
+   *   if {@code true} NL will be ignored, does currently only work with classpath: fileLocation
    * @throws ClassNotFoundException
    * @throws IOException
    */
-  public void hasContent(String fileLocator) throws ClassNotFoundException, IOException
+  public void hasContent(String fileLocation,boolean ignoreNewLine) throws ClassNotFoundException, IOException
   {
-    if (fileLocator.startsWith("classpath:"))
+    if (fileLocation.startsWith("classpath:"))
     {
-      String file = fileLocator.substring(10);
+      String file = fileLocation.substring(10);
       
       Class<?> clazz = ReflectionUtils.magicClassFind("hasContent");
-//      StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-//      Class<?> clazz = null;
-//      for (int i = 1; i < trace.length; i++)
-//      {
-//        StackTraceElement el = trace[i];
-//        if (el.getMethodName().contains("hasContent"))
-//        {
-//          continue;
-//        }
-//        clazz = Class.forName(el.getClassName());
-//        break;
-//      }
-      hasSameContentAsFileFromClasspath(clazz, file);
+      hasSameContentAsFileFromClasspath(clazz, file,ignoreNewLine);
     }
     else
     {
-      hasSameContentAs(new File(fileLocator));
+      if(ignoreNewLine)
+      {
+        throw new IllegalStateException("ignoreNewLine does only work with 'classpath:' locations");
+      }
+      hasSameContentAs(new File(fileLocation));
     }
   }
 
@@ -415,8 +441,25 @@ public class FileAssertSB extends FileAssert
         .as("absolut file path ends with").endsWith(endWith);
   }
 
+  /**
+   * Check the file content (ignoring NL problems) aginst an inputStream source 
+   * @param resourceAsStream
+   * @throws IOException
+   */
   public void hasContent(InputStream resourceAsStream) throws IOException
   {
-    hasSameContentAs(resourceAsStream, "file-input-stream");
+    hasSameContentAs(resourceAsStream, "file-input-stream",true);
+  }
+  
+  /**
+   * Check the file content aginst an inputStream source 
+   * @param resourceAsStream
+   * @param ignoreNL
+   *   If {@code true} NL Characters will be cleaned before comparing the content 
+   * @throws IOException
+   */
+  public void hasContent(InputStream resourceAsStream,boolean ignoreNL) throws IOException
+  {
+    hasSameContentAs(resourceAsStream, "file-input-stream",ignoreNL);
   }
 }
