@@ -1,9 +1,9 @@
 buildscript {
   repositories {
-     maven { url "http://maven2/artifactory/all" }
+     maven { url "http://maven2.seitenbau.net/artifactory/all" }
   }
   dependencies {
-     classpath 'com.seitenbau.ploy:ploy-plugins-gradle:0.6.0.397'
+     classpath 'com.seitenbau.ploy:ploy-plugins-gradle:0.6.0.481'
   }
 }
 
