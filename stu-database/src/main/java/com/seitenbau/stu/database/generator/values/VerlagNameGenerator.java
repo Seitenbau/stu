@@ -2,7 +2,9 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
-public class VerlagNameGenerator implements ValueGenerator
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
+
+public class VerlagNameGenerator extends ValueGenerator
 {
 
   private Random random;
@@ -215,4 +217,16 @@ public class VerlagNameGenerator implements ValueGenerator
     }
 
   }
+
+@Override
+public void addConstraint(ConstraintPair constraintPair) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void clearConstraints() {
+	// TODO Auto-generated method stub
+	
+}
 }

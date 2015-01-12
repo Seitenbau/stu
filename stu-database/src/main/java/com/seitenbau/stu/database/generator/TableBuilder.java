@@ -1,167 +1,225 @@
 package com.seitenbau.stu.database.generator;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TableBuilder implements TableBuilderCommon
-{
-  
-  private Table builtTable;
+import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.Constraint;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
+import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
 
-  protected final DatabaseModel model;
+public class TableBuilder implements TableBuilderCommon {
 
-  protected final String name;
+	private Table builtTable;
 
-  protected String javaName;
+	protected final DatabaseModel model;
 
-  protected String description;
+	protected final String name;
 
-  protected final List<ColumnBuilder> columnBuilders;
+	protected String javaName;
 
-  protected long seed;
+	protected String description;
 
-  protected int minEntities;
+	protected final List<ColumnBuilder> columnBuilders;
 
-  protected Integer infinite;
+	protected final List<ConstraintColumnPair> constraintColumnPairs;
 
-  TableBuilder(DatabaseModel model, String name)
-  {
-    this.builtTable = null;
-    this.model = model;
-    this.name = name;
-    seed = 0;
-    minEntities = 1;
-    javaName = DataSet.makeNiceJavaName(name);
-    columnBuilders = new LinkedList<ColumnBuilder>();
-    infinite = null;
-  }
+	protected long seed;
 
-  /**
-   * Finalizes the creation of the table.
-   * @return The created table
-   */
-  public Table build()
-  {
-    builtTable = new Table(name, javaName, getTableDescription(), seed, infinite,
-        minEntities, columnBuilders);
-    model.addTable(builtTable);
-    return builtTable;
-  }
+	protected int minEntities;
 
-  protected String getTableDescription()
-  {
-    if (description != null)
-    {
-      return description;
-    }
+	protected Integer infinite;
 
-    return "The " + name + " table";
-  }
+	protected ConstraintsData dataSource;
 
-  String getName()
-  {
-    return name;
-  }
+	TableBuilder(DatabaseModel model, String name) {
+		this.builtTable = null;
+		this.model = model;
+		this.name = name;
+		seed = 0;
+		minEntities = 1;
+		javaName = DataSet.makeNiceJavaName(name);
+		columnBuilders = new LinkedList<ColumnBuilder>();
+		constraintColumnPairs = new ArrayList<ConstraintColumnPair>();
+		infinite = null;
+		dataSource = model.dataSource;
+	}
 
-  /**
-   * Defines how the table is spelled in the Java source code.
-   * @param javaName The table  name within the Java sources
-   * @return The table builder
-   */
-  public TableBuilder javaName(String javaName)
-  {
-    this.javaName = javaName;
-    return this;
-  }
+	/**
+	 * Finalizes the creation of the table.
+	 * 
+	 * @return The created table
+	 */
+	public Table build() {
+		builtTable = new Table(name, javaName, getTableDescription(), seed,
+				infinite, minEntities, columnBuilders, constraintColumnPairs,
+				dataSource);
+		model.addTable(builtTable);
 
-  String getJavaName()
-  {
-    return javaName;
-  }
+		return builtTable;
+	}
 
-  /**
-   * Adds a description text to the table used for JavaDoc in the generated Java classes.
-   * @param description The description for the table
-   * @return The table builder
-   */
-  public TableBuilder description(String description)
-  {
-    this.description = description;
-    return this;
-  }
+	protected String getTableDescription() {
+		if (description != null) {
+			return description;
+		}
 
+		return "The " + name + " table";
+	}
 
-  public TableBuilder seed(long seed)
-  {
-    this.seed = seed;
-    return this;
-  }
+	String getName() {
+		return name;
+	}
 
-  public TableBuilder minEntities(int count)
-  {
-    this.minEntities = count;
-    return this;
-  }
+	/**
+	 * Defines how the table is spelled in the Java source code.
+	 * 
+	 * @param javaName
+	 *            The table name within the Java sources
+	 * @return The table builder
+	 */
+	public TableBuilder javaName(String javaName) {
+		this.javaName = javaName;
+		return this;
+	}
 
-  public TableBuilder infinite(int infinite)
-  {
-    this.infinite = Integer.valueOf(infinite);
-    return this;
-  }
+	String getJavaName() {
+		return javaName;
+	}
 
-  /**
-   * Adds a column to the table.
-   * @param name The database name of the column.
-   * @param dataType The column's data type.
-   * @return A builder to configure the column
-   */
-  public ColumnBuilder column(String name, DataType dataType)
-  {
-    return new ColumnBuilder(this, name, dataType);
-  }
+	/**
+	 * Adds a description text to the table used for JavaDoc in the generated
+	 * Java classes.
+	 * 
+	 * @param description
+	 *            The description for the table
+	 * @return The table builder
+	 */
+	public TableBuilder description(String description) {
+		this.description = description;
+		return this;
+	}
 
-  void addColumnBuilder(ColumnBuilder columnBuilder)
-  {
-    columnBuilders.add(columnBuilder);
-  }
+	public TableBuilder seed(long seed) {
+		this.seed = seed;
+		return this;
+	}
 
-  public FutureColumn ref(String colName)
-  {
-    final String finalColName = colName;
-    return new FutureColumn() {
+	public TableBuilder minEntities(int count) {
+		this.minEntities = count;
+		return this;
+	}
 
-      @Override
-      public Column getFuture()
-      {
-        return builtTable.ref(finalColName);
-      }
+	public TableBuilder infinite(int infinite) {
+		this.infinite = Integer.valueOf(infinite);
+		return this;
+	}
 
-      @Override
-      public boolean isAvailable()
-      {
-        return builtTable != null;
-      }
-    };
-  }
+	public ArrayList<ConstraintColumnPair> list = new ArrayList<ConstraintColumnPair>();
 
-  public FutureColumn refDefaultIdentifierColumn()
-  {
-    return new FutureColumn() {
+	public TableBuilder constraint(Constraint constraint, String column){
+		if(UniqueConstraint.class.isInstance(constraint)){
+			constraintColumnPairs.add(new ConstraintColumnPair(constraint,
+					column, constraint, column));
+		}		
+		
+		return this;
+	}
+	
+	public TableBuilder constraint(Constraint constraint, String column1,
+			String column2) {
 
-      @Override
-      public Column getFuture()
-      {
-        return builtTable.getDefaultIdentifierColumn();
-      }
+		try {
+			if (CompareValueConstraint.class.isInstance(constraint)) {
 
-      @Override
-      public boolean isAvailable()
-      {
-        return builtTable != null;
-      }
-      
-    };
-  }
+				CompareValueConstraint cvc = (CompareValueConstraint) constraint;
+				CompareValueConstraint partnerConstraint = (CompareValueConstraint) constraint.getClass().newInstance();
+				partnerConstraint.setCompareType(cvc.getCompareType().partner());
+				return constraint(constraint, column1, partnerConstraint,
+						column2);
+			} else {
+				// TODO Fehlermeldung
+			}
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+		return this;
+
+	}
+
+	public TableBuilder constraint(Constraint constraint1, String column1,
+			Constraint constraint2, String column2) {
+		constraintColumnPairs.add(new ConstraintColumnPair(constraint1,
+				column1, constraint2, column2));
+		return this;
+	}
+
+	/**
+	 * Adds a column to the table.
+	 * 
+	 * @param name
+	 *            The database name of the column.
+	 * @param dataType
+	 *            The column's data type.
+	 * @return A builder to configure the column
+	 */
+	public ColumnBuilder column(String name, DataType dataType) {
+		return new ColumnBuilder(this, name, dataType);
+	}
+
+	void addColumnBuilder(ColumnBuilder columnBuilder) {
+		columnBuilders.add(columnBuilder);
+	}
+
+	public List<ColumnBuilder> getColumnBuilders() {
+		return columnBuilders;
+	}
+
+	public ColumnBuilder getColumnBuilder(String name) {
+		for (ColumnBuilder cb : columnBuilders) {
+			if (cb.getColumnName() == name) {
+				return cb;
+			}
+		}
+		return null;
+	}
+
+	public FutureColumn ref(String colName) {
+		final String finalColName = colName;
+		return new FutureColumn() {
+
+			@Override
+			public Column getFuture() {
+				return builtTable.ref(finalColName);
+			}
+
+			@Override
+			public boolean isAvailable() {
+				return builtTable != null;
+			}
+		};
+	}
+
+	public FutureColumn refDefaultIdentifierColumn() {
+		return new FutureColumn() {
+
+			@Override
+			public Column getFuture() {
+				return builtTable.getDefaultIdentifierColumn();
+			}
+
+			@Override
+			public boolean isAvailable() {
+				return builtTable != null;
+			}
+
+		};
+	}
 
 }

@@ -1,8 +1,7 @@
 package com.seitenbau.stu.database.generator.values;
 
-public interface ValueGeneratorFactory
-{
+public interface ValueGeneratorFactory {
 
-  ValueGenerator createGenerator();
+	ValueGenerator createGenerator();
 
 }

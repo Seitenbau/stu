@@ -2,9 +2,10 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
-public class NachnameGenerator implements ValueGenerator
-{
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
+public class NachnameGenerator extends ValueGenerator
+{
   private Random random;
 
   private final String[] values = {"\"Müller\"", "\"Schmidt\"", "\"Schneider\"", "\"Fischer\"", "\"Weber\"",
@@ -44,4 +45,16 @@ public class NachnameGenerator implements ValueGenerator
     }
 
   }
+
+@Override
+public void addConstraint(ConstraintPair constraintPair) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void clearConstraints() {
+	// TODO Auto-generated method stub
+	
+}
 }

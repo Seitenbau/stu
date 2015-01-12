@@ -3,7 +3,9 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-public class DateGenerator implements ValueGenerator
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
+
+public class DateGenerator extends ValueGenerator
 {
 
   private Random random;
@@ -59,4 +61,16 @@ public class DateGenerator implements ValueGenerator
     }
 
   }
+
+@Override
+public void addConstraint(ConstraintPair constraintPair) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void clearConstraints() {
+	// TODO Auto-generated method stub
+	
+}
 }

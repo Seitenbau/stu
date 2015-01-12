@@ -23,44 +23,43 @@ import javax.sql.DataSource
 @ContextConfiguration(classes=[PersonManagerContext])
 class SpockDataSetSpec extends Specification {
 
-    @Autowired
-    DataSource dataSource;
+	@Autowired
+	DataSource dataSource;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none()
+	@Rule
+	public ExpectedException thrown = ExpectedException.none()
 
-    @Rule
-    public DatabaseTesterRule dbTester = new DatabaseTesterRule({ dataSource })
-             .addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"))
+	@Rule
+	public DatabaseTesterRule dbTester = new DatabaseTesterRule({ dataSource })
+	.addCleanAction(new ApacheDerbySequenceReset().autoDerivateFromTablename("_SEQ"))
 
-    @Autowired
-    PersonService sut
+	@Autowired
+	PersonService sut
 
-    @InjectDataSet
-    PersonDatabaseBuilder dataSet;
+	@InjectDataSet
+	PersonDatabaseBuilder dataSet;
 
-    @DatabaseSetup(prepare = DemoGroovyDataSet)
-    def "find all persons"() {
-       when:
-          def persons = sut.findPersons()
-       then:
-          persons.size() == dataSet.personsTable.getRowCount()
-    }
+	@DatabaseSetup(prepare = DemoGroovyDataSet)
+	def "find all persons"() {
+		when:
+		def persons = sut.findPersons()
+		then:
+		persons.size() == dataSet.personsTable.getRowCount()
+	}
 
-    @Unroll
-    @DatabaseSetup(prepare = DemoGroovyDataSet)
-    def "find person by name = '#name'"() {
-        when:
-            def person = sut.findPersonByName(name)
-        then:
-            person.id        == personTableRow.id
-            person.name      == personTableRow.name
-            person.firstName == personTableRow.firstName
-        where:
-            name         | personTableRow
-            "Kaulbersch" | KAULBERSCH
-            "Guitton"    | GUITTON
-            "Baranowski" | BARANOWSKI
-    }
-
+	@Unroll
+	@DatabaseSetup(prepare = DemoGroovyDataSet)
+	def "find person by name = '#name'"() {
+		when:
+		def person = sut.findPersonByName(name)
+		then:
+		person.id        == personTableRow.id
+		person.name      == personTableRow.name
+		person.firstName == personTableRow.firstName
+		where:
+		name         | personTableRow
+		"Kaulbersch" | KAULBERSCH
+		"Guitton"    | GUITTON
+		"Baranowski" | BARANOWSKI
+	}
 }

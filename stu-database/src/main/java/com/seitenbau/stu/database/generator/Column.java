@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 import com.seitenbau.stu.util.CamelCase;
 
 public class Column
@@ -34,9 +35,11 @@ public class Column
   private final long _seed;
 
   private final Integer _infinite;
+  
+  private final ArrayList<ConstraintPair> _constraints;
 
   Column(Table table, String name, String javaName, String headerName, String description, DataType dataType,
-      ColumnReference relation, Set<String> flags, ValueGenerator generator, long seed, Integer infinite)
+      ColumnReference relation, Set<String> flags, ValueGenerator generator, long seed, Integer infinite, ArrayList<ConstraintPair> constraints)
   {
     _table = table;
     _name = name;
@@ -48,6 +51,7 @@ public class Column
     _generator = generator;
     _seed = seed;
     _infinite = infinite;
+    _constraints = constraints;
 
     _metaData = new ColumnMetaData(flags);
 
@@ -165,6 +169,11 @@ public class Column
   public Integer getInfinite()
   {
     return _infinite;
+  }
+  
+  public ArrayList<ConstraintPair> getConstraints()
+  {
+    return _constraints;
   }
 
 }

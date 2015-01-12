@@ -11,160 +11,153 @@ import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
+import com.seitenbau.stu.database.generator.values.DataGenerator;
+import com.seitenbau.stu.database.generator.values.constraints.DataConstraint;
 
-public class EntityBlueprint
-{
-  private final Table table;
+public class EntityBlueprint {
+	private final Table table;
 
-  private String refName;
+	private String refName;
 
-  private final Map<String, Object> values;
+	private final Map<String, Object> values;
 
-  private final Map<Edge, EntityCreationMode> relationInformation;
+	private final Map<Edge, EntityCreationMode> relationInformation;
 
-  private final Map<Edge, List<EntityBlueprint>> referencedBy;
+	private final Map<Edge, List<EntityBlueprint>> referencedBy;
 
-  // TODO remove again :-)
-  private final StringBuilder log;
+	// TODO remove again :-)
+	private final StringBuilder log;
 
-  EntityBlueprint(Table table, String refName, EntityFactory fab)
-  {
-    this.refName = refName;
-    this.table = table;
-    referencedBy = new HashMap<Edge, List<EntityBlueprint>>();
-    values = new HashMap<String, Object>();
-    relationInformation = new HashMap<Edge, EntityCreationMode>();
-    log = new StringBuilder();
+	EntityBlueprint(Table table, String refName, EntityFactory fab) {
+		this.refName = refName;
+		this.table = table;
+		referencedBy = new HashMap<Edge, List<EntityBlueprint>>();
+		values = new HashMap<String, Object>();
+		relationInformation = new HashMap<Edge, EntityCreationMode>();
+		log = new StringBuilder();
+		
+		// TODO: Generate Constraint instances
+		table.setColumnConstraints();
 
-    for (Column col : table.getColumns()) {
-      if (col.getRelation() != null) {
-        continue;
-      }
+		for (Column col : table.getColumns()) {
+			if (col.getRelation() != null) {
+				continue;
+			}
+			
+			ValueGenerator g = fab.getValueGenerator(col);
+			if(DataGenerator.class.isInstance(g)){
+				DataGenerator dg = (DataGenerator) g;
+				dg.setConstraintsData(table.getDataSource());
+			}
+ 
+			// TODO NM if unique flag (add) is set, ensure value is unique
+			values.put(col.getJavaName(), g.nextValue());
+		}
+	}
 
-      ValueGenerator g = fab.getValueGenerator(col);
+	Optional<EntityCreationMode> getCreationInformation(Edge edge) {
+		if (relationInformation.containsKey(edge)) {
+			return Optional.of(relationInformation.get(edge));
+		}
 
-      // TODO NM if unique flag (add) is set, ensure value is unique
-      values.put(col.getJavaName(), g.nextValue());
-    }
-  }
+		return Optional.absent();
+	}
 
-  Optional<EntityCreationMode> getCreationInformation(Edge edge)
-  {
-    if (relationInformation.containsKey(edge)) {
-      return Optional.of(relationInformation.get(edge));
-    }
+	void setCreationInformation(Edge edge, EntityCreationMode mode) {
+		relationInformation.put(edge, mode);
+	}
 
-    return Optional.absent();
-  }
+	public Table getTable() {
+		return table;
+	}
 
-  void setCreationInformation(Edge edge, EntityCreationMode mode)
-  {
-    relationInformation.put(edge, mode);
-  }
+	public String getRefName() {
+		return refName;
+	}
 
-  public Table getTable()
-  {
-    return table;
-  }
+	public void setRefName(String refName) {
+		this.refName = refName;
+	}
 
-  public String getRefName()
-  {
-    return refName;
-  }
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append(table.getJavaName());
+		result.append("BP[ ");
+		result.append("REF: ");
+		result.append(refName);
+		result.append(" ");
+		for (Entry<String, Object> entry : values.entrySet()) {
+			result.append(entry.getKey());
+			result.append(":'");
+			if (entry.getValue() instanceof EntityBlueprint) {
+				EntityBlueprint bp = (EntityBlueprint) entry.getValue();
+				result.append(bp.getRefName());
+			} else {
+				result.append(entry.getValue());
+			}
+			result.append("' ");
+		}
+		if (log.length() > 0) {
+			result.append("LOG: ");
+			result.append(log);
+			result.append(" ");
+		}
+		result.append("]");
+		return result.toString();
+	}
 
-  public void setRefName(String refName)
-  {
-    this.refName = refName;
-  }
+	public void setValue(String key, Object value) {
+		if (value instanceof EntityBlueprint) {
+			throw new RuntimeException("Cannot set reference via setValue");
+		}
+		putValue(key, value);
+	}
 
-  @Override
-  public String toString()
-  {
-    StringBuilder result = new StringBuilder();
-    result.append(table.getJavaName());
-    result.append("BP[ ");
-    result.append("REF: ");
-    result.append(refName);
-    result.append(" ");
-    for (Entry<String, Object> entry : values.entrySet()) {
-      result.append(entry.getKey());
-      result.append(":'");
-      if (entry.getValue() instanceof EntityBlueprint) {
-        EntityBlueprint bp = (EntityBlueprint)entry.getValue();
-        result.append(bp.getRefName());
-      } else {
-        result.append(entry.getValue());
-      }
-      result.append("' ");
-    }
-    if (log.length() > 0) {
-      result.append("LOG: ");
-      result.append(log);
-      result.append(" ");
-    }
-    result.append("]");
-    return result.toString();
-  }
+	public void setReferencing(Edge edge) {
+		values.put(edge.getColumn().getJavaName(), null);
+	}
 
-  public void setValue(String key, Object value)
-  {
-    if (value instanceof EntityBlueprint) {
-      throw new RuntimeException("Cannot set reference via setValue");
-    }
-    putValue(key, value);
-  }
+	public boolean isReferencing(Edge edge) {
+		return values.containsKey(edge.getColumn().getJavaName());
+	}
 
-  public void setReferencing(Edge edge)
-  {
-    values.put(edge.getColumn().getJavaName(), null);
-  }
+	public void setReference(Edge edge, EntityBlueprint target) {
+		putValue(edge.getColumn().getJavaName(), target);
+		target.addReferencedBy(edge, this);
+	}
 
-  public boolean isReferencing(Edge edge)
-  {
-    return values.containsKey(edge.getColumn().getJavaName());
-  }
+	private void putValue(String key, Object value) {
+		Object old = values.put(key, value);
+		if (old != null && old != value) {
+			throw new IllegalStateException("Overwrite " + key + " with "
+					+ value + " in " + this + ", existing value: " + old);
+		}
+	}
 
-  public void setReference(Edge edge, EntityBlueprint target)
-  {
-    putValue(edge.getColumn().getJavaName(), target);
-    target.addReferencedBy(edge, this);
-  }
+	private void addReferencedBy(Edge edge, EntityBlueprint entityBlueprint) {
+		List<EntityBlueprint> list = getReferencedByList(edge);
+		list.add(entityBlueprint);
+	}
 
-  private void putValue(String key, Object value)
-  {
-    Object old = values.put(key, value);
-    if (old != null && old != value) {
-      throw new IllegalStateException("Overwrite " + key + " with " + value + " in " + this + ", existing value: " + old);
-    }
-  }
+	public List<EntityBlueprint> getReferencedByList(Edge edge) {
+		List<EntityBlueprint> referencedByList = referencedBy.get(edge);
+		if (referencedByList == null) {
+			referencedByList = new ArrayList<EntityBlueprint>();
+			referencedBy.put(edge, referencedByList);
+		}
+		return referencedByList;
+	}
 
-  private void addReferencedBy(Edge edge, EntityBlueprint entityBlueprint)
-  {
-    List<EntityBlueprint> list = getReferencedByList(edge);
-    list.add(entityBlueprint);
-  }
+	public Object getValue(String key) {
+		return values.get(key);
+	}
 
-  public List<EntityBlueprint> getReferencedByList(Edge edge)
-  {
-    List<EntityBlueprint> referencedByList = referencedBy.get(edge);
-    if (referencedByList == null) {
-      referencedByList = new ArrayList<EntityBlueprint>();
-      referencedBy.put(edge, referencedByList);
-    }
-    return referencedByList;
-  }
-
-  public Object getValue(String key)
-  {
-    return values.get(key);
-  }
-
-  public void appendLog(String text)
-  {
-    if (log.length() > 0) {
-      log.append(", ");
-    }
-    log.append(text);
-  }
+	public void appendLog(String text) {
+		if (log.length() > 0) {
+			log.append(", ");
+		}
+		log.append(text);
+	}
 
 }

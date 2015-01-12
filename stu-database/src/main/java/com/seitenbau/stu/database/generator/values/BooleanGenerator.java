@@ -2,7 +2,9 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
-public class BooleanGenerator implements ValueGenerator {
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
+
+public class BooleanGenerator extends ValueGenerator {
 
 	private Random random;
 
@@ -26,6 +28,18 @@ public class BooleanGenerator implements ValueGenerator {
       return new BooleanGenerator();
     }
 
+	}
+
+	@Override
+	public void addConstraint(ConstraintPair constraintPair) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearConstraints() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

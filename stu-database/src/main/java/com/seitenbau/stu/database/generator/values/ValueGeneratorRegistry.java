@@ -17,14 +17,17 @@ public enum ValueGeneratorRegistry {
 	private ValueGeneratorFactory valueGeneratorFor = new StringGenerator.Factory();
 
 	/**
-	 *  add some default value generators for the standard data typs.
+	 * add some default value generators for the standard data typs.
 	 */
 	{
-		register(new IntegerGenerator.Factory(Integer.MIN_VALUE, Integer.MAX_VALUE))	.forType(DataType.INTEGER);
-    register(new IntegerGenerator.Factory(0, Integer.MAX_VALUE))  .forType(DataType.BIGINT);
-		register(new StringGenerator.Factory())											.forType(DataType.VARCHAR);
-		register(new BooleanGenerator.Factory())										.forType(DataType.BOOLEAN);
-		register(new DateGenerator.Factory())											.forType(DataType.DATE);
+		register(
+				new IntegerGenerator.Factory(Integer.MIN_VALUE,
+						Integer.MAX_VALUE)).forType(DataType.INTEGER);
+		register(new IntegerGenerator.Factory(0, Integer.MAX_VALUE)).forType(
+				DataType.BIGINT);
+		register(new StringGenerator.Factory()).forType(DataType.VARCHAR);
+		register(new BooleanGenerator.Factory()).forType(DataType.BOOLEAN);
+		register(new DateGenerator.Factory()).forType(DataType.DATE);
 	}
 
 	public class ForDataType {
@@ -47,13 +50,14 @@ public enum ValueGeneratorRegistry {
 
 	public ValueGenerator getValueGeneratorFor(DataType type) {
 		ValueGeneratorFactory generator = registry.get(type);
-		if(generator != null) {
+		if (generator != null) {
 			return generator.createGenerator();
 		}
 		return valueGeneratorFor.createGenerator();
 	}
 
-	public void setDefaultValueGenerator(ValueGeneratorFactory defaultValueGenerator) {
+	public void setDefaultValueGenerator(
+			ValueGeneratorFactory defaultValueGenerator) {
 		this.valueGeneratorFor = defaultValueGenerator;
 	}
 
