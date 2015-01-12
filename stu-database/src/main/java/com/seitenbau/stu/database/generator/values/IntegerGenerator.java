@@ -46,7 +46,7 @@ public class IntegerGenerator extends ValueGenerator {
 				}
 				return cp.getMyConstraint().getValue().toString();
 			} else {
-				Object value = strategy.nextValue();
+				Comparable value = strategy.nextValue();
 				cp.getMyConstraint().setValue(value);
 				return value.toString();
 			}
@@ -54,12 +54,12 @@ public class IntegerGenerator extends ValueGenerator {
 	}
 
 	private interface Strategy {
-		Object nextValue();
+		Comparable nextValue();
 	}
 
 	private class LongRange implements Strategy {
 		@Override
-		public Object nextValue() {
+		public Comparable nextValue() {
 			long value = (Math.abs(random.nextLong()) % module) + min;
 			return value;
 		}
@@ -67,7 +67,7 @@ public class IntegerGenerator extends ValueGenerator {
 
 	private class IntRange implements Strategy {
 		@Override
-		public Object nextValue() {
+		public Comparable nextValue() {
 			int value = random.nextInt(1 + max - min) + min;
 			return value;
 		}

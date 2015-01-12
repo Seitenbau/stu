@@ -54,28 +54,28 @@ public class CompareValueConstraint extends Constraint {
 	}
 
 	public Constraint greater(Constraint constraint) {
-		if (((Integer)getValue()) > ((Integer)constraint.getValue()))
+		if (getValue().compareTo(constraint.getValue()) > 0 )
 			return constraint;
 		else
 			return null;
 	}
 
 	public Constraint greater_equal(Constraint constraint) {
-		if (((Integer)getValue()) >= ((Integer)constraint.getValue()))
+		if (getValue().compareTo(constraint.getValue()) >= 0 )
 			return constraint;
 		else
 			return null;
 	}
 
 	public Constraint smaller(Constraint constraint) {
-		if (((Integer)getValue()) < ((Integer)constraint.getValue()))
+		if (getValue().compareTo(constraint.getValue()) < 0 )
 			return constraint;
 		else
 			return null;
 	}
 
 	public Constraint smaller_equal(Constraint constraint) {
-		if (((Integer)getValue()) <= ((Integer)constraint.getValue()))
+		if (getValue().compareTo(constraint.getValue()) <= 0 )
 			return constraint;
 		else
 			return null;

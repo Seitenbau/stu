@@ -46,7 +46,7 @@ public class DataGenerator extends ValueGenerator {
 			if (al.size() > 0) {
 				int randInt = random.nextInt(al.size());
 				System.out.println(getKey() + ": " + randInt + " aus " + al.size());
-				Object value = al.get(randInt).getValue();
+				Comparable value = al.get(randInt).getValue();
 				if (value == null)
 					return "";
 				for (ConstraintPair cp : constraintPairs) {

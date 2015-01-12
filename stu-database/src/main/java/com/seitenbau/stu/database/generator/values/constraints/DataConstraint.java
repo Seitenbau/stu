@@ -26,7 +26,7 @@ public class DataConstraint extends Constraint {
 		this.key = key;
 	}
 
-	public DataConstraint(String key, Object value) {
+	public DataConstraint(String key, Comparable value) {
 		this.key = key;
 		this.value = value;
 	}
