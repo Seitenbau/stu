@@ -51,7 +51,7 @@ public class MySQLAutoIncrementResetTest
   public void testEmptyDatabase() throws Exception
   {
     // execute
-    sut.doCleanDatabase(null, new DefaultDataSet());
+    sut.doPrepareDatabase(null, new DefaultDataSet());
     // verify
     assertThat(_tables).isEmpty();
   }
@@ -60,7 +60,7 @@ public class MySQLAutoIncrementResetTest
   public void testDatabaseAllTables() throws Exception
   {
     // execute
-    sut.doCleanDatabase(null, _dataSet);
+    sut.doPrepareDatabase(null, _dataSet);
 
     // verify
     assertThat(_tables).containsExactly(TABLE1, TABLE2);
@@ -73,7 +73,7 @@ public class MySQLAutoIncrementResetTest
     sut.reset(TABLE1);
 
     // execute
-    sut.doCleanDatabase(null, _dataSet);
+    sut.doPrepareDatabase(null, _dataSet);
 
     // verify
     assertThat(_tables).containsExactly(TABLE1);
@@ -86,7 +86,7 @@ public class MySQLAutoIncrementResetTest
     sut.skip(TABLE1);
 
     // execute
-    sut.doCleanDatabase(null, _dataSet);
+    sut.doPrepareDatabase(null, _dataSet);
 
     // verify
     assertThat(_tables).containsExactly(TABLE2);
@@ -100,7 +100,7 @@ public class MySQLAutoIncrementResetTest
     sut.reset(TABLE1, TABLE2);
 
     // execute
-    sut.doCleanDatabase(null, _dataSet);
+    sut.doPrepareDatabase(null, _dataSet);
 
     // verify
     assertThat(_tables).containsExactly(TABLE2);

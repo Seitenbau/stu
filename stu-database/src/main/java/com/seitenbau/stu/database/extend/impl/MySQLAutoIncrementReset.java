@@ -80,15 +80,7 @@ public class MySQLAutoIncrementReset implements DatabaseTesterCleanAction
 
   public void doCleanDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception
   {
-    for (ITableIterator i = dataset.iterator(); i.next();)
-    {
-      String table = i.getTableMetaData().getTableName();
-      if ((_blacklistedTables == null || !_blacklistedTables.contains(table))
-          && (_tablesToReset == null || _tablesToReset.contains(table)))
-      {
-        resetTable(tester, table);
-      }
-    }
+    // do nothing
   }
 
   protected void resetTable(DatabaseTesterBase<?> tester, String table) throws Exception
@@ -98,5 +90,15 @@ public class MySQLAutoIncrementReset implements DatabaseTesterCleanAction
 
   public void doPrepareDatabase(DatabaseTesterBase<?> tester, IDataSet dataset) throws Exception
   {
+    // reset counter after inserting data
+    for (ITableIterator i = dataset.iterator(); i.next();)
+    {
+      String table = i.getTableMetaData().getTableName();
+      if ((_blacklistedTables == null || !_blacklistedTables.contains(table))
+          && (_tablesToReset == null || _tablesToReset.contains(table)))
+      {
+        resetTable(tester, table);
+      }
+    }
   }
 }
