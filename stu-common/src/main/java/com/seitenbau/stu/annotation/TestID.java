@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * List of Test-ID's of a Test
+ * Test identifier
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestID
