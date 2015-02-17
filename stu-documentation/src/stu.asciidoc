@@ -6,11 +6,14 @@ v1.0, 2013-07-31
 
 image::seitenbau-110px.png[SEITENBAU Logo]
 
+== Inhalt
+
+* link:changelog.asciidoc[Changelog]
+* link:stu-database.asciidoc[STU-Database] Tools for testing you code against Databases.
+
 == Overview
 
 TODO general projekt description
-
-link:changelog.asciidoc[Changelog]
 
 == Common STU features
 In this chapter common functionality of STU is described. The presented features are not related to

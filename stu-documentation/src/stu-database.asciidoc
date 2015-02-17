@@ -1,0 +1,67 @@
+= STU-Database
+SEITENBAU GmbH <stu@seitenbau.com>
+v1.0, 2015-02-17
+:imagesdir: images
+'''
+
+image::seitenbau-110px.png[SEITENBAU Logo]
+
+== 2.1 Modelierung der Datenbank
+
+=== Quickstart
+
+[source,java]
+----
+import com.seitenbau.stu.database.generator.DataType;
+import com.seitenbau.stu.database.generator.DatabaseModel;
+ 
+public class D01_DBGeneratorSample
+{
+  public static void main(String[] args) throws Exception
+  {
+     DatabaseModel db = new DatabaseModel(){{
+       database("Sonferenz");
+       packageName("com.example");
+     }};
+     
+     db.table("Users")
+           .column("ID", DataType.INTEGER)
+           .column("Name", DataType.VARCHAR);
+     // .. add more tables
+     db.generate();
+  }
+}
+----
+
+Just execute the main method, this will generate some Builds for you DBUnit Datasets.
+
+[source,java]
+----
+c.s.s.database.generator.DataSetGenerator [DEBUG]: Written template into : SonferenzDataSet
+c.s.s.database.generator.DataSetGenerator [INFO]: created 1 DataSet
+c.s.s.database.generator.DataSetGenerator [DEBUG]: Written template into : UsersTable
+c.s.s.database.generator.DataSetGenerator [INFO]: created 1 Tables
+c.s.s.database.generator.DataSetGenerator [DEBUG]: Written template into : UsersRef
+c.s.s.database.generator.DataSetGenerator [INFO]: created 1 Reference Classes
+c.s.s.database.generator.DataSetGenerator [DEBUG]: Written template into : RefFactory
+c.s.s.database.generator.DataSetGenerator [INFO]: created 1 Reference Factory class
+c.s.s.database.generator.DataSetGenerator [DEBUG]: Written template into : SonferenzBuilder
+c.s.s.database.generator.DataSetGenerator [INFO]: created 1 DSL class
+c.s.s.database.generator.DataSetGenerator [DEBUG]: Written template into : UsersTableAdapter
+c.s.s.database.generator.DataSetGenerator [INFO]: created 1 Table Adapters
+----
+
+|=======
+|SonferenzDataSet | Eine Factory + Builder für eine DBUnit DataSet der modelierten Datenbank "Sonferenz" :
+
+    Enthält alle Tabellen als table_* Variablen.
+    Durch die Methode createDBUnitDataSet() aus dem Interface DbUnitDatasetFactory kann ein DBUnit DataSet erzeugt werden.
+    Zur Initialisierung/Einfügen von weiteren Zeilen, solltem in einer abgeleitete Klasse die Methode initDataSet() überschrieben werden.
+    
+|UsersTable | Eine DBUnit ITable Implementierung der "Users" Tabelle.
+
+|UsersModel | "neutrales" Modell einer Tabellen-Zeile, hier der "Users" Tabelle.
+|=======
+
+
+
