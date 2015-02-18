@@ -13,9 +13,9 @@ public class AssociativeTable extends Table
   private final List<Column> _dataColumns;
 
   public AssociativeTable(String name, String javaName, String description, long seed,
-      Integer infinite, int minEntities, List<ColumnBuilder> columnBuilders, List<ConstraintColumnPair> constraintColumnPairs, ConstraintsData dataSource)
+      Integer infinite, int minEntities, List<ColumnBuilder> columnBuilders, List<ConstraintColumnPair> constraintColumnPairs, ConstraintsData dataSource, DatabaseModel model)
   {
-    super(name, javaName, description, seed, infinite, minEntities, columnBuilders, constraintColumnPairs, dataSource);
+    super(name, javaName, description, seed, infinite, minEntities, columnBuilders, constraintColumnPairs, dataSource, model);
 
     _associativeColumns = new ArrayList<Column>();
     _dataColumns = new ArrayList<Column>();
@@ -29,7 +29,7 @@ public class AssociativeTable extends Table
       }
     }
 
-    if (_associativeColumns.size() != 2)
+    if (_associativeColumns.size() < 2)
     {
       throw new RuntimeException("Illegal associative table (excatly 2 relation columns expected)");
     }

@@ -2,6 +2,7 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
+import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class NachnameGenerator extends ValueGenerator
@@ -30,10 +31,10 @@ public class NachnameGenerator extends ValueGenerator
   }
 
   @Override
-  public String nextValue()
+  public Result nextValue(EntityBlueprint eb)
   {
-    return values[random.nextInt(values.length)];
-  }
+	  return new Result(values[random.nextInt(values.length)], true);
+	  }
 
   public static class Factory implements ValueGeneratorFactory
   {

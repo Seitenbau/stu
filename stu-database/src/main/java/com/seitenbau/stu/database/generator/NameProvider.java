@@ -120,7 +120,7 @@ public class NameProvider
     {
       return Optional.absent();
     }
-
+    
     final String truncatedName = headerName.substring(0, headerName.length() - TRUNCABLE_ID_SUFFIX.length());
     for (Column otherColumn : column.getTable().getColumns())
     {
@@ -130,6 +130,7 @@ public class NameProvider
         return Optional.absent();
       }
     }
+    
 
     return Optional.of(truncatedName);
   }

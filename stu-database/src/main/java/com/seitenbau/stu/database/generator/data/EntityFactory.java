@@ -19,11 +19,11 @@ public class EntityFactory
 {
   private final Logger log = TestLoggerFactory.get(EntityFactory.class);
 
-  private final Entities blueprints;
+  public final Entities blueprints; // TODO: Change back to private
 
   private final Map<Column, ValueGenerator> valueGenerators;
 
-  private final DatabaseModel model;
+  public final DatabaseModel model;	// TODO: Change back to private
 
   private final long modelSeed;
 

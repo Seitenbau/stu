@@ -80,6 +80,10 @@ public class ColumnBuilder implements TableBuilderCommon {
 
 	private Integer infinite;
 
+	private String[] set;
+
+	private boolean allowNull;
+
 	public ColumnBuilder(TableBuilder tableBuilder, String name,
 			DataType dataType) {
 		this.flags = new HashSet<String>();
@@ -130,7 +134,7 @@ public class ColumnBuilder implements TableBuilderCommon {
 		
 		return new Column(table, name, p_javaName, p_tableName, description,
 				dataType, reference.getReference(), flags, p_generator, p_seed,
-				infinite, constraints);
+				infinite, constraints, set, allowNull);
 	}
 
 	/**
@@ -187,6 +191,16 @@ public class ColumnBuilder implements TableBuilderCommon {
 
 	public ColumnBuilder generator(ValueGenerator generator) {
 		this.generator = generator;
+		return this;
+	}
+	
+	public ColumnBuilder set(String... set){
+		this.set = set;
+		return this;
+	}
+	
+	public ColumnBuilder allowNull(boolean flag){
+		this.allowNull = flag;
 		return this;
 	}
 

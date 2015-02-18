@@ -5,11 +5,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.data.EntityFactory;
 import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.Constraint;
-import com.seitenbau.stu.database.generator.values.constraints.Constraint.Mode;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
 import com.seitenbau.stu.database.generator.values.constraints.DataConstraint;
@@ -40,13 +42,15 @@ public class Table {
 
 	private ConstraintsData _dataSource;
 
+	protected final DatabaseModel _model;
+
 	public List<ConstraintColumnPair> get_constraintColumnPairs() {
 		return _constraintColumnPairs;
 	}
 
 	public Table(String name, String javaName, String description, long seed, Integer infinite, int minEntities,
 			List<ColumnBuilder> columnBuilders, List<ConstraintColumnPair> constraintColumnPairs,
-			ConstraintsData dataSource) {
+			ConstraintsData dataSource, DatabaseModel model) {
 		_name = name;
 		_javaName = javaName;
 		_description = description;
@@ -55,6 +59,7 @@ public class Table {
 		_infinite = infinite;
 		_minEntities = minEntities;
 		_dataSource = dataSource;
+		_model = model;
 
 		for (ColumnBuilder columnBuilder : columnBuilders) {
 			_columns.add(columnBuilder.buildColumn(this));
@@ -329,25 +334,30 @@ public class Table {
 		return result;
 	}
 
-	public void setColumnConstraints() {
+	// TODO: old...Remove this!
+	public void setColumnConstraints(EntityFactory fab) {
 		if (_constraintColumnPairs.size() > 0) {
 			for (Column col : _columns) {
 				col.getGenerator().clearConstraints();
 			}
 
+			// TODO: Adresse hat noch keine ccp's.....
 			for (ConstraintColumnPair ccp : _constraintColumnPairs) {
 
 				try {
 					Constraint const1;
 					Constraint const2;
 
-					if(UniqueConstraint.class.isInstance(ccp.getConstraint1())){
+					if (UniqueConstraint.class.isInstance(ccp.getConstraint1())) {
 						const1 = ccp.getConstraint1();
 						const2 = ccp.getConstraint2();
-					}else{
+					} else {
 						const1 = ccp.getConstraint1().getClass().newInstance();
 						const2 = ccp.getConstraint2().getClass().newInstance();
 					}
+
+					const1.setColumnName((ccp.getConstraint1()).getColumnName());
+					const2.setColumnName((ccp.getConstraint2()).getColumnName());
 
 					if (DataConstraint.class.isInstance(const1) && DataConstraint.class.isInstance(const2)) {
 						((DataConstraint) const1).setKey(((DataConstraint) ccp.getConstraint1()).getKey());
@@ -358,6 +368,7 @@ public class Table {
 								.setCompareType(((CompareValueConstraint) ccp.getConstraint1()).getCompareType());
 						((CompareValueConstraint) const2)
 								.setCompareType(((CompareValueConstraint) ccp.getConstraint2()).getCompareType());
+
 					}
 
 					ConstraintPair cp1 = new ConstraintPair(const1, const2);
@@ -368,15 +379,27 @@ public class Table {
 						System.out.println("Column " + ccp.getName1() + " not found!");
 					} else {
 						c1.getGenerator().addConstraint(cp1);
+						if (c1.getGenerator().getKey() == null)
+							c1.getGenerator().setKey(const1.getColumnName());
 					}
 
 					Column c2 = getColumn(ccp.getName2());
-					if (c2 == null) {
-						System.out.println("Column " + ccp.getName2() + " not found!");
-					} else {
-						c2.getGenerator().addConstraint(cp2);
+					List<EntityBlueprint> bla = fab.blueprints.getEntities().get(getName());
+					if (bla != null) {
+						Comparable value = getEntityValue(fab, ccp.getName2(),
+								fab.blueprints.getEntities().get(getName()).size());
+						if (value != null) {
+							// System.out.println("Column " + ccp.getName2() +
+							// " not found!");
+							if (value != null) {
+								const2.setValue(value);
+							}
+						} else {
+							c2.getGenerator().addConstraint(cp2);
+							if (c2.getGenerator().getKey() == null)
+								c2.getGenerator().setKey(const2.getColumnName());
+						}
 					}
-
 				} catch (InstantiationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -388,12 +411,44 @@ public class Table {
 		}
 	}
 
+	public Comparable getEntityValue(EntityFactory fab, String name, int index) {
+		String[] array = name.split("\\.");
+
+		if (array.length > 2)
+			return null;
+		else if (array.length == 2) {
+			String tableName = array[0];
+			String columnName = array[1];
+
+			Map<Table, List<EntityBlueprint>> entities = fab.blueprints.getEntities();
+			List<EntityBlueprint> list = entities.get(tableName);
+			EntityBlueprint entity = list.get(index);
+			Comparable value = (Comparable) entity.getValue(columnName);
+
+			return value;
+		}
+		return null;
+	}
+
+	// TODO: Column aus anderen Tabellen, Duplicat ref():
 	public Column getColumn(String name) {
+		String[] array = name.split("\\.");
+
+		if (array.length > 2)
+			return null;
+		else if (array.length == 2) {
+			String tableName = array[0];
+			String columnName = array[1];
+
+
+			return null; //foreign;
+		}
 		for (Column column : _columns) {
 			if (column.getName() == name) {
 				return column;
 			}
 		}
+
 		return null;
 	}
 

@@ -2,6 +2,7 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
+import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class BooleanGenerator extends ValueGenerator {
@@ -16,8 +17,8 @@ public class BooleanGenerator extends ValueGenerator {
 	}
 
 	@Override
-	public String nextValue() {
-		return values[random.nextInt(values.length)];
+	public Result nextValue(EntityBlueprint eb) {
+		return new Result(values[random.nextInt(values.length)], true);
 	}
 
 	public static class Factory implements ValueGeneratorFactory {

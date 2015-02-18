@@ -3,6 +3,7 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
+import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class DateGenerator extends ValueGenerator
@@ -21,7 +22,7 @@ public class DateGenerator extends ValueGenerator
   }
 
   @Override
-  public String nextValue()
+  public Result nextValue(EntityBlueprint eb)
   {
     GregorianCalendar gc = new GregorianCalendar();
 
@@ -37,7 +38,8 @@ public class DateGenerator extends ValueGenerator
     int iMonth = gc.get(GregorianCalendar.MONTH);
     int iDay = gc.get(GregorianCalendar.DAY_OF_MONTH);
 
-    return "asDate(\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\")";
+	return new Result("asDate(\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\")", true);
+    //return "asDate(\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\")";
   }
 
   public int randBetween(int start, int end) {

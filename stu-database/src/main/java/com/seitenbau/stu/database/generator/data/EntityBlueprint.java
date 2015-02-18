@@ -10,20 +10,32 @@ import com.google.common.base.Optional;
 import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
-import com.seitenbau.stu.database.generator.values.ValueGenerator;
+import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 import com.seitenbau.stu.database.generator.values.DataGenerator;
-import com.seitenbau.stu.database.generator.values.constraints.DataConstraint;
+import com.seitenbau.stu.database.generator.values.ValueGenerator;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
+import com.seitenbau.stu.database.generator.values.constraints.GlobalConstraint;
 
 public class EntityBlueprint {
-	private final Table table;
+	public final Table table; // TODO: private
 
 	private String refName;
 
-	private final Map<String, Object> values;
+	public final Map<String, Object> values; // TODO: private...
+
+	public final Map<String, ArrayList<ConstraintInterface>> constraints; // TODO: private...
 
 	private final Map<Edge, EntityCreationMode> relationInformation;
 
+	public Map<Edge, EntityCreationMode> getRelationInformation() {
+		return relationInformation;
+	}
+
 	private final Map<Edge, List<EntityBlueprint>> referencedBy;
+
+	public Map<Edge, List<EntityBlueprint>> getReferencedBy() {
+		return referencedBy;
+	}
 
 	// TODO remove again :-)
 	private final StringBuilder log;
@@ -33,26 +45,23 @@ public class EntityBlueprint {
 		this.table = table;
 		referencedBy = new HashMap<Edge, List<EntityBlueprint>>();
 		values = new HashMap<String, Object>();
+		constraints = new HashMap<String, ArrayList<ConstraintInterface>>();
 		relationInformation = new HashMap<Edge, EntityCreationMode>();
 		log = new StringBuilder();
-		
-		// TODO: Generate Constraint instances
-		table.setColumnConstraints();
 
-		for (Column col : table.getColumns()) {
-			if (col.getRelation() != null) {
-				continue;
-			}
-			
-			ValueGenerator g = fab.getValueGenerator(col);
-			if(DataGenerator.class.isInstance(g)){
-				DataGenerator dg = (DataGenerator) g;
-				dg.setConstraintsData(table.getDataSource());
-			}
- 
-			// TODO NM if unique flag (add) is set, ensure value is unique
-			values.put(col.getJavaName(), g.nextValue());
-		}
+		/*
+		 * // TODO: Old remove.... // Generate Constraint instances
+		 * //table.setColumnConstraints(fab);
+		 * 
+		 * // for (Column col : table.getColumns()) { // if (col.getRelation()
+		 * != null) { // continue; // } // // ValueGenerator g =
+		 * fab.getValueGenerator(col); // if(DataGenerator.class.isInstance(g)){
+		 * // DataGenerator dg = (DataGenerator) g; //
+		 * dg.setConstraintsData(table.getDataSource()); // } // // // TODO NM
+		 * if unique flag (add) is set, ensure value is unique //
+		 * values.put(col.getJavaName(), g.nextValue()); // }
+		 */
+
 	}
 
 	Optional<EntityCreationMode> getCreationInformation(Edge edge) {
@@ -64,7 +73,7 @@ public class EntityBlueprint {
 	}
 
 	void setCreationInformation(Edge edge, EntityCreationMode mode) {
-		relationInformation.put(edge, mode);
+		relationInformation.put(edge, mode);				
 	}
 
 	public Table getTable() {
@@ -130,8 +139,8 @@ public class EntityBlueprint {
 	private void putValue(String key, Object value) {
 		Object old = values.put(key, value);
 		if (old != null && old != value) {
-			throw new IllegalStateException("Overwrite " + key + " with "
-					+ value + " in " + this + ", existing value: " + old);
+			throw new IllegalStateException("Overwrite " + key + " with " + value + " in " + this
+					+ ", existing value: " + old);
 		}
 	}
 
@@ -159,5 +168,4 @@ public class EntityBlueprint {
 		}
 		log.append(text);
 	}
-
 }

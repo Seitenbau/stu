@@ -7,18 +7,21 @@ public enum DataType
 {
   UNKNOWN(Object.class),
 
-  VARCHAR(String.class), CHAR(String.class), LONGVARCHAR(String.class), CLOB(String.class),
+  VARCHAR(String.class), CHAR(String.class), LONGVARCHAR(String.class), CLOB(String.class), TEXT(String.class),
 
   NUMERIC(BigDecimal.class), DECIMAL(BigDecimal.class),
 
   BOOLEAN(Boolean.class), BIT(Boolean.class),
 
-  INTEGER(Integer.class), TINYINT(Integer.class), SMALLINT(Integer.class), BIGINT(Long.class), REAL(Float.class),
-  DOUBLE(Double.class), FLOAT(Double.class),
+  INTEGER(Integer.class), INTEGER_UNSIGNED(Integer.class),
+  TINYINT(Integer.class), TINYINT_UNSIGNED(Integer.class),
+  SMALLINT(Integer.class), SMALLINT_UNSIGNED(Integer.class),
+  BIGINT(Long.class), BIGINT_UNSIGNED(Long.class),
+  REAL(Float.class), DOUBLE(Double.class), FLOAT(Double.class),
 
   DATE(Date.class), TIME(Date.class), TIMESTAMP(Date.class),
 
-  VARBINARY(byte[].class), BINARY(byte[].class), LONGVARBINARY(byte[].class), BLOB(byte[].class);
+  VARBINARY(byte[].class), BINARY(byte[].class), LONGVARBINARY(byte[].class), BLOB(byte[].class), LONGBLOB(byte[].class);
 
   private static final String DATATYPE_CLASS = "DataType";
 

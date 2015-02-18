@@ -261,7 +261,7 @@ public class ${clsTable} implements ITable
 
     public ${clsRowbuilder} set${column.javaName}(Integer intValue)
     {
-      return set${column.javaName}Raw(intValue == null ? null : Long.valueOf(intValue));
+      return set${column.javaName}Raw(intValue == null ? null : Integer.valueOf(intValue));
     }
 #end
 #if( ${column.isFutureValueSupported()} )
@@ -643,7 +643,7 @@ public class ${clsTable} implements ITable
 
     public ${rowcollection} ${column.javaNameFirstLower}(Integer toSearch) 
     {
-      return ${column.javaNameFirstLower}( Long.valueOf(toSearch) );
+      return ${column.javaNameFirstLower}( Integer.valueOf(toSearch) );
     }
 #end
 #end
@@ -753,7 +753,7 @@ public class ${clsTable} implements ITable
     
     public Optional<${clsRowbuilder}> ${column.javaNameFirstLower}(Integer toSearch) 
     {
-      return ${column.javaNameFirstLower}( Long.valueOf(toSearch) );
+      return ${column.javaNameFirstLower}( Integer.valueOf(toSearch) );
     }
 #end
 #end

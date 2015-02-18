@@ -1,7 +1,7 @@
 #set($names          = ${model.names})
-#set($filename       = "RefFactory")
+#set($filename       = ${model.name} + "RefFactory")
 #set($package        = ${model.package})
-#set($clsFactory     = "RefFactory")
+#set($clsFactory     = ${model.name} + "RefFactory")
 #set($jdSep          = "#")
 #if( $package && $package.length() != 0 )
 package ${package};

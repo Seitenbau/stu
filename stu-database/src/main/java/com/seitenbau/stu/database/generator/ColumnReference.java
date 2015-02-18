@@ -6,11 +6,11 @@ import java.util.List;
 
 public class ColumnReference
 {
-  private Column _foreignColumn;
+  public Column _foreignColumn;
 
-  private final FutureColumn _foreignFutureColumn;
+  public final FutureColumn _foreignFutureColumn;	// TODO: Change to private
   
-  private final List<Column> _referencedByColumns;
+  public final List<Column> _referencedByColumns;	// TODO: Change to private
 
   private final String _localName;
 

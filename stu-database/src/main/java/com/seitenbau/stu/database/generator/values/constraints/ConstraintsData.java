@@ -13,7 +13,7 @@ public class ConstraintsData {
 			combine(c2, c1);
 	}
 	
-	public boolean combine(DataConstraint c1, DataConstraint c2){
+	private boolean combine(DataConstraint c1, DataConstraint c2){
 		if(!data.containsKey(c1.getKey()) || !data.containsKey(c2.getKey()))
 			return false;
 					
@@ -67,6 +67,16 @@ public class ConstraintsData {
 		DataConstraint tilly = addData("vorname", "Tilly");
 		DataConstraint jakob = addData("vorname", "Jakob");
 		DataConstraint tom = addData("vorname", "Tom");
+		
+		DataConstraint deutschland = addData("land", "Deutschland");
+		DataConstraint oesterreich = addData("land", "Österreich");
+		DataConstraint schweiz = addData("land", "Schweiz");
+		
+		DataConstraint schlossallee = addData("strasse", "Schlossallee");
+		DataConstraint parkstrasse = addData("strasse", "Parkstraße");
+		DataConstraint bahnhofstrasse = addData("strasse", "Bahnhofstraße");
+		DataConstraint hauptstrasse = addData("strasse", "Hauptstraße");
+		DataConstraint rathausstrasse = addData("strasse", "Rathausstraße");
 		
 		combine2Constraints(robin, maennlich);
 		combine2Constraints(robin, weiblich);

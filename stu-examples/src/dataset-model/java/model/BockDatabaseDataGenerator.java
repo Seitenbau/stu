@@ -10,6 +10,8 @@ public class BockDatabaseDataGenerator
 
   public static void main(String[] args) throws Exception
   {
+	//TestConfiguration.load(Object.class);
+	  
     final DatabaseModel model = new BookDatabaseModel();
 
     final DataGenerator generator = new DataGenerator(model);

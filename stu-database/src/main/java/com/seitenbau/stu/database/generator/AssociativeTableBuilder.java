@@ -16,7 +16,7 @@ public class AssociativeTableBuilder extends TableBuilder
   public Table build()
   {
     final Table result = new AssociativeTable(name, javaName, getTableDescription(), seed,
-        infinite, minEntities, columnBuilders, constraintColumnPairs, dataSource);
+        infinite, minEntities, columnBuilders, constraintColumnPairs, dataSource, model);
     model.addTable(result);
     return result;
   }

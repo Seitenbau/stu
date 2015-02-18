@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
 import com.seitenbau.stu.database.generator.values.constraints.DataConstraint;
@@ -30,37 +32,86 @@ public class DataGenerator extends ValueGenerator {
 	}
 
 	@Override
-	public String nextValue() {
+	public Result nextValue(EntityBlueprint eb) {
+
+		Result result = new Result(null, false);
+		
+		if (!allTargetsLoaded(eb))
+			return result;
+		
+		// TODO Check if all targets have values...
+		if(!checkValues(eb))
+			return result;
+	
 
 		ArrayList<DataConstraint> al = ConstraintsData.data.get(getKey());
 
-		if (constraintPairs == null) {
-			DataConstraint c = al.get(random.nextInt(al.size()));
-			return c.getValue().toString();
-		} else {
-			ConstraintsData cd = new ConstraintsData();
+		Comparable<?> value = null;
 
-			reduceList(cd);
-
-			al = cd.data.get(getKey());
+		int i = 0;
+		do {
 			if (al.size() > 0) {
 				int randInt = random.nextInt(al.size());
-				System.out.println(getKey() + ": " + randInt + " aus " + al.size());
-				Comparable value = al.get(randInt).getValue();
-				if (value == null)
-					return "";
-				for (ConstraintPair cp : constraintPairs) {
-					if(DataConstraint.class.isInstance(cp.getMyConstraint())){
-						((DataConstraint) cp.getMyConstraint()).setValue(value);
-					}else{
-						((UniqueConstraint) cp.getMyConstraint()).getValues().add(value);
-					}
-				}
-				return value.toString();
+				//System.out.println(getKey() + ": " + randInt + " aus " + al.size());
+				value = al.get(randInt).getValue();				
 			}
 
-			return null;
+			i++;
+		} while (checkSuperConstraints(value, eb) && i < 100);
+
+		if(i > 99){
+			return new Result(null, false);
+		}else{
+			result.setValue("\"" + value + "\"");
 		}
+		
+		return result;
+
+		// if (constraintPairs == null) {
+		// DataConstraint c = al.get(random.nextInt(al.size()));
+		// return c.getValue().toString();
+		// } else {
+		// ConstraintsData cd = new ConstraintsData();
+		//
+		// reduceList(cd);
+		//
+		// Comparable value = null;
+		//
+		// do {
+		// al = cd.data.get(getKey());
+		// if (al.size() > 0) {
+		// int randInt = random.nextInt(al.size());
+		// System.out.println(getKey() + ": " + randInt + " aus " + al.size());
+		// value = al.get(randInt).getValue();
+		// if (value == null)
+		// return "";
+		// }
+		// } while (checkConstraints(value));
+		//
+		//
+		// setConstraintValues(value);
+		// return value.toString();
+		//
+		// // al = cd.data.get(getKey());
+		// // if (al.size() > 0) {
+		// // int randInt = random.nextInt(al.size());
+		// // System.out.println(getKey() + ": " + randInt + " aus " +
+		// al.size());
+		// // Comparable value = al.get(randInt).getValue();
+		// // if (value == null)
+		// // return "";
+		// // for (ConstraintPair cp : constraintPairs) {
+		// // if(DataConstraint.class.isInstance(cp.getMyConstraint())){
+		// // ((DataConstraint) cp.getMyConstraint()).setValue(value);
+		// // }else if(UniqueConstraint.class.isInstance(cp.getMyConstraint())){
+		// // ((UniqueConstraint) cp.getMyConstraint()).getValues().add(value);
+		// // }
+		// // }
+		// // return value.toString();
+		// // }
+		// //
+		// // return null;
+		// }
 	}
 
 	private void reduceList(ConstraintsData cd) {
@@ -91,11 +142,12 @@ public class DataGenerator extends ValueGenerator {
 					}
 				}
 
-			} else {
+			} else if (DataConstraint.class.isInstance(cp.getMyConstraint())) {
 
 				DataConstraint myConstraint = (DataConstraint) cp.getMyConstraint();
 				DataConstraint dependingConstraint = (DataConstraint) cp.getDependingConstraint();
-				if (dependingConstraint.getValue() != null) { // Constraint-Wert vorhanden
+				if (dependingConstraint.getValue() != null) { // Constraint-Wert
+																// vorhanden
 					Iterator<Entry<String, ArrayList<DataConstraint>>> it = cd.data.entrySet().iterator();
 					while (it.hasNext()) {
 						Map.Entry pairs = (Map.Entry) it.next();

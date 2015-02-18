@@ -51,13 +51,15 @@ public class DataConstraint extends Constraint {
 	}
 
 	@Override
-	public boolean equals(Object object) {
-		boolean sameSame = false;
+	public boolean isValid(Comparable value) {
+		//TODO
 
-		if (object != null && object instanceof DataConstraint) {
-			sameSame = this.value == ((DataConstraint) object).value;
-		}
-
-		return sameSame;
+		return false;
 	}
+
+	@Override
+	public Constraint reduce() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 }

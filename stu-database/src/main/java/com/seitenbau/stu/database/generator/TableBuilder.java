@@ -7,6 +7,7 @@ import java.util.List;
 import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.Constraint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
+import com.seitenbau.stu.database.generator.values.constraints.RangeConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
 
 public class TableBuilder implements TableBuilderCommon {
@@ -41,9 +42,9 @@ public class TableBuilder implements TableBuilderCommon {
 		minEntities = 1;
 		javaName = DataSet.makeNiceJavaName(name);
 		columnBuilders = new LinkedList<ColumnBuilder>();
-		constraintColumnPairs = new ArrayList<ConstraintColumnPair>();
 		infinite = null;
 		dataSource = model.dataSource;
+		constraintColumnPairs = model.constraintColumnPairs; // TODO: Nur bekannte???
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class TableBuilder implements TableBuilderCommon {
 	public Table build() {
 		builtTable = new Table(name, javaName, getTableDescription(), seed,
 				infinite, minEntities, columnBuilders, constraintColumnPairs,
-				dataSource);
+				dataSource, model);
 		model.addTable(builtTable);
 
 		return builtTable;
@@ -119,10 +120,17 @@ public class TableBuilder implements TableBuilderCommon {
 	public ArrayList<ConstraintColumnPair> list = new ArrayList<ConstraintColumnPair>();
 
 	public TableBuilder constraint(Constraint constraint, String column){
+		constraint.setColumnName(column);
+		
 		if(UniqueConstraint.class.isInstance(constraint)){
 			constraintColumnPairs.add(new ConstraintColumnPair(constraint,
 					column, constraint, column));
-		}		
+		}
+		
+		if(RangeConstraint.class.isInstance(constraint)){
+			constraintColumnPairs.add(new ConstraintColumnPair(constraint,
+					column, constraint, column));
+		}
 		
 		return this;
 	}
@@ -130,12 +138,16 @@ public class TableBuilder implements TableBuilderCommon {
 	public TableBuilder constraint(Constraint constraint, String column1,
 			String column2) {
 
+		// TODO: Relation zu anderer Tabelle: model benutzen
+		//model.constraintTable..... insert.....
+		
 		try {
 			if (CompareValueConstraint.class.isInstance(constraint)) {
-
+				constraint.setColumnName(column1);
 				CompareValueConstraint cvc = (CompareValueConstraint) constraint;
 				CompareValueConstraint partnerConstraint = (CompareValueConstraint) constraint.getClass().newInstance();
 				partnerConstraint.setCompareType(cvc.getCompareType().partner());
+				partnerConstraint.setColumnName(column2);
 				return constraint(constraint, column1, partnerConstraint,
 						column2);
 			} else {

@@ -1,8 +1,14 @@
 package com.seitenbau.stu.database.generator;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import com.seitenbau.stu.database.generator.values.constraints.Constraint;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
+import com.seitenbau.stu.database.generator.values.constraints.GlobalConstraint;
 
 public abstract class DatabaseModel {
 
@@ -23,9 +29,17 @@ public abstract class DatabaseModel {
 	long seed;
 
 	int infinite;
+	
+	public ConstraintsData dataSource; // TODO: private
 
-	ConstraintsData dataSource;
+	public ArrayList<ConstraintColumnPair> constraintColumnPairs = new ArrayList<ConstraintColumnPair>(); //TODO: private
 
+	public ArrayList<ConstraintInterface> getConstraintsList() {
+		return constraintsList;
+	}
+
+	private ArrayList<ConstraintInterface> constraintsList = new ArrayList<ConstraintInterface>();
+	
 	public DatabaseModel() {
 		isModelClassGeneration = false;
 		isTableDSLGeneration = true;
@@ -59,7 +73,15 @@ public abstract class DatabaseModel {
 	public void dataSource(ConstraintsData constraintsData) {
 		this.dataSource = constraintsData;
 	}
+	
+	public void constraint(Constraint constraint1, String column1, Constraint constraint2, String column2) {
+		constraintColumnPairs.add(new ConstraintColumnPair(constraint1, column1, constraint2, column2));	
+	}
 
+	public void constraint(ConstraintInterface sc){
+		constraintsList.add(sc);
+	}
+	
 	public void generatedSourceFolder(String folder) {
 		if (generator == null) {
 			this.targetPath = folder;
@@ -186,6 +208,17 @@ public abstract class DatabaseModel {
 
 	public List<Table> getTables() {
 		return getDataSetGenInstance().getDataSet().getTables();
+	}
+	
+	public Table getTableByName(String name) {
+		List<Table> tables = getTables();
+
+		for (Table table : tables) {
+			if (table.getName().compareTo(name) == 0)
+				return table;
+		}
+
+		return null;
 	}
 
 	public long getSeed() {

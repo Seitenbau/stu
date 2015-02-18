@@ -9,171 +9,168 @@ import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 import com.seitenbau.stu.util.CamelCase;
 
-public class Column
-{
+public class Column {
 
-  private final Table _table;
+	private final Table _table;
 
-  private final DataType _dataType;
+	private final DataType _dataType;
 
-  private final String _name;
+	private final String _name;
 
-  private final String _javaName;
+	private final String _javaName;
 
-  private final String _headerName;
+	private final String _headerName;
 
-  private final String _description;
+	private final String _description;
 
-  private final ColumnReference _relation;
+	private final ColumnReference _relation;
 
-  private final ColumnMetaData _metaData;
+	private final ColumnMetaData _metaData;
 
-  final List<Column> _referencedBy;
+	final List<Column> _referencedBy;
 
-  private final ValueGenerator _generator;
+	private final ValueGenerator _generator;
 
-  private final long _seed;
+	private final long _seed;
 
-  private final Integer _infinite;
-  
-  private final ArrayList<ConstraintPair> _constraints;
+	private final Integer _infinite;
 
-  Column(Table table, String name, String javaName, String headerName, String description, DataType dataType,
-      ColumnReference relation, Set<String> flags, ValueGenerator generator, long seed, Integer infinite, ArrayList<ConstraintPair> constraints)
-  {
-    _table = table;
-    _name = name;
-    _javaName = javaName;
-    _headerName = headerName;
-    _description = description;
-    _dataType = dataType;
-    _relation = relation;
-    _generator = generator;
-    _seed = seed;
-    _infinite = infinite;
-    _constraints = constraints;
+	private final ArrayList<ConstraintPair> _constraints;	
 
-    _metaData = new ColumnMetaData(flags);
+	public boolean is_allowNull() {
+		return _allowNull;
+	}
 
-    _referencedBy = new ArrayList<Column>();
-    if (_relation != null) {
-      _relation.addReferencedBy(this);
-    }
-  }
+	public void set_allowNull(boolean _allowNull) {
+		this._allowNull = _allowNull;
+	}
 
-  public Table getTable()
-  {
-    return _table;
-  }
+	private String[] _set;
+	
+	private boolean _allowNull;
 
-  public String getJavaType()
-  {
-    return _dataType.getJavaType();
-  }
+	public void set_set(String[] _set) {
+		this._set = _set;
+	}
 
-  public String getType()
-  {
-    return _dataType.getDataType();
-  }
+	Column(Table table, String name, String javaName, String headerName, String description, DataType dataType, ColumnReference relation,
+			Set<String> flags, ValueGenerator generator, long seed, Integer infinite, ArrayList<ConstraintPair> constraints, String[] set, boolean allowNull) {
+		_table = table;
+		_name = name;
+		_javaName = javaName;
+		_headerName = headerName;
+		_description = description;
+		_dataType = dataType;
+		_relation = relation;
+		_generator = generator;
+		_seed = seed;
+		_infinite = infinite;
+		_constraints = constraints;
+		_set = set;
+		_allowNull = allowNull;
 
-  DataType getDataType()
-  {
-    return _dataType;
-  }
+		_metaData = new ColumnMetaData(flags);
 
-  public String getName()
-  {
-    return _name;
-  }
+		_referencedBy = new ArrayList<Column>();
+		if (_relation != null) {
+			_relation.addReferencedBy(this);
+		}
+	}
 
-  public String getJavaName()
-  {
-    return _javaName;
-  }
+	public Table getTable() {
+		return _table;
+	}
 
-  public String getJavaNameFirstLower()
-  {
-    return CamelCase.makeFirstLowerCase(getJavaName());
-  }
+	public String getJavaType() {
+		return _dataType.getJavaType();
+	}
 
-  public String getHeaderName()
-  {
-    return _headerName;
-  }
+	public String getType() {
+		return _dataType.getDataType();
+	}
 
-  public String getDescription()
-  {
-    return _description;
-  }
+	DataType getDataType() {
+		return _dataType;
+	}
 
-  public ColumnReference getRelation()
-  {
-    return _relation;
-  }
+	public String getName() {
+		return _name;
+	}
 
-  public ColumnMetaData getMetaData()
-  {
-    return _metaData;
-  }
+	public String getJavaName() {
+		return _javaName;
+	}
 
-  public List<Column> getReferencedByList()
-  {
-    return Collections.unmodifiableList(_referencedBy);
-  }
+	public String getJavaNameFirstLower() {
+		return CamelCase.makeFirstLowerCase(getJavaName());
+	}
 
-  public boolean isDefaultIdentifier()
-  {
-    return _metaData.hasFlag(ColumnMetaData.DEFAULT_IDENTIFIER);
-  }
+	public String getHeaderName() {
+		return _headerName;
+	}
 
-  public boolean isIdentifier()
-  {
-    return _metaData.hasFlag(ColumnMetaData.IDENTIFIER);
-  }
+	public String getDescription() {
+		return _description;
+	}
 
-  public boolean isImmutable()
-  {
-    return _metaData.hasFlag(ColumnMetaData.IMMUTABLE);
-  }
+	public ColumnReference getRelation() {
+		return _relation;
+	}
 
-  public boolean isNextValueMethodGenerated()
-  {
-    return _metaData.hasFlag(ColumnMetaData.ADD_NEXT_METHOD);
-  }
+	public ColumnMetaData getMetaData() {
+		return _metaData;
+	}
 
-  public boolean isAutoInvokeValueGeneration()
-  {
-    return _metaData.hasFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
-  }
+	public List<Column> getReferencedByList() {
+		return Collections.unmodifiableList(_referencedBy);
+	}
 
-  public boolean isAutoIncrement()
-  {
-    return _metaData.hasFlag(ColumnMetaData.AUTO_INCREMENT);
-  }
+	public boolean isDefaultIdentifier() {
+		return _metaData.hasFlag(ColumnMetaData.DEFAULT_IDENTIFIER);
+	}
 
-  public boolean isFutureValueSupported()
-  {
-    return !isImmutable() && _relation == null;
-  }
+	public boolean isIdentifier() {
+		return _metaData.hasFlag(ColumnMetaData.IDENTIFIER);
+	}
 
-  public ValueGenerator getGenerator()
-  {
-    return _generator;
-  }
+	public boolean isImmutable() {
+		return _metaData.hasFlag(ColumnMetaData.IMMUTABLE);
+	}
 
-  public long getSeed()
-  {
-    return _seed;
-  }
+	public boolean isNextValueMethodGenerated() {
+		return _metaData.hasFlag(ColumnMetaData.ADD_NEXT_METHOD);
+	}
 
-  public Integer getInfinite()
-  {
-    return _infinite;
-  }
-  
-  public ArrayList<ConstraintPair> getConstraints()
-  {
-    return _constraints;
-  }
+	public boolean isAutoInvokeValueGeneration() {
+		return _metaData.hasFlag(ColumnMetaData.AUTO_INVOKE_NEXT);
+	}
+
+	public boolean isAutoIncrement() {
+		return _metaData.hasFlag(ColumnMetaData.AUTO_INCREMENT);
+	}
+
+	public boolean isFutureValueSupported() {
+		return !isImmutable() && _relation == null;
+	}
+
+	public ValueGenerator getGenerator() {
+		return _generator;
+	}
+
+	public long getSeed() {
+		return _seed;
+	}
+
+	public Integer getInfinite() {
+		return _infinite;
+	}
+
+	public ArrayList<ConstraintPair> getConstraints() {
+		return _constraints;
+	}
+
+	public String[] get_set() {
+		return _set;
+	}
 
 }

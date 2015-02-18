@@ -18,7 +18,7 @@ public class CamelCase
       }
       if (cur.equals("_") || cur.charValue() == 95)
       {
-        sb.append(" ");
+        sb.append("null");
       }
       // insert space before numbers
       else if (!Character.isDigit(cur) && next != null
