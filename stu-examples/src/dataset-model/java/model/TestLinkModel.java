@@ -39,10 +39,10 @@ public class TestLinkModel extends DatabaseModel {
 //		TableBuilder issuetrackers = table("issuetrackers");
 //		TableBuilder keywords = table("keywords");
 //		TableBuilder milestones = table("milestones");
-		TableBuilder nodes_hierarchy = table("nodes_hierarchy");
-		TableBuilder node_types = table("node_types");
+//		TableBuilder nodes_hierarchy = table("nodes_hierarchy");
+//		TableBuilder node_types = table("node_types");
 //		TableBuilder object_keywords = table("object_keywords");
-		TableBuilder platforms = table("platforms");
+//		TableBuilder platforms = table("platforms");
 //		TableBuilder reqmgrsystems = table("reqmgrsystems");
 //		TableBuilder requirements = table("requirements");
 //		TableBuilder req_coverage = table("req_coverage");
@@ -59,7 +59,7 @@ public class TestLinkModel extends DatabaseModel {
 //		TableBuilder tcversions = table("tcversions");
 //		TableBuilder testcase_relations = table("testcase_relations");
 		TableBuilder testplans = table("testplans");
-		TableBuilder testplan_platforms = table("testplan_platforms");
+//		TableBuilder testplan_platforms = table("testplan_platforms");
 //		TableBuilder testplan_tcversions = table("testplan_tcversions");
 		TableBuilder testprojects = table("testprojects");
 		TableBuilder testsuites = table("testsuites");
@@ -77,7 +77,7 @@ public class TestLinkModel extends DatabaseModel {
 //		// {1, open}, {2, closed}, {3, completed}, {4, todo_urgent}, {5, todo}
 		assignment_status.minEntities(7)
 		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 1000)) //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// not null, <= 100
 				.column("description", DataType.VARCHAR).set("\"open\"", "\"closed\"", "\"completed\"", "\"todo_urgent\"", "\"todo\"") //
 				.build();
@@ -85,7 +85,7 @@ public class TestLinkModel extends DatabaseModel {
 		// {1, testplan_tcversions, testcase_execution},{2, tcversions, testcase_review}
 		assignment_types.minEntities(2)
 		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 1000)) //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// <= 30 or null
 				.column("fk_table", DataType.VARCHAR).set("\"testplan_tcversions\"", "\"tcversions\"") //
 				// not null, <= 100
@@ -94,9 +94,9 @@ public class TestLinkModel extends DatabaseModel {
 
 		attachments.minEntities(2)
 		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 1000)) //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// length <= 10, id > 0, Unique, NotNull
-				.column("fk_id", DataType.INTEGER).reference.foreign(nodes_hierarchy) //
+				//.column("fk_id", DataType.INTEGER).reference.foreign(nodes_hierarchy) //
 				// <= 250 or null
 				.column("fk_table", DataType.VARCHAR).allowNull(true) //
 				// <= 250 or null
@@ -121,7 +121,7 @@ public class TestLinkModel extends DatabaseModel {
 
 		builds
 		// length <= 10, id > 0, Unique, NotNull
-		.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 100)) //
+		.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext().autoInvokeNext() //
 				// length <= 10, id > 0, Unique, FOREIGN KEY
 				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
 				// not null, <= 100, UNIQUE
@@ -129,9 +129,9 @@ public class TestLinkModel extends DatabaseModel {
 				// null or text
 				.column("notes", DataType.VARCHAR).allowNull(true) //
 				// 0 or 1
-				.column("active", DataType.TINYINT).generator(new IntegerGenerator(1, 1)) //
+				.column("active", DataType.TINYINT).generator(new IntegerGenerator(0, 1)) //
 				// 0 or 1
-				.column("is_open", DataType.TINYINT).generator(new IntegerGenerator(1, 1)) //
+				.column("is_open", DataType.TINYINT).generator(new IntegerGenerator(0, 1)) //
 				// null, > 0, lenth <= 10
 				.column("author_id", DataType.INTEGER).reference.foreign(users) //
 				// Current Timestamp, not null
@@ -144,7 +144,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		cfield_build_design_values
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("field_id", DataType.INTEGER).defaultIdentifier() //
+//				.column("field_id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, eigentlich FOREIGN KEY
 //				.column("node_id", DataType.INTEGER)//.reference.foreign(nodes_hierarchy) //
 //				// not null, <= 4000
@@ -153,7 +153,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		cfield_design_values
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("field_id", DataType.INTEGER).defaultIdentifier() //
+//				.column("field_id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, eigentlich FOREIGN KEY
 //				.column("node_id", DataType.INTEGER)//.reference.foreign(nodes_hierarchy) //
 //				// not null, <= 4000
@@ -162,7 +162,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		cfield_execution_values
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("field_id", DataType.INTEGER).defaultIdentifier() //
+//				.column("field_id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, eigentlich FOREIGN KEY
 //				.column("execution_id", DataType.INTEGER).reference.foreign(executions) //
 //				// length <= 10, id > 0, Unique, eigentlich FOREIGN KEY
@@ -175,14 +175,14 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		cfield_node_types
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("field_id", DataType.INTEGER).defaultIdentifier() //
+//				.column("field_id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, eigentlich FOREIGN KEY
 //				.column("node_type_id", DataType.INTEGER).reference.foreign(node_types) //
 //				.build();
 //
 //		cfield_testplan_design_values
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("field_id", DataType.INTEGER).defaultIdentifier() //
+//				.column("field_id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, eigentlich FOREIGN KEY
 //				.column("link_id", DataType.INTEGER).generator(new IntegerGenerator(1, 100)) //
 //				// not null, <= 4000
@@ -199,18 +199,18 @@ public class TestLinkModel extends DatabaseModel {
 //				// not null, SIZE = 5, > 0
 //				.column("location", DataType.SMALLINT) //
 //				// not null, SIZE = 1
-//				.column("active", DataType.TINYINT).generator(new IntegerGenerator(1, 1)) //
+//				.column("active", DataType.TINYINT).generator(new IntegerGenerator(0, 1)) //
 //				// not null, SIZE = 1
-//				.column("required", DataType.TINYINT).generator(new IntegerGenerator(1, 1)) //
+//				.column("required", DataType.TINYINT).generator(new IntegerGenerator(0, 1)) //
 //				// not null, SIZE = 1
-//				.column("required_on_design", DataType.TINYINT).generator(new IntegerGenerator(1, 1)) //
+//				.column("required_on_design", DataType.TINYINT).generator(new IntegerGenerator(0, 1)) //
 //				// not null, SIZE = 1
-//				.column("required_on_execution", DataType.TINYINT).generator(new IntegerGenerator(1, 1)) //
+//				.column("required_on_execution", DataType.TINYINT).generator(new IntegerGenerator(0, 1)) //
 //				.build();
 //
 //		custom_fields
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// not null, <= 64, UNIQUE
 //				.column("name", DataType.VARCHAR) //
 //				// not null, <= 64
@@ -243,7 +243,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		db_version
 //		// length <= 50, Unique, NotNull
-//				.column("version", DataType.VARCHAR).defaultIdentifier() //
+//				.column("version", DataType.VARCHAR).defaultIdentifier().autoInvokeNext() //
 //				// DATETIME
 //				.column("upgrade_ts", DataType.DATE) //
 //				// null or text
@@ -252,7 +252,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		events.minEntities(6)
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, FOREIGN KEY
 //				.column("transaction_id", DataType.INTEGER).reference.foreign(transactions) //
 //				// not null, > 0, length <= 5
@@ -274,7 +274,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		executions.minEntities(5)
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, FOREIGN KEY
 //				.column("build_id", DataType.INTEGER).reference.foreign(builds) //
 //				// length <= 10, id > 0, Unique, FOREIGN KEY, null erlaubt
@@ -308,7 +308,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		executions_tcsteps
 //		// length <= 10, id > 0, Unique, FOREIGN KEY
-//				.column("execution_id", DataType.INTEGER).defaultIdentifier()//.reference.foreign(executions) //
+//				.column("execution_id", DataType.INTEGER).defaultIdentifier().autoInvokeNext()//.reference.foreign(executions) //
 //				// length <= 10, id > 0, Unique, FOREIGN KEY
 //				.column("tcstep_id", DataType.INTEGER).reference.foreign(tcsteps) //
 //				// Text or null
@@ -319,7 +319,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		inventory
 //		// length <= 10, id > 0, Unique
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, FOREIGN KEY
 //				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
 //				// length <= 10, id > 0, Unique, FOREIGN KEY
@@ -338,7 +338,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		issuetrackers
 //		// length <= 10, id > 0, Unique
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// 100, not null, UNIQUE
 //				.column("name", DataType.VARCHAR) //
 //				// 10, null
@@ -349,7 +349,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		keywords
 //		// length <= 10, id > 0, Unique, NotNull
-//		.column("id", DataType.INTEGER).defaultIdentifier() //
+//		.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// not null, <= 100
 //				.column("keyword", DataType.VARCHAR) //
 //				// foreign key
@@ -360,7 +360,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		milestones
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, Unique, NotNull, FOREIGN
 //				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
 //				// DATE, Null
@@ -377,33 +377,33 @@ public class TestLinkModel extends DatabaseModel {
 //				.column("name", DataType.VARCHAR) //
 //				.build();
 //
-		nodes_hierarchy
-		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 1000)) //
-				// null, <= 100
-				.column("name", DataType.VARCHAR).allowNull(true) //
-				// foreign, null
-				.column("parent_id", DataType.INTEGER).generator(new IntegerGenerator(1, 100)) //.reference.local.foreign(nodes_hierarchy) //
-				// foreign, not null
-				.column("node_type_id", DataType.INTEGER).reference.foreign(node_types) //
-				// INT 10, null
-				.column("node_order", DataType.INTEGER).generator(new IntegerGenerator(1, 10)) //
-				.build();
+//		nodes_hierarchy
+//		// length <= 10, id > 0, Unique, NotNull
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext().generator(new IntegerGenerator(1, 1000)) //
+//				// null, <= 100
+//				.column("name", DataType.VARCHAR).allowNull(true) //
+//				// foreign, null
+//				.column("parent_id", DataType.INTEGER).generator(new IntegerGenerator(1, 100)) //.reference.local.foreign(nodes_hierarchy) //
+//				// foreign, not null
+//				.column("node_type_id", DataType.INTEGER).reference.foreign(node_types) //
+//				// INT 10, null
+//				.column("node_order", DataType.INTEGER).generator(new IntegerGenerator(1, 10)) //
+//				.build();
 //
 //		// {testproject, testsuite, testcase, testcase_version, testplan,
 //		// requirement_spec, requirement, requirement_version, testcase_step,
 //		// requirement_revision, requirement_spec_revision, build, plattform,
 //		// user}
-		node_types.minEntities(10)
-		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 1000)) //
-//
-				.column("description", DataType.VARCHAR).set("\"testproject\"", "\"testsuite\"", "\"testcase\"", "\"testcase_version\"", "\"testplan\"",  "\"requirement_spec\"", "\"requirement\"", "\"requirement_version\"", "\"testcase_step\"", "\"requirement_revision\"", "\"requirement_spec_revision\"", "\"build\"", "\"plattform\"", "\"user\"") //
-				.build();
+//		node_types.minEntities(10)
+//		// length <= 10, id > 0, Unique, NotNull
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext().generator(new IntegerGenerator(1, 1000)) //
+////
+//				.column("description", DataType.VARCHAR).set("\"testproject\"", "\"testsuite\"", "\"testcase\"", "\"testcase_version\"", "\"testplan\"",  "\"requirement_spec\"", "\"requirement\"", "\"requirement_version\"", "\"testcase_step\"", "\"requirement_revision\"", "\"requirement_spec_revision\"", "\"build\"", "\"plattform\"", "\"user\"") //
+//				.build();
 //
 //		object_keywords
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// 10, not null
 //				.column("fk_id", DataType.INTEGER) //
 //				// VARCHAR 30, null
@@ -412,20 +412,20 @@ public class TestLinkModel extends DatabaseModel {
 //				.column("keyword_id", DataType.INTEGER).reference.foreign(keywords) //
 //				.build();
 //
-		platforms
-		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 100000)) //
-				// VARCHAR 100, not null, UNIQUE
-				.column("name", DataType.VARCHAR).generator(new BuchNameGenerator()) //
-				// 10, not null
-				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
-				// text, not null
-				.column("notes", DataType.VARCHAR).generator(new BuchNameGenerator()) //
-				.build();
+//		platforms
+//		// length <= 10, id > 0, Unique, NotNull
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext().generator(new IntegerGenerator(1, 100000)) //
+//				// VARCHAR 100, not null, UNIQUE
+//				.column("name", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+//				// 10, not null
+//				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
+//				// text, not null
+//				.column("notes", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+//				.build();
 //
 //		reqmgrsystems
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// VARCHAR 100, not null, UNIQUE
 //				.column("name", DataType.VARCHAR) //
 //				// 10, null
@@ -436,7 +436,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		requirements
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() // nodes_hierachy_id
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() // nodes_hierachy_id
 //				// foreign und unique mit req_doc_id
 //				.column("srs_id", DataType.INTEGER) //
 //				// length <= 64, not null, UNIQUE
@@ -461,7 +461,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		req_relations
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, NotNull
 //				.column("source_id", DataType.INTEGER) // Foreign-Tabelle???
 //				// length <= 10, id > 0, NotNull
@@ -478,7 +478,7 @@ public class TestLinkModel extends DatabaseModel {
 //		// length <= 10, id > 0, NotNull
 //				.column("parent_id", DataType.INTEGER)//.reference.foreign(req_revisions) //
 //				// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// SMALLINT 5, > 0
 //				.column("revision", DataType.SMALLINT) //
 //				// length 64, Null
@@ -511,7 +511,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		req_specs
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// length <= 10, id > 0, NotNull, foreign
 //				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
 //				// length 64, NotNull
@@ -522,7 +522,7 @@ public class TestLinkModel extends DatabaseModel {
 //		// length <= 10, id > 0, NotNull
 //				.column("parent_id", DataType.INTEGER) //
 //				// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// SMALLINT 5, > 0
 //				.column("revision", DataType.SMALLINT) //
 //				// length 64, Null
@@ -551,7 +551,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		req_versions
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// SMALLINT 5, > 0
 //				.column("version", DataType.SMALLINT) //
 //				// SMALLINT 5, > 0
@@ -582,14 +582,14 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		rights //
 //		// length <= 10, id > 0, Unique, NotNull
-//		.column("id", DataType.INTEGER).defaultIdentifier() //
+//		.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// null or TEXT
 //				.column("description", DataType.VARCHAR) //
 //				.build();
 //
 //		risk_assignments //
 //				// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// foreign, not null
 //				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
 //				// foreign, not null
@@ -601,7 +601,7 @@ public class TestLinkModel extends DatabaseModel {
 
 		roles //
 		// length <= 10, id > 0, Unique, NotNull
-		.column("id", DataType.INTEGER).generator(new IntegerGenerator(1, 1000)).defaultIdentifier() //
+		.column("id", DataType.INTEGER).generator(new IntegerGenerator(1, 1000)).defaultIdentifier().autoInvokeNext() //
 				// not null, <= 100
 				.column("description", DataType.VARCHAR).generator(new BuchNameGenerator()) //
 				// null or TEXT
@@ -622,7 +622,7 @@ public class TestLinkModel extends DatabaseModel {
 //				// length <= 11, not null
 //				.column("installed_rank", DataType.INTEGER) //
 //				// primary, varchar 50
-//				.column("version", DataType.VARCHAR).defaultIdentifier() //
+//				.column("version", DataType.VARCHAR).defaultIdentifier().autoInvokeNext() //
 //				// not null, <= 200
 //				.column("description", DataType.VARCHAR) //
 //				// not null, <= 20
@@ -643,7 +643,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		tcsteps //
 //		// length <= 10, id > 0, Unique, NotNull
-//		.column("id", DataType.INTEGER).defaultIdentifier() //
+//		.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// 11, not null
 //				.column("step_number", DataType.INTEGER) //
 //				// TEXT, null
@@ -658,7 +658,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		tcversions //
 //					// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 100000)) //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext().generator(new IntegerGenerator(1, 100000)) //
 //				// null, length 10, > 0
 //				.column("tc_external_id", DataType.INTEGER).generator(new IntegerGenerator(0, 1)) //
 //				// 5, > 0, standard = 1
@@ -701,7 +701,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 //		testcase_relations //
 //				// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// null, length 10, > 0
 //				.column("source_id", DataType.INTEGER).allowNull(true) //
 //				// null, length 10, > 0
@@ -716,7 +716,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 		testplans //
 					// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 100000)) //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// not null, user_id exists?
 				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
 				// Keine Constraints
@@ -731,18 +731,18 @@ public class TestLinkModel extends DatabaseModel {
 				.column("api_key", DataType.VARCHAR).generator(new BuchNameGenerator()) //
 				.build(); //
 
-		testplan_platforms
-		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 100000)) //
-				// not null,
-				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
-				// not null,
-				.column("platform_id", DataType.INTEGER).reference.foreign(platforms) //
-				.build();
+//		testplan_platforms
+//		// length <= 10, id > 0, Unique, NotNull
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext().generator(new IntegerGenerator(1, 100000)) //
+//				// not null,
+//				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
+//				// not null,
+//				.column("platform_id", DataType.INTEGER).reference.foreign(platforms) //
+//				.build();
 //
 //		testplan_tcversions
 //		// length <= 10, id > 0, Unique, NotNull
-//				.column("id", DataType.INTEGER).defaultIdentifier() //
+//				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 //				// not null,
 //				.column("testplans_id", DataType.INTEGER).reference.foreign(testplans) //
 //				// not null,
@@ -761,7 +761,7 @@ public class TestLinkModel extends DatabaseModel {
 //
 		testprojects //
 				// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 100000)) //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// Keine Constraints
 				//.column("notes", DataType.VARCHAR) //
 				// length <= 12, startsWidth("#9BD")
@@ -809,14 +809,14 @@ public class TestLinkModel extends DatabaseModel {
 //
 		testsuites
 		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(0, 99)) //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// Keine Constraints, null
 				.column("details", DataType.VARCHAR).allowNull(true) //
 				.build();
 
 		transactions
 		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier() //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// 0 < length <= 45, not null
 				.column("entry_point", DataType.VARCHAR) //
 				// length = 10, > 0, not null
@@ -831,7 +831,7 @@ public class TestLinkModel extends DatabaseModel {
 
 		users //
 		// length <= 10, id > 0, Unique, NotNull
-		.column("id", DataType.INTEGER).generator(new IntegerGenerator(1, 100000)).defaultIdentifier() //
+		.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// 0 < length <= 30, not null
 				.column("login", DataType.VARCHAR).generator(new BuchNameGenerator()) //
 				// length == 32 (md5), not null
@@ -860,7 +860,7 @@ public class TestLinkModel extends DatabaseModel {
 
 		user_assignments
 		// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 10000)) //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// 0 < length <= 10, not null
 				.column("type", DataType.INTEGER).generator(new IntegerGenerator(1, 100)) //
 				// 0 < length <= 10, not null
@@ -877,11 +877,11 @@ public class TestLinkModel extends DatabaseModel {
 				.column("creation_ts", DataType.TIMESTAMP) //
 				// null, length = 10, > 0
 				.column("status", DataType.INTEGER).generator(new IntegerGenerator(1, 100)) //
-				.build();
+				.build();		
 //
 		user_group //
 				// length <= 10, id > 0, Unique, NotNull
-				.column("id", DataType.INTEGER).defaultIdentifier().generator(new IntegerGenerator(1, 10000)) //
+				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// <= 100, UNIQUE
 				.column("title", DataType.VARCHAR).generator(new BuchNameGenerator()) //
 				// null or Text
@@ -889,31 +889,31 @@ public class TestLinkModel extends DatabaseModel {
 				.build(); //
 //
 //		// user_id && usergroup_id == UNIQUE
-		associativeTable("user_group_assign") //
-				// not null, exists?
-				.column("usergroup_id", DataType.INTEGER).reference.foreign(user_group) //
-				// not null, exists?
-				.column("user_id", DataType.INTEGER).reference.foreign(users) //
-				.build();
-
-		// user_id && testplan_id == UNIQUE
-		associativeTable("user_testplan_roles") //
-				// not null, exists?
-				.column("user_id", DataType.INTEGER).reference.foreign(users) //
-				// not null, exists?
-				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
-				// not null, exists?
-				.column("role_id", DataType.INTEGER)//.reference.foreign(roles)
-				.build();
+//		associativeTable("user_group_assign") //
+//				// not null, exists?
+//				.column("usergroup_id", DataType.INTEGER).reference.foreign(user_group) //
+//				// not null, exists?
+//				.column("user_id", DataType.INTEGER).reference.foreign(users) //
+//				.build();
 //
-//		// user_id && testproject_id == UNIQUE
-		associativeTable("user_testproject_roles") //
-				// not null, exists?
-				.column("user_id", DataType.INTEGER).reference.foreign(users) //
-				// not null, exists?
-				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
-				// not null, exists?
-				.column("role_id", DataType.INTEGER)//.reference.foreign(roles) //
-				.build();
+//		// user_id && testplan_id == UNIQUE
+//		associativeTable("user_testplan_roles") //
+//				// not null, exists?
+//				.column("user_id", DataType.INTEGER).reference.foreign(users) //
+//				// not null, exists?
+//				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
+//				// not null, exists?
+//				.column("role_id", DataType.INTEGER)//.reference.foreign(roles)
+//				.build();
+////
+////		// user_id && testproject_id == UNIQUE
+//		associativeTable("user_testproject_roles") //
+//				// not null, exists?
+//				.column("user_id", DataType.INTEGER).reference.foreign(users) //
+//				// not null, exists?
+//				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
+//				// not null, exists?
+//				.column("role_id", DataType.INTEGER)//.reference.foreign(roles) //
+//				.build();
 	}
 }

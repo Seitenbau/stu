@@ -41,7 +41,6 @@ public class DataConstraint extends Constraint {
 			if (pairs.getKey() == dc.getKey()) {
 
 				ArrayList<DataConstraint> al = (ArrayList<DataConstraint>) pairs.getValue();
-
 				if (al.contains(constraint))
 					return constraint;
 			}

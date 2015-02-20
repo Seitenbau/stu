@@ -51,7 +51,6 @@ public class STUTableOutput {
 
 		result.append("package " + model.getPackageName() + ";\n\n");
 		// result.append("import static " + model.getPackageName() + ".HochschuleRefs.*\n\n");
-		result.append("import " + model.getPackageName() + ".*\n\n");
 		result.append("import static " + model.getPackageName() + "." + model.getName() + "DataSetRefs.*\n"); //SonferenzDataSetRefs.*\n");
 
 		
@@ -59,7 +58,6 @@ public class STUTableOutput {
 			result.append("import static " + model.getPackageName() + "." + table.getJavaName() + "TableAdapter.*\n");
 		}		
 		
-		result.append("import com.seitenbau.stu.database.model.*\n");
 		result.append("import static com.seitenbau.stu.util.DateUtil.*\n\n");
 
 		result.append("class " + model.getName() + "DataSetDefault extends " + builderClass + "\n");

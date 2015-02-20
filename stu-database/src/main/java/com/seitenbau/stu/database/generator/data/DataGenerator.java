@@ -11,14 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.jacop.constraints.XplusClteqZ;
-import org.jacop.core.IntVar;
-import org.jacop.core.Store;
-import org.jacop.search.DepthFirstSearch;
-import org.jacop.search.IndomainMin;
-import org.jacop.search.InputOrderSelect;
-import org.jacop.search.Search;
-import org.jacop.search.SelectChoicePoint;
 
 import com.seitenbau.stu.database.generator.AssociativeTable;
 import com.seitenbau.stu.database.generator.Column;
@@ -104,7 +96,6 @@ public class DataGenerator {
 		for (int i = 0; i < 10; i++) {
 			boolean areAllValuesGenerated = true;
 			for (Table table : getTableOrder(model)) {
-				Store store = new Store();
 				List<EntityBlueprint> entityBlueprints = fab.getEntities().getTableBlueprints(table);
 				for (EntityBlueprint eb : entityBlueprints) {
 					for (Column col : eb.table.getColumns()) {
@@ -125,26 +116,6 @@ public class DataGenerator {
 						}
 
 						if (eb.constraints.get(col.getName()) != null) {
-							// Use Constraint Solver if the Constraint is IntegerConstraint
-							
-							HashMap<String, IntVar> map = new HashMap<String, IntVar>();
-							
-							for (ConstraintInterface ci : eb.constraints.get(col.getName())) {
-								if (RConstraint.class.isInstance(ci)) {
-									RConstraint rc = (RConstraint) ci;
-									IntVar v = new IntVar(store, col.getName(), rc.getMin(), rc.getMax());
-									map.put(col.getTable().getName().toLowerCase() + "." + col.getName().toLowerCase(), v);
-
-								} else if (SolverConstraint.class.isInstance(ci)) {
-									SolverConstraint sc = (SolverConstraint) ci;
-									IntVar source = map.get(sc.sourceRef);
-									IntVar target = map.get(sc.getTarget());
-									store.impose(new XplusClteqZ(source, 16, target));
-								}
-							}
-							
-//							Search<IntVar> label = new DepthFirstSearch<IntVar>();
-//							SelectChoicePoint<IntVar> selectMin = new InputOrderSelect<IntVar>(store, (IntVar[]) map.values().toArray(), new IndomainMin<IntVar>());
 
 							col.getGenerator().setConstraints(eb.constraints.get(col.getName()));
 

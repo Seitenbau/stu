@@ -81,7 +81,8 @@ public class $tableClass
   public $tableClass next${column.javaName}()
   {
     Long nextId = _generator.nextId("${model.name}","$column.name");
-    set${column.javaName}(nextId);
+    // TODO: Fix Workaround
+    set${column.javaName}(Integer.valueOf(nextId.toString()));
     return this;
   }
 #end

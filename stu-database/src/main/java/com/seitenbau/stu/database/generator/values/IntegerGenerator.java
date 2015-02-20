@@ -6,12 +6,16 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
-import org.jacop.core.*;
-import org.jacop.constraints.*;
-import org.jacop.search.*;
-import org.jacop.set.constraints.*;
-import org.jacop.set.search.*;
-import org.jacop.set.core.*;
+import org.chocosolver.samples.AbstractProblem;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.IntConstraintFactory;
+import org.chocosolver.solver.explanations.ExplanationFactory;
+import org.chocosolver.solver.search.strategy.IntStrategyFactory;
+import org.chocosolver.solver.variables.BoolVar;
+import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.VF;
+import org.chocosolver.solver.variables.VariableFactory;
+import org.springframework.beans.factory.parsing.Problem;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
@@ -51,7 +55,8 @@ public class IntegerGenerator extends ValueGenerator {
 
 		Result result = new Result(null, false);
 
-		jacopTest();
+		if(random.nextInt() < 10)
+			new ExplainedSimpleProblem().execute();
 
 		if (!allTargetsLoaded(eb))
 			return result;
@@ -103,79 +108,57 @@ public class IntegerGenerator extends ValueGenerator {
 		// }
 	}
 
-	private boolean jacopTest() {
-		// Store store = new Store();
-		//
-		// IntVar x = new IntVar(store, "X", 1, 100);
-		// x.addDom(120, 160);
-		// IntVar y = new IntVar(store, "Y", 1, 100);
-		//
-		// IntVar[] v = new IntVar[] { x, y };
-		//
-		// // define constraints
-		// store.impose(new XgtY(x, y));
+	public class ExplainedSimpleProblem extends AbstractProblem {
+		IntVar[] vars;
+		int n = 5;
+		int vals = n + 1;
 
-		Store store = new Store();
-		IntVar a = new IntVar(store, "geburtsjahr", 1900, 2015);
-		IntVar b = new IntVar(store, "vereins_eintritt", 1985, 2015);
-		IntVar c = new IntVar(store, "letzter_login", 1997, 2015);
-		IntVar[] v = { a, b, c };
-		
-		//PrimitiveConstraint ctr = new Linear(store, v, new int[] { 1, 1, 1 }, "==", 10);
-		//store.impose(ctr);
-		
-		store.impose(new XgteqY(b, a));
-		store.impose(new XplusClteqZ(a, 16, b));
-		store.impose(new XmodYeqZ(b, new IntVar(store, "4", 4, 4), new IntVar(store, "0", 0, 0)));
-		store.impose(new XgteqY(c, b));	
+		@Override
+		public void createSolver() {
+			solver = new Solver();
+		}
 
-		Search<IntVar> label1 = new DepthFirstSearch<IntVar>();
-		Search<IntVar> label2 = new DepthFirstSearch<IntVar>();
+		@Override
+		public void buildModel() {
+			vars = VariableFactory.enumeratedArray("x", n, 1, vals, solver);
+			for (int i = 0; i < vars.length - 1; i++) {
+				solver.post(IntConstraintFactory.arithm(vars[i], ">",
+						vars[i + 1]));
+			}
+		}
 
-		SelectChoicePoint<IntVar> selectMin = new InputOrderSelect<IntVar>(store, v, new IndomainMin<IntVar>());
-		SelectChoicePoint<IntVar> selectMax = new InputOrderSelect<IntVar>(store, v, new IndomainMax<IntVar>());
+		@Override
+		public void configureSearch() {
+			solver.set(IntStrategyFactory.minDom_LB(vars));
+		}
 
-		//label.getSolutionListener().searchAll(true);
-		//label.getSolutionListener().recordSolutions(true);
+		@Override
+		public void solve() {
+			ExplanationFactory.CBJ.plugin(solver, false);
+			if (solver.findSolution()) {
+				do {
+					this.prettyOut();
+				} while (solver.nextSolution());
+			}
+		}
 
-		//label1.labeling(store, selectMin);
-		//label.getSolutionListener().printAllSolutions();
-		
-		label2.labeling(store, selectMax);
-		//label.getSolutionListener().printAllSolutions();
-
-		return true;
+		@Override
+		public void prettyOut() {
+			for (IntVar v : vars) {
+				// System.out.println("* variable " + v);
+				for (int i = 1; i <= vals; i++) {
+					if (!v.contains(i)) {
+						System.out.println(v.getName() + " != " + i
+								+ " because "
+								+ solver.getExplainer().retrieve(v, i));
+					}
+				}
+			}
+		}		
 	}
 
-	private void jacopTest_set() {
-
-		Store store = new Store();
-
-		SetVar s1 = new SetVar(store, "s1", new BoundSetDomain(new IntervalDomain(1, 1), new IntervalDomain(1, 4)));
-		SetVar s2 = new SetVar(store, "s2", new BoundSetDomain(new IntervalDomain(2, 2), new IntervalDomain(2, 5)));
-		SetVar s = new SetVar(store, "s", 1, 10);
-		Constraint c = new AunionBeqC(s1, s2, s);
-		
-		SetVar[] vars = {s1, s2, s};
-
-		Search<SetVar> label = new DepthFirstSearch<SetVar>();
-		
-		SelectChoicePoint<SetVar> select = new SimpleSelect<SetVar>(vars, new MinLubCard<SetVar>(), new MaxGlbCard<SetVar>(),
-				new IndomainSetMin<SetVar>());
-		label.setSolutionListener(new SimpleSolutionListener<SetVar>());
-
-		label.getSolutionListener().searchAll(true);
-		label.getSolutionListener().recordSolutions(true);
-
-		boolean result = label.labeling(store, select);
-
-		//System.out.println(store.toString());
-
-		//label.getSolutionListener().printAllSolutions();
-	}
-
-	
-	// TODO: OLD....Range wird eingeschränkt... Wird durch Constraint Solver ersetzt...
+	// TODO: OLD....Range wird eingeschränkt... Wird durch Constraint Solver
+	// ersetzt...
 	private String getValue() {
 		RandomList rl = new RandomList();
 		rl.add(new Range(min, max));
@@ -185,15 +168,18 @@ public class IntegerGenerator extends ValueGenerator {
 			// reduceList => makeRangeList
 
 			if (CompareValueConstraint.class.isInstance(cp.getMyConstraint())) {
-				CompareValueConstraint cvc_my = (CompareValueConstraint) cp.getMyConstraint();
-				CompareValueConstraint cvc_depending = (CompareValueConstraint) cp.getDependingConstraint();
+				CompareValueConstraint cvc_my = (CompareValueConstraint) cp
+						.getMyConstraint();
+				CompareValueConstraint cvc_depending = (CompareValueConstraint) cp
+						.getDependingConstraint();
 
 				if (cvc_depending.getValue() != null) {
 
 					// TODO
 					if (cvc_my.getCompareType() == CompareType.GREATER) {
 						if (cvc_depending.getValue().compareTo(max) > 0) {
-							Range newRange = new Range((Integer) cvc_depending.getValue() + 1, max);
+							Range newRange = new Range(
+									(Integer) cvc_depending.getValue() + 1, max);
 							rl.add(newRange);
 						} else {
 							Range newRange = new Range(min, max);
@@ -201,7 +187,8 @@ public class IntegerGenerator extends ValueGenerator {
 						}
 					} else if (cvc_my.getCompareType() == CompareType.SMALLER) {
 						if (cvc_depending.getValue().compareTo(min) > 0) {
-							Range newRange = new Range(min, (Integer) cvc_depending.getValue() - 1);
+							Range newRange = new Range(min,
+									(Integer) cvc_depending.getValue() - 1);
 							rl.add(newRange);
 						} else {
 							Range newRange = new Range(min, max);
@@ -209,7 +196,8 @@ public class IntegerGenerator extends ValueGenerator {
 						}
 					} else if (cvc_my.getCompareType() == CompareType.GREATER_EQUAL) {
 						if (cvc_depending.getValue().compareTo(max) >= 0) {
-							Range newRange = new Range((Integer) cvc_depending.getValue(), max);
+							Range newRange = new Range(
+									(Integer) cvc_depending.getValue(), max);
 							rl.add(newRange);
 						} else {
 							Range newRange = new Range(min, max);
@@ -217,7 +205,8 @@ public class IntegerGenerator extends ValueGenerator {
 						}
 					} else if (cvc_my.getCompareType() == CompareType.SMALLER_EQUAL) {
 						if (cvc_depending.getValue().compareTo(min) >= 0) {
-							Range newRange = new Range(min, (Integer) cvc_depending.getValue());
+							Range newRange = new Range(min,
+									(Integer) cvc_depending.getValue());
 							rl.add(newRange);
 						} else {
 							Range newRange = new Range(min, max);
@@ -233,7 +222,8 @@ public class IntegerGenerator extends ValueGenerator {
 		for (ConstraintPair cp : constraintPairs) {
 
 			if (CompareValueConstraint.class.isInstance(cp.getMyConstraint())) {
-				CompareValueConstraint cvc_my = (CompareValueConstraint) cp.getMyConstraint();
+				CompareValueConstraint cvc_my = (CompareValueConstraint) cp
+						.getMyConstraint();
 				cvc_my.setValue(value);
 			}
 		}
@@ -351,7 +341,8 @@ public class IntegerGenerator extends ValueGenerator {
 				}
 			}
 
-			return random.nextInt(1 + selectedRange.max - selectedRange.min) + selectedRange.min;
+			return random.nextInt(1 + selectedRange.max - selectedRange.min)
+					+ selectedRange.min;
 		}
 	}
 
