@@ -81,8 +81,13 @@ public class $tableClass
   public $tableClass next${column.javaName}()
   {
     Long nextId = _generator.nextId("${model.name}","$column.name");
-    // TODO: Fix Workaround
-    set${column.javaName}(Integer.valueOf(nextId.toString()));
+    #if( $column.javaType.contains("Long") )
+    set${column.javaName}( (Long) nextId );
+    #elseif( $column.javaType.contains("String") )
+    set${column.javaName}( nextId.toString() );
+    #else
+    set${column.javaName}( (Integer) nextId.intValue() );
+    #end
     return this;
   }
 #end

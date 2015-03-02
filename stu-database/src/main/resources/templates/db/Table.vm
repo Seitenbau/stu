@@ -309,6 +309,8 @@ public class ${clsTable} implements ITable
       Long nextId = generator.nextId(${clsTable}.NAME,"$column.name");
       #if( $column.javaType.contains("Long") )
       set${column.javaName}( (Long) nextId );
+      #elseif( $column.javaType.contains("String") )
+      set${column.javaName}( nextId.toString() );
       #else
       set${column.javaName}( (Integer) nextId.intValue() );
       #end
