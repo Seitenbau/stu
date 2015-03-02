@@ -123,6 +123,7 @@ project("stu-examples") {
   ext {
     outputDatasetDslDir = "$projectDir/src/dataset-dsl/java"
     srcDatasetModelDir  = "$projectDir/src/dataset-model/java"
+    srcGeneratedTestDir  = "$projectDir/src/test/generated-java"
   }
 
   dependencies {
@@ -143,6 +144,7 @@ project("stu-examples") {
     dataSetModel {
       java {
         srcDir srcDatasetModelDir
+        srcDir srcGeneratedTestDir
       }
       compileClasspath += configurations.compile
       runtimeClasspath += configurations.runtime
