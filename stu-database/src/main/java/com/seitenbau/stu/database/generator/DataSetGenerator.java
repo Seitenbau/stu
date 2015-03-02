@@ -87,24 +87,25 @@ public class DataSetGenerator
   {
     detectCaller();
     LogBlock level = LogManager.setTemporarily(Levels.TRACE);
+    String into = targetPath + "/";
     try
     {
       check();
       _dataSet.setCaller(_caller);
-      generateDataSet(targetPath + "/");
-      generateTables(targetPath + "/");
+      generateDataSet(into);
+      doGenerate(into,getTemplatePathTables());
       if (_dataSet.isModelClassGeneration())
       {
-        generateTableJavaModels(targetPath + "/");
+        doGenerate(into,getTemplatePathTableJavaModel());
       }
 
-      generateReferenceClasses(targetPath + "/");
-      generateReferenceFactory(targetPath + "/");
+      doGenerate(into, getTemplatePathReference());
+      generateReferenceFactory(into);
 
       if (_dataSet.isTableDSLGeneration())
       {
-        generateDSL(targetPath + "/");
-        generateTableAdapters(targetPath + "/");
+        generateDSL(into);
+        doGenerate(into, getTemplatePathTableAdapter());
       }
     }
     finally
@@ -128,23 +129,14 @@ public class DataSetGenerator
     }
   }
 
-  protected void generateTables(String into) throws Exception
+  private void doGenerate(String intoFolder, String template) throws Exception
   {
     for (Table table : _dataSet.getTables())
     {
-      templates.executeTemplate(table, getTemplatePathTables(), into);
+      templates.executeTemplate(table, template, intoFolder);
     }
-    logger.info("created " + _dataSet.getTables().size() + " Tables");
-  }
-
-  protected void generateTableJavaModels(String into) throws Exception
-  {
-    for (Table table : _dataSet.getTables())
-    {
-      templates.executeTemplate(table, getTemplatePathTableJavaModel(), into);
-    }
-    logger.debug("created " + _dataSet.getTables().size() + " Java Classes");
-    logger.info("into : " + into);
+    logger.debug("created " + _dataSet.getTables().size() + " of type " + template);
+    logger.info("into : " + intoFolder);
   }
 
   protected String getTemplatePathTables()
@@ -160,24 +152,6 @@ public class DataSetGenerator
   protected String getTemplatePathTableJavaModel()
   {
     return "/templates/db/TableJavaModel.vm";
-  }
-
-  protected void generateTableAdapters(String into) throws Exception
-  {
-    for (Table table : _dataSet.getTables())
-    {
-      templates.executeTemplate(table, getTemplatePathTableAdapter(), into);
-    }
-    logger.info("created " + _dataSet.getTables().size() + " Table Adapters");
-  }
-
-  protected void generateReferenceClasses(String into) throws Exception
-  {
-    for (Table table : _dataSet.getTables())
-    {
-      templates.executeTemplate(table, getTemplatePathReference(), into);
-    }
-    logger.info("created " + _dataSet.getTables().size() + " Reference Classes");
   }
 
   protected void generateReferenceFactory(String into) throws Exception

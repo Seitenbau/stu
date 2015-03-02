@@ -307,8 +307,11 @@ public class ${clsTable} implements ITable
     {
       DatasetIdGenerator generator = table.getDataset().getIdGenerator();
       Long nextId = generator.nextId(${clsTable}.NAME,"$column.name");
-      // TODO: FIX Workaround
-      set${column.javaName}(Integer.valueOf(nextId.toString()));
+      #if( $column.javaType.contains("Long") )
+      set${column.javaName}( (Long) nextId );
+      #else
+      set${column.javaName}( (Integer) nextId.intValue() );
+      #end
       return this;
     }
 
