@@ -1,20 +1,25 @@
 package com.seitenbau.stu.database.generator.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 import com.seitenbau.stu.database.generator.AssociativeTable;
 import com.seitenbau.stu.database.generator.Column;
-import com.seitenbau.stu.database.generator.ConstraintColumnPair;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
@@ -22,14 +27,15 @@ import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
-import com.seitenbau.stu.database.generator.values.constraints.GlobalConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.RConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.SolverConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.Source;
 import com.seitenbau.stu.logger.Logger;
 import com.seitenbau.stu.logger.TestLoggerFactory;
 
 public class DataGenerator {
+	public enum Mode {
+		GENERATE_AND_TEST, BACKTRACKING
+	}
+
 	private final Logger log = TestLoggerFactory.get(DataGenerator.class);
 
 	private final DatabaseModel model;
@@ -37,13 +43,13 @@ public class DataGenerator {
 
 	private final Set<Edge> visitedEdges;
 	private final Set<Table> visitedTables;
-	private final HashMap<Table, HashMap<Column, ArrayList<ConstraintPair>>> constraintTable; // TODO: Old ????
+
+	private Mode mode = Mode.GENERATE_AND_TEST;
 
 	public DataGenerator(DatabaseModel model) {
 		this.model = model;
 		this.visitedEdges = new HashSet<Edge>();
 		this.visitedTables = new HashSet<Table>();
-		this.constraintTable = new HashMap<Table, HashMap<Column, ArrayList<ConstraintPair>>>();
 	}
 
 	public Entities generate() {
@@ -92,68 +98,7 @@ public class DataGenerator {
 			addContraintToColumns(sc);
 		}
 
-		// Fill table with data...Run the generators
-		for (int i = 0; i < 10; i++) {
-			boolean areAllValuesGenerated = true;
-			for (Table table : getTableOrder(model)) {
-				List<EntityBlueprint> entityBlueprints = fab.getEntities().getTableBlueprints(table);
-				for (EntityBlueprint eb : entityBlueprints) {
-					for (Column col : eb.table.getColumns()) {
-
-						if (col.getRelation() != null) {
-							continue;
-						}
-
-						// Value already generated
-						if (eb.values.containsKey(col.getJavaName())) {
-							continue;
-						}
-
-						ValueGenerator g = fab.getValueGenerator(col);
-						if (com.seitenbau.stu.database.generator.values.DataGenerator.class.isInstance(g)) {
-							com.seitenbau.stu.database.generator.values.DataGenerator dg = (com.seitenbau.stu.database.generator.values.DataGenerator) g;
-							dg.setConstraintsData(model.dataSource);
-						}
-
-						if (eb.constraints.get(col.getName()) != null) {
-
-							col.getGenerator().setConstraints(eb.constraints.get(col.getName()));
-
-							// if (col.getGenerator().getKey() == null)
-							// col.getGenerator().setKey(col.getName());
-						}
-
-						if (col.get_set() != null) {
-							String[] set = col.get_set();
-							g.setSet(set);
-							if (col.get_set().length > 0) {
-								set = (String[]) ArrayUtils.removeElement(set, set[0]);
-								col.set_set(set);
-							} else {
-								col.set_set(null);
-							}
-						}
-
-						g.setAllowNull(col.is_allowNull());
-						if (col.is_allowNull()) {
-							col.set_allowNull(false);
-						}
-
-						Result result = g.nextValue(eb);
-
-						if (result.isGenerated()) {
-							eb.values.put(col.getJavaName(), (result.getValue() != null) ? result.getValue().toString() : null);
-						} else {
-							areAllValuesGenerated = false;
-						}
-					}
-				}
-			}
-
-			// All values for all tables are generated --> break;
-			if (areAllValuesGenerated)
-				break;
-		}
+		generateAllValues();
 
 		Entities result = fab.getEntities();
 		result.setLoopCount(count);
@@ -161,14 +106,21 @@ public class DataGenerator {
 		return result;
 	}
 
-	private Object parseString() {
-		return null;
-	}
+	// Notes
+	// Indizes:
+	// - Table // while
+	// - Entity // while
+	// - Column // while
+	// - Value // while in function
+	//
+	// - Constraint einer Column // Schleife in function
+	// - Sources pro Constraint // Rekursiver Aufruf mit neuen Parametern.
 
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void addContraintToColumns(ConstraintInterface sc) {
 		// TODO: Parse string and add Constraint to Table.Column
 
-		String[] array = sc.sourceRef.split("\\.");
+		String[] array = sc.modelRef.split("\\.");
 
 		if (array.length == 3) {
 			String tableName = array[0];
@@ -193,16 +145,377 @@ public class DataGenerator {
 	 */
 	private void addConstraintToBlueprintEntities(String table, String column, ConstraintInterface sc) {
 		List<EntityBlueprint> list = fab.blueprints.getTableBlueprints(model.getTableByName(table));
+
 		if (list != null) {
 			for (EntityBlueprint eb : list) {
-				if (!eb.constraints.containsKey(column)) {
-					eb.constraints.put(column, new ArrayList<ConstraintInterface>());
-				}
+				// if (!eb.constraints.containsKey(column)) {
+				// eb.constraints.put(column, new ArrayList<ConstraintInterface>());
+				// }
 
-				eb.constraints.get(column).add(sc);
+				String col = column.substring(0, 1).toUpperCase() + column.substring(1);
+
+				Object obj = eb.getValue(col);
+				if (Result.class.isInstance(obj)) {
+					Result result = (Result) obj;
+					ConstraintInterface constraintCopy = sc.getCopyInstance();
+					constraintCopy.loadSources(eb);
+					result.addConstraint(constraintCopy);
+				}
 			}
 		}
 	}
+
+	private void generateAllValues() {
+
+		for (Table table : getTableOrder(model)) {
+			List<EntityBlueprint> entityBlueprints = fab.getEntities().getTableBlueprints(table);
+			for (EntityBlueprint eb : entityBlueprints) {
+				for (Column col : eb.table.getColumns()) {
+					Object obj = eb.getValue(col.getJavaName());
+					if (obj != null) {
+						if (EntityBlueprint.class.isInstance(obj))
+							continue;
+
+						Result value = (Result) obj;
+						if (value.isGenerated())// check if generated
+							continue;
+					}
+
+					recursiveCall(table, eb, col);					
+					constraintList.clear(); // Aktuelle Liste aller gerade betrachteten Constraints leeren
+					resultList.clear(); // Aktuelle ResultList leeren
+				}
+			}
+		}
+	}
+
+	// In der ArrayList werden alle aktuellen Constraints abgelegt um eine schnelle Prüfung zu ermöglichen.
+	private ArrayList<ConstraintInterface> constraintList = new ArrayList<ConstraintInterface>();
+	// In einer Liste werden alle zusammenhängenden Values festgehalten.
+	private ArrayList<Result> resultList = new ArrayList<Result>();
+
+	/*
+	 * Wert einer einzelnen Zelle berechnen
+	 */
+	private boolean recursiveCall(Table table, EntityBlueprint eb, Column col) {
+
+		//System.out.println(localDeepness.toString() + ": " + col.getName()+ ": " + eb.getRefName());
+		
+		
+		Result result = getResult(table, eb, col);
+
+		ValueGenerator g = fab.getValueGenerator(col);
+
+		if (com.seitenbau.stu.database.generator.values.DataGenerator.class.isInstance(g)) {
+			com.seitenbau.stu.database.generator.values.DataGenerator dg = (com.seitenbau.stu.database.generator.values.DataGenerator) g;
+			dg.setConstraintsData(model.dataSource);
+		}
+
+		result = g.nextValue(result);
+		result.setTable(table);
+		result.setCol(col);
+		result.setEb(eb);
+		result.setGenerator(g);
+		
+		eb.values.put(col.getJavaName(), result);
+
+		if (!resultList.contains(result)) {
+			resultList.add(result);
+		}else{
+			return true;
+		}
+
+		// Constraints zur Liste hinzufügen
+		ArrayList<ConstraintInterface> cons = result.getConstraints();
+		if (cons != null && !cons.isEmpty()) {
+			for (ConstraintInterface c : cons) {
+				c.setResult(result);
+				addConstraint(c);
+				
+
+//				if(!walkThroughResults())
+//					return false;				
+			}
+		}
+		
+		ArrayList<Integer> indexesArrayList = new ArrayList<Integer>();
+		for(int i = 0; i < resultList.size(); i++){
+			indexesArrayList.add(0);
+		}
+		
+		// TODO
+		Integer[] combi = recursiveResultWalkthrough(0, convertIntegers(indexesArrayList));
+		if(constraintList.size() > 0 && combi == null){
+			for(Result res: resultList){
+				res.setValue(null);
+			}
+			
+			return false;
+		}
+			
+		
+				
+		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
+//		for(int i = 0; i < resultList.size(); i++){
+//			resultList.get(i).getGenerator().random = new Random(combi[i]);
+//			resultList.get(i).setValue(resultList.get(i).getGenerator().nextValue());
+//		}
+		
+		return true;
+
+		// Constraint, welches als erstes nicht valid ist, wird zurückgegeben
+//		ConstraintInterface notValidConstraint = checkConstraints();
+//		if (notValidConstraint != null) {
+//
+//			ArrayList<Source> sources = notValidConstraint.getSources();
+//			if (sources != null) {
+//				// TODO: Sources leer
+//				for (Source source : sources) {
+//
+//					Result res = source.getResults().get(0);
+//					recursiveCall(res.getTable(), res.getEb(), res.getCol(), localDeepness + 1);
+//
+//					if (!resultList.contains(res)) {
+//
+//						if (!walkThroughResults()) {
+//							return false;
+//						}
+//					}
+//				}
+//			}
+//
+//			// Alle Sources durchlaufen und rekursiveFunktion aufrufen.
+//
+//		}
+		// try next value
+
+		// Constraints vorhanden
+//		if (eb.constraints != null && !eb.constraints.isEmpty()) {
+//
+//			// Durchlaufe alle zugehörigen Constraints und generiere alle abhängigen Werte
+////			for (ConstraintInterface constraint : eb.constraints.get(col.getJavaName())) {
+////
+////				if (!constraintList.contains(constraint)) {
+////					constraintList.add(constraint);
+////				}
+////
+////				for (Source source : constraint.getSources()) {
+////
+////					Result sourceValue = (Result) source.getEb().getValue(source.getColumn().getJavaName());
+////
+////					if (sourceValue == null)
+////						recursiveCall(source.getTable(), source.getEb(), source.getColumn(), 0);
+////					else {
+////						if (checkConstraints() == null) {
+////							recursiveCall(source.getTable(), source.getEb(), source.getColumn(), 0);
+////						}
+////					}
+////				}
+////			}
+//
+//		} else { // Keine Constraints
+//			eb.values.put(col.getJavaName(), result);
+//		}
+	}
+	
+	public static Integer[] convertIntegers(List<Integer> integers)
+	{
+		Integer[] ret = new Integer[integers.size()];
+	    for (int i=0; i < ret.length; i++)
+	    {
+	        ret[i] = integers.get(i).intValue();
+	    }
+	    return ret;
+	}
+
+	// Durchlaufe alle bis jetzt hinzugefügten Results solange, bis alle Constraints valid sind
+	private boolean walkThroughResults() {
+
+		int resultIndex = resultList.size() - 1;
+		ConstraintInterface constraint = checkConstraints();
+		while (constraint != null) {
+
+			// TODO: 
+			ArrayList<Source> constraintSourceList = constraint.getSources();			
+			ArrayList<Result> constraintResultList = new ArrayList<Result>();
+			
+			for(Source s: constraintSourceList){
+				for(Result r: s.getResults()){
+					if(!constraintResultList.contains(r)){
+						constraintResultList.add(r);
+					}
+				}
+			}			
+		
+			Result result = getResultFromList(constraintResultList);
+			
+			if(result == null)
+				return false;			
+			
+
+			result.nextValueIndex();			
+			
+			result.getGenerator().nextValue(result);			
+			
+			// Get next Value
+//
+//			// Maximalen Index ermitteln
+//			Integer maxIndex = result.getMaxIndex();
+//
+//			if (result.getValueIndex() < maxIndex)
+//				resultList.get(resultIndex);
+//			else {
+//				if (resultIndex > 0)
+//					resultList.get(resultIndex - 1);
+//				else
+//					return false;
+//			}
+			constraint = checkConstraints();
+		}
+
+		return true;
+	}
+	
+	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge schon richtig ist
+	private Integer[] recursiveResultWalkthrough(int depth, Integer[] indexes){		
+		
+		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
+		for(int i = 0; i < resultList.size(); i++){
+			resultList.get(i).getGenerator().random = new Random(indexes[i]);
+			resultList.get(i).setValue(resultList.get(i).getGenerator().nextValue());
+		}
+		
+		// Kombination zurückgeben, falls alle Constraints erfüllt sind
+		if(constraintList.size() > 0 && checkConstraints() == null){
+			for(int i = 0; i < indexes.length; i++){
+				//if(indexes[i] > 0)
+					//System.out.println(indexes[i]);
+			}
+			return indexes;
+		}	
+		
+		if(depth > 5)
+			return null;
+		
+		for(int j = 0; j < indexes.length; j++){
+			Integer[] newIndexes = indexes.clone();
+			newIndexes[j] = indexes[j] + 1;
+			
+			if(indexes[j] > 5)
+				return null;
+			
+			// RecursiveCall
+			Integer[] returnValue = recursiveResultWalkthrough(depth+1, newIndexes);
+			if(returnValue != null)
+				return returnValue;
+		}			
+	
+		return null;
+	}
+	
+	private Result getResultFromList(ArrayList<Result> results){
+				
+		Integer index = results.size()-1;
+		if(index < 0)
+			return null;
+		
+		Result result = results.get(index);
+		
+		// TODO Backtracking korrigieren
+		while(result.getValueIndex() >= result.getMaxIndex()){
+			index--;
+			if(index >= 0)
+				result = results.get(index);
+			else
+				return null;
+		}
+		
+		return result;	
+	}
+
+	private void addConstraint(ConstraintInterface constraint) {
+		if (!constraintList.contains(constraint)) {
+			constraintList.add(constraint);
+			
+			// Durchlaufe alle Sources eines Constraints und füge alle Results aller Sources zur ResultList hinzu
+			ArrayList<Source> sources = constraint.getSources();			
+			for (int i = 0; i<sources.size(); i++) {
+				Source source = sources.get(i);
+				ArrayList<Result> results = source.getResults();
+				for (Result result : results) {					
+
+					if (!resultList.contains(result)) {
+						recursiveCall(result.getTable(), result.getEb(), result.getCol());
+					}
+				}
+			}
+
+		}
+	}
+
+	// Prüfe alle Constraints und gebe im Fall eines nicht validen Constraints das Constraint-Objekt zurück
+	// Zu diesem Zeitpunkt sind alle Constraints bekannt
+	private ConstraintInterface checkConstraints() {
+		for (ConstraintInterface constraint : constraintList) {
+
+			// Alte Vorgehensweise:
+			// Überspringe Constaint-Prüfung, da Constraint nicht aufgelöst werden kann.
+			// if(!constraint.allTargetsLoaded())
+			// continue;
+
+			// TODO EB und Value überlegen
+			// Prüfe, ob das Constraint-Bedingung erfüllt ist
+			Result result = constraint.getResult();
+			if (!constraint.isValid((Comparable<?>) result.getValue(), result.getEb())) {
+				String str = ""; 
+				for(Result r: resultList){
+					str += r.toString() + " - ";
+				}
+				
+				//System.out.println("Fail: " + constraint.getResult().getEb().getRefName() + ": " + str);
+				return constraint;
+			}else{
+				String str = ""; 
+				for(Result r: resultList){
+					str += r.toString() + " - ";
+				}
+				
+				System.out.println("OK: " + result.getEb().getRefName() + ": " + str);
+			}
+		}
+		return null;
+	}
+
+	// ///////////////////////
+
+	// TODO Werden diese Hilfsfunktionen noch benötigt???
+	private Integer getTableIndex(Table table) {
+		return getTableOrder(model).indexOf(table);
+	}
+
+	private Integer getEntityIndex(Table table, EntityBlueprint eb) {
+		return fab.blueprints.getTableBlueprints(table).indexOf(eb);
+	}
+
+	private Integer getColumnIndex(Table table, EntityBlueprint eb, Column col) {
+		Integer bpIndex = getEntityIndex(table, eb);
+		EntityBlueprint ebElement = fab.blueprints.getTableBlueprints(table).get(bpIndex);
+		Object[] array = ebElement.values.values().toArray();
+		return Arrays.asList(array).indexOf(col);
+	}
+
+	private Result getResult(Table table, EntityBlueprint eb, Column col) {
+
+		ArrayList<EntityBlueprint> entities = (ArrayList<EntityBlueprint>) fab.blueprints.getTableBlueprints(table);
+		Integer entityIndex = getEntityIndex(table, eb);
+		Object obj = entities.get(entityIndex).getValue(col.getJavaName());
+		if (Result.class.isInstance(obj))
+			return (Result) obj;
+
+		return null;
+	}
+
+	// ///////////////////////
 
 	private void visitTable(Table table) {
 		if (visitedTables.contains(table)) {
@@ -210,10 +523,6 @@ public class DataGenerator {
 			return;
 		}
 		visitedTables.add(table);
-
-		if (table.getName().toLowerCase().compareTo("assignment_status") == 0) {
-			System.out.println("bla");
-		}
 
 		if (table.isAssociativeTable()) {
 			handleAssociativeTable((AssociativeTable) table);
@@ -286,8 +595,7 @@ public class DataGenerator {
 
 		for (int l = 0; l < leftCount; l++) {
 			for (int r = 0; r < rightCount; r++) {
-				EntityBlueprint entity = fab
-						.getEntity(leftColumn.getTable(), leftEdge, EntityCreationMode.fixedInt(1, Direction.OUT), null);
+				EntityBlueprint entity = fab.getEntity(leftColumn.getTable(), leftEdge, EntityCreationMode.fixedInt(1, Direction.OUT), null);
 
 				entity.setReference(leftEdge, leftBps[l]);
 				entity.setReference(rightEdge, rightBps[r]);
@@ -487,11 +795,9 @@ public class DataGenerator {
 			} else if (sourceBorder.getValue() == 0) {
 				fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation(), null);
 			} else {
-				EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge,
-						EntityCreationMode.fixed(sourceBorder, Direction.IN), null);
+				EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder, Direction.IN), null);
 				for (int i = 0; i < sourceBorder.getValue(); i++) {
-					EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge,
-							EntityCreationMode.fixedInt(1, Direction.OUT), entity);
+					EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixedInt(1, Direction.OUT), entity);
 					result.setReference(edge, entity);
 				}
 			}

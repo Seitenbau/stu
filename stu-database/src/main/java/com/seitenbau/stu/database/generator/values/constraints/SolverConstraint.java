@@ -1,5 +1,7 @@
 package com.seitenbau.stu.database.generator.values.constraints;
 
+import java.util.ArrayList;
+
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 
 public class SolverConstraint extends ConstraintInterface {
@@ -10,7 +12,7 @@ public class SolverConstraint extends ConstraintInterface {
 
 	public SolverConstraint(Constraint c, String column, Integer con, String target) {
 		this.constraint = c;
-		this.sourceRef = column;
+		this.modelRef = column;
 		this.con = con;
 		this.target = target;
 	}
@@ -52,12 +54,36 @@ public class SolverConstraint extends ConstraintInterface {
 	}
 
 	@Override
-	public boolean loadTargets(EntityBlueprint eb) {
+	public boolean loadSources(EntityBlueprint eb) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	public enum Constraint{
 		XplusClteqZ, XgteqY
+	}
+
+	@Override
+	public String[] getSourceNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Source> getSources() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean allTargetsLoaded() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isValid(EntityBlueprint eb) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

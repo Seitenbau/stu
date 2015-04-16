@@ -444,7 +444,7 @@ public class Table {
 			return null; //foreign;
 		}
 		for (Column column : _columns) {
-			if (column.getName() == name) {
+			if (column.getName().compareTo(name) == 0) {
 				return column;
 			}
 		}

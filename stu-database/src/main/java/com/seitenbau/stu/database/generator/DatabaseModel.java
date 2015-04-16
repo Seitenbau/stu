@@ -8,7 +8,7 @@ import com.seitenbau.stu.database.generator.values.constraints.Constraint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
-import com.seitenbau.stu.database.generator.values.constraints.GlobalConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
 
 public abstract class DatabaseModel {
 

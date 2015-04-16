@@ -889,31 +889,31 @@ public class TestLinkModel extends DatabaseModel {
 				.build(); //
 //
 //		// user_id && usergroup_id == UNIQUE
-//		associativeTable("user_group_assign") //
-//				// not null, exists?
-//				.column("usergroup_id", DataType.INTEGER).reference.foreign(user_group) //
-//				// not null, exists?
-//				.column("user_id", DataType.INTEGER).reference.foreign(users) //
-//				.build();
-//
+		associativeTable("user_group_assign") //
+				// not null, exists?
+				.column("usergroup_id", DataType.INTEGER).reference.foreign(user_group) //
+				// not null, exists?
+				.column("user_id", DataType.INTEGER).reference.foreign(users) //
+				.build();
+
 //		// user_id && testplan_id == UNIQUE
-//		associativeTable("user_testplan_roles") //
-//				// not null, exists?
-//				.column("user_id", DataType.INTEGER).reference.foreign(users) //
-//				// not null, exists?
-//				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
-//				// not null, exists?
-//				.column("role_id", DataType.INTEGER)//.reference.foreign(roles)
-//				.build();
-////
-////		// user_id && testproject_id == UNIQUE
-//		associativeTable("user_testproject_roles") //
-//				// not null, exists?
-//				.column("user_id", DataType.INTEGER).reference.foreign(users) //
-//				// not null, exists?
-//				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
-//				// not null, exists?
-//				.column("role_id", DataType.INTEGER)//.reference.foreign(roles) //
-//				.build();
+		associativeTable("user_testplan_roles") //
+				// not null, exists?
+				.column("user_id", DataType.INTEGER).reference.foreign(users) //
+				// not null, exists?
+				.column("testplan_id", DataType.INTEGER).reference.foreign(testplans) //
+				// not null, exists?
+				.column("role_id", DataType.INTEGER)//.reference.foreign(roles)
+				.build();
+//
+//		// user_id && testproject_id == UNIQUE
+		associativeTable("user_testproject_roles") //
+				// not null, exists?
+				.column("user_id", DataType.INTEGER).reference.foreign(users) //
+				// not null, exists?
+				.column("testproject_id", DataType.INTEGER).reference.foreign(testprojects) //
+				// not null, exists?
+				.column("role_id", DataType.INTEGER)//.reference.foreign(roles) //
+				.build();
 	}
 }

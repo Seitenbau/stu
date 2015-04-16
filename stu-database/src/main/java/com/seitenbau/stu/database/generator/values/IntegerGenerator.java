@@ -6,17 +6,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
-import org.chocosolver.samples.AbstractProblem;
-import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.constraints.IntConstraintFactory;
-import org.chocosolver.solver.explanations.ExplanationFactory;
-import org.chocosolver.solver.search.strategy.IntStrategyFactory;
-import org.chocosolver.solver.variables.BoolVar;
-import org.chocosolver.solver.variables.IntVar;
-import org.chocosolver.solver.variables.VF;
-import org.chocosolver.solver.variables.VariableFactory;
-import org.springframework.beans.factory.parsing.Problem;
-
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint.CompareType;
@@ -24,7 +13,7 @@ import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class IntegerGenerator extends ValueGenerator {
 
-	private Random random;
+	public Random random;
 
 	private int min;
 
@@ -49,15 +38,28 @@ public class IntegerGenerator extends ValueGenerator {
 	public void initialize(long seed) {
 		random = new Random(seed);
 	}
+	
+	@Override
+	public Result nextValue(Result result){
+		
+		Comparable<?> value = null;
+		value = strategy.nextValue();
+		result.setValue(value);		
+		return result;
+	}
+	
+	@Override
+	public Result nextValue(){		
+		Result result = new Result(strategy.nextValue(), true);
+		return result;
+	}
 
 	@Override
 	public Result nextValue(EntityBlueprint eb) {
 
 		Result result = new Result(null, false);
 
-		if(random.nextInt() < 10)
-			new ExplainedSimpleProblem().execute();
-
+		
 		if (!allTargetsLoaded(eb))
 			return result;
 
@@ -107,55 +109,60 @@ public class IntegerGenerator extends ValueGenerator {
 		// return value.toString();
 		// }
 	}
-
-	public class ExplainedSimpleProblem extends AbstractProblem {
-		IntVar[] vars;
-		int n = 5;
-		int vals = n + 1;
-
-		@Override
-		public void createSolver() {
-			solver = new Solver();
-		}
-
-		@Override
-		public void buildModel() {
-			vars = VariableFactory.enumeratedArray("x", n, 1, vals, solver);
-			for (int i = 0; i < vars.length - 1; i++) {
-				solver.post(IntConstraintFactory.arithm(vars[i], ">",
-						vars[i + 1]));
-			}
-		}
-
-		@Override
-		public void configureSearch() {
-			solver.set(IntStrategyFactory.minDom_LB(vars));
-		}
-
-		@Override
-		public void solve() {
-			ExplanationFactory.CBJ.plugin(solver, false);
-			if (solver.findSolution()) {
-				do {
-					this.prettyOut();
-				} while (solver.nextSolution());
-			}
-		}
-
-		@Override
-		public void prettyOut() {
-			for (IntVar v : vars) {
-				// System.out.println("* variable " + v);
-				for (int i = 1; i <= vals; i++) {
-					if (!v.contains(i)) {
-						System.out.println(v.getName() + " != " + i
-								+ " because "
-								+ solver.getExplainer().retrieve(v, i));
-					}
-				}
-			}
-		}		
+	
+	@Override
+	public Result nextValue(Integer index, EntityBlueprint eb) {
+		return new Result(strategy.nextValue(index), true);
 	}
+
+//	public class ExplainedSimpleProblem extends AbstractProblem {
+//		IntVar[] vars;
+//		int n = 5;
+//		int vals = n + 1;
+//
+//		@Override
+//		public void createSolver() {
+//			solver = new Solver();
+//		}
+//
+//		@Override
+//		public void buildModel() {
+//			vars = VariableFactory.enumeratedArray("x", n, 1, vals, solver);
+//			for (int i = 0; i < vars.length - 1; i++) {
+//				solver.post(IntConstraintFactory.arithm(vars[i], ">",
+//						vars[i + 1]));
+//			}
+//		}
+//
+//		@Override
+//		public void configureSearch() {
+//			solver.set(IntStrategyFactory.minDom_LB(vars));
+//		}
+//
+//		@Override
+//		public void solve() {
+//			ExplanationFactory.CBJ.plugin(solver, false);
+//			if (solver.findSolution()) {
+//				do {
+//					this.prettyOut();
+//				} while (solver.nextSolution());
+//			}
+//		}
+//
+//		@Override
+//		public void prettyOut() {
+//			for (IntVar v : vars) {
+//				// System.out.println("* variable " + v);
+//				for (int i = 1; i <= vals; i++) {
+//					if (!v.contains(i)) {
+//						System.out.println(v.getName() + " != " + i
+//								+ " because "
+//								+ solver.getExplainer().retrieve(v, i));
+//					}
+//				}
+//			}
+//		}		
+//	}
 
 	// TODO: OLD....Range wird eingeschränkt... Wird durch Constraint Solver
 	// ersetzt...
@@ -233,6 +240,7 @@ public class IntegerGenerator extends ValueGenerator {
 
 	private interface Strategy {
 		Comparable nextValue();
+		Comparable nextValue(Integer index);
 
 		void AddRange(Comparable min, Comparable max);
 	}
@@ -243,19 +251,36 @@ public class IntegerGenerator extends ValueGenerator {
 			long value = (Math.abs(random.nextLong()) % module) + min;
 			return value;
 		}
+		
+		@Override
+		public Comparable nextValue(Integer index) {
+			Long value = (long) (min + index);
+			if(value <= max)
+				return value;
+			else
+				return null;
+		}
 
 		@Override
 		public void AddRange(Comparable min, Comparable max) {
 			// TODO Auto-generated method stub
-
 		}
 	}
 
 	private class IntRange implements Strategy {
 		@Override
 		public Comparable nextValue() {
-			int value = random.nextInt(1 + max - min) + min;
+			int value = random.nextInt(1 + max - min) + min;			
 			return value;
+		}
+		
+		@Override
+		public Comparable nextValue(Integer index) {
+			Integer value = min + index;
+			if(value <= max)
+				return value;
+			else
+				return null;
 		}
 
 		@Override
@@ -358,5 +383,10 @@ public class IntegerGenerator extends ValueGenerator {
 		public Integer getCount() {
 			return max - min;
 		}
+	}
+	
+	@Override
+	public Integer getMaxIndex() {
+		return Integer.MAX_VALUE-1;
 	}
 }

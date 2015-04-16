@@ -14,7 +14,7 @@ import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
 import com.seitenbau.stu.database.generator.values.constraints.DataConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.RConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.RangeConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.GlobalConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.SolverConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.SolverConstraint.Constraint;
 import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
@@ -35,26 +35,32 @@ public class BookDatabaseModel extends DatabaseModel {
 		
 		//constraint(new SuperConstraint(String column, String expression, String...targets))
 
-		constraint(new GlobalConstraint(
-				"autor.land",
-				"autor.land == adresse.land && !(true == false) && -12345 == (-12345 * 2) / 2 && -123.45 == -123.45 && 8999999999999999999 == 8999999999999999999 && 195.23 == 95.13 + 100.1 && (true || false && true) == true && false != true && true && 5 > 4 && 'Test_String' == 'Test_String' && 50 % 30 == 20 && 20 / 10 == 2",
-				"adresse.land"));
-		constraint(new GlobalConstraint("autor.mitglied_seit",
-				"autor.mitglied_seit >= autor.geburtsjahr + 16 && autor.mitglied_seit % 4 == 0", "autor.geburtsjahr"));
-		constraint(new GlobalConstraint("autor.last_login", "autor.last_login >= autor.mitglied_seit",
-				"autor.mitglied_seit"));
-		constraint(new GlobalConstraint("autor.anzahl_buecher", "autor.anzahl_buecher == COUNT(buch)"));
-		constraint(new GlobalConstraint("buch.anzahl", "buch.anzahl == COUNT(buch)"));
-		constraint(new GlobalConstraint("autor.vorname", "autor.vorname <= 'Robin'"));
-		constraint(new GlobalConstraint("autor.summe_buecher", "autor.summe_buecher == SUM(buch.preis)"));
-		//constraint(new SuperConstraint("autor.nachname_laenge", "autor.nachname_laenge == LENGTH(autor.nachname)", "autor.nachname"));
-		constraint(new GlobalConstraint("autor.nachname_laenge", "autor.nachname_laenge == LENGTH(adresse.land)", "adresse.land"));
+//		constraint(new GlobalConstraint(
+//				"autor.land",
+//				"autor.land == adresse.land && !(true == false) && -12345 == (-12345 * 2) / 2 && -123.45 == -123.45 && 8999999999999999999 == 8999999999999999999 && 195.23 == 95.13 + 100.1 && (true || false && true) == true && false != true && true && 5 > 4 && 'Test_String' == 'Test_String' && 50 % 30 == 20 && 20 / 10 == 2",
+//				"adresse.land"));
+//		constraint(new ExpressionConstraint("autor.mitgliedseit",
+//				"autor.mitgliedseit >= autor.geburtsjahr", "autor.geburtsjahr", "autor.mitgliedseit"));
+
 		
-		constraint(new RConstraint("autor.geburtsjahr", 1900, 2015));
-		constraint(new RConstraint("autor.mitglied_seit", 1985, 2015));
-		constraint(new RConstraint("autor.last_login", 1997, 2015));
+		constraint(new ExpressionConstraint("autor.mitgliedseit",
+				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
+		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
+				"autor.lastlogin", "autor.mitgliedseit"));
+//		constraint(new GlobalConstraint("autor.anzahl_buecher", "autor.anzahl_buecher == COUNT(buch)"));
+//		constraint(new GlobalConstraint("buch.anzahl", "buch.anzahl == COUNT(buch)"));
+//		constraint(new GlobalConstraint("autor.vorname", "autor.vorname <= 'Robin'"));
+//		constraint(new GlobalConstraint("autor.summe_buecher", "autor.summe_buecher == SUM(buch.preis)"));
+//		//constraint(new SuperConstraint("autor.nachname_laenge", "autor.nachname_laenge == LENGTH(autor.nachname)", "autor.nachname"));
+//		constraint(new GlobalConstraint("autor.nachname_laenge", "autor.nachname_laenge == LENGTH(adresse.land)", "adresse.land"));
+//
 		
-		constraint(new SolverConstraint(Constraint.XplusClteqZ, "autor.geburtsjahr", 16, "autor.mitglied_seit"));
+		
+//		constraint(new RConstraint("autor.geburtsjahr", 1950, 2015));
+//		constraint(new RConstraint("autor.mitgliedseit", 1985, 2015));
+//		constraint(new RConstraint("autor.lastlogin", 1997, 2015));
+		
+		//constraint(new SolverConstraint(Constraint.XplusClteqZ, "autor.geburtsjahr", 16, "autor.mitglied_seit"));
 	
 		
 		
@@ -145,17 +151,17 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.column("land", DataType.VARCHAR).generator(new DataGenerator("land"))
 				//
-				.column("geburtsjahr", DataType.INTEGER)
+				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1900, 2015))
 				//
-				.column("mitglied_seit", DataType.INTEGER).generator(new IntegerGenerator(1990, 2015))
+				.column("mitgliedseit", DataType.INTEGER).generator(new IntegerGenerator(1990, 2015))
 				//
-				.column("last_login", DataType.INTEGER).generator(new IntegerGenerator(1990, 2015))
+				.column("lastlogin", DataType.INTEGER).generator(new IntegerGenerator(1990, 2015))
 				//
-				.column("anzahl_buecher", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
+				.column("anzahlbuecher", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
 				//
-				.column("summe_buecher", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
+				.column("summebuecher", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
 				//
-				.column("adresse_id", DataType.BIGINT) //
+				.column("adresseid", DataType.BIGINT) //
 		.reference //
 		.local.name("belongsTo").description("").foreign(adresse).name("hasMembers").description("")
 

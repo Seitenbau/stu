@@ -2,6 +2,7 @@ package com.seitenbau.stu.database.generator.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,16 +13,17 @@ import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 import com.seitenbau.stu.database.generator.values.DataGenerator;
+import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
-import com.seitenbau.stu.database.generator.values.constraints.GlobalConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
 
 public class EntityBlueprint {
 	public final Table table; // TODO: private
 
 	private String refName;
 
-	public final Map<String, Object> values; // TODO: private...
+	public final LinkedHashMap<String, Object> values; // TODO: private...
 
 	public final Map<String, ArrayList<ConstraintInterface>> constraints; // TODO: private...
 
@@ -44,22 +46,26 @@ public class EntityBlueprint {
 		this.refName = refName;
 		this.table = table;
 		referencedBy = new HashMap<Edge, List<EntityBlueprint>>();
-		values = new HashMap<String, Object>();
+		values = new LinkedHashMap<String, Object>();
 		constraints = new HashMap<String, ArrayList<ConstraintInterface>>();
 		relationInformation = new HashMap<Edge, EntityCreationMode>();
 		log = new StringBuilder();
 
+		for (Column col : table.getColumns()) {
+			if (col.getRelation() != null) {
+				continue;
+			}
+			
+			Result result =  new Result(null, false);			
+			values.put(col.getJavaName(), result);
+		}
+
 		/*
-		 * // TODO: Old remove.... // Generate Constraint instances
-		 * //table.setColumnConstraints(fab);
+		 * // TODO: Old remove.... // Generate Constraint instances //table.setColumnConstraints(fab);
 		 * 
-		 * // for (Column col : table.getColumns()) { // if (col.getRelation()
-		 * != null) { // continue; // } // // ValueGenerator g =
-		 * fab.getValueGenerator(col); // if(DataGenerator.class.isInstance(g)){
-		 * // DataGenerator dg = (DataGenerator) g; //
-		 * dg.setConstraintsData(table.getDataSource()); // } // // // TODO NM
-		 * if unique flag (add) is set, ensure value is unique //
-		 * values.put(col.getJavaName(), g.nextValue()); // }
+		 * // for (Column col : table.getColumns()) { // if (col.getRelation() != null) { // continue; // } // // ValueGenerator g = fab.getValueGenerator(col); //
+		 * if(DataGenerator.class.isInstance(g)){ // DataGenerator dg = (DataGenerator) g; // dg.setConstraintsData(table.getDataSource()); // } // // // TODO NM if unique flag
+		 * (add) is set, ensure value is unique // values.put(col.getJavaName(), g.nextValue()); // }
 		 */
 
 	}
@@ -73,7 +79,7 @@ public class EntityBlueprint {
 	}
 
 	void setCreationInformation(Edge edge, EntityCreationMode mode) {
-		relationInformation.put(edge, mode);				
+		relationInformation.put(edge, mode);
 	}
 
 	public Table getTable() {
@@ -139,8 +145,7 @@ public class EntityBlueprint {
 	private void putValue(String key, Object value) {
 		Object old = values.put(key, value);
 		if (old != null && old != value) {
-			throw new IllegalStateException("Overwrite " + key + " with " + value + " in " + this
-					+ ", existing value: " + old);
+			throw new IllegalStateException("Overwrite " + key + " with " + value + " in " + this + ", existing value: " + old);
 		}
 	}
 

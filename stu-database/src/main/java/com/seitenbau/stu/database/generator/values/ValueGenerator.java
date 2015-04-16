@@ -6,16 +6,20 @@ import java.util.Random;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
-import com.seitenbau.stu.database.generator.values.constraints.GlobalConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
 
 public abstract class ValueGenerator {
-	protected Random random;
+	public Random random;
 	protected ArrayList<ConstraintPair> constraintPairs = new ArrayList<ConstraintPair>();
 	protected ArrayList<ConstraintInterface> scs;
 	private String key;
 	protected String[] set;
 	protected boolean allowNull;
-
+	
+	protected String[] values;
+	
+	public abstract Integer getMaxIndex();	
+	
 	public String getKey() {
 		return key;
 	}
@@ -29,11 +33,36 @@ public abstract class ValueGenerator {
 	}
 
 	public abstract Result nextValue(EntityBlueprint eb);
+	public abstract Result nextValue(Integer index, EntityBlueprint eb);
+	public abstract Result nextValue();
+	
+	public Result nextValue(Result result) {
+		if (result == null) {
+			result = new Result(null, false);
+			result.setValueIndex(0);		
+			
+			if(values != null)
+				result.setMaxIndex(values.length-1);
+			else
+				result.setMaxIndex(1000);
+		} else {
+			result.nextValueIndex();
+		}
+
+		if(values != null)
+			result.setValue(values[result.getValueIndex()]);
+		else
+			result.setValue(null);
+		
+		result.setGenerated(true);
+
+		return result;
+	}
 
 	protected boolean allTargetsLoaded(EntityBlueprint eb) {
 		if (scs != null) {
 			for (ConstraintInterface sc : scs) {
-				if (!sc.loadTargets(eb))
+				if (!sc.loadSources(eb))
 					return false;
 			}
 		}
@@ -90,11 +119,6 @@ public abstract class ValueGenerator {
 
 	public void clearConstraints() {
 		constraintPairs.clear();
-	}
-
-	public Result nextValue() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public void setSet(String[] set) {

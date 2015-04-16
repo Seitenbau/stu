@@ -8,25 +8,31 @@ public class RConstraint extends ConstraintInterface {
 	private Integer max;
 
 	public RConstraint(String column, Integer min, Integer max) {
-		this.sourceRef = column;
+		this.modelRef = column;
 		this.setMin(min);
 		this.setMax(max);
 	}
 
 	@Override
 	public boolean isValid(Comparable<?> value, EntityBlueprint eb) {
-		// TODO Auto-generated method stub
+		
+		if(Integer.class.isInstance(value)){
+			Integer v = (Integer) value;
+			if(v >= min && v <= max){
+				return true;
+			}
+		}
+		
+		return false;
+	}	
+
+	@Override
+	public boolean isValid(EntityBlueprint eb) {
 		return false;
 	}
 
 	@Override
 	public boolean loadValues(EntityBlueprint eb) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean loadTargets(EntityBlueprint eb) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -47,4 +53,9 @@ public class RConstraint extends ConstraintInterface {
 		this.max = max;
 	}
 
+	@Override
+	public String[] getSourceNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
