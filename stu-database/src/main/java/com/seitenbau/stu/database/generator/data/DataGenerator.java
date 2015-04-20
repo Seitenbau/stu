@@ -107,11 +107,6 @@ public class DataGenerator {
 	}
 
 	// Notes
-	// Indizes:
-	// - Table // while
-	// - Entity // while
-	// - Column // while
-	// - Value // while in function
 	//
 	// - Constraint einer Column // Schleife in function
 	// - Sources pro Constraint // Rekursiver Aufruf mit neuen Parametern.
@@ -164,6 +159,7 @@ public class DataGenerator {
 			}
 		}
 	}
+	
 
 	private void generateAllValues() {
 
@@ -187,7 +183,7 @@ public class DataGenerator {
 				}
 			}
 		}
-	}
+	}	
 
 	// In der ArrayList werden alle aktuellen Constraints abgelegt um eine schnelle Prüfung zu ermöglichen.
 	private ArrayList<ConstraintInterface> constraintList = new ArrayList<ConstraintInterface>();
@@ -230,20 +226,16 @@ public class DataGenerator {
 		if (cons != null && !cons.isEmpty()) {
 			for (ConstraintInterface c : cons) {
 				c.setResult(result);
-				addConstraint(c);
-				
-
-//				if(!walkThroughResults())
-//					return false;				
+				addConstraint(c);				
+		
 			}
 		}
 		
 		ArrayList<Integer> indexesArrayList = new ArrayList<Integer>();
 		for(int i = 0; i < resultList.size(); i++){
 			indexesArrayList.add(0);
-		}
-		
-		// TODO
+		}		
+
 		Integer[] combi = recursiveResultWalkthrough(0, convertIntegers(indexesArrayList));
 		if(constraintList.size() > 0 && combi == null){
 			for(Result res: resultList){
@@ -251,71 +243,10 @@ public class DataGenerator {
 			}
 			
 			return false;
-		}
-			
-		
-				
-		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
-//		for(int i = 0; i < resultList.size(); i++){
-//			resultList.get(i).getGenerator().random = new Random(combi[i]);
-//			resultList.get(i).setValue(resultList.get(i).getGenerator().nextValue());
-//		}
+		}	
+
 		
 		return true;
-
-		// Constraint, welches als erstes nicht valid ist, wird zurückgegeben
-//		ConstraintInterface notValidConstraint = checkConstraints();
-//		if (notValidConstraint != null) {
-//
-//			ArrayList<Source> sources = notValidConstraint.getSources();
-//			if (sources != null) {
-//				// TODO: Sources leer
-//				for (Source source : sources) {
-//
-//					Result res = source.getResults().get(0);
-//					recursiveCall(res.getTable(), res.getEb(), res.getCol(), localDeepness + 1);
-//
-//					if (!resultList.contains(res)) {
-//
-//						if (!walkThroughResults()) {
-//							return false;
-//						}
-//					}
-//				}
-//			}
-//
-//			// Alle Sources durchlaufen und rekursiveFunktion aufrufen.
-//
-//		}
-		// try next value
-
-		// Constraints vorhanden
-//		if (eb.constraints != null && !eb.constraints.isEmpty()) {
-//
-//			// Durchlaufe alle zugehörigen Constraints und generiere alle abhängigen Werte
-////			for (ConstraintInterface constraint : eb.constraints.get(col.getJavaName())) {
-////
-////				if (!constraintList.contains(constraint)) {
-////					constraintList.add(constraint);
-////				}
-////
-////				for (Source source : constraint.getSources()) {
-////
-////					Result sourceValue = (Result) source.getEb().getValue(source.getColumn().getJavaName());
-////
-////					if (sourceValue == null)
-////						recursiveCall(source.getTable(), source.getEb(), source.getColumn(), 0);
-////					else {
-////						if (checkConstraints() == null) {
-////							recursiveCall(source.getTable(), source.getEb(), source.getColumn(), 0);
-////						}
-////					}
-////				}
-////			}
-//
-//		} else { // Keine Constraints
-//			eb.values.put(col.getJavaName(), result);
-//		}
 	}
 	
 	public static Integer[] convertIntegers(List<Integer> integers)
@@ -326,54 +257,6 @@ public class DataGenerator {
 	        ret[i] = integers.get(i).intValue();
 	    }
 	    return ret;
-	}
-
-	// Durchlaufe alle bis jetzt hinzugefügten Results solange, bis alle Constraints valid sind
-	private boolean walkThroughResults() {
-
-		int resultIndex = resultList.size() - 1;
-		ConstraintInterface constraint = checkConstraints();
-		while (constraint != null) {
-
-			// TODO: 
-			ArrayList<Source> constraintSourceList = constraint.getSources();			
-			ArrayList<Result> constraintResultList = new ArrayList<Result>();
-			
-			for(Source s: constraintSourceList){
-				for(Result r: s.getResults()){
-					if(!constraintResultList.contains(r)){
-						constraintResultList.add(r);
-					}
-				}
-			}			
-		
-			Result result = getResultFromList(constraintResultList);
-			
-			if(result == null)
-				return false;			
-			
-
-			result.nextValueIndex();			
-			
-			result.getGenerator().nextValue(result);			
-			
-			// Get next Value
-//
-//			// Maximalen Index ermitteln
-//			Integer maxIndex = result.getMaxIndex();
-//
-//			if (result.getValueIndex() < maxIndex)
-//				resultList.get(resultIndex);
-//			else {
-//				if (resultIndex > 0)
-//					resultList.get(resultIndex - 1);
-//				else
-//					return false;
-//			}
-			constraint = checkConstraints();
-		}
-
-		return true;
 	}
 	
 	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge schon richtig ist
@@ -401,9 +284,6 @@ public class DataGenerator {
 			Integer[] newIndexes = indexes.clone();
 			newIndexes[j] = indexes[j] + 1;
 			
-			if(indexes[j] > 5)
-				return null;
-			
 			// RecursiveCall
 			Integer[] returnValue = recursiveResultWalkthrough(depth+1, newIndexes);
 			if(returnValue != null)
@@ -412,26 +292,7 @@ public class DataGenerator {
 	
 		return null;
 	}
-	
-	private Result getResultFromList(ArrayList<Result> results){
-				
-		Integer index = results.size()-1;
-		if(index < 0)
-			return null;
-		
-		Result result = results.get(index);
-		
-		// TODO Backtracking korrigieren
-		while(result.getValueIndex() >= result.getMaxIndex()){
-			index--;
-			if(index >= 0)
-				result = results.get(index);
-			else
-				return null;
-		}
-		
-		return result;	
-	}
+
 
 	private void addConstraint(ConstraintInterface constraint) {
 		if (!constraintList.contains(constraint)) {
@@ -458,11 +319,6 @@ public class DataGenerator {
 	private ConstraintInterface checkConstraints() {
 		for (ConstraintInterface constraint : constraintList) {
 
-			// Alte Vorgehensweise:
-			// Überspringe Constaint-Prüfung, da Constraint nicht aufgelöst werden kann.
-			// if(!constraint.allTargetsLoaded())
-			// continue;
-
 			// TODO EB und Value überlegen
 			// Prüfe, ob das Constraint-Bedingung erfüllt ist
 			Result result = constraint.getResult();
@@ -472,7 +328,7 @@ public class DataGenerator {
 					str += r.toString() + " - ";
 				}
 				
-				//System.out.println("Fail: " + constraint.getResult().getEb().getRefName() + ": " + str);
+				System.out.println("Fail: " + constraint.getResult().getEb().getRefName() + ": " + str);
 				return constraint;
 			}else{
 				String str = ""; 
@@ -480,9 +336,17 @@ public class DataGenerator {
 					str += r.toString() + " - ";
 				}
 				
-				System.out.println("OK: " + result.getEb().getRefName() + ": " + str);
+				//System.out.println("Fail: " + result.getEb().getRefName() + ": " + str);
 			}
 		}
+		
+		String str = ""; 
+		for(Result r: resultList){
+			str += r.toString() + " - ";
+		}
+		
+		System.out.println("OK: " + ": " + str);
+		
 		return null;
 	}
 
