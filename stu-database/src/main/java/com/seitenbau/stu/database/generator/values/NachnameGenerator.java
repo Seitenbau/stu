@@ -3,10 +3,8 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class NachnameGenerator extends ValueGenerator {
-	private Random random;
 
 	@Override
 	public void initialize(long seed) {
@@ -35,7 +33,7 @@ public class NachnameGenerator extends ValueGenerator {
 				"\"Graf\"", "\"Schulte\"", "\"Dietrich\"", "\"Ziegler\"",
 				"\"Kuhn\"", "\"Kühn\"", "\"Pohl\"", "\"Engel\"", "\"Horn\"",
 				"\"Busch\"", "\"Bergmann\"", "\"Thomas\"", "\"Voigt\"",
-				"\"Sauer\"", "\"Arnold\"", "\"Wolff\"", "\"Pfeiffer\"" };
+				"\"Sauer\"", "\"Arnold\"", "\"Wolff\"", "\"Pfeiffer\""};
 	}
 	
 	@Override
@@ -52,6 +50,12 @@ public class NachnameGenerator extends ValueGenerator {
 	public Result nextValue(Integer index, EntityBlueprint eb) {
 		return new Result(values[random.nextInt(values.length)], true);
 	}
+	
+	@Override
+	public Result nextValue(Integer index) {
+		Random rand = new Random(index);		
+		return new Result(values[rand.nextInt(values.length)], true);
+	}
 
 	public static class Factory implements ValueGeneratorFactory {
 
@@ -59,20 +63,9 @@ public class NachnameGenerator extends ValueGenerator {
 		public ValueGenerator createGenerator() {
 			return new NachnameGenerator();
 		}
-
 	}
+	
 
-	@Override
-	public void addConstraint(ConstraintPair constraintPair) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void clearConstraints() {
-		// TODO Auto-generated method stub
-
-	}
 	
 	@Override
 	public Integer getMaxIndex() {

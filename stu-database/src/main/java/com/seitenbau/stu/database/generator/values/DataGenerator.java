@@ -1,25 +1,19 @@
 package com.seitenbau.stu.database.generator.values;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
-import com.seitenbau.stu.database.generator.values.constraints.DataConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
 
 public class DataGenerator extends ValueGenerator {
 
-	private ConstraintsData ConstraintsData;
+	private DomainSpecificDataBuilder ConstraintsData;
 
-	public ConstraintsData getConstraintsData() {
+	public DomainSpecificDataBuilder getConstraintsData() {
 		return ConstraintsData;
 	}
 
-	public void setConstraintsData(ConstraintsData constraintsData) {
+	public void setConstraintsData(DomainSpecificDataBuilder constraintsData) {
 		ConstraintsData = constraintsData;
 	}
 
@@ -32,12 +26,33 @@ public class DataGenerator extends ValueGenerator {
 	
 	@Override
 	public Result nextValue(){		
-		ArrayList<DataConstraint> al = ConstraintsData.data.get(getKey());
+		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
 		
 		Result result = new Result(null, false);
 		
-		DataConstraint valu = al.get(result.getValueIndex());
-		result.setValue("\"" + valu.getValue() + "\"");		
+		DomainSpecificData value = al.get(result.getValueIndex());
+		result.setValue("\"" + value.getValue() + "\"");		
+		result.setGenerated(true);
+
+		return result;
+	}
+	
+	@Override
+	public Result nextValue(Integer index) {
+		Random rand = new Random(index);
+		
+		// Workaround
+		if(getKey() == "geschlecht"){
+			rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt();
+		}			
+		
+		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());		
+		Result result = new Result(null, false);
+		
+		int i = rand.nextInt(al.size());
+		
+		DomainSpecificData value = al.get(i);
+		result.setValue("\"" + value.getValue() + "\"");		
 		result.setGenerated(true);
 
 		return result;
@@ -45,7 +60,7 @@ public class DataGenerator extends ValueGenerator {
 	
 	public Result nextValue(Result result) {
 		
-		ArrayList<DataConstraint> al = ConstraintsData.data.get(getKey());
+		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
 		
 		if (result == null) {
 			result = new Result(null, false);
@@ -56,7 +71,7 @@ public class DataGenerator extends ValueGenerator {
 			result.nextValueIndex();
 		}		
 		
-		DataConstraint valu = al.get(result.getValueIndex());
+		DomainSpecificData valu = al.get(result.getValueIndex());
 		result.setValue("\"" + valu.getValue() + "\"");		
 		result.setGenerated(true);
 
@@ -71,19 +86,19 @@ public class DataGenerator extends ValueGenerator {
 		if (!allTargetsLoaded(eb))
 			return result;
 		
-		// TODO Check if all targets have values...
+		// TODO Check if all sources have values...
 		if(!checkValues(eb))
 			return result;
 	
 
-		ArrayList<DataConstraint> al = ConstraintsData.data.get(getKey());
+		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
 
 		Comparable<?> value = null;
 
 		int i = 0;
 		do {
 			if (al.size() > 0) {
-				int randInt = random.nextInt(al.size());
+				int randInt = getRandom().nextInt(al.size());
 				//System.out.println(getKey() + ": " + randInt + " aus " + al.size());
 				value = al.get(randInt).getValue();				
 			}
@@ -159,14 +174,14 @@ public class DataGenerator extends ValueGenerator {
 			return result;
 	
 
-		ArrayList<DataConstraint> al = ConstraintsData.data.get(getKey());
+		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
 
 		Comparable<?> value = null;
 
 		int i = 0;
 		do {
 			if (al.size() > 0) {
-				int randInt = random.nextInt(al.size());
+				int randInt = getRandom().nextInt(al.size());
 				//System.out.println(getKey() + ": " + randInt + " aus " + al.size());
 				value = al.get(randInt).getValue();				
 			}
@@ -227,64 +242,6 @@ public class DataGenerator extends ValueGenerator {
 		// //
 		// // return null;
 		// }
-	}
-
-	private void reduceList(ConstraintsData cd) {
-		// Remove not valid
-
-		// Data Constraints durchlaufen
-		for (ConstraintPair cp : constraintPairs) {
-			if (UniqueConstraint.class.isInstance(cp.getMyConstraint())) {
-				UniqueConstraint uc = (UniqueConstraint) cp.getMyConstraint();
-
-				Iterator<Entry<String, ArrayList<DataConstraint>>> it = cd.data.entrySet().iterator();
-				while (it.hasNext()) {
-					Map.Entry pairs = (Map.Entry) it.next();
-					if (pairs.getKey() == getKey()) {
-
-						ArrayList<DataConstraint> al = (ArrayList<DataConstraint>) pairs.getValue();
-
-						ArrayList<DataConstraint> intList = new ArrayList<DataConstraint>();
-						for (DataConstraint c : al) {
-							if (uc.getValues().contains(c.getValue())) {
-								intList.add(c);
-							}
-						}
-
-						for (DataConstraint c : intList) {
-							al.remove(c);
-						}
-					}
-				}
-
-			} else if (DataConstraint.class.isInstance(cp.getMyConstraint())) {
-
-				DataConstraint myConstraint = (DataConstraint) cp.getMyConstraint();
-				DataConstraint dependingConstraint = (DataConstraint) cp.getDependingConstraint();
-				if (dependingConstraint.getValue() != null) { // Constraint-Wert
-																// vorhanden
-					Iterator<Entry<String, ArrayList<DataConstraint>>> it = cd.data.entrySet().iterator();
-					while (it.hasNext()) {
-						Map.Entry pairs = (Map.Entry) it.next();
-						if (pairs.getKey() == myConstraint.getKey()) {
-
-							ArrayList<DataConstraint> al = (ArrayList<DataConstraint>) pairs.getValue();
-
-							ArrayList<DataConstraint> intList = new ArrayList<DataConstraint>();
-							for (DataConstraint c : al) {
-								if (c.appliesTo(((DataConstraint) cp.getDependingConstraint())) == null) {
-									intList.add(c);
-								}
-							}
-
-							for (DataConstraint c : intList) {
-								al.remove(c);
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 
 	public static class Factory implements ValueGeneratorFactory {

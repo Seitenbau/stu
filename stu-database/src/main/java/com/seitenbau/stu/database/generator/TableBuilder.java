@@ -1,14 +1,9 @@
 package com.seitenbau.stu.database.generator;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.Constraint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
-import com.seitenbau.stu.database.generator.values.constraints.RangeConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
+import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
 
 public class TableBuilder implements TableBuilderCommon {
 
@@ -24,15 +19,13 @@ public class TableBuilder implements TableBuilderCommon {
 
 	protected final List<ColumnBuilder> columnBuilders;
 
-	protected final List<ConstraintColumnPair> constraintColumnPairs;
-
 	protected long seed;
 
 	protected int minEntities;
 
 	protected Integer infinite;
 
-	protected ConstraintsData dataSource;
+	protected DomainSpecificDataBuilder dataSource;
 
 	TableBuilder(DatabaseModel model, String name) {
 		this.builtTable = null;
@@ -44,7 +37,6 @@ public class TableBuilder implements TableBuilderCommon {
 		columnBuilders = new LinkedList<ColumnBuilder>();
 		infinite = null;
 		dataSource = model.dataSource;
-		constraintColumnPairs = model.constraintColumnPairs; // TODO: Nur bekannte???
 	}
 
 	/**
@@ -54,8 +46,7 @@ public class TableBuilder implements TableBuilderCommon {
 	 */
 	public Table build() {
 		builtTable = new Table(name, javaName, getTableDescription(), seed,
-				infinite, minEntities, columnBuilders, constraintColumnPairs,
-				dataSource, model);
+				infinite, minEntities, columnBuilders, dataSource, model);
 		model.addTable(builtTable);
 
 		return builtTable;
@@ -115,62 +106,7 @@ public class TableBuilder implements TableBuilderCommon {
 	public TableBuilder infinite(int infinite) {
 		this.infinite = Integer.valueOf(infinite);
 		return this;
-	}
-
-	public ArrayList<ConstraintColumnPair> list = new ArrayList<ConstraintColumnPair>();
-
-	public TableBuilder constraint(Constraint constraint, String column){
-		constraint.setColumnName(column);
-		
-		if(UniqueConstraint.class.isInstance(constraint)){
-			constraintColumnPairs.add(new ConstraintColumnPair(constraint,
-					column, constraint, column));
-		}
-		
-		if(RangeConstraint.class.isInstance(constraint)){
-			constraintColumnPairs.add(new ConstraintColumnPair(constraint,
-					column, constraint, column));
-		}
-		
-		return this;
-	}
-	
-	public TableBuilder constraint(Constraint constraint, String column1,
-			String column2) {
-
-		// TODO: Relation zu anderer Tabelle: model benutzen
-		//model.constraintTable..... insert.....
-		
-		try {
-			if (CompareValueConstraint.class.isInstance(constraint)) {
-				constraint.setColumnName(column1);
-				CompareValueConstraint cvc = (CompareValueConstraint) constraint;
-				CompareValueConstraint partnerConstraint = (CompareValueConstraint) constraint.getClass().newInstance();
-				partnerConstraint.setCompareType(cvc.getCompareType().partner());
-				partnerConstraint.setColumnName(column2);
-				return constraint(constraint, column1, partnerConstraint,
-						column2);
-			} else {
-				// TODO Fehlermeldung
-			}
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return this;
-
-	}
-
-	public TableBuilder constraint(Constraint constraint1, String column1,
-			Constraint constraint2, String column2) {
-		constraintColumnPairs.add(new ConstraintColumnPair(constraint1,
-				column1, constraint2, column2));
-		return this;
-	}
+	}	
 
 	/**
 	 * Adds a column to the table.

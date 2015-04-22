@@ -26,7 +26,7 @@ import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 import com.seitenbau.stu.database.generator.values.constraints.Source;
 import com.seitenbau.stu.logger.Logger;
 import com.seitenbau.stu.logger.TestLoggerFactory;
@@ -93,7 +93,7 @@ public class DataGenerator {
 		}
 
 		// Walk through all constraints and add them to the columns
-		for (ConstraintInterface sc : model.getConstraintsList()) {
+		for (ConstraintBase sc : model.getConstraintsList()) {
 			sc.setFab(fab);
 			addContraintToColumns(sc);
 		}
@@ -112,7 +112,7 @@ public class DataGenerator {
 	// - Sources pro Constraint // Rekursiver Aufruf mit neuen Parametern.
 
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
-	private void addContraintToColumns(ConstraintInterface sc) {
+	private void addContraintToColumns(ConstraintBase sc) {
 		// TODO: Parse string and add Constraint to Table.Column
 
 		String[] array = sc.modelRef.split("\\.");
@@ -138,7 +138,7 @@ public class DataGenerator {
 	/*
 	 * 
 	 */
-	private void addConstraintToBlueprintEntities(String table, String column, ConstraintInterface sc) {
+	private void addConstraintToBlueprintEntities(String table, String column, ConstraintBase sc) {
 		List<EntityBlueprint> list = fab.blueprints.getTableBlueprints(model.getTableByName(table));
 
 		if (list != null) {
@@ -152,7 +152,7 @@ public class DataGenerator {
 				Object obj = eb.getValue(col);
 				if (Result.class.isInstance(obj)) {
 					Result result = (Result) obj;
-					ConstraintInterface constraintCopy = sc.getCopyInstance();
+					ConstraintBase constraintCopy = sc.getCopyInstance();
 					constraintCopy.loadSources(eb);
 					result.addConstraint(constraintCopy);
 				}
@@ -186,34 +186,20 @@ public class DataGenerator {
 	}	
 
 	// In der ArrayList werden alle aktuellen Constraints abgelegt um eine schnelle Prüfung zu ermöglichen.
-	private ArrayList<ConstraintInterface> constraintList = new ArrayList<ConstraintInterface>();
+	private ArrayList<ConstraintBase> constraintList = new ArrayList<ConstraintBase>();
 	// In einer Liste werden alle zusammenhängenden Values festgehalten.
 	private ArrayList<Result> resultList = new ArrayList<Result>();
+	
+	
 
 	/*
 	 * Wert einer einzelnen Zelle berechnen
 	 */
 	private boolean recursiveCall(Table table, EntityBlueprint eb, Column col) {
 
-		//System.out.println(localDeepness.toString() + ": " + col.getName()+ ": " + eb.getRefName());
-		
-		
 		Result result = getResult(table, eb, col);
-
-		ValueGenerator g = fab.getValueGenerator(col);
-
-		if (com.seitenbau.stu.database.generator.values.DataGenerator.class.isInstance(g)) {
-			com.seitenbau.stu.database.generator.values.DataGenerator dg = (com.seitenbau.stu.database.generator.values.DataGenerator) g;
-			dg.setConstraintsData(model.dataSource);
-		}
-
-		result = g.nextValue(result);
-		result.setTable(table);
-		result.setCol(col);
-		result.setEb(eb);
-		result.setGenerator(g);
 		
-		eb.values.put(col.getJavaName(), result);
+		//result = g.nextValue(result);
 
 		if (!resultList.contains(result)) {
 			resultList.add(result);
@@ -222,12 +208,11 @@ public class DataGenerator {
 		}
 
 		// Constraints zur Liste hinzufügen
-		ArrayList<ConstraintInterface> cons = result.getConstraints();
+		ArrayList<ConstraintBase> cons = result.getConstraints();
 		if (cons != null && !cons.isEmpty()) {
-			for (ConstraintInterface c : cons) {
+			for (ConstraintBase c : cons) {
 				c.setResult(result);
-				addConstraint(c);				
-		
+				addConstraint(c);
 			}
 		}
 		
@@ -243,8 +228,7 @@ public class DataGenerator {
 			}
 			
 			return false;
-		}	
-
+		}
 		
 		return true;
 	}
@@ -262,22 +246,35 @@ public class DataGenerator {
 	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge schon richtig ist
 	private Integer[] recursiveResultWalkthrough(int depth, Integer[] indexes){		
 		
+		int maxDepth = 10 - indexes.length;
+		
+		if(maxDepth < 3)
+			maxDepth = 3;
+		
+		if(maxDepth > 5)
+			maxDepth = 5;	
+
+		
 		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
 		for(int i = 0; i < resultList.size(); i++){
-			resultList.get(i).getGenerator().random = new Random(indexes[i]);
-			resultList.get(i).setValue(resultList.get(i).getGenerator().nextValue());
+			
+			int fabIndex = fab.blueprints.getTableBlueprints(resultList.get(i).getTable()).indexOf(resultList.get(i).getEb());
+			
+			int iii = (i+1)*10 + (fabIndex+1)*100 + indexes[i]*5;	
+
+			Result res = resultList.get(i).getGenerator().nextValue(iii);
+			if(res == null)
+				res = new Result(null, false);
+			resultList.get(i).setValue(res.getValue());		
 		}
 		
 		// Kombination zurückgeben, falls alle Constraints erfüllt sind
 		if(constraintList.size() > 0 && checkConstraints() == null){
-			for(int i = 0; i < indexes.length; i++){
-				//if(indexes[i] > 0)
-					//System.out.println(indexes[i]);
-			}
 			return indexes;
-		}	
+		}
 		
-		if(depth > 5)
+		
+		if(depth > maxDepth)
 			return null;
 		
 		for(int j = 0; j < indexes.length; j++){
@@ -294,7 +291,7 @@ public class DataGenerator {
 	}
 
 
-	private void addConstraint(ConstraintInterface constraint) {
+	private void addConstraint(ConstraintBase constraint) {
 		if (!constraintList.contains(constraint)) {
 			constraintList.add(constraint);
 			
@@ -316,8 +313,8 @@ public class DataGenerator {
 
 	// Prüfe alle Constraints und gebe im Fall eines nicht validen Constraints das Constraint-Objekt zurück
 	// Zu diesem Zeitpunkt sind alle Constraints bekannt
-	private ConstraintInterface checkConstraints() {
-		for (ConstraintInterface constraint : constraintList) {
+	private ConstraintBase checkConstraints() {
+		for (ConstraintBase constraint : constraintList) {
 
 			// TODO EB und Value überlegen
 			// Prüfe, ob das Constraint-Bedingung erfüllt ist
@@ -347,6 +344,10 @@ public class DataGenerator {
 		
 		System.out.println("OK: " + ": " + str);
 		
+		for(Result r: resultList){
+			r.setGenerated(true);			
+		}
+		
 		return null;
 	}
 
@@ -372,7 +373,14 @@ public class DataGenerator {
 
 		ArrayList<EntityBlueprint> entities = (ArrayList<EntityBlueprint>) fab.blueprints.getTableBlueprints(table);
 		Integer entityIndex = getEntityIndex(table, eb);
+		if(entityIndex < 0)
+			return null;
+		
 		Object obj = entities.get(entityIndex).getValue(col.getJavaName());
+		
+		if(obj == null)
+			return null;
+		
 		if (Result.class.isInstance(obj))
 			return (Result) obj;
 

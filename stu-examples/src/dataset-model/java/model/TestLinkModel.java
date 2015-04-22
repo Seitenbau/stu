@@ -4,11 +4,11 @@ import com.seitenbau.stu.database.generator.DataType;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.TableBuilder;
 import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
+import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
 import com.seitenbau.stu.database.generator.values.DataGenerator;
 import com.seitenbau.stu.database.generator.values.IntegerGenerator;
 import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
 
 public class TestLinkModel extends DatabaseModel {
 	public TestLinkModel() {
@@ -17,7 +17,7 @@ public class TestLinkModel extends DatabaseModel {
 		enableTableModelClassesGeneration();
 		//disbaleTableDSLGeneration();
 
-		dataSource(new ConstraintsData());
+		dataSource(new DomainSpecificDataBuilder());
 
 		TableBuilder assignment_status = table("assignment_status");
 		TableBuilder assignment_types = table("assignment_types");

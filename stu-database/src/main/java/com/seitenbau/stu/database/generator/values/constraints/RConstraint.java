@@ -2,7 +2,7 @@ package com.seitenbau.stu.database.generator.values.constraints;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 
-public class RConstraint extends ConstraintInterface {
+public class RConstraint extends ConstraintBase {
 
 	private Integer min;
 	private Integer max;

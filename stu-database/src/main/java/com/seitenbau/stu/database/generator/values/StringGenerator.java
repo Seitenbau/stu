@@ -3,7 +3,6 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class StringGenerator extends ValueGenerator {
 
@@ -22,6 +21,12 @@ public class StringGenerator extends ValueGenerator {
 		return new Result(values[random.nextInt(values.length)], true);
 	}
 
+	@Override
+	public Result nextValue(Integer index) {
+		Random rand = new Random(index);		
+		return new Result(values[rand.nextInt(values.length)], true);
+	}
+	
 	@Override
 	public Result nextValue(EntityBlueprint eb) {
 		if(allowNull)
@@ -52,18 +57,6 @@ public class StringGenerator extends ValueGenerator {
 		public ValueGenerator createGenerator() {
 			return new StringGenerator();
 		}
-
-	}
-
-	@Override
-	public void addConstraint(ConstraintPair constraintPair) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void clearConstraints() {
-		// TODO Auto-generated method stub
 
 	}
 	

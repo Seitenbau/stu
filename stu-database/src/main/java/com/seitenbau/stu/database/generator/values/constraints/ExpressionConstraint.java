@@ -11,7 +11,7 @@ import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.values.Result;
 
-public class ExpressionConstraint extends ConstraintInterface {
+public class ExpressionConstraint extends ConstraintBase {
 
 	public String expression;
 
@@ -470,7 +470,7 @@ public class ExpressionConstraint extends ConstraintInterface {
 	
 	
 	@Override
-	public ConstraintInterface getCopyInstance(){	
+	public ConstraintBase getCopyInstance(){	
 		ExpressionConstraint ec = new ExpressionConstraint(modelRef, expression, sourceNames);
 		ec.result = result;
 		ec.fab = fab;		

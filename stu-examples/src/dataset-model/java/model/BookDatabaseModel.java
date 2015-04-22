@@ -4,20 +4,13 @@ import com.seitenbau.stu.database.generator.DataType;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.TableBuilder;
 import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
+import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
 import com.seitenbau.stu.database.generator.values.DataGenerator;
 import com.seitenbau.stu.database.generator.values.IntegerGenerator;
 import com.seitenbau.stu.database.generator.values.NachnameGenerator;
 import com.seitenbau.stu.database.generator.values.VerlagNameGenerator;
-import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint.CompareType;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
-import com.seitenbau.stu.database.generator.values.constraints.DataConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.RConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.RangeConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.SolverConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.SolverConstraint.Constraint;
-import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.UConstraint;
 
 public class BookDatabaseModel extends DatabaseModel {
 	public BookDatabaseModel() {
@@ -26,7 +19,7 @@ public class BookDatabaseModel extends DatabaseModel {
 		enableTableModelClassesGeneration();
 		// disbaleTableDSLGeneration();
 		infinite(4);
-		dataSource(new ConstraintsData());
+		dataSource(new DomainSpecificDataBuilder());
 
 		TableBuilder buch = table("buch");
 		TableBuilder verlag = table("verlag");
@@ -39,6 +32,8 @@ public class BookDatabaseModel extends DatabaseModel {
 				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
 		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
 				"autor.lastlogin", "autor.mitgliedseit"));
+		
+		constraint(new UConstraint("autor.nachname", "autor.vorname"));
 		
 		//constraint(new RConstraint("autor.mitgliedseit", 1990, 2015));		
 		
@@ -75,7 +70,7 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.autoInvokeNext()
 				//
-				.column("vorname", DataType.VARCHAR).generator(new DataGenerator("vorname"))
+				.column("vorname", DataType.VARCHAR).generator(new NachnameGenerator())//new DataGenerator("vorname"))
 				//
 				.column("nachname_laenge", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
 				//
@@ -89,7 +84,7 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.column("land", DataType.VARCHAR).generator(new DataGenerator("land"))
 				//
-				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1900, 2015))
+				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1900, 2000))
 				//
 				.column("mitgliedseit", DataType.INTEGER).generator(new IntegerGenerator(1990, 2015))
 				//

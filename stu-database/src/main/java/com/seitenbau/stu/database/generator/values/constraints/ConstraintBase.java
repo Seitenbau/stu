@@ -13,8 +13,11 @@ import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.data.EntityFactory;
 import com.seitenbau.stu.database.generator.values.Result;
 
-public abstract class ConstraintInterface {
-	public String modelRef; // "table.column"	
+/*
+ * Subclasses: RangeConstraint, DomainConstraint, LogicalConstraint, UniqueConstraint, FunctionalConstraint, ExpressionConstraint
+ */
+public abstract class ConstraintBase {
+	public String modelRef; // z.B. "table.column"	
 	
 	// Quell-Namen werden zuvor eingetragen. Liste wird beim erstellen der Daten nachträglich geladen
 	protected String[] sourceNames; // {"table.column", "table.column",	// "table.column"}
@@ -22,6 +25,10 @@ public abstract class ConstraintInterface {
 	protected EntityFactory fab;
 	protected Result result;
 	protected ArrayList<Source> sources = new ArrayList<Source>();
+	
+	protected Scope scope;
+
+	protected boolean sourcesLoaded;
 
 	public Result getResult() {
 		return result;
@@ -43,10 +50,18 @@ public abstract class ConstraintInterface {
 		return sources;
 	}
 	
+	public Scope getScope(){
+		return scope;
+	}
+	
+	public void setScope(Scope scope){
+		this.scope = scope;
+	}
+	
 	@Override
 	public boolean equals(Object o){
-		if(ConstraintInterface.class.isInstance(o)){
-			ConstraintInterface constraint = (ConstraintInterface) o;
+		if(ConstraintBase.class.isInstance(o)){
+			ConstraintBase constraint = (ConstraintBase) o;
 			if(constraint.sourceNames == this.sourceNames && constraint.modelRef == this.modelRef && constraint.sources == this.sources){
 				return true;
 			}
@@ -102,25 +117,40 @@ public abstract class ConstraintInterface {
 	}
 
 	public boolean loadSources(EntityBlueprint eb) {
+		if(sourcesLoaded)
+			return true;
+		
 		if (sourceNames == null)
 			return true;
 
-		for (int i = 0; i < sourceNames.length; i++) {
-			addSource(i, eb, sourceNames[i]);
+		if(scope == Scope.Column){
+			List<EntityBlueprint> blueprints = fab.blueprints.getTableBlueprints(eb.getTable());
+			for(int i = 0; i < blueprints.size(); i++){
+				EntityBlueprint blueprint = blueprints.get(i);
+				addSource(0, blueprint, modelRef);
+			}
+		}else{		
+			for (int i = 0; i < sourceNames.length; i++) {
+				addSource(i, eb, sourceNames[i]);
+			}
 		}
+		
+		sourcesLoaded = true;
 		return true;
 	}
 	
 public boolean addSource(Integer i, EntityBlueprint eb, String name){
 		
 		Source source = new Source(name);
-		sources.add(source);
+		if(!sources.contains(source)){
+			sources.add(source);
+		}		
 
 		String[] array = sourceNames[i].split("\\.");
 		switch (array.length) {
 		case 1:
 			// TODO: Check
-			// Target is an table
+			// Source is an table
 			source.setValue(eb.getRefName(), getEntities().get(fab.model.getTableByName(array[0])));
 			break;
 		case 2:
@@ -146,11 +176,7 @@ public boolean addSource(Integer i, EntityBlueprint eb, String name){
 				source.setTable(fab.model.getTableByName(source.tableString));
 				
 				List<EntityBlueprint> bla_list = fab.blueprints.getEntities().get(source.getTable());				
-				Integer index = bla_list.indexOf(eb); // TODO: Index herausfinden
-				
-				if(index == 3){
-					System.out.println("3");
-				}
+				Integer index = bla_list.indexOf(eb);
 				
 				source.setEb(fab.blueprints.getTableBlueprints(source.getTable()).get(index));
 				source.setColumn(source.getTable().getColumn(source.columnString));
@@ -186,8 +212,11 @@ public boolean addSource(Integer i, EntityBlueprint eb, String name){
 
 	public abstract boolean loadValues(EntityBlueprint eb);
 	
-	public ConstraintInterface getCopyInstance(){			
-		ConstraintInterface ci;
+	public ConstraintBase getCopyInstance(){			
+		ConstraintBase ci;
+		if(scope == Scope.Column)
+			return this;
+		
 		try {
 			ci = this.getClass().newInstance();
 			ci.fab = this.fab;
@@ -204,8 +233,6 @@ public boolean addSource(Integer i, EntityBlueprint eb, String name){
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 		
 		return null;
 	}

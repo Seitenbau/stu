@@ -5,13 +5,27 @@ import java.util.ArrayList;
 import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
 public class Result implements Comparable<Object> {
 	private Object value;
 	private boolean isGenerated;
 
-	private ArrayList<ConstraintInterface> constraints = new ArrayList<ConstraintInterface>();
+	private ArrayList<ConstraintBase> constraints = new ArrayList<ConstraintBase>();
+	
+	public Result(Object value, boolean isGenerated) {
+		this.value = value;
+		this.isGenerated = isGenerated;
+	}
+	
+	public Result(Table table, EntityBlueprint eb, Column column, Object value, boolean isGenerated){
+		this.table = table;
+		this.eb = eb;
+		this.col = column;
+		
+		this.value = value;
+		this.isGenerated = isGenerated;
+	}
 
 	public void setGenerated(boolean isGenerated) {
 		this.isGenerated = isGenerated;
@@ -33,11 +47,11 @@ public class Result implements Comparable<Object> {
 		this.maxIndex = maxIndex;
 	}
 
-	public void addConstraint(ConstraintInterface constraint) {
+	public void addConstraint(ConstraintBase constraint) {
 		constraints.add(constraint);
 	}
 
-	public ArrayList<ConstraintInterface> getConstraints() {
+	public ArrayList<ConstraintBase> getConstraints() {
 		return constraints;
 	}
 
@@ -64,12 +78,7 @@ public class Result implements Comparable<Object> {
 	public void setCol(Column col) {
 		this.col = col;
 	}
-
-	public Result(Object value, boolean isGenerated) {
-		this.value = value;
-		this.isGenerated = isGenerated;
-	}
-
+	
 	public void setValue(Object value) {
 		this.value = value;
 		isGenerated = true;

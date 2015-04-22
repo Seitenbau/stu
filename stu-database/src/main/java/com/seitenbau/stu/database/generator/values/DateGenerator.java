@@ -4,7 +4,6 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class DateGenerator extends ValueGenerator {
 
@@ -16,7 +15,13 @@ public class DateGenerator extends ValueGenerator {
 	@Override
 	public void initialize(long seed) {
 		random = new Random(seed);
-	}		
+	}
+	
+	@Override
+	public Result nextValue(Integer index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	@Override
 	public Result nextValue(Result result){
@@ -97,19 +102,6 @@ public class DateGenerator extends ValueGenerator {
 		public ValueGenerator createGenerator() {
 			return new DateGenerator();
 		}
-
-	}
-
-	@Override
-	public void addConstraint(ConstraintPair constraintPair) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void clearConstraints() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

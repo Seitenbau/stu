@@ -1,14 +1,10 @@
 package com.seitenbau.stu.database.generator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import com.seitenbau.stu.database.generator.values.constraints.Constraint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
-import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
+import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
 public abstract class DatabaseModel {
 
@@ -30,15 +26,13 @@ public abstract class DatabaseModel {
 
 	int infinite;
 	
-	public ConstraintsData dataSource; // TODO: private
+	public DomainSpecificDataBuilder dataSource; // TODO: private
 
-	public ArrayList<ConstraintColumnPair> constraintColumnPairs = new ArrayList<ConstraintColumnPair>(); //TODO: private
-
-	public ArrayList<ConstraintInterface> getConstraintsList() {
+	public ArrayList<ConstraintBase> getConstraintsList() {
 		return constraintsList;
 	}
 
-	private ArrayList<ConstraintInterface> constraintsList = new ArrayList<ConstraintInterface>();
+	private ArrayList<ConstraintBase> constraintsList = new ArrayList<ConstraintBase>();
 	
 	public DatabaseModel() {
 		isModelClassGeneration = false;
@@ -70,15 +64,12 @@ public abstract class DatabaseModel {
 		this.infinite = infinite;
 	}
 
-	public void dataSource(ConstraintsData constraintsData) {
+	public void dataSource(DomainSpecificDataBuilder constraintsData) {
 		this.dataSource = constraintsData;
 	}
-	
-	public void constraint(Constraint constraint1, String column1, Constraint constraint2, String column2) {
-		constraintColumnPairs.add(new ConstraintColumnPair(constraint1, column1, constraint2, column2));	
-	}
 
-	public void constraint(ConstraintInterface sc){
+
+	public void constraint(ConstraintBase sc){
 		constraintsList.add(sc);
 	}
 	

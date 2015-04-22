@@ -10,12 +10,7 @@ import java.util.Set;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.data.EntityFactory;
-import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.Constraint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintsData;
-import com.seitenbau.stu.database.generator.values.constraints.DataConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
+import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
 import com.seitenbau.stu.util.CamelCase;
 
 public class Table {
@@ -38,19 +33,13 @@ public class Table {
 
 	private final List<Column> _columns;
 
-	private final List<ConstraintColumnPair> _constraintColumnPairs;
 
-	private ConstraintsData _dataSource;
+	private DomainSpecificDataBuilder _dataSource;
 
 	protected final DatabaseModel _model;
 
-	public List<ConstraintColumnPair> get_constraintColumnPairs() {
-		return _constraintColumnPairs;
-	}
-
 	public Table(String name, String javaName, String description, long seed, Integer infinite, int minEntities,
-			List<ColumnBuilder> columnBuilders, List<ConstraintColumnPair> constraintColumnPairs,
-			ConstraintsData dataSource, DatabaseModel model) {
+			List<ColumnBuilder> columnBuilders, DomainSpecificDataBuilder dataSource, DatabaseModel model) {
 		_name = name;
 		_javaName = javaName;
 		_description = description;
@@ -64,8 +53,6 @@ public class Table {
 		for (ColumnBuilder columnBuilder : columnBuilders) {
 			_columns.add(columnBuilder.buildColumn(this));
 		}
-
-		_constraintColumnPairs = constraintColumnPairs;
 	}
 
 	public String getName() {
@@ -334,82 +321,82 @@ public class Table {
 		return result;
 	}
 
-	// TODO: old...Remove this!
-	public void setColumnConstraints(EntityFactory fab) {
-		if (_constraintColumnPairs.size() > 0) {
-			for (Column col : _columns) {
-				col.getGenerator().clearConstraints();
-			}
-
-			// TODO: Adresse hat noch keine ccp's.....
-			for (ConstraintColumnPair ccp : _constraintColumnPairs) {
-
-				try {
-					Constraint const1;
-					Constraint const2;
-
-					if (UniqueConstraint.class.isInstance(ccp.getConstraint1())) {
-						const1 = ccp.getConstraint1();
-						const2 = ccp.getConstraint2();
-					} else {
-						const1 = ccp.getConstraint1().getClass().newInstance();
-						const2 = ccp.getConstraint2().getClass().newInstance();
-					}
-
-					const1.setColumnName((ccp.getConstraint1()).getColumnName());
-					const2.setColumnName((ccp.getConstraint2()).getColumnName());
-
-					if (DataConstraint.class.isInstance(const1) && DataConstraint.class.isInstance(const2)) {
-						((DataConstraint) const1).setKey(((DataConstraint) ccp.getConstraint1()).getKey());
-						((DataConstraint) const2).setKey(((DataConstraint) ccp.getConstraint2()).getKey());
-					} else if (CompareValueConstraint.class.isInstance(const1)
-							&& CompareValueConstraint.class.isInstance(const2)) {
-						((CompareValueConstraint) const1)
-								.setCompareType(((CompareValueConstraint) ccp.getConstraint1()).getCompareType());
-						((CompareValueConstraint) const2)
-								.setCompareType(((CompareValueConstraint) ccp.getConstraint2()).getCompareType());
-
-					}
-
-					ConstraintPair cp1 = new ConstraintPair(const1, const2);
-					ConstraintPair cp2 = new ConstraintPair(const2, const1);
-
-					Column c1 = getColumn(ccp.getName1());
-					if (c1 == null) {
-						System.out.println("Column " + ccp.getName1() + " not found!");
-					} else {
-						c1.getGenerator().addConstraint(cp1);
-						if (c1.getGenerator().getKey() == null)
-							c1.getGenerator().setKey(const1.getColumnName());
-					}
-
-					Column c2 = getColumn(ccp.getName2());
-					List<EntityBlueprint> bla = fab.blueprints.getEntities().get(getName());
-					if (bla != null) {
-						Comparable value = getEntityValue(fab, ccp.getName2(),
-								fab.blueprints.getEntities().get(getName()).size());
-						if (value != null) {
-							// System.out.println("Column " + ccp.getName2() +
-							// " not found!");
-							if (value != null) {
-								const2.setValue(value);
-							}
-						} else {
-							c2.getGenerator().addConstraint(cp2);
-							if (c2.getGenerator().getKey() == null)
-								c2.getGenerator().setKey(const2.getColumnName());
-						}
-					}
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+//	// TODO: old...Remove this!
+//	public void setColumnConstraints(EntityFactory fab) {
+//		if (_constraintColumnPairs.size() > 0) {
+//			for (Column col : _columns) {
+//				col.getGenerator().clearConstraints();
+//			}
+//
+//			// TODO: Adresse hat noch keine ccp's.....
+//			for (ConstraintColumnPair ccp : _constraintColumnPairs) {
+//
+//				try {
+//					Constraint const1;
+//					Constraint const2;
+//
+//					if (UniqueConstraint.class.isInstance(ccp.getConstraint1())) {
+//						const1 = ccp.getConstraint1();
+//						const2 = ccp.getConstraint2();
+//					} else {
+//						const1 = ccp.getConstraint1().getClass().newInstance();
+//						const2 = ccp.getConstraint2().getClass().newInstance();
+//					}
+//
+//					const1.setColumnName((ccp.getConstraint1()).getColumnName());
+//					const2.setColumnName((ccp.getConstraint2()).getColumnName());
+//
+//					if (DomainSpecificData.class.isInstance(const1) && DomainSpecificData.class.isInstance(const2)) {
+//						((DomainSpecificData) const1).setKey(((DomainSpecificData) ccp.getConstraint1()).getKey());
+//						((DomainSpecificData) const2).setKey(((DomainSpecificData) ccp.getConstraint2()).getKey());
+//					} else if (CompareValueConstraint.class.isInstance(const1)
+//							&& CompareValueConstraint.class.isInstance(const2)) {
+//						((CompareValueConstraint) const1)
+//								.setCompareType(((CompareValueConstraint) ccp.getConstraint1()).getCompareType());
+//						((CompareValueConstraint) const2)
+//								.setCompareType(((CompareValueConstraint) ccp.getConstraint2()).getCompareType());
+//
+//					}
+//
+//					ConstraintPair cp1 = new ConstraintPair(const1, const2);
+//					ConstraintPair cp2 = new ConstraintPair(const2, const1);
+//
+//					Column c1 = getColumn(ccp.getName1());
+//					if (c1 == null) {
+//						System.out.println("Column " + ccp.getName1() + " not found!");
+//					} else {
+//						c1.getGenerator().addConstraint(cp1);
+//						if (c1.getGenerator().getKey() == null)
+//							c1.getGenerator().setKey(const1.getColumnName());
+//					}
+//
+//					Column c2 = getColumn(ccp.getName2());
+//					List<EntityBlueprint> bla = fab.blueprints.getEntities().get(getName());
+//					if (bla != null) {
+//						Comparable value = getEntityValue(fab, ccp.getName2(),
+//								fab.blueprints.getEntities().get(getName()).size());
+//						if (value != null) {
+//							// System.out.println("Column " + ccp.getName2() +
+//							// " not found!");
+//							if (value != null) {
+//								const2.setValue(value);
+//							}
+//						} else {
+//							c2.getGenerator().addConstraint(cp2);
+//							if (c2.getGenerator().getKey() == null)
+//								c2.getGenerator().setKey(const2.getColumnName());
+//						}
+//					}
+//				} catch (InstantiationException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IllegalAccessException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//	}
 
 	public Comparable getEntityValue(EntityFactory fab, String name, int index) {
 		String[] array = name.split("\\.");
@@ -452,11 +439,11 @@ public class Table {
 		return null;
 	}
 
-	public ConstraintsData getDataSource() {
+	public DomainSpecificDataBuilder getDataSource() {
 		return _dataSource;
 	}
 
-	public void setDataSource(ConstraintsData dataSource) {
+	public void setDataSource(DomainSpecificDataBuilder dataSource) {
 		this._dataSource = dataSource;
 	}
 }

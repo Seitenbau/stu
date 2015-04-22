@@ -15,7 +15,7 @@ import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 import com.seitenbau.stu.database.generator.values.DataGenerator;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
 
 public class EntityBlueprint {
@@ -25,7 +25,7 @@ public class EntityBlueprint {
 
 	public final LinkedHashMap<String, Object> values; // TODO: private...
 
-	public final Map<String, ArrayList<ConstraintInterface>> constraints; // TODO: private...
+	public final Map<String, ArrayList<ConstraintBase>> constraints; // TODO: private...
 
 	private final Map<Edge, EntityCreationMode> relationInformation;
 
@@ -47,7 +47,7 @@ public class EntityBlueprint {
 		this.table = table;
 		referencedBy = new HashMap<Edge, List<EntityBlueprint>>();
 		values = new LinkedHashMap<String, Object>();
-		constraints = new HashMap<String, ArrayList<ConstraintInterface>>();
+		constraints = new HashMap<String, ArrayList<ConstraintBase>>();
 		relationInformation = new HashMap<Edge, EntityCreationMode>();
 		log = new StringBuilder();
 
@@ -56,7 +56,15 @@ public class EntityBlueprint {
 				continue;
 			}
 			
-			Result result =  new Result(null, false);			
+			ValueGenerator g = fab.getValueGenerator(col);
+
+			if (com.seitenbau.stu.database.generator.values.DataGenerator.class.isInstance(g)) {
+				com.seitenbau.stu.database.generator.values.DataGenerator dg = (com.seitenbau.stu.database.generator.values.DataGenerator) g;
+				dg.setConstraintsData(fab.model.dataSource);
+			}
+			
+			Result result =  new Result(table, this, col, null, false);	
+			result.setGenerator(g);
 			values.put(col.getJavaName(), result);
 		}
 

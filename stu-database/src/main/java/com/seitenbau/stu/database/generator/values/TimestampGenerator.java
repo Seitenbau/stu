@@ -5,7 +5,6 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class TimestampGenerator extends ValueGenerator {
 
@@ -26,6 +25,12 @@ public class TimestampGenerator extends ValueGenerator {
 		java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 		result.setValue("asDate(\"" + currentTimestamp.toString().substring(0, 19) + "\")");		
 		return result;
+	}
+	
+	@Override
+	public Result nextValue(Integer index) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -63,18 +68,6 @@ public class TimestampGenerator extends ValueGenerator {
 		public ValueGenerator createGenerator() {
 			return new TimestampGenerator();
 		}
-
-	}
-
-	@Override
-	public void addConstraint(ConstraintPair constraintPair) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void clearConstraints() {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -7,16 +7,10 @@ import java.util.Random;
 import java.util.Set;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.CompareValueConstraint.CompareType;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 
 public class IntegerGenerator extends ValueGenerator {
 
-	public Random random;
-
 	private int min;
-
 	private int max;
 
 	private final long module;
@@ -36,7 +30,7 @@ public class IntegerGenerator extends ValueGenerator {
 
 	@Override
 	public void initialize(long seed) {
-		random = new Random(seed);
+		setRandom(new Random(seed));
 	}
 	
 	@Override
@@ -52,6 +46,12 @@ public class IntegerGenerator extends ValueGenerator {
 	public Result nextValue(){		
 		Result result = new Result(strategy.nextValue(), true);
 		return result;
+	}
+	
+	@Override
+	public Result nextValue(Integer index) {
+		Random rand = new Random(index);
+		return new Result(rand.nextInt(max-min) + min, true);
 	}
 
 	@Override
@@ -164,80 +164,6 @@ public class IntegerGenerator extends ValueGenerator {
 //		}		
 //	}
 
-	// TODO: OLD....Range wird eingeschränkt... Wird durch Constraint Solver
-	// ersetzt...
-	private String getValue() {
-		RandomList rl = new RandomList();
-		rl.add(new Range(min, max));
-
-		for (ConstraintPair cp : constraintPairs) {
-
-			// reduceList => makeRangeList
-
-			if (CompareValueConstraint.class.isInstance(cp.getMyConstraint())) {
-				CompareValueConstraint cvc_my = (CompareValueConstraint) cp
-						.getMyConstraint();
-				CompareValueConstraint cvc_depending = (CompareValueConstraint) cp
-						.getDependingConstraint();
-
-				if (cvc_depending.getValue() != null) {
-
-					// TODO
-					if (cvc_my.getCompareType() == CompareType.GREATER) {
-						if (cvc_depending.getValue().compareTo(max) > 0) {
-							Range newRange = new Range(
-									(Integer) cvc_depending.getValue() + 1, max);
-							rl.add(newRange);
-						} else {
-							Range newRange = new Range(min, max);
-							rl.add(newRange);
-						}
-					} else if (cvc_my.getCompareType() == CompareType.SMALLER) {
-						if (cvc_depending.getValue().compareTo(min) > 0) {
-							Range newRange = new Range(min,
-									(Integer) cvc_depending.getValue() - 1);
-							rl.add(newRange);
-						} else {
-							Range newRange = new Range(min, max);
-							rl.add(newRange);
-						}
-					} else if (cvc_my.getCompareType() == CompareType.GREATER_EQUAL) {
-						if (cvc_depending.getValue().compareTo(max) >= 0) {
-							Range newRange = new Range(
-									(Integer) cvc_depending.getValue(), max);
-							rl.add(newRange);
-						} else {
-							Range newRange = new Range(min, max);
-							rl.add(newRange);
-						}
-					} else if (cvc_my.getCompareType() == CompareType.SMALLER_EQUAL) {
-						if (cvc_depending.getValue().compareTo(min) >= 0) {
-							Range newRange = new Range(min,
-									(Integer) cvc_depending.getValue());
-							rl.add(newRange);
-						} else {
-							Range newRange = new Range(min, max);
-							rl.add(newRange);
-						}
-					}
-				}
-			}
-		}
-
-		Comparable value = rl.randomValue();
-
-		for (ConstraintPair cp : constraintPairs) {
-
-			if (CompareValueConstraint.class.isInstance(cp.getMyConstraint())) {
-				CompareValueConstraint cvc_my = (CompareValueConstraint) cp
-						.getMyConstraint();
-				cvc_my.setValue(value);
-			}
-		}
-
-		return value.toString();
-	}
-
 	private interface Strategy {
 		Comparable nextValue();
 		Comparable nextValue(Integer index);
@@ -248,7 +174,7 @@ public class IntegerGenerator extends ValueGenerator {
 	private class LongRange implements Strategy {
 		@Override
 		public Comparable nextValue() {
-			long value = (Math.abs(random.nextLong()) % module) + min;
+			long value = (Math.abs(getRandom().nextLong()) % module) + min;
 			return value;
 		}
 		
@@ -270,7 +196,7 @@ public class IntegerGenerator extends ValueGenerator {
 	private class IntRange implements Strategy {
 		@Override
 		public Comparable nextValue() {
-			int value = random.nextInt(1 + max - min) + min;			
+			int value = getRandom().nextInt(1 + max - min) + min;			
 			return value;
 		}
 		
@@ -358,7 +284,7 @@ public class IntegerGenerator extends ValueGenerator {
 			}
 
 			Range selectedRange = null;
-			Double randomKey = random.nextDouble();
+			Double randomKey = getRandom().nextDouble();
 			Set<Entry<Double, Range>> set = map.entrySet();
 			for (Entry<Double, Range> e : set) {
 				if (e.getKey() < randomKey) {
@@ -366,7 +292,7 @@ public class IntegerGenerator extends ValueGenerator {
 				}
 			}
 
-			return random.nextInt(1 + selectedRange.max - selectedRange.min)
+			return getRandom().nextInt(1 + selectedRange.max - selectedRange.min)
 					+ selectedRange.min;
 		}
 	}

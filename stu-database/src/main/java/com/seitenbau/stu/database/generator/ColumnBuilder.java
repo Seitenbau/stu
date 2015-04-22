@@ -1,6 +1,5 @@
 package com.seitenbau.stu.database.generator;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,7 +7,6 @@ import com.seitenbau.stu.database.extend.DatabaseTesterCleanAction;
 import com.seitenbau.stu.database.extend.DatasetIdGenerator;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.ValueGeneratorRegistry;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
 import com.seitenbau.stu.util.CamelCase;
 
 public class ColumnBuilder implements TableBuilderCommon {
@@ -29,8 +27,6 @@ public class ColumnBuilder implements TableBuilderCommon {
 	private ValueGenerator generator;
 
 	private Long seed;
-	
-	public ArrayList<ConstraintPair> constraints = new ArrayList<ConstraintPair>();
 
 	/**
 	 * Allows to configure a reference to another column. The configuration is
@@ -134,7 +130,7 @@ public class ColumnBuilder implements TableBuilderCommon {
 		
 		return new Column(table, name, p_javaName, p_tableName, description,
 				dataType, reference.getReference(), flags, p_generator, p_seed,
-				infinite, constraints, set, allowNull);
+				infinite, set, allowNull);
 	}
 
 	/**

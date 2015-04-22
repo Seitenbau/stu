@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintInterface;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintPair;
-import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
 public abstract class ValueGenerator {
-	public Random random;
-	protected ArrayList<ConstraintPair> constraintPairs = new ArrayList<ConstraintPair>();
-	protected ArrayList<ConstraintInterface> scs;
+	public Random random; // TODO private
+	protected ArrayList<ConstraintBase> scs;
 	private String key;
 	protected String[] set;
 	protected boolean allowNull;
@@ -29,12 +26,13 @@ public abstract class ValueGenerator {
 	}
 
 	public void initialize(long seed) {
-		random = new Random(seed);
+		setRandom(new Random(seed));
 	}
 
 	public abstract Result nextValue(EntityBlueprint eb);
 	public abstract Result nextValue(Integer index, EntityBlueprint eb);
 	public abstract Result nextValue();
+	public abstract Result nextValue(Integer index);
 	
 	public Result nextValue(Result result) {
 		if (result == null) {
@@ -61,7 +59,7 @@ public abstract class ValueGenerator {
 
 	protected boolean allTargetsLoaded(EntityBlueprint eb) {
 		if (scs != null) {
-			for (ConstraintInterface sc : scs) {
+			for (ConstraintBase sc : scs) {
 				if (!sc.loadSources(eb))
 					return false;
 			}
@@ -73,7 +71,7 @@ public abstract class ValueGenerator {
 	// constraint contains values
 	protected boolean checkValues(EntityBlueprint eb) {
 		if (scs != null) {
-			for (ConstraintInterface sc : scs) {
+			for (ConstraintBase sc : scs) {
 				if (!sc.loadValues(eb))
 					return false; // false;
 			}
@@ -81,9 +79,9 @@ public abstract class ValueGenerator {
 		return true;
 	}
 
-	protected boolean checkSuperConstraints(Comparable value, EntityBlueprint eb) {
+	protected boolean checkSuperConstraints(Comparable<?> value, EntityBlueprint eb) {
 		if (scs != null) {
-			for (ConstraintInterface sc : scs) {
+			for (ConstraintBase sc : scs) {
 				if (!sc.isValid(value, eb))
 					return true;
 			}
@@ -91,34 +89,8 @@ public abstract class ValueGenerator {
 		return false;
 	}
 
-	protected boolean checkConstraints(Comparable value) {
-		for (ConstraintPair cp : constraintPairs) {
-			if (cp.getDependingConstraint().getValue() != null) {
-
-				if (cp.getDependingConstraint().isValid(value)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	protected void setConstraintValues(Comparable value) {
-		for (ConstraintPair cp : constraintPairs) {
-			cp.getMyConstraint().setValue(value);
-		}
-	}
-
-	public void setConstraints(ArrayList<ConstraintInterface> arrayList) {
+	public void setConstraints(ArrayList<ConstraintBase> arrayList) {
 		this.scs = arrayList;
-	}
-
-	public void addConstraint(ConstraintPair constraintPair) {
-		constraintPairs.add(constraintPair);
-	}
-
-	public void clearConstraints() {
-		constraintPairs.clear();
 	}
 
 	public void setSet(String[] set) {
@@ -127,5 +99,13 @@ public abstract class ValueGenerator {
 	
 	public void setAllowNull(boolean allowNull){
 		this.allowNull = allowNull;
+	}
+
+	public Random getRandom() {
+		return random;
+	}
+
+	public void setRandom(Random random) {
+		this.random = random;
 	}
 }
