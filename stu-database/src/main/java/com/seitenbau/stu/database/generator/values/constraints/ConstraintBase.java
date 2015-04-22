@@ -23,20 +23,11 @@ public abstract class ConstraintBase {
 	protected String[] sourceNames; // {"table.column", "table.column",	// "table.column"}
 
 	protected EntityFactory fab;
-	protected Result result;
 	protected ArrayList<Source> sources = new ArrayList<Source>();
 	
 	protected Scope scope;
 
 	protected boolean sourcesLoaded;
-
-	public Result getResult() {
-		return result;
-	}
-
-	public void setResult(Result result) {
-		this.result = result;
-	}
 
 	public EntityFactory getFab() {
 		return fab;
@@ -127,7 +118,9 @@ public abstract class ConstraintBase {
 			List<EntityBlueprint> blueprints = fab.blueprints.getTableBlueprints(eb.getTable());
 			for(int i = 0; i < blueprints.size(); i++){
 				EntityBlueprint blueprint = blueprints.get(i);
-				addSource(0, blueprint, modelRef);
+				for (int j = 0; j < sourceNames.length; j++) {
+					addSource(j, blueprint, sourceNames[j]);
+				}
 			}
 		}else{		
 			for (int i = 0; i < sourceNames.length; i++) {
@@ -144,7 +137,7 @@ public boolean addSource(Integer i, EntityBlueprint eb, String name){
 		Source source = new Source(name);
 		if(!sources.contains(source)){
 			sources.add(source);
-		}		
+		}
 
 		String[] array = sourceNames[i].split("\\.");
 		switch (array.length) {
@@ -220,7 +213,6 @@ public boolean addSource(Integer i, EntityBlueprint eb, String name){
 		try {
 			ci = this.getClass().newInstance();
 			ci.fab = this.fab;
-			ci.result = this.result;
 			ci.sourceNames = this.sourceNames;
 			
 			return ci;

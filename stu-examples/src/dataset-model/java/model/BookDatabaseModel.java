@@ -9,8 +9,9 @@ import com.seitenbau.stu.database.generator.values.DataGenerator;
 import com.seitenbau.stu.database.generator.values.IntegerGenerator;
 import com.seitenbau.stu.database.generator.values.NachnameGenerator;
 import com.seitenbau.stu.database.generator.values.VerlagNameGenerator;
+import com.seitenbau.stu.database.generator.values.constraints.DomainSpecificDataConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.UConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
 
 public class BookDatabaseModel extends DatabaseModel {
 	public BookDatabaseModel() {
@@ -33,7 +34,12 @@ public class BookDatabaseModel extends DatabaseModel {
 		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
 				"autor.lastlogin", "autor.mitgliedseit"));
 		
-		constraint(new UConstraint("autor.nachname", "autor.vorname"));
+		//constraint(new UniqueConstraint("autor.nachname"));		
+		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
+		//constraint(new UniqueConstraint("autor.vorname"));
+		
+		
+//		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.land"));
 		
 		//constraint(new RConstraint("autor.mitgliedseit", 1990, 2015));		
 		
@@ -70,7 +76,7 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.autoInvokeNext()
 				//
-				.column("vorname", DataType.VARCHAR).generator(new NachnameGenerator())//new DataGenerator("vorname"))
+				.column("vorname", DataType.VARCHAR).generator(new DataGenerator("vorname"))
 				//
 				.column("nachname_laenge", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
 				//

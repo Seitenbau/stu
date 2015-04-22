@@ -472,7 +472,6 @@ public class ExpressionConstraint extends ConstraintBase {
 	@Override
 	public ConstraintBase getCopyInstance(){	
 		ExpressionConstraint ec = new ExpressionConstraint(modelRef, expression, sourceNames);
-		ec.result = result;
 		ec.fab = fab;		
 		return ec;
 	}

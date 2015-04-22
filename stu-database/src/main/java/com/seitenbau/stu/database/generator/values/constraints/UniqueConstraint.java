@@ -5,18 +5,18 @@ import java.util.ArrayList;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.values.Result;
 
-public class UConstraint extends ConstraintBase {
+public class UniqueConstraint extends ConstraintBase {
 	
-	public UConstraint(String modelRef){
+	public UniqueConstraint(String modelRef){
 		this.modelRef = modelRef;
 		this.scope = Scope.Column;
 		this.sourceNames =  new String[] {this.modelRef};
 	}
 	
-	public UConstraint(String... modelRef){
+	public UniqueConstraint(String... modelRef){
 		this.modelRef = modelRef[0];
 		this.scope = Scope.Column;
-		this.sourceNames =  new String[] {this.modelRef};
+		this.sourceNames =  modelRef;
 	}
 	
 	@Override

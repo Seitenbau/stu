@@ -46,6 +46,36 @@ public class DomainSpecificDataBuilder {
 		return dataConstraint;		
 	}
 	
+	public boolean isValid(String key1, Comparable<?> value1, String key2, Comparable<?> value2){
+		if(!data.containsKey(key1) || !data.containsKey(key2))
+			return false;		
+		
+		if(String.class.isInstance(value1)){
+			value1 = ((String) value1).replaceAll("\"", "");
+		}
+		
+		if(String.class.isInstance(value2)){
+			value2 = ((String) value2).replaceAll("\"", "");
+		}
+		
+		ArrayList<DomainSpecificData> list = data.get(key1);
+		for(DomainSpecificData entry : list){
+			if(entry.getValue().equals(value1)){
+				if(entry.dataHashMap.containsKey(key2)){
+					for(DomainSpecificData e2 : entry.dataHashMap.get(key2)){
+						if(e2.getValue().equals(value2))
+							return true;
+					}
+					return false;
+				}else{
+					return false;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	public DomainSpecificDataBuilder() {
 		
 		DomainSpecificData maennlich = addData("geschlecht", "männlich");

@@ -57,7 +57,6 @@ public class EntityBlueprint {
 			}
 			
 			ValueGenerator g = fab.getValueGenerator(col);
-
 			if (com.seitenbau.stu.database.generator.values.DataGenerator.class.isInstance(g)) {
 				com.seitenbau.stu.database.generator.values.DataGenerator dg = (com.seitenbau.stu.database.generator.values.DataGenerator) g;
 				dg.setConstraintsData(fab.model.dataSource);

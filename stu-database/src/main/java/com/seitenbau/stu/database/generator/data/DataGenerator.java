@@ -27,6 +27,7 @@ import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
+import com.seitenbau.stu.database.generator.values.constraints.DomainSpecificDataConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.Source;
 import com.seitenbau.stu.logger.Logger;
 import com.seitenbau.stu.logger.TestLoggerFactory;
@@ -95,6 +96,10 @@ public class DataGenerator {
 		// Walk through all constraints and add them to the columns
 		for (ConstraintBase sc : model.getConstraintsList()) {
 			sc.setFab(fab);
+			if(DomainSpecificDataConstraint.class.isInstance(sc)){
+				((DomainSpecificDataConstraint) sc).setData(fab.model.dataSource.data);
+			}
+			
 			addContraintToColumns(sc);
 		}
 
@@ -114,24 +119,26 @@ public class DataGenerator {
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void addContraintToColumns(ConstraintBase sc) {
 		// TODO: Parse string and add Constraint to Table.Column
+		
+		for(String sourceString: sc.getSourceNames()){
+			String[] array = sourceString.split("\\."); //sc.modelRef.split("\\.");
+			
+			if (array.length == 3) {
+				String tableName = array[0];
+				String columnName = array[1];
+				String index = array[2];
+				// TODO: Constraint only to one field of a Table....
+			} else if (array.length == 2) {
+				String tableName = array[0];
+				String columnName = array[1];
 
-		String[] array = sc.modelRef.split("\\.");
+				addConstraintToBlueprintEntities(tableName, columnName, sc);
 
-		if (array.length == 3) {
-			String tableName = array[0];
-			String columnName = array[1];
-			String index = array[2];
-			// TODO: Constraint only to one field of a Table....
-		} else if (array.length == 2) {
-			String tableName = array[0];
-			String columnName = array[1];
-
-			addConstraintToBlueprintEntities(tableName, columnName, sc);
-
-		} else if (array.length == 1) {
-			String tableName = array[0];
-		} else {
-			// TODO ????
+			} else if (array.length == 1) {
+				String tableName = array[0];
+			} else {
+				// TODO ????
+			}
 		}
 	}
 
@@ -211,7 +218,6 @@ public class DataGenerator {
 		ArrayList<ConstraintBase> cons = result.getConstraints();
 		if (cons != null && !cons.isEmpty()) {
 			for (ConstraintBase c : cons) {
-				c.setResult(result);
 				addConstraint(c);
 			}
 		}
@@ -291,6 +297,8 @@ public class DataGenerator {
 	}
 
 
+	// Fügt Constraint der ConstraintList hinzu
+	// Durchläuft alle zugehörigen Results und ruft Funktion auf...
 	private void addConstraint(ConstraintBase constraint) {
 		if (!constraintList.contains(constraint)) {
 			constraintList.add(constraint);
@@ -318,14 +326,14 @@ public class DataGenerator {
 
 			// TODO EB und Value überlegen
 			// Prüfe, ob das Constraint-Bedingung erfüllt ist
-			Result result = constraint.getResult();
+			Result result = constraint.getSources().get(0).getResults().get(0);
 			if (!constraint.isValid((Comparable<?>) result.getValue(), result.getEb())) {
 				String str = ""; 
 				for(Result r: resultList){
 					str += r.toString() + " - ";
 				}
 				
-				System.out.println("Fail: " + constraint.getResult().getEb().getRefName() + ": " + str);
+				//System.out.println("Fail: " + constraint.getResult().getEb().getRefName() + ": " + str);
 				return constraint;
 			}else{
 				String str = ""; 

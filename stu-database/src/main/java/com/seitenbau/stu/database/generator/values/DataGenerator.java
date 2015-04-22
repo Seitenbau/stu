@@ -113,52 +113,6 @@ public class DataGenerator extends ValueGenerator {
 		}
 		
 		return result;
-
-		// if (constraintPairs == null) {
-		// DataConstraint c = al.get(random.nextInt(al.size()));
-		// return c.getValue().toString();
-		// } else {
-		// ConstraintsData cd = new ConstraintsData();
-		//
-		// reduceList(cd);
-		//
-		// Comparable value = null;
-		//
-		// do {
-		// al = cd.data.get(getKey());
-		// if (al.size() > 0) {
-		// int randInt = random.nextInt(al.size());
-		// System.out.println(getKey() + ": " + randInt + " aus " + al.size());
-		// value = al.get(randInt).getValue();
-		// if (value == null)
-		// return "";
-		// }
-		// } while (checkConstraints(value));
-		//
-		//
-		// setConstraintValues(value);
-		// return value.toString();
-		//
-		// // al = cd.data.get(getKey());
-		// // if (al.size() > 0) {
-		// // int randInt = random.nextInt(al.size());
-		// // System.out.println(getKey() + ": " + randInt + " aus " +
-		// al.size());
-		// // Comparable value = al.get(randInt).getValue();
-		// // if (value == null)
-		// // return "";
-		// // for (ConstraintPair cp : constraintPairs) {
-		// // if(DataConstraint.class.isInstance(cp.getMyConstraint())){
-		// // ((DataConstraint) cp.getMyConstraint()).setValue(value);
-		// // }else if(UniqueConstraint.class.isInstance(cp.getMyConstraint())){
-		// // ((UniqueConstraint) cp.getMyConstraint()).getValues().add(value);
-		// // }
-		// // }
-		// // return value.toString();
-		// // }
-		// //
-		// // return null;
-		// }
 	}
 
 	@Override
