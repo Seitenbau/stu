@@ -31,24 +31,25 @@ public class BookDatabaseModel extends DatabaseModel {
 		TableBuilder adresse = table("adresse");		
 
 		// Conststaints		
-		constraint(new ExpressionConstraint("autor.mitgliedseit",
-				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
+		//constraint(new ExpressionConstraint("autor.mitgliedseit",
+		//		"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
 		
 //		constraint(new ExpressionConstraint("autor.mitgliedseit",
 //		"autor.mitgliedseit >= autor.geburtsjahr + 16", "autor.geburtsjahr", "autor.mitgliedseit"));
 		
-		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
-				"autor.lastlogin", "autor.mitgliedseit"));
+		//constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
+		//		"autor.lastlogin", "autor.mitgliedseit"));
 		
 		//constraint(new UniqueConstraint("autor.geburtsjahr"));
 		
 		//constraint(new UniqueConstraint("autor.nachname"));		
-		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
-		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.sprache"));
+		//constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
+		//constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.sprache"));
 		//constraint(new UniqueConstraint("autor.vorname"));
 		
 		//constraint(new LogicalConstraint(CompareType.GREATER, "autor.anzahlbuecher", "autor.summebuecher"));
-		//constraint(new RangeConstraint("adresse.nummer", 1, 50));
+		constraint(new RangeConstraint("adresse.nummer", 1, 50));
+		constraint(new RangeConstraint("autor.nachnamelaenge", 1, 50));
 		
 		
 //		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.land"));
@@ -90,7 +91,7 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.column("vorname", DataType.VARCHAR).generator(new DataGenerator("vorname"))
 				//
-				.column("nachname_laenge", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
+				.column("nachnamelaenge", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
 				//
 				.column("nachname", DataType.VARCHAR).generator(new NachnameGenerator())
 				//
@@ -127,9 +128,9 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.column("strasse", DataType.VARCHAR).generator(new DataGenerator("strasse"))
 				//
-				.column("nummer", DataType.VARCHAR).generator(new IntegerGenerator(1, 99))
+				.column("nummer", DataType.INTEGER).generator(new IntegerGenerator(1, 99))
 				//
-				.column("plz", DataType.VARCHAR).generator(new IntegerGenerator(78000, 79000))
+				.column("plz", DataType.INTEGER).generator(new IntegerGenerator(78000, 79000))
 				//
 				// .column("stadt", DataType.VARCHAR).generator(new
 				// NachnameGenerator())

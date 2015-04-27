@@ -398,6 +398,7 @@ public class ExpressionConstraint extends ConstraintBase {
 		return v;
 	}
 
+	// TODO: Comparable<Comparable<?>> fix
 	private Integer compareTwo(Comparable<Comparable<?>> v1, Comparable<?> v2) {
 		if(v1 == null || v2 == null){
 			if(v1 != v2)

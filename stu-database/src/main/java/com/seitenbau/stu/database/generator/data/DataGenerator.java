@@ -189,6 +189,7 @@ public class DataGenerator {
 					
 					constraintList.clear(); // Aktuelle Liste aller gerade betrachteten Constraints leeren
 					resultList.clear(); // Aktuelle ResultList leeren
+					counter = 0;
 				}
 			}
 		}
@@ -204,6 +205,9 @@ public class DataGenerator {
 	// ResultList mit Priorität:
 	// Prioriät gibt an welche Results zuerst generiert werden
 	private ArrayList<Result> resultList = new ArrayList<Result>();	
+	
+	// Counter
+	private int counter = 0;
 		
 	/*
 	 * Wert einer einzelnen Zelle berechnen
@@ -262,13 +266,21 @@ public class DataGenerator {
 	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge schon richtig ist
 	private Integer[] recursiveResultWalkthrough(int depth, Integer[] indexes){		
 		
+		counter++;
+		
 		int maxDepth = 10 - indexes.length;
 		
 		if(maxDepth < 3)
 			maxDepth = 3;
 		
 		if(maxDepth > 6)
-			maxDepth = 6;	
+			maxDepth = 6;
+
+		if(resultList.size() == 1)
+			maxDepth = 1000;
+		
+//		if(counter > 10000)
+//			return null;
 
 		
 		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
@@ -290,8 +302,7 @@ public class DataGenerator {
 				}				
 			}
 			
-			Result res = resultList.get(i).getGenerator().nextValue(seed);		
-			
+			Result res = resultList.get(i).getGenerator().nextValue(seed);
 			
 			if(res == null)
 				res = new Result(null, false, false);
