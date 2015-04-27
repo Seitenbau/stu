@@ -28,18 +28,17 @@ public class BookDatabaseModel extends DatabaseModel {
 		TableBuilder buch = table("buch");
 		TableBuilder verlag = table("verlag");
 		TableBuilder autor = table("autor");
-		TableBuilder adresse = table("adresse");
-		
+		TableBuilder adresse = table("adresse");		
 
 		// Conststaints		
-//		constraint(new ExpressionConstraint("autor.mitgliedseit",
-//				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
+		constraint(new ExpressionConstraint("autor.mitgliedseit",
+				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
 		
 //		constraint(new ExpressionConstraint("autor.mitgliedseit",
 //		"autor.mitgliedseit >= autor.geburtsjahr + 16", "autor.geburtsjahr", "autor.mitgliedseit"));
-//		
-//		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
-//				"autor.lastlogin", "autor.mitgliedseit"));
+		
+		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
+				"autor.lastlogin", "autor.mitgliedseit"));
 		
 		//constraint(new UniqueConstraint("autor.geburtsjahr"));
 		

@@ -8,7 +8,6 @@ import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
-import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint.AppliesTo;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
@@ -34,15 +33,7 @@ public class DataGenerator extends ValueGenerator {
 
 	@Override
 	public Result nextValue() {
-		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data.get(getKey());
-
-		Result result = new Result(null, false, false);
-
-		DomainSpecificDataHint value = al.get(result.getValueIndex());
-		result.setValue("\"" + value.getValue() + "\"");
-		result.setGenerated(true);
-
-		return result;
+		return nextValue(0);
 	}
 
 	@Override
@@ -100,16 +91,8 @@ public class DataGenerator extends ValueGenerator {
 
 							ArrayList<DomainSpecificDataHint> intList = new ArrayList<DomainSpecificDataHint>();
 							for (DomainSpecificDataHint c : al) {
-								AppliesTo appliesTo = c.appliesTo(dsdh);
-								switch (appliesTo) {
-								case YES:									
-									break;
-								case NO:
-									intList.add(c);									
-									break;
-								case NULL:									
-									break;
-								}
+								if(c.notAppliesTo(dsdh))
+									intList.add(c);
 							}
 
 							for (DomainSpecificDataHint c : intList) {
