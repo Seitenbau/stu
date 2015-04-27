@@ -16,57 +16,10 @@ public class DateGenerator extends ValueGenerator {
 	public void initialize(long seed) {
 		random = new Random(seed);
 	}
-	
+
+
 	@Override
 	public Result nextValue(Integer index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public Result nextValue(Result result){
-		GregorianCalendar gc = new GregorianCalendar();
-
-		int year = randBetween(1900, 2010);
-
-		gc.set(GregorianCalendar.YEAR, year);
-
-		int dayOfYear = randBetween(1, gc.getActualMaximum(GregorianCalendar.DAY_OF_YEAR));
-
-		gc.set(GregorianCalendar.DAY_OF_YEAR, dayOfYear);
-
-		int iYear = gc.get(GregorianCalendar.YEAR);
-		int iMonth = gc.get(GregorianCalendar.MONTH);
-		int iDay = gc.get(GregorianCalendar.DAY_OF_MONTH);
-
-		result.setValue("asDate(\"" + getString(iDay) + "." + getString(iMonth + 1) + "." + getString(iYear) + "\")");
-
-		
-		return result;
-	}
-
-	@Override
-	public Result nextValue(EntityBlueprint eb) {
-		GregorianCalendar gc = new GregorianCalendar();
-
-		int year = randBetween(1900, 2010);
-
-		gc.set(GregorianCalendar.YEAR, year);
-
-		int dayOfYear = randBetween(1, gc.getActualMaximum(GregorianCalendar.DAY_OF_YEAR));
-
-		gc.set(GregorianCalendar.DAY_OF_YEAR, dayOfYear);
-
-		int iYear = gc.get(GregorianCalendar.YEAR);
-		int iMonth = gc.get(GregorianCalendar.MONTH);
-		int iDay = gc.get(GregorianCalendar.DAY_OF_MONTH);
-
-		return new Result("asDate(\"" + getString(iDay) + "." + getString(iMonth + 1) + "." + getString(iYear) + "\")", true, true);
-		// return "asDate(\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\")";
-	}
-
-	@Override
-	public Result nextValue(Integer index, EntityBlueprint eb) {
 		GregorianCalendar gc = new GregorianCalendar();
 
 		int year = randBetween(1900, 2010);

@@ -216,17 +216,7 @@ public class VerlagNameGenerator extends ValueGenerator {
 	@Override
 	public Result nextValue(){		
 		return new Result(values[random.nextInt(values.length)], true, true);
-	}
-	
-	@Override
-	public Result nextValue(EntityBlueprint eb) {
-		return new Result(values[random.nextInt(values.length)], true, true);
-	}
-
-	@Override
-	public Result nextValue(Integer index, EntityBlueprint eb) {
-		return new Result(values[random.nextInt(values.length)], true, true);
-	}
+	}	
 	
 	@Override
 	public Result nextValue(Integer index) {

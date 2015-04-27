@@ -34,15 +34,6 @@ public class IntegerGenerator extends ValueGenerator {
 	}
 	
 	@Override
-	public Result nextValue(Result result){
-		
-		Comparable<?> value = null;
-		value = strategy.nextValue();
-		result.setValue(value);		
-		return result;
-	}
-	
-	@Override
 	public Result nextValue(){		
 		Result result = new Result(strategy.nextValue(), true, true);
 		return result;
@@ -52,67 +43,6 @@ public class IntegerGenerator extends ValueGenerator {
 	public Result nextValue(Integer index) {
 		Random rand = new Random(index);
 		return new Result(rand.nextInt(max-min) + min, true, true);
-	}
-
-	@Override
-	public Result nextValue(EntityBlueprint eb) {
-
-		Result result = new Result(null, false, false);
-//
-//		
-//		if (!allTargetsLoaded(eb))
-//			return result;
-//
-//		// TODO Check if all targets have values...
-//		if (!checkValues(eb))
-//			return result;
-//
-//		Comparable<?> value = null;
-//
-//		int i = 0;
-//		do {
-//			value = strategy.nextValue();
-//			i++;
-//		} while (checkSuperConstraints(value, eb) && i < 100);
-//
-//		if (i >= 99) {
-//			return new Result(null, false);
-//		} else {
-//			result.setValue(value);
-//		}
-
-		return result;
-
-		// if (constraintPairs == null || constraintPairs.size() <= 0) {
-		// return strategy.nextValue().toString();
-		// } else {
-		// Comparable value = null;
-		// // lp(true);
-		// // lp(false);
-		//
-		//
-		// // Brute Force
-		// do {
-		// value = strategy.nextValue();
-		// } while (checkConstraints(value));
-		//
-		// //lp(true);
-		//
-		//
-		// // ConstraintSolver rd = new ConstraintSolver(constraintPairs);
-		// //
-		// // min = rd.getMin(this.getKey());
-		// // max = rd.getMax(this.getKey());
-		// // value = strategy.nextValue();
-		//
-		// setConstraintValues(value);
-		// return value.toString();
-		// }
-	}
-	
-	@Override
-	public Result nextValue(Integer index, EntityBlueprint eb) {
-		return new Result(strategy.nextValue(index), true, true);
 	}
 
 	private interface Strategy {

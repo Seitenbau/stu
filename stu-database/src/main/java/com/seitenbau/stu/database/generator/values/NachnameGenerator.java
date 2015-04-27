@@ -42,16 +42,6 @@ public class NachnameGenerator extends ValueGenerator {
 	}
 	
 	@Override
-	public Result nextValue(EntityBlueprint eb) {
-		return new Result(values[random.nextInt(values.length)], true, true);
-	}
-
-	@Override
-	public Result nextValue(Integer index, EntityBlueprint eb) {
-		return new Result(values[random.nextInt(values.length)], true, true);
-	}
-	
-	@Override
 	public Result nextValue(Integer index) {
 		Random rand = new Random(index);		
 		return new Result(values[rand.nextInt(values.length)], true, true);
@@ -64,7 +54,6 @@ public class NachnameGenerator extends ValueGenerator {
 			return new NachnameGenerator();
 		}
 	}
-	
 
 	
 	@Override

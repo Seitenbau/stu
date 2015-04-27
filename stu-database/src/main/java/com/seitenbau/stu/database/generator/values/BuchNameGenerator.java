@@ -70,24 +70,6 @@ public class BuchNameGenerator extends ValueGenerator {
 	public Result nextValue(){		
 		return new Result(values[random.nextInt(values.length)], true, true);
 	}
-
-	@Override
-	public Result nextValue(EntityBlueprint eb) {
-		String value = values[counter++];
-		if (value.length() > 16)
-			value = value.substring(0, 15) + "\"";
-		return new Result(value, true, true);
-		// return new Result(values[random.nextInt(values.length)], true);
-	}
-	
-	@Override
-	public Result nextValue(Integer index, EntityBlueprint eb) {
-		String value = values[counter++];
-		if (value.length() > 16)
-			value = value.substring(0, 15) + "\"";
-		return new Result(value, true, true);
-		// return new Result(values[random.nextInt(values.length)], true);
-	}
 	
 	@Override
 	public Result nextValue(Integer index) {
