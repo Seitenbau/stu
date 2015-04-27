@@ -35,17 +35,17 @@ public class BookDatabaseModel extends DatabaseModel {
 //		constraint(new ExpressionConstraint("autor.mitgliedseit",
 //				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
 		
-		constraint(new ExpressionConstraint("autor.mitgliedseit",
-		"autor.mitgliedseit >= autor.geburtsjahr + 16", "autor.geburtsjahr", "autor.mitgliedseit"));
-		
-		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
-				"autor.lastlogin", "autor.mitgliedseit"));
+//		constraint(new ExpressionConstraint("autor.mitgliedseit",
+//		"autor.mitgliedseit >= autor.geburtsjahr + 16", "autor.geburtsjahr", "autor.mitgliedseit"));
+//		
+//		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
+//				"autor.lastlogin", "autor.mitgliedseit"));
 		
 		//constraint(new UniqueConstraint("autor.geburtsjahr"));
 		
 		//constraint(new UniqueConstraint("autor.nachname"));		
-		//constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
-		//constraint(new DomainSpecificDataConstraint("autor.sprache", "autor.vorname"));
+		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
+		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.sprache"));
 		//constraint(new UniqueConstraint("autor.vorname"));
 		
 		//constraint(new LogicalConstraint(CompareType.GREATER, "autor.anzahlbuecher", "autor.summebuecher"));

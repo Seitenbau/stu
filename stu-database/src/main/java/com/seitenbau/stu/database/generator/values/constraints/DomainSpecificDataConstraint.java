@@ -28,7 +28,7 @@ public class DomainSpecificDataConstraint extends ConstraintBase {
 		Result value1 = sources.get(0).getResults().get(0);
 		Result value2 = sources.get(1).getResults().get(0);		
 		
-		if(!value1.isFinal() || !value2.isFinal()){
+		if(value1.getValue() == null || value2.getValue() == null){
 			return false;
 		}		
 		

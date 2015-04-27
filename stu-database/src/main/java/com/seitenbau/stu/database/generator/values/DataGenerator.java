@@ -102,11 +102,10 @@ public class DataGenerator extends ValueGenerator {
 							for (DomainSpecificDataHint c : al) {
 								AppliesTo appliesTo = c.appliesTo(dsdh);
 								switch (appliesTo) {
-								case YES:
-									intList.add(c);
+								case YES:									
 									break;
 								case NO:
-									valueList.clear();
+									intList.add(c);									
 									break;
 								case NULL:									
 									break;

@@ -185,6 +185,8 @@ public class DataGenerator {
 					}
 
 					recursiveCall(table, eb, col);					
+					startResultWalkthrough();
+					
 					constraintList.clear(); // Aktuelle Liste aller gerade betrachteten Constraints leeren
 					resultList.clear(); // Aktuelle ResultList leeren
 				}
@@ -226,6 +228,20 @@ public class DataGenerator {
 			}
 		}
 		
+		return true;
+	}
+	
+	public static Integer[] convertIntegers(List<Integer> integers)
+	{
+		Integer[] ret = new Integer[integers.size()];
+	    for (int i=0; i < ret.length; i++)
+	    {
+	        ret[i] = integers.get(i).intValue();
+	    }
+	    return ret;
+	}
+	
+	private boolean startResultWalkthrough(){
 		ArrayList<Integer> indexesArrayList = new ArrayList<Integer>();
 		for(int i = 0; i < resultList.size(); i++){
 			indexesArrayList.add(0);
@@ -241,16 +257,6 @@ public class DataGenerator {
 		}
 		
 		return true;
-	}
-	
-	public static Integer[] convertIntegers(List<Integer> integers)
-	{
-		Integer[] ret = new Integer[integers.size()];
-	    for (int i=0; i < ret.length; i++)
-	    {
-	        ret[i] = integers.get(i).intValue();
-	    }
-	    return ret;
 	}
 	
 	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge schon richtig ist
@@ -328,10 +334,8 @@ public class DataGenerator {
 			for (int i = 0; i<sources.size(); i++) {
 				Source source = sources.get(i);
 				ArrayList<Result> results = source.getResults();
-				for (Result result : results) {					
+				for (Result result : results) {
 
-					
-					// TODO: Zuerst alle Constraints und Results sammeln und dann Backtracking????
 					if (!resultList.contains(result)) {
 						recursiveCall(result.getTable(), result.getEb(), result.getCol());
 					}
@@ -349,8 +353,8 @@ public class DataGenerator {
 			// TODO EB und Value überlegen. Value wahrscheinlich überflüssig, vielleicht Result mitgeben
 			// Prüfe, ob das Constraint-Bedingung erfüllt ist
 			
-			if(!constraint.allSourcesLoad())
-				return constraint;
+//			if(!constraint.allSourcesLoad())
+//				return constraint;
 			
 			Result result = constraint.getSources().get(0).getResults().get(0);
 			if (!constraint.isValid(result.getEb())) {
