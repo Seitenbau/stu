@@ -19,9 +19,9 @@ public class Source {
 	
 	private ArrayList<Result> results = new ArrayList<Result>(); // Alle Werte auf die diese Source verweist.
 	
-	String tableString;				// TODO: Make private
+	private String tableString;
 	private Integer entityIndex;
-	String columnString;
+	private String columnString;
 	
 	private Table table;
 	private EntityBlueprint eb;
@@ -128,5 +128,21 @@ public class Source {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getTableString() {
+		return tableString;
+	}
+
+	public void setTableString(String tableString) {
+		this.tableString = tableString;
+	}
+
+	public String getColumnString() {
+		return columnString;
+	}
+
+	public void setColumnString(String columnString) {
+		this.columnString = columnString;
 	}
 }

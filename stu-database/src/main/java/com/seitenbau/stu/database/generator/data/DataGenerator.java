@@ -100,7 +100,7 @@ public class DataGenerator {
 		for (ConstraintBase sc : model.getConstraintsList()) {
 			sc.setFab(fab);
 			if(DomainSpecificDataConstraint.class.isInstance(sc)){
-				((DomainSpecificDataConstraint) sc).setData(fab.model.dataSource.data);
+				((DomainSpecificDataConstraint) sc).setData(fab.model.getDataSource().data);
 			}
 			
 			addContraintToColumns(sc);
@@ -353,8 +353,8 @@ public class DataGenerator {
 			// TODO EB und Value überlegen. Value wahrscheinlich überflüssig, vielleicht Result mitgeben
 			// Prüfe, ob das Constraint-Bedingung erfüllt ist
 			
-//			if(!constraint.allSourcesLoad())
-//				return constraint;
+			if(!constraint.allSourcesLoad())
+				return constraint;
 			
 			Result result = constraint.getSources().get(0).getResults().get(0);
 			if (!constraint.isValid(result.getEb())) {

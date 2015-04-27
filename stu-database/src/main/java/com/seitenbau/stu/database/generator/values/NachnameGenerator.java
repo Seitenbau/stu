@@ -2,8 +2,6 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-
 public class NachnameGenerator extends ValueGenerator {
 
 	@Override

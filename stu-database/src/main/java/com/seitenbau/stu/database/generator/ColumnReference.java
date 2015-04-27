@@ -8,9 +8,9 @@ public class ColumnReference
 {
   public Column _foreignColumn;
 
-  public final FutureColumn _foreignFutureColumn;	// TODO: Change to private
+  private final FutureColumn _foreignFutureColumn;
   
-  public final List<Column> _referencedByColumns;	// TODO: Change to private
+  private final List<Column> _referencedByColumns;
 
   private final String _localName;
 

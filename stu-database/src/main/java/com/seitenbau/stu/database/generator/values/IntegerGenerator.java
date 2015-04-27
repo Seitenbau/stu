@@ -6,8 +6,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-
 public class IntegerGenerator extends ValueGenerator {
 
 	private int min;
@@ -46,21 +44,21 @@ public class IntegerGenerator extends ValueGenerator {
 	}
 
 	private interface Strategy {
-		Comparable nextValue();
-		Comparable nextValue(Integer index);
+		Comparable<?> nextValue();
+		Comparable<?> nextValue(Integer index);
 
-		void AddRange(Comparable min, Comparable max);
+		void AddRange(Comparable<?> min, Comparable<?> max);
 	}
 
 	private class LongRange implements Strategy {
 		@Override
-		public Comparable nextValue() {
+		public Comparable<?> nextValue() {
 			long value = (Math.abs(getRandom().nextLong()) % module) + min;
 			return value;
 		}
 		
 		@Override
-		public Comparable nextValue(Integer index) {
+		public Comparable<?> nextValue(Integer index) {
 			Long value = (long) (min + index);
 			if(value <= max)
 				return value;
@@ -69,20 +67,20 @@ public class IntegerGenerator extends ValueGenerator {
 		}
 
 		@Override
-		public void AddRange(Comparable min, Comparable max) {
+		public void AddRange(Comparable<?> min, Comparable<?> max) {
 			// TODO Auto-generated method stub
 		}
 	}
 
 	private class IntRange implements Strategy {
 		@Override
-		public Comparable nextValue() {
+		public Comparable<?> nextValue() {
 			int value = getRandom().nextInt(1 + max - min) + min;			
 			return value;
 		}
 		
 		@Override
-		public Comparable nextValue(Integer index) {
+		public Comparable<?> nextValue(Integer index) {
 			Integer value = min + index;
 			if(value <= max)
 				return value;
@@ -91,7 +89,7 @@ public class IntegerGenerator extends ValueGenerator {
 		}
 
 		@Override
-		public void AddRange(Comparable min, Comparable max) {
+		public void AddRange(Comparable<?> min, Comparable<?> max) {
 
 		}
 	}

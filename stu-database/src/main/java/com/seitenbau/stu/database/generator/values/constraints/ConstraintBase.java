@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.data.EntityFactory;
@@ -139,16 +138,16 @@ public abstract class ConstraintBase {
 
 				// Source is an column of the table
 				source.setPath(list);
-				source.tableString = array[0];
-				source.columnString = array[1];
+				source.setTableString(array[0]);
+				source.setColumnString(array[1]);
 				
-				source.setTable(fab.model.getTableByName(source.tableString));
+				source.setTable(fab.model.getTableByName(source.getTableString()));
 				
 				List<EntityBlueprint> bla_list = fab.blueprints.getEntities().get(source.getTable());				
 				Integer index = bla_list.indexOf(eb);
 				
 				source.setEb(fab.blueprints.getTableBlueprints(source.getTable()).get(index));
-				source.setColumn(source.getTable().getColumn(source.columnString));
+				source.setColumn(source.getTable().ref(source.getColumnString()));
 				
 				// Null
 				

@@ -38,7 +38,7 @@ public class DomainSpecificDataConstraint extends ConstraintBase {
 		Object v1 = value1.getValue();
 		Object v2 = value2.getValue();
 		
-		return fab.model.dataSource.isValid(key1, (Comparable<?>)v1, key2, (Comparable<?>)v2);
+		return fab.model.getDataSource().isValid(key1, (Comparable<?>)v1, key2, (Comparable<?>)v2);
 	}
 
 	public HashMap<String, ArrayList<DomainSpecificDataHint>> getData() {

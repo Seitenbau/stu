@@ -36,7 +36,7 @@ public class TableBuilder implements TableBuilderCommon {
 		javaName = DataSet.makeNiceJavaName(name);
 		columnBuilders = new LinkedList<ColumnBuilder>();
 		infinite = null;
-		dataSource = model.dataSource;
+		dataSource = model.getDataSource();
 	}
 
 	/**

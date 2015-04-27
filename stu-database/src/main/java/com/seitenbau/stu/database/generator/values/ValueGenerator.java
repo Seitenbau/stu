@@ -3,7 +3,6 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 

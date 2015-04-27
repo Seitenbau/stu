@@ -59,22 +59,13 @@ public class EntityBlueprint {
 			ValueGenerator g = fab.getValueGenerator(col);
 			if (com.seitenbau.stu.database.generator.values.DataGenerator.class.isInstance(g)) {
 				com.seitenbau.stu.database.generator.values.DataGenerator dg = (com.seitenbau.stu.database.generator.values.DataGenerator) g;
-				dg.setConstraintsData(fab.model.dataSource);
+				dg.setConstraintsData(fab.model.getDataSource());
 			}
 			
 			Result result =  new Result(table, this, col, null, false);	
 			result.setGenerator(g);
 			values.put(col.getJavaName(), result);
 		}
-
-		/*
-		 * // TODO: Old remove.... // Generate Constraint instances //table.setColumnConstraints(fab);
-		 * 
-		 * // for (Column col : table.getColumns()) { // if (col.getRelation() != null) { // continue; // } // // ValueGenerator g = fab.getValueGenerator(col); //
-		 * if(DataGenerator.class.isInstance(g)){ // DataGenerator dg = (DataGenerator) g; // dg.setConstraintsData(table.getDataSource()); // } // // // TODO NM if unique flag
-		 * (add) is set, ensure value is unique // values.put(col.getJavaName(), g.nextValue()); // }
-		 */
-
 	}
 
 	Optional<EntityCreationMode> getCreationInformation(Edge edge) {

@@ -2,13 +2,9 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-
 public class BuchNameGenerator extends ValueGenerator {
 
 	private Random random;
-	private int counter = 0;
-
 
 	@Override
 	public void initialize(long seed) {

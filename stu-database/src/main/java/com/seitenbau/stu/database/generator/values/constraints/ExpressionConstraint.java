@@ -34,13 +34,13 @@ public class ExpressionConstraint extends ConstraintBase {
 			if (source.hasValue(eb.getRefName()))
 				continue;
 
-			String column = Character.toUpperCase(source.columnString.charAt(0)) + source.columnString.substring(1);
+			String column = Character.toUpperCase(source.getColumnString().charAt(0)) + source.getColumnString().substring(1);
 
 			for (Entry<String, Object> entry : eb.values.entrySet()) {
 
 				String[] arraySource = modelRef.split("\\.");
 
-				if (entry.getValue() instanceof EntityBlueprint && source.tableString.compareTo(arraySource[0]) != 0) {
+				if (entry.getValue() instanceof EntityBlueprint && source.getTableString().compareTo(arraySource[0]) != 0) {
 
 					EntityBlueprint bp = (EntityBlueprint) entry.getValue();
 
@@ -77,7 +77,7 @@ public class ExpressionConstraint extends ConstraintBase {
 		return -1;
 	}
 
-	private Object parseString(String s, EntityBlueprint eb, Comparable<?> value) throws ParserException {
+	private Comparable<?> parseString(String s, EntityBlueprint eb, Comparable<?> value) throws ParserException {
 		int index;
 		s = s.replaceAll("\\s+", "");
 
@@ -94,24 +94,24 @@ public class ExpressionConstraint extends ConstraintBase {
 		} else if ((index = find(s, "&&")) >= 0) {
 			return ((Boolean) parseString(s.substring(0, index), eb, value) && (Boolean) parseString(s.substring(index + 2, s.length()), eb, value));
 		} else if ((index = find(s, "==")) >= 0) {
-			Comparable<Comparable<?>> vv1 = (Comparable<Comparable<?>>) parseString(s.substring(0, index), eb, value);
-			Comparable<?> vv2 = (Comparable<?>) parseString(s.substring(index + 2, s.length()), eb, value);
-			return (compareTwo(vv1, vv2) == 0);
+			Comparable<?> vv1 = parseString(s.substring(0, index), eb, value);
+			Comparable<?> vv2 =  parseString(s.substring(index + 2, s.length()), eb, value);
+			return (compareTwo((Comparable<Comparable<?>>) vv1, vv2) == 0);
 		} else if ((index = find(s, "!=")) >= 0) {
-			return ((Comparable<?>) parseString(s.substring(0, index), eb, value) != (Comparable<?>) parseString(s.substring(index + 2, s.length()), eb, value));
+			return ((Comparable<?>) parseString(s.substring(0, index), eb, value) != parseString(s.substring(index + 2, s.length()), eb, value));
 		} else if ((index = find(s, "<=")) >= 0) {
 			return (compareTwo((Comparable<Comparable<?>>) parseString(s.substring(0, index), eb, value),
-					(Comparable<?>) parseString(s.substring(index + 2, s.length()), eb, value)) <= 0);
+					parseString(s.substring(index + 2, s.length()), eb, value)) <= 0);
 		} else if ((index = find(s, ">=")) >= 0) {
-			Comparable<Comparable<?>> vv1 = (Comparable<Comparable<?>>) parseString(s.substring(0, index), eb, value);
-			Comparable<?> vv2 = (Comparable<?>) parseString(s.substring(index + 2, s.length()), eb, value);
-			return (compareTwo(vv1, vv2) >= 0);
+			Comparable<?> vv1 =  parseString(s.substring(0, index), eb, value);
+			Comparable<?> vv2 =  parseString(s.substring(index + 2, s.length()), eb, value);
+			return (compareTwo((Comparable<Comparable<?>>) vv1, vv2) >= 0);
 		} else if ((index = find(s, "<")) >= 0) {
-			return (compareTwo((Comparable<Comparable<?>>) parseString(s.substring(0, index), eb, value),
-					(Comparable<?>) parseString(s.substring(index + 1, s.length()), eb, value)) < 0);
+			return (compareTwo( (Comparable<Comparable<?>>) parseString(s.substring(0, index), eb, value),
+					 parseString(s.substring(index + 1, s.length()), eb, value)) < 0);
 		} else if ((index = find(s, ">")) >= 0) {
-			return (compareTwo((Comparable<Comparable<?>>) parseString(s.substring(0, index), eb, value),
-					(Comparable<?>) parseString(s.substring(index + 1, s.length()), eb, value)) > 0);
+			return (compareTwo( (Comparable<Comparable<?>>) parseString(s.substring(0, index), eb, value),
+					 parseString(s.substring(index + 1, s.length()), eb, value)) > 0);
 		} else if ((index = find(s, "-")) >= 0 && index > 0) {
 			return sub(parseString(s.substring(0, index), eb, value), parseString(s.substring(index + 1, s.length()), eb, value));
 		} else if ((index = find(s, "+")) >= 0) {
@@ -180,7 +180,7 @@ public class ExpressionConstraint extends ConstraintBase {
 		}
 	}
 
-	private Object add(Object a, Object b) {
+	private Comparable<?> add(Object a, Object b) {
 		if (Integer.class.isInstance(a)) {
 			return ((Integer) a) + ((Integer) b);
 		} else if (Long.class.isInstance(a)) {
@@ -194,7 +194,7 @@ public class ExpressionConstraint extends ConstraintBase {
 		}
 	}
 
-	private Object sub(Object a, Object b) {
+	private Comparable<?> sub(Object a, Object b) {
 		if (Integer.class.isInstance(a)) {
 			return ((Integer) a) - ((Integer) b);
 		} else if (Long.class.isInstance(a)) {
@@ -208,7 +208,7 @@ public class ExpressionConstraint extends ConstraintBase {
 		}
 	}
 
-	private Object multi(Object a, Object b) {
+	private Comparable<?> multi(Object a, Object b) {
 		if (Integer.class.isInstance(a)) {
 			return ((Integer) a) * ((Integer) b);
 		} else if (Long.class.isInstance(a)) {
@@ -222,7 +222,7 @@ public class ExpressionConstraint extends ConstraintBase {
 		}
 	}
 
-	private Object div(Object a, Object b) {
+	private Comparable<?> div(Object a, Object b) {
 		if (Integer.class.isInstance(a)) {
 			return ((Integer) a) / ((Integer) b);
 		} else if (Long.class.isInstance(a)) {
@@ -236,7 +236,7 @@ public class ExpressionConstraint extends ConstraintBase {
 		}
 	}
 
-	private Object mod(Object a, Object b) {
+	private Comparable<?> mod(Object a, Object b) {
 		if (Integer.class.isInstance(a)) {
 			return ((Integer) a) % ((Integer) b);
 		} else if (Long.class.isInstance(a)) {
@@ -350,7 +350,7 @@ public class ExpressionConstraint extends ConstraintBase {
 	}
 
 	// TODO: Data types
-	private Object getValueFromSource(String s, EntityBlueprint eb, Comparable<?> value) {
+	private Comparable<?> getValueFromSource(String s, EntityBlueprint eb, Comparable<?> value) {
 
 		if (s.compareTo("this") == 0) {
 			return Integer.parseInt(eb.getRefName().split("_")[1]);
@@ -378,7 +378,7 @@ public class ExpressionConstraint extends ConstraintBase {
 		}
 
 		for (Source source : sources) {
-			if (source.tableString.compareTo(array[0]) == 0 && source.columnString.compareTo(array[1]) == 0) {
+			if (source.getTableString().compareTo(array[0]) == 0 && source.getColumnString().compareTo(array[1]) == 0) {
 				Result result = source.getResult(refName);
 				if(result == null || result.getValue() == null)
 					return null; // Falsche EB Referenz
@@ -390,7 +390,7 @@ public class ExpressionConstraint extends ConstraintBase {
 			}
 		}
 
-		Object v = null;
+		Comparable<?> v = null;
 
 		if (array.length == 1) {
 			eb.values.put(array[0], v);
@@ -399,8 +399,8 @@ public class ExpressionConstraint extends ConstraintBase {
 	}
 
 	private Integer compareTwo(Comparable<Comparable<?>> v1, Comparable<?> v2) {
-		if (v1 == null || v2 == null) {
-			if (v1 != v2)
+		if(v1 == null || v2 == null){
+			if(v1 != v2)
 				return -1;
 			else
 				return 0;

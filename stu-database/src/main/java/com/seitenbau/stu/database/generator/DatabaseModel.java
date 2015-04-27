@@ -26,7 +26,7 @@ public abstract class DatabaseModel {
 
 	int infinite;
 	
-	public DomainSpecificDataBuilder dataSource; // TODO: private
+	DomainSpecificDataBuilder dataSource;
 
 	public ArrayList<ConstraintBase> getConstraintsList() {
 		return constraintsList;
@@ -65,7 +65,7 @@ public abstract class DatabaseModel {
 	}
 
 	public void dataSource(DomainSpecificDataBuilder constraintsData) {
-		this.dataSource = constraintsData;
+		this.setDataSource(constraintsData);
 	}
 
 
@@ -226,6 +226,14 @@ public abstract class DatabaseModel {
 
 	public String getName() {
 		return databaseName;
+	}
+
+	public DomainSpecificDataBuilder getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DomainSpecificDataBuilder dataSource) {
+		this.dataSource = dataSource;
 	}
 
 }

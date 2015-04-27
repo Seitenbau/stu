@@ -2,11 +2,9 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 
@@ -16,11 +14,11 @@ public class DataGenerator extends ValueGenerator {
 	private ArrayList<DomainSpecificDataHint> valueList;
 
 	public DomainSpecificDataBuilder getConstraintsData() {
-		return ConstraintsData;
+		return this.ConstraintsData;
 	}
 
 	public void setConstraintsData(DomainSpecificDataBuilder constraintsData) {
-		ConstraintsData = constraintsData;
+		this.ConstraintsData = constraintsData;
 	}
 
 	public DataGenerator(String string) {
@@ -83,7 +81,7 @@ public class DataGenerator extends ValueGenerator {
 				if (value != null) {
 					Iterator<Entry<String, ArrayList<DomainSpecificDataHint>>> it = ConstraintsData.data.entrySet().iterator();
 					while (it.hasNext()) {
-						Map.Entry pairs = (Map.Entry) it.next();
+						Entry<String, ArrayList<DomainSpecificDataHint>> pairs = it.next();
 						if (pairs.getKey() == key) {
 
 							ArrayList<DomainSpecificDataHint> intList = new ArrayList<DomainSpecificDataHint>();

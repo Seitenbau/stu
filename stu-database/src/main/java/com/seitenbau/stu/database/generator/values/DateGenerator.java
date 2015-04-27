@@ -3,8 +3,6 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
-
 public class DateGenerator extends ValueGenerator {
 
 	private Random random;
