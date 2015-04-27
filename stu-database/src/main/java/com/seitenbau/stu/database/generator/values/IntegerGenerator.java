@@ -44,42 +44,42 @@ public class IntegerGenerator extends ValueGenerator {
 	
 	@Override
 	public Result nextValue(){		
-		Result result = new Result(strategy.nextValue(), true);
+		Result result = new Result(strategy.nextValue(), true, true);
 		return result;
 	}
 	
 	@Override
 	public Result nextValue(Integer index) {
 		Random rand = new Random(index);
-		return new Result(rand.nextInt(max-min) + min, true);
+		return new Result(rand.nextInt(max-min) + min, true, true);
 	}
 
 	@Override
 	public Result nextValue(EntityBlueprint eb) {
 
-		Result result = new Result(null, false);
-
-		
-		if (!allTargetsLoaded(eb))
-			return result;
-
-		// TODO Check if all targets have values...
-		if (!checkValues(eb))
-			return result;
-
-		Comparable<?> value = null;
-
-		int i = 0;
-		do {
-			value = strategy.nextValue();
-			i++;
-		} while (checkSuperConstraints(value, eb) && i < 100);
-
-		if (i >= 99) {
-			return new Result(null, false);
-		} else {
-			result.setValue(value);
-		}
+		Result result = new Result(null, false, false);
+//
+//		
+//		if (!allTargetsLoaded(eb))
+//			return result;
+//
+//		// TODO Check if all targets have values...
+//		if (!checkValues(eb))
+//			return result;
+//
+//		Comparable<?> value = null;
+//
+//		int i = 0;
+//		do {
+//			value = strategy.nextValue();
+//			i++;
+//		} while (checkSuperConstraints(value, eb) && i < 100);
+//
+//		if (i >= 99) {
+//			return new Result(null, false);
+//		} else {
+//			result.setValue(value);
+//		}
 
 		return result;
 
@@ -112,57 +112,8 @@ public class IntegerGenerator extends ValueGenerator {
 	
 	@Override
 	public Result nextValue(Integer index, EntityBlueprint eb) {
-		return new Result(strategy.nextValue(index), true);
+		return new Result(strategy.nextValue(index), true, true);
 	}
-
-//	public class ExplainedSimpleProblem extends AbstractProblem {
-//		IntVar[] vars;
-//		int n = 5;
-//		int vals = n + 1;
-//
-//		@Override
-//		public void createSolver() {
-//			solver = new Solver();
-//		}
-//
-//		@Override
-//		public void buildModel() {
-//			vars = VariableFactory.enumeratedArray("x", n, 1, vals, solver);
-//			for (int i = 0; i < vars.length - 1; i++) {
-//				solver.post(IntConstraintFactory.arithm(vars[i], ">",
-//						vars[i + 1]));
-//			}
-//		}
-//
-//		@Override
-//		public void configureSearch() {
-//			solver.set(IntStrategyFactory.minDom_LB(vars));
-//		}
-//
-//		@Override
-//		public void solve() {
-//			ExplanationFactory.CBJ.plugin(solver, false);
-//			if (solver.findSolution()) {
-//				do {
-//					this.prettyOut();
-//				} while (solver.nextSolution());
-//			}
-//		}
-//
-//		@Override
-//		public void prettyOut() {
-//			for (IntVar v : vars) {
-//				// System.out.println("* variable " + v);
-//				for (int i = 1; i <= vals; i++) {
-//					if (!v.contains(i)) {
-//						System.out.println(v.getName() + " != " + i
-//								+ " because "
-//								+ solver.getExplainer().retrieve(v, i));
-//					}
-//				}
-//			}
-//		}		
-//	}
 
 	private interface Strategy {
 		Comparable nextValue();

@@ -3,7 +3,9 @@ package com.seitenbau.stu.database.generator.values.constraints;
 import java.util.ArrayList;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
+import com.seitenbau.stu.database.generator.values.ValueGenerator;
 
 public class UniqueConstraint extends ConstraintBase {
 	
@@ -20,7 +22,7 @@ public class UniqueConstraint extends ConstraintBase {
 	}
 	
 	@Override
-	public boolean isValid(Comparable<?> value, EntityBlueprint eb) {
+	public boolean isValid(EntityBlueprint eb) {
 		ArrayList<Comparable<?>> values = new ArrayList<Comparable<?>>();
 		
 		for(Source source: sources){
@@ -40,14 +42,16 @@ public class UniqueConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public boolean isValid(EntityBlueprint eb) {
-		// TODO Auto-generated method stub
-		return false;
+	public ConstraintBase getCopyInstance(){	
+		UniqueConstraint newInstance = new UniqueConstraint(sourceNames);
+		newInstance.fab = fab;
+		newInstance.setScope(this.scope);
+		return newInstance;
 	}
 
 	@Override
-	public boolean loadValues(EntityBlueprint eb) {
+	public Hint getHint(ValueGenerator generator, Comparable<?> value) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 }

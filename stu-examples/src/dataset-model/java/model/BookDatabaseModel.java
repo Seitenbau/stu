@@ -11,6 +11,9 @@ import com.seitenbau.stu.database.generator.values.NachnameGenerator;
 import com.seitenbau.stu.database.generator.values.VerlagNameGenerator;
 import com.seitenbau.stu.database.generator.values.constraints.DomainSpecificDataConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.LogicalConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.LogicalConstraint.CompareType;
+import com.seitenbau.stu.database.generator.values.constraints.RangeConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
 
 public class BookDatabaseModel extends DatabaseModel {
@@ -29,14 +32,24 @@ public class BookDatabaseModel extends DatabaseModel {
 		
 
 		// Conststaints		
+//		constraint(new ExpressionConstraint("autor.mitgliedseit",
+//				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
+		
 		constraint(new ExpressionConstraint("autor.mitgliedseit",
-				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
+		"autor.mitgliedseit >= autor.geburtsjahr + 16", "autor.geburtsjahr", "autor.mitgliedseit"));
+		
 		constraint(new ExpressionConstraint("autor.lastlogin", "autor.lastlogin >= autor.mitgliedseit",
 				"autor.lastlogin", "autor.mitgliedseit"));
 		
+		//constraint(new UniqueConstraint("autor.geburtsjahr"));
+		
 		//constraint(new UniqueConstraint("autor.nachname"));		
-		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
+		//constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
+		//constraint(new DomainSpecificDataConstraint("autor.sprache", "autor.vorname"));
 		//constraint(new UniqueConstraint("autor.vorname"));
+		
+		//constraint(new LogicalConstraint(CompareType.GREATER, "autor.anzahlbuecher", "autor.summebuecher"));
+		//constraint(new RangeConstraint("adresse.nummer", 1, 50));
 		
 		
 //		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.land"));
@@ -90,11 +103,11 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.column("land", DataType.VARCHAR).generator(new DataGenerator("land"))
 				//
-				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1900, 2000))
+				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1930, 2000))
 				//
-				.column("mitgliedseit", DataType.INTEGER).generator(new IntegerGenerator(1990, 2015))
+				.column("mitgliedseit", DataType.INTEGER).generator(new IntegerGenerator(1980, 2015))
 				//
-				.column("lastlogin", DataType.INTEGER).generator(new IntegerGenerator(1990, 2015))
+				.column("lastlogin", DataType.INTEGER).generator(new IntegerGenerator(1980, 2015))
 				//
 				.column("anzahlbuecher", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
 				//

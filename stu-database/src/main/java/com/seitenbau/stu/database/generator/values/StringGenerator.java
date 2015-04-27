@@ -18,37 +18,37 @@ public class StringGenerator extends ValueGenerator {
 	
 	@Override
 	public Result nextValue(){		
-		return new Result(values[random.nextInt(values.length)], true);
+		return new Result(values[random.nextInt(values.length)], true, true);
 	}
 
 	@Override
 	public Result nextValue(Integer index) {
 		Random rand = new Random(index);		
-		return new Result(values[rand.nextInt(values.length)], true);
+		return new Result(values[rand.nextInt(values.length)], true, true);
 	}
 	
 	@Override
 	public Result nextValue(EntityBlueprint eb) {
 		if(allowNull)
-			return new Result(null, true);
+			return new Result(null, true, true);
 		
 		if (set != null && set.length > 0) {
-				return new Result(set[0].toString(), true);
+				return new Result(set[0].toString(), true, true);
 		}
 
-		return new Result(values[random.nextInt(values.length)], true);
+		return new Result(values[random.nextInt(values.length)], true, true);
 	}
 	
 	@Override
 	public Result nextValue(Integer index, EntityBlueprint eb) {
 		if(allowNull)
-			return new Result(null, true);
+			return new Result(null, true, true);
 		
 		if (set != null && set.length > 0) {
-				return new Result(set[0].toString(), true);
+				return new Result(set[0].toString(), true, true);
 		}
 
-		return new Result(values[random.nextInt(values.length)], true);
+		return new Result(values[random.nextInt(values.length)], true, true);
 	}
 
 	public static class Factory implements ValueGeneratorFactory {

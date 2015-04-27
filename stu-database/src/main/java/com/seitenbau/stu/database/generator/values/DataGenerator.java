@@ -1,13 +1,21 @@
 package com.seitenbau.stu.database.generator.values;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
+import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint.AppliesTo;
+import com.seitenbau.stu.database.generator.hints.Hint;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
 public class DataGenerator extends ValueGenerator {
 
 	private DomainSpecificDataBuilder ConstraintsData;
+	private ArrayList<DomainSpecificDataHint> valueList;
 
 	public DomainSpecificDataBuilder getConstraintsData() {
 		return ConstraintsData;
@@ -23,75 +31,139 @@ public class DataGenerator extends ValueGenerator {
 
 	public DataGenerator() {
 	}
-	
+
 	@Override
-	public Result nextValue(){		
-		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
-		
-		Result result = new Result(null, false);
-		
-		DomainSpecificData value = al.get(result.getValueIndex());
-		result.setValue("\"" + value.getValue() + "\"");		
+	public Result nextValue() {
+		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data.get(getKey());
+
+		Result result = new Result(null, false, false);
+
+		DomainSpecificDataHint value = al.get(result.getValueIndex());
+		result.setValue("\"" + value.getValue() + "\"");
 		result.setGenerated(true);
 
 		return result;
 	}
-	
+
 	@Override
 	public Result nextValue(Integer index) {
 		Random rand = new Random(index);
-		
-		// Workaround
-		if(getKey() == "geschlecht"){
-			rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt();
-		}			
-		
-		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());		
-		Result result = new Result(null, false);
-		
-		int i = rand.nextInt(al.size());
-		
-		DomainSpecificData value = al.get(i);
-		result.setValue("\"" + value.getValue() + "\"");		
-		result.setGenerated(true);
+
+		// TODO: Workaround: Fix and remove
+		 if(getKey() == "geschlecht"){
+			 rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt();
+		 }
+
+		walkthroughHints();
+
+		Result result = new Result(null, false, false);
+
+		if (valueList.size() > 0) {
+
+			int i = rand.nextInt(valueList.size());
+			DomainSpecificDataHint value = valueList.get(i);
+			result.setValue(value.getValue());
+			result.setGenerated(true);
+			result.setFinal(true);
+		}
 
 		return result;
 	}
-	
+
+	@Override
+	public void walkthroughHints() {
+		super.walkthroughHints();
+
+		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data.get(getKey());
+		valueList = new ArrayList<DomainSpecificDataHint>();
+		for (DomainSpecificDataHint entry : al) {
+			valueList.add(entry);
+		}
+
+		if (this.getKey().equals("sprache"))
+			System.out.println("sprache");
+
+		for (Hint hint : getHints()) {
+			if (DomainSpecificDataHint.class.isInstance(hint)) {
+				DomainSpecificDataHint dsdh = ((DomainSpecificDataHint) hint);
+
+				String key = dsdh.getKey();
+				Comparable<?> value = dsdh.getValue();
+
+				// Prüfen, ob key Verknüpfung zu aktuellem Key hat.
+
+				if (value != null) {
+					Iterator<Entry<String, ArrayList<DomainSpecificDataHint>>> it = ConstraintsData.data.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry pairs = (Map.Entry) it.next();
+						if (pairs.getKey() == key) {
+
+							ArrayList<DomainSpecificDataHint> intList = new ArrayList<DomainSpecificDataHint>();
+							for (DomainSpecificDataHint c : al) {
+								AppliesTo appliesTo = c.appliesTo(dsdh);
+								switch (appliesTo) {
+								case YES:
+									intList.add(c);
+									break;
+								case NO:
+									valueList.clear();
+									break;
+								case NULL:									
+									break;
+								}
+							}
+
+							for (DomainSpecificDataHint c : intList) {
+								valueList.remove(c);
+							}
+						}
+					}
+					
+					if (valueList.size() == 0) {
+						System.out.println("Null");
+					}					
+				}
+
+			}
+		}
+
+		
+
+	}
+
 	public Result nextValue(Result result) {
-		
-		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
-		
-		if (result == null) {
-			result = new Result(null, false);
-			result.setValueIndex(0);
-			result.setMaxIndex(al.size()-1);
-		} else {
-			result.setMaxIndex(al.size()-1);
-			result.nextValueIndex();
-		}		
-		
-		DomainSpecificData valu = al.get(result.getValueIndex());
-		result.setValue("\"" + valu.getValue() + "\"");		
-		result.setGenerated(true);
+		// TODO: Remove
+		// ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
+		//
+		// if (result == null) {
+		// result = new Result(null, false);
+		// result.setValueIndex(0);
+		// result.setMaxIndex(al.size()-1);
+		// } else {
+		// result.setMaxIndex(al.size()-1);
+		// result.nextValueIndex();
+		// }
+		//
+		// DomainSpecificData valu = al.get(result.getValueIndex());
+		// result.setValue("\"" + valu.getValue() + "\"");
+		// result.setGenerated(true);
 
 		return result;
 	}
-	
+
 	@Override
 	public Result nextValue(EntityBlueprint eb) {
 
-		Result result = new Result(null, false);
-		
+		Result result = new Result(null, false, false);
+
 		if (!allTargetsLoaded(eb))
 			return result;
-		
-		// TODO Check if all sources have values...
-		if(!checkValues(eb))
-			return result;
-	
 
-		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
+		// TODO Check if all sources have values...
+		if (!checkValues(eb))
+			return result;
+
+		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data.get(getKey());
 
 		Comparable<?> value = null;
 
@@ -99,36 +171,35 @@ public class DataGenerator extends ValueGenerator {
 		do {
 			if (al.size() > 0) {
 				int randInt = getRandom().nextInt(al.size());
-				//System.out.println(getKey() + ": " + randInt + " aus " + al.size());
-				value = al.get(randInt).getValue();				
+				// System.out.println(getKey() + ": " + randInt + " aus " + al.size());
+				value = al.get(randInt).getValue();
 			}
 
 			i++;
 		} while (checkSuperConstraints(value, eb) && i < 100);
 
-		if(i > 99){
-			return new Result(null, false);
-		}else{
+		if (i > 99) {
+			return new Result(null, false, false);
+		} else {
 			result.setValue("\"" + value + "\"");
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Result nextValue(Integer index, EntityBlueprint eb) {
 
-		Result result = new Result(null, false);
-		
+		Result result = new Result(null, false, false);
+
 		if (!allTargetsLoaded(eb))
 			return result;
-		
-		// TODO Check if all targets have values...
-		if(!checkValues(eb))
-			return result;
-	
 
-		ArrayList<DomainSpecificData> al = ConstraintsData.data.get(getKey());
+		// TODO Check if all targets have values...
+		if (!checkValues(eb))
+			return result;
+
+		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data.get(getKey());
 
 		Comparable<?> value = null;
 
@@ -136,19 +207,19 @@ public class DataGenerator extends ValueGenerator {
 		do {
 			if (al.size() > 0) {
 				int randInt = getRandom().nextInt(al.size());
-				//System.out.println(getKey() + ": " + randInt + " aus " + al.size());
-				value = al.get(randInt).getValue();				
+				// System.out.println(getKey() + ": " + randInt + " aus " + al.size());
+				value = al.get(randInt).getValue();
 			}
 
 			i++;
 		} while (checkSuperConstraints(value, eb) && i < 100);
 
-		if(i > 99){
-			return new Result(null, false);
-		}else{
+		if (i > 99) {
+			return new Result(null, false, false);
+		} else {
 			result.setValue("\"" + value + "\"");
 		}
-		
+
 		return result;
 
 		// if (constraintPairs == null) {
@@ -205,7 +276,7 @@ public class DataGenerator extends ValueGenerator {
 			return new DataGenerator();
 		}
 	}
-	
+
 	@Override
 	public Integer getMaxIndex() {
 		return ConstraintsData.data.get(getKey()).size();

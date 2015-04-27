@@ -7,9 +7,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -24,6 +26,7 @@ import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
+import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
@@ -150,9 +153,6 @@ public class DataGenerator {
 
 		if (list != null) {
 			for (EntityBlueprint eb : list) {
-				// if (!eb.constraints.containsKey(column)) {
-				// eb.constraints.put(column, new ArrayList<ConstraintInterface>());
-				// }
 
 				String col = column.substring(0, 1).toUpperCase() + column.substring(1);
 
@@ -180,7 +180,7 @@ public class DataGenerator {
 							continue;
 
 						Result value = (Result) obj;
-						if (value.isGenerated())// check if generated
+						if (value.isGenerated() && value.isFinal())// check if generated
 							continue;
 					}
 
@@ -194,11 +194,15 @@ public class DataGenerator {
 
 	// In der ArrayList werden alle aktuellen Constraints abgelegt um eine schnelle Prüfung zu ermöglichen.
 	private ArrayList<ConstraintBase> constraintList = new ArrayList<ConstraintBase>();
+	
+	
+	// TODO List --> Queue
+	private PriorityQueue<Result> resultQueue = new PriorityQueue<Result>();
 	// In einer Liste werden alle zusammenhängenden Values festgehalten.
-	private ArrayList<Result> resultList = new ArrayList<Result>();
-	
-	
-
+	// ResultList mit Priorität:
+	// Prioriät gibt an welche Results zuerst generiert werden
+	private ArrayList<Result> resultList = new ArrayList<Result>();	
+		
 	/*
 	 * Wert einer einzelnen Zelle berechnen
 	 */
@@ -257,8 +261,8 @@ public class DataGenerator {
 		if(maxDepth < 3)
 			maxDepth = 3;
 		
-		if(maxDepth > 5)
-			maxDepth = 5;	
+		if(maxDepth > 6)
+			maxDepth = 6;	
 
 		
 		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
@@ -266,12 +270,28 @@ public class DataGenerator {
 			
 			int fabIndex = fab.blueprints.getTableBlueprints(resultList.get(i).getTable()).indexOf(resultList.get(i).getEb());
 			
-			int iii = (i+1)*10 + (fabIndex+1)*100 + indexes[i]*5;	
-
-			Result res = resultList.get(i).getGenerator().nextValue(iii);
+			// Seed für Random aus der aktuellen Kombination berechnen
+			int seed = (i+1)*10 + (fabIndex+1)*100 + indexes[i];
+			
+			// TODO: Lösungsmenge davor aus Ergebnissen von resultList.get(0) bis resultList.get(i-1) reduzieren.
+			
+			Result result = resultList.get(i);
+			for(int j = 0; j < i; j++){
+				
+				ArrayList<Hint> hints = resultList.get(j).getHints();
+				for(Hint hint: hints){
+					result.getGenerator().addHint(hint);
+				}				
+			}
+			
+			Result res = resultList.get(i).getGenerator().nextValue(seed);		
+			
+			
 			if(res == null)
-				res = new Result(null, false);
-			resultList.get(i).setValue(res.getValue());		
+				res = new Result(null, false, false);
+			resultList.get(i).setValue(res.getValue());	
+			
+			result.getGenerator().clearHints();
 		}
 		
 		// Kombination zurückgeben, falls alle Constraints erfüllt sind
@@ -310,6 +330,8 @@ public class DataGenerator {
 				ArrayList<Result> results = source.getResults();
 				for (Result result : results) {					
 
+					
+					// TODO: Zuerst alle Constraints und Results sammeln und dann Backtracking????
 					if (!resultList.contains(result)) {
 						recursiveCall(result.getTable(), result.getEb(), result.getCol());
 					}
@@ -324,16 +346,20 @@ public class DataGenerator {
 	private ConstraintBase checkConstraints() {
 		for (ConstraintBase constraint : constraintList) {
 
-			// TODO EB und Value überlegen
+			// TODO EB und Value überlegen. Value wahrscheinlich überflüssig, vielleicht Result mitgeben
 			// Prüfe, ob das Constraint-Bedingung erfüllt ist
+			
+			if(!constraint.allSourcesLoad())
+				return constraint;
+			
 			Result result = constraint.getSources().get(0).getResults().get(0);
-			if (!constraint.isValid((Comparable<?>) result.getValue(), result.getEb())) {
+			if (!constraint.isValid(result.getEb())) {
 				String str = ""; 
 				for(Result r: resultList){
 					str += r.toString() + " - ";
 				}
 				
-				//System.out.println("Fail: " + constraint.getResult().getEb().getRefName() + ": " + str);
+				System.out.println("Fail: " + str);
 				return constraint;
 			}else{
 				String str = ""; 

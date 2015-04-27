@@ -1,52 +1,64 @@
 package com.seitenbau.stu.database.generator.values.constraints;
 
-public class RangeConstraint extends Constraint{
+import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.hints.Hint;
+import com.seitenbau.stu.database.generator.values.Result;
+import com.seitenbau.stu.database.generator.values.ValueGenerator;
 
-	private int min;
-	private int max;
-	
-	public RangeConstraint(){
-		super();
-	}
-	
-	public RangeConstraint(int min, int max) {
-		super();
-		this.min = min;
-		this.max = max;
-	}
+public class RangeConstraint extends ConstraintBase {
 
-	public int getMin() {
-		return min;
-	}
+	private Integer min;
+	private Integer max;
 
-	public void setMin(int min) {
-		this.min = min;
-	}
-
-	public int getMax() {
-		return max;
-	}
-
-	public void setMax(int max) {
-		this.max = max;
+	public RangeConstraint(String column, Integer min, Integer max) {
+		this.modelRef = column;
+		this.setMin(min);
+		this.setMax(max);
+		
+		this.sourceNames = new String[]{column};		
+		this.scope = Scope.Cell;
 	}
 
 	@Override
-	public Constraint appliesTo(Constraint constraint) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public boolean isValid(EntityBlueprint eb) {
 
-	@Override
-	public boolean isValid(Comparable value) {
-		// TODO Auto-generated method stub
+		Result result = sources.get(0).getResults().get(0);
+		Integer value = (Integer) result.getValue();
+
+		if (value >= min && value <= max) {
+			return true;
+		}
+		
 		return false;
 	}
 
+	public Integer getMin() {
+		return min;
+	}
+
+	public void setMin(Integer min) {
+		this.min = min;
+	}
+
+	public Integer getMax() {
+		return max;
+	}
+
+	public void setMax(Integer max) {
+		this.max = max;
+	}
+
 	@Override
-	public Constraint reduce() {
+	public ConstraintBase getCopyInstance(){	
+		RangeConstraint newInstance = new RangeConstraint(modelRef, min, max);
+		newInstance.fab = fab;
+		newInstance.setScope(this.scope);
+		return newInstance;
+	}
+
+	@Override
+	public Hint getHint(ValueGenerator generator, Comparable<?> value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

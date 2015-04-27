@@ -68,7 +68,7 @@ public class BuchNameGenerator extends ValueGenerator {
 	
 	@Override
 	public Result nextValue(){		
-		return new Result(values[random.nextInt(values.length)], true);
+		return new Result(values[random.nextInt(values.length)], true, true);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class BuchNameGenerator extends ValueGenerator {
 		String value = values[counter++];
 		if (value.length() > 16)
 			value = value.substring(0, 15) + "\"";
-		return new Result(value, true);
+		return new Result(value, true, true);
 		// return new Result(values[random.nextInt(values.length)], true);
 	}
 	
@@ -85,14 +85,14 @@ public class BuchNameGenerator extends ValueGenerator {
 		String value = values[counter++];
 		if (value.length() > 16)
 			value = value.substring(0, 15) + "\"";
-		return new Result(value, true);
+		return new Result(value, true, true);
 		// return new Result(values[random.nextInt(values.length)], true);
 	}
 	
 	@Override
 	public Result nextValue(Integer index) {
 		Random rand = new Random(index);		
-		return new Result(values[rand.nextInt(values.length)], true);
+		return new Result(values[rand.nextInt(values.length)], true, true);
 	}
 
 	public static class Factory implements ValueGeneratorFactory {

@@ -39,7 +39,7 @@ public class TimestampGenerator extends ValueGenerator {
 		java.util.Date now = calendar.getTime();
 		java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 		// return new Result("\"" + currentTimestamp.toString().substring(0, 19) + "\"", true);
-		return new Result("asDate(\"" + currentTimestamp.toString().substring(0, 19) + "\")", true);
+		return new Result("asDate(\"" + currentTimestamp.toString().substring(0, 19) + "\")", true, true);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class TimestampGenerator extends ValueGenerator {
 		java.util.Date now = calendar.getTime();
 		java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 		// return new Result("\"" + currentTimestamp.toString().substring(0, 19) + "\"", true);
-		return new Result("asDate(\"" + currentTimestamp.toString().substring(0, 19) + "\")", true);
+		return new Result("asDate(\"" + currentTimestamp.toString().substring(0, 19) + "\")", true, true);
 	}
 
 	public int randBetween(int start, int end) {

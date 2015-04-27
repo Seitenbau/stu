@@ -61,7 +61,7 @@ public class DateGenerator extends ValueGenerator {
 		int iMonth = gc.get(GregorianCalendar.MONTH);
 		int iDay = gc.get(GregorianCalendar.DAY_OF_MONTH);
 
-		return new Result("asDate(\"" + getString(iDay) + "." + getString(iMonth + 1) + "." + getString(iYear) + "\")", true);
+		return new Result("asDate(\"" + getString(iDay) + "." + getString(iMonth + 1) + "." + getString(iYear) + "\")", true, true);
 		// return "asDate(\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\")";
 	}
 
@@ -81,7 +81,7 @@ public class DateGenerator extends ValueGenerator {
 		int iMonth = gc.get(GregorianCalendar.MONTH);
 		int iDay = gc.get(GregorianCalendar.DAY_OF_MONTH);
 
-		return new Result("asDate(\"" + getString(iDay) + "." + getString(iMonth + 1) + "." + getString(iYear) + "\")", true);
+		return new Result("asDate(\"" + getString(iDay) + "." + getString(iMonth + 1) + "." + getString(iYear) + "\")", true, true);
 		// return "asDate(\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\")";
 	}
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
 public abstract class ValueGenerator {
@@ -12,6 +13,7 @@ public abstract class ValueGenerator {
 	private String key;
 	protected String[] set;
 	protected boolean allowNull;
+	protected ArrayList<Hint> hints = new ArrayList<Hint>();
 	
 	protected String[] values;
 	
@@ -24,6 +26,14 @@ public abstract class ValueGenerator {
 	public void setKey(String key) {
 		this.key = key;
 	}
+	
+	public void addHint(Hint hint){
+		hints.add(hint);
+	}
+	
+	public ArrayList<Hint> getHints(){
+		return hints;
+	}
 
 	public void initialize(long seed) {
 		setRandom(new Random(seed));
@@ -35,24 +45,25 @@ public abstract class ValueGenerator {
 	public abstract Result nextValue(Integer index);
 	
 	public Result nextValue(Result result) {
-		if (result == null) {
-			result = new Result(null, false);
-			result.setValueIndex(0);		
-			
-			if(values != null)
-				result.setMaxIndex(values.length-1);
-			else
-				result.setMaxIndex(1000);
-		} else {
-			result.nextValueIndex();
-		}
-
-		if(values != null)
-			result.setValue(values[result.getValueIndex()]);
-		else
-			result.setValue(null);
-		
-		result.setGenerated(true);
+		// TODO: Remove
+//		if (result == null) {		
+//			result = new Result(null, false);
+//			result.setValueIndex(0);		
+//			
+//			if(values != null)
+//				result.setMaxIndex(values.length-1);
+//			else
+//				result.setMaxIndex(1000);
+//		} else {
+//			result.nextValueIndex();
+//		}
+//
+//		if(values != null)
+//			result.setValue(values[result.getValueIndex()]);
+//		else
+//			result.setValue(null);
+//		
+//		result.setGenerated(true);
 
 		return result;
 	}
@@ -72,8 +83,8 @@ public abstract class ValueGenerator {
 	protected boolean checkValues(EntityBlueprint eb) {
 		if (scs != null) {
 			for (ConstraintBase sc : scs) {
-				if (!sc.loadValues(eb))
-					return false; // false;
+//				if (!sc.loadValues(eb))
+//					return false; // false;
 			}
 		}
 		return true;
@@ -82,8 +93,8 @@ public abstract class ValueGenerator {
 	protected boolean checkSuperConstraints(Comparable<?> value, EntityBlueprint eb) {
 		if (scs != null) {
 			for (ConstraintBase sc : scs) {
-				if (!sc.isValid(value, eb))
-					return true;
+//				if (!sc.isValid(value, eb))
+//					return true;
 			}
 		}
 		return false;
@@ -107,5 +118,14 @@ public abstract class ValueGenerator {
 
 	public void setRandom(Random random) {
 		this.random = random;
+	}
+
+	public void walkthroughHints() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void clearHints() {
+		hints.clear();		
 	}
 }

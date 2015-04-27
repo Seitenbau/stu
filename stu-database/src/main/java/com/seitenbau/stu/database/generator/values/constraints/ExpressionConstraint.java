@@ -9,7 +9,9 @@ import org.codehaus.groovy.syntax.ParserException;
 
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
+import com.seitenbau.stu.database.generator.values.ValueGenerator;
 
 public class ExpressionConstraint extends ConstraintBase {
 
@@ -55,68 +57,6 @@ public class ExpressionConstraint extends ConstraintBase {
 		}
 
 		return flag;
-	}
-
-	public boolean isValid(Comparable<?> value, EntityBlueprint eb) {
-
-//		if(expression != null && sourceNames != null && sourceNames.length > 0){
-//			
-//			for(int i = 0; i < sourceNames.length; i++){				
-//				String sourceName = sourceNames[i];
-//				
-//				if(sources == null){
-//					sources = new ArrayList<Source>();
-//				}				
-
-//				if(sources.size() <= 0){
-//					addSource(i, eb, sourceNames[i]);
-//				}else{
-//					if(!sources.contains(source)){
-//						addSource(i, eb, sourceNames[i]);
-//					}
-//					for(Source source : sources){
-//						if(source.getName().compareTo(sourceName) != 0){
-//							addSource(i, eb, sourceNames[i]);							
-//						}
-//					}
-//				}				
-//			}			
-//		}
-		
-		
-		// TODO CHECK
-		if (expression != null && sources != null) {			
-//			for (Source source : sources) {
-//
-//				if (!source.hasValue(eb.getRefName()))
-//					return false;
-//			}
-
-			boolean v = false;
-			try {
-				v = (Boolean) parseString(expression, eb, value);
-			} catch (ParserException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return v;
-		}
-
-		if (eb != null) {
-			String index = eb.getRefName();
-
-			if (sources != null && sources.size() > 0) {
-				for (Source source : sources) {
-
-					if (!source.hasValue(index))
-						return false;
-
-					if (source.getValue(index) != value)
-						return false;
-				}
-			}
-		}
-		return true;
 	}
 
 	private int find(String s, String c) {
@@ -416,17 +356,18 @@ public class ExpressionConstraint extends ConstraintBase {
 			return Integer.parseInt(eb.getRefName().split("_")[1]);
 		}
 
-		if (modelRef.compareTo(s) == 0) {
-			if(Result.class.isInstance(value)){
-				return ((Result) value).getValue();
-			}
-			
-			return value;
-		}
+//		if (modelRef.compareTo(s) == 0) {
+//			if(Result.class.isInstance(value)){
+//				return ((Result) value).getValue();
+//			}
+//			
+//			return value;
+//		}		
+
 
 		String[] array = s.split("\\.");
 		Integer instance = -1;
-		String refName = eb.getRefName();
+		String refName = eb.getRefName();		// TODO: EB rausfinden, aber wie?
 
 		if (array[1].contains("[")) {
 			String inner = array[1].substring(array[1].indexOf("[") + 1, array[1].indexOf("]"));
@@ -480,38 +421,25 @@ public class ExpressionConstraint extends ConstraintBase {
 	public boolean isValid(EntityBlueprint eb) {
 		
 		// TODO CHECK
-		if (expression != null && sources != null) {			
-//			for (Source source : sources) {
-//
-//				if (!source.hasValue(eb.getRefName()))
-//					return false;
-//			}
+		if (expression != null) {
 
 			boolean v = false;
 			try {
-				v = (Boolean) parseString(expression, eb, null);
+				v = (Boolean) parseString(expression, eb, null); // TODO Value entfernen
 			} catch (ParserException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return v;
 		}
+		
+		return false;
+	}
 
-		if (eb != null) {
-			String index = eb.getRefName();
-
-			if (sources != null && sources.size() > 0) {
-				for (Source source : sources) {
-
-					if (!source.hasValue(index))
-						return false;
-
-					if (source.getValue(index) != null)
-						return false;
-				}
-			}
-		}
-		return true;
+	@Override
+	public Hint getHint(ValueGenerator generator, Comparable<?> value) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

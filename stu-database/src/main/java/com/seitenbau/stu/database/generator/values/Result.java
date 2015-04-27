@@ -5,24 +5,27 @@ import java.util.ArrayList;
 import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
 public class Result implements Comparable<Object> {
-	private Object value;
-	private boolean isGenerated;
+	private Comparable<?> value = null;
+	private boolean isGenerated = false;
+	private boolean isFinal = false;
 
 	private ArrayList<ConstraintBase> constraints = new ArrayList<ConstraintBase>();
-	
-	public Result(Object value, boolean isGenerated) {
+
+	public Result(Comparable<?> value, boolean isGenerated, boolean isFinal) {
 		this.value = value;
 		this.isGenerated = isGenerated;
+		this.isFinal = isFinal;
 	}
-	
-	public Result(Table table, EntityBlueprint eb, Column column, Object value, boolean isGenerated){
+
+	public Result(Table table, EntityBlueprint eb, Column column, Comparable<?> value, boolean isGenerated) {
 		this.table = table;
 		this.eb = eb;
 		this.col = column;
-		
+
 		this.value = value;
 		this.isGenerated = isGenerated;
 	}
@@ -37,7 +40,7 @@ public class Result implements Comparable<Object> {
 	private Table table;
 	private EntityBlueprint eb;
 	private Column col;
-	private ValueGenerator vg;
+	private ValueGenerator generator;
 
 	public Integer getMaxIndex() {
 		return maxIndex;
@@ -78,14 +81,22 @@ public class Result implements Comparable<Object> {
 	public void setCol(Column col) {
 		this.col = col;
 	}
-	
-	public void setValue(Object value) {
+
+	public void setValue(Comparable<?> value) {
 		this.value = value;
 		isGenerated = true;
 	}
 
-	public Object getValue() {
+	public Comparable<?> getValue() {
 		return value;
+	}
+
+	public void setGenerator(ValueGenerator generator) {
+		this.generator = generator;
+	}
+
+	public ValueGenerator getGenerator() {
+		return this.generator;
 	}
 
 	public boolean isGenerated() {
@@ -140,11 +151,23 @@ public class Result implements Comparable<Object> {
 			return false;
 	}
 
-	public void setGenerator(ValueGenerator g) {
-		vg = g;		
+	public ArrayList<Hint> getHints() {
+		ArrayList<Hint> hints = new ArrayList<Hint>();
+		if (isGenerated) {
+			for (ConstraintBase constraint : constraints) {
+				Hint hint = constraint.getHint(this.getGenerator(), this.getValue());
+				hints.add(hint);
+			}
+		}
+
+		return hints;
 	}
-	
-	public ValueGenerator getGenerator(){
-		return vg;
+
+	public boolean isFinal() {
+		return isFinal;
+	}
+
+	public void setFinal(boolean isFinal) {
+		this.isFinal = isFinal;
 	}
 }

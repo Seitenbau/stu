@@ -11,7 +11,9 @@ import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.data.EntityFactory;
+import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
+import com.seitenbau.stu.database.generator.values.ValueGenerator;
 
 /*
  * Subclasses: RangeConstraint, DomainConstraint, LogicalConstraint, UniqueConstraint, FunctionalConstraint, ExpressionConstraint
@@ -58,30 +60,6 @@ public abstract class ConstraintBase {
 			}
 		}
 		return false;
-	}
-	
-	public boolean allTargetsLoaded() {
-		if(sources == null)
-			return true;
-		
-		for (Source target : sources) {			
-			Table table = target.getTable();
-			EntityBlueprint eb = target.getEb();
-			Column col = target.getColumn();
-			Result result;
-			Object value = eb.getValue(col.getJavaName());
-			if (value != null) {
-				if (Result.class.isInstance(value)) {
-					result = (Result) value;
-					if (!result.isGenerated())
-						return false;
-				}
-			} else {
-				return false;
-			}
-		}
-
-		return true;
 	}
 	
 	public String[] getSourceNames() {
@@ -132,7 +110,7 @@ public abstract class ConstraintBase {
 		return true;
 	}
 	
-public boolean addSource(Integer i, EntityBlueprint eb, String name){
+	public boolean addSource(Integer i, EntityBlueprint eb, String name){
 		
 		Source source = new Source(name);
 		if(!sources.contains(source)){
@@ -162,9 +140,7 @@ public boolean addSource(Integer i, EntityBlueprint eb, String name){
 				// Source is an column of the table
 				source.setPath(list);
 				source.tableString = array[0];
-				source.columnString = array[1];				
-				
-				String col = source.columnString.substring(0, 1).toUpperCase() + source.columnString.substring(1);
+				source.columnString = array[1];
 				
 				source.setTable(fab.model.getTableByName(source.tableString));
 				
@@ -198,34 +174,38 @@ public boolean addSource(Integer i, EntityBlueprint eb, String name){
 		
 		return true;
 	}
-
-	public abstract boolean isValid(Comparable<?> value, EntityBlueprint eb);
 	
-	public abstract boolean isValid(EntityBlueprint eb);
-
-	public abstract boolean loadValues(EntityBlueprint eb);
-	
-	public ConstraintBase getCopyInstance(){			
-		ConstraintBase ci;
-		if(scope == Scope.Column)
-			return this;
-		
-		try {
-			ci = this.getClass().newInstance();
-			ci.fab = this.fab;
-			ci.sourceNames = this.sourceNames;
-			
-			return ci;
-			
-			
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public boolean allSourcesLoad() {
+		for(Source source: sources){
+			for(Result result: source.getResults()){
+				if(!result.isGenerated())
+					return false;
+			}
 		}
 		
-		return null;
+		return true;
 	}
+	
+	@Override
+	public String toString(){
+		String returnString = this.getClass().getSimpleName().toString();
+		
+		if(sourceNames != null && sourceNames.length > 0){
+			returnString +=  ": Sources => ";
+			
+			for(String sourceName: getSourceNames()){
+				returnString += sourceName + ", ";
+			}
+			
+			return  returnString.substring(0, returnString.length()-2);
+		}		
+		
+		return returnString;		
+	}
+	
+	public abstract boolean isValid(EntityBlueprint eb);	
+	public abstract ConstraintBase getCopyInstance();
+	public abstract Hint getHint(ValueGenerator generator, Comparable<?> value);
+	
+	
 }

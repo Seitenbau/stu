@@ -4,16 +4,18 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
+
 public class DomainSpecificDataBuilder {
 
-	public HashMap<String, ArrayList<DomainSpecificData>> data = new HashMap<String, ArrayList<DomainSpecificData>>();
+	public HashMap<String, ArrayList<DomainSpecificDataHint>> data = new HashMap<String, ArrayList<DomainSpecificDataHint>>();
 		
-	public void combine2Constraints(DomainSpecificData c1, DomainSpecificData c2){
+	public void combine2Constraints(DomainSpecificDataHint c1, DomainSpecificDataHint c2){
 		if(combine(c1, c2))
 			combine(c2, c1);
 	}
 	
-	private boolean combine(DomainSpecificData c1, DomainSpecificData c2){
+	private boolean combine(DomainSpecificDataHint c1, DomainSpecificDataHint c2){
 		if(!data.containsKey(c1.getKey()) || !data.containsKey(c2.getKey()))
 			return false;
 					
@@ -24,7 +26,7 @@ public class DomainSpecificDataBuilder {
 			if(data.get(c1.getKey()).get(index).dataHashMap.containsKey(c2.getKey())){
 				data.get(c1.getKey()).get(index).dataHashMap.get(c2.getKey()).add(c2);
 			}else{
-				ArrayList<DomainSpecificData> al = new ArrayList<DomainSpecificData>();
+				ArrayList<DomainSpecificDataHint> al = new ArrayList<DomainSpecificDataHint>();
 				al.add(c2);
 				data.get(c1.getKey()).get(index).dataHashMap.put(c2.getKey(), al);
 			}
@@ -32,11 +34,11 @@ public class DomainSpecificDataBuilder {
 		}
 	}
 	
-	public DomainSpecificData addData(String key, Comparable value){
-		DomainSpecificData dataConstraint = new DomainSpecificData(key, value);
+	public DomainSpecificDataHint addData(String key, Comparable value){
+		DomainSpecificDataHint dataConstraint = new DomainSpecificDataHint(null, key, value);
 		
 		if(!data.containsKey(key)){
-			ArrayList<DomainSpecificData> list = new ArrayList<DomainSpecificData>();
+			ArrayList<DomainSpecificDataHint> list = new ArrayList<DomainSpecificDataHint>();
 			list.add(dataConstraint);
 			data.put(key, list);
 		}else{
@@ -58,11 +60,11 @@ public class DomainSpecificDataBuilder {
 			value2 = ((String) value2).replaceAll("\"", "");
 		}
 		
-		ArrayList<DomainSpecificData> list = data.get(key1);
-		for(DomainSpecificData entry : list){
+		ArrayList<DomainSpecificDataHint> list = data.get(key1);
+		for(DomainSpecificDataHint entry : list){
 			if(entry.getValue().equals(value1)){
 				if(entry.dataHashMap.containsKey(key2)){
-					for(DomainSpecificData e2 : entry.dataHashMap.get(key2)){
+					for(DomainSpecificDataHint e2 : entry.dataHashMap.get(key2)){
 						if(e2.getValue().equals(value2))
 							return true;
 					}
@@ -78,35 +80,35 @@ public class DomainSpecificDataBuilder {
 	
 	public DomainSpecificDataBuilder() {
 		
-		DomainSpecificData maennlich = addData("geschlecht", "m‰nnlich");
-		DomainSpecificData weiblich = addData("geschlecht", "weiblich");
+		DomainSpecificDataHint maennlich = addData("geschlecht", "m‰nnlich");
+		DomainSpecificDataHint weiblich = addData("geschlecht", "weiblich");
 		
-		DomainSpecificData deutsch = addData("sprache", "deutsch");
-		DomainSpecificData englisch = addData("sprache", "englisch");
-		DomainSpecificData franz = addData("sprache", "franzˆsisch");
+		DomainSpecificDataHint deutsch = addData("sprache", "deutsch");
+		DomainSpecificDataHint englisch = addData("sprache", "englisch");
+		DomainSpecificDataHint franz = addData("sprache", "franzˆsisch");
 		
-		DomainSpecificData robin = addData("vorname", "Robin");
-		DomainSpecificData adalgis = addData("vorname", "Adalgis"); 
-		DomainSpecificData adalie = addData("vorname", "Adalie");
-		DomainSpecificData adam = addData("vorname", "Adam");
-		DomainSpecificData aglaia = addData("vorname", "Aglaia");
-		DomainSpecificData alan = addData("vorname", "Alan");
-		DomainSpecificData sabrina = addData("vorname", "Sabrina");
-		DomainSpecificData siegmund = addData("vorname", "Siegmund");
-		DomainSpecificData tim = addData("vorname", "Tim");
-		DomainSpecificData tilly = addData("vorname", "Tilly");
-		DomainSpecificData jakob = addData("vorname", "Jakob");
-		DomainSpecificData tom = addData("vorname", "Tom");
+		DomainSpecificDataHint robin = addData("vorname", "Robin");
+		DomainSpecificDataHint adalgis = addData("vorname", "Adalgis"); 
+		DomainSpecificDataHint adalie = addData("vorname", "Adalie");
+		DomainSpecificDataHint adam = addData("vorname", "Adam");
+		DomainSpecificDataHint aglaia = addData("vorname", "Aglaia");
+		DomainSpecificDataHint alan = addData("vorname", "Alan");
+		DomainSpecificDataHint sabrina = addData("vorname", "Sabrina");
+		DomainSpecificDataHint siegmund = addData("vorname", "Siegmund");
+		DomainSpecificDataHint tim = addData("vorname", "Tim");
+		DomainSpecificDataHint tilly = addData("vorname", "Tilly");
+		DomainSpecificDataHint jakob = addData("vorname", "Jakob");
+		DomainSpecificDataHint tom = addData("vorname", "Tom");
 		
-		DomainSpecificData deutschland = addData("land", "Deutschland");
-		DomainSpecificData oesterreich = addData("land", "÷sterreich");
-		DomainSpecificData schweiz = addData("land", "Schweiz");
+		DomainSpecificDataHint deutschland = addData("land", "Deutschland");
+		DomainSpecificDataHint oesterreich = addData("land", "÷sterreich");
+		DomainSpecificDataHint schweiz = addData("land", "Schweiz");
 		
-		DomainSpecificData schlossallee = addData("strasse", "Schlossallee");
-		DomainSpecificData parkstrasse = addData("strasse", "Parkstraﬂe");
-		DomainSpecificData bahnhofstrasse = addData("strasse", "Bahnhofstraﬂe");
-		DomainSpecificData hauptstrasse = addData("strasse", "Hauptstraﬂe");
-		DomainSpecificData rathausstrasse = addData("strasse", "Rathausstraﬂe");
+		DomainSpecificDataHint schlossallee = addData("strasse", "Schlossallee");
+		DomainSpecificDataHint parkstrasse = addData("strasse", "Parkstraﬂe");
+		DomainSpecificDataHint bahnhofstrasse = addData("strasse", "Bahnhofstraﬂe");
+		DomainSpecificDataHint hauptstrasse = addData("strasse", "Hauptstraﬂe");
+		DomainSpecificDataHint rathausstrasse = addData("strasse", "Rathausstraﬂe");
 		
 		combine2Constraints(robin, maennlich);
 		combine2Constraints(robin, weiblich);
