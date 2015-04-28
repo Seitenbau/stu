@@ -10,6 +10,7 @@ import com.seitenbau.stu.database.generator.values.IntegerGenerator;
 import com.seitenbau.stu.database.generator.values.NachnameGenerator;
 import com.seitenbau.stu.database.generator.values.VerlagNameGenerator;
 import com.seitenbau.stu.database.generator.values.constraints.DomainSpecificDataConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.EqualConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.ExpressionConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.LogicalConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.LogicalConstraint.CompareType;
@@ -48,8 +49,9 @@ public class BookDatabaseModel extends DatabaseModel {
 		//constraint(new UniqueConstraint("autor.vorname"));
 		
 		//constraint(new LogicalConstraint(CompareType.GREATER, "autor.anzahlbuecher", "autor.summebuecher"));
-		constraint(new RangeConstraint("adresse.nummer", 1, 50));
-		constraint(new RangeConstraint("autor.nachnamelaenge", 1, 50));
+		//constraint(new RangeConstraint("adresse.nummer", 1, 50));
+		//constraint(new RangeConstraint("autor.nachnamelaenge", 1, 50));		
+		constraint(new EqualConstraint("autor.summebuecher", 77));
 		
 		
 //		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.land"));

@@ -68,9 +68,6 @@ public class DataGenerator extends ValueGenerator {
 			valueList.add(entry);
 		}
 
-		if (this.getKey().equals("sprache"))
-			System.out.println("sprache");
-
 		for (Hint hint : getHints()) {
 			if (DomainSpecificDataHint.class.isInstance(hint)) {
 				DomainSpecificDataHint dsdh = ((DomainSpecificDataHint) hint);

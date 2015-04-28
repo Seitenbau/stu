@@ -3,6 +3,8 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.apache.tools.ant.types.resources.selectors.Compare;
+
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
@@ -14,6 +16,7 @@ public abstract class ValueGenerator {
 	protected boolean allowNull;
 	protected ArrayList<Hint> hints = new ArrayList<Hint>();	
 	protected String[] values;
+	protected Comparable<?> returnValue;
 	
 	public abstract Integer getMaxIndex();
 	public abstract Result nextValue();
@@ -60,7 +63,11 @@ public abstract class ValueGenerator {
 	}
 
 	public void walkthroughHints() {
-		// TODO Auto-generated method stub		
+		for(Hint hint: getHints()){
+			if(Hint.class.isInstance(hint)){
+				returnValue = hint.getValue();
+			}
+		}
 	}
 
 	public void clearHints() {

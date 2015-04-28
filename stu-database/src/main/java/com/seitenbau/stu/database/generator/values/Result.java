@@ -103,8 +103,23 @@ public class Result implements Comparable<Object> {
 		return isGenerated;
 	}
 
+//	@Override
+//	public String toString() {
+//		return this.getClass().getSimpleName().toString() 
+//				+ ": Cell => " 
+//				+ ((getTable() == null)? "null" : getTable().toString()) + "."
+//				+ ((getCol() == null)? "null" : getCol().toString()) 
+//				+ ": EB => " + ((getEb() == null)? "null" : getEb().toString())
+//
+//				+ ": Value => " 
+//				+ ((value == null)? "null" : value.toString())
+//		
+//		+ ": ValueGenerator => " 
+//		+ ((generator == null)? "null" : generator.getClass().getSimpleName().toString());
+//	}
+	
 	@Override
-	public String toString() {
+	public String toString(){
 		if (isGenerated) {
 			if (value != null)
 				return value.toString();

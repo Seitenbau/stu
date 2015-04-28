@@ -39,6 +39,11 @@ public class IntegerGenerator extends ValueGenerator {
 	
 	@Override
 	public Result nextValue(Integer index) {
+		walkthroughHints();
+		
+		if(returnValue != null)
+			return new Result(returnValue, true, true);
+		
 		Random rand = new Random(index);
 		return new Result(rand.nextInt(max-min) + min, true, true);
 	}
@@ -49,6 +54,14 @@ public class IntegerGenerator extends ValueGenerator {
 
 		void AddRange(Comparable<?> min, Comparable<?> max);
 	}
+	
+	@Override
+	public void walkthroughHints(){
+		super.walkthroughHints();
+		
+		// Implement the walkthrough for Integer specific new hints here
+	}	
+	
 
 	private class LongRange implements Strategy {
 		@Override

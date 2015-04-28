@@ -215,8 +215,6 @@ public class DataGenerator {
 	private boolean recursiveCall(Table table, EntityBlueprint eb, Column col) {
 
 		Result result = getResult(table, eb, col);
-		
-		//result = g.nextValue(result);
 
 		if (!resultList.contains(result)) {
 			resultList.add(result);
@@ -294,7 +292,7 @@ public class DataGenerator {
 			// TODO: Lösungsmenge davor aus Ergebnissen von resultList.get(0) bis resultList.get(i-1) reduzieren.
 			
 			Result result = resultList.get(i);
-			for(int j = 0; j < i; j++){
+			for(int j = 0; j <= i; j++){
 				
 				ArrayList<Hint> hints = resultList.get(j).getHints();
 				for(Hint hint: hints){
