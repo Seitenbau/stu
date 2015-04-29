@@ -18,15 +18,17 @@ import com.seitenbau.stu.database.generator.values.ValueGenerator;
  * Subclasses: RangeConstraint, DomainConstraint, LogicalConstraint, UniqueConstraint, FunctionalConstraint, ExpressionConstraint
  */
 public abstract class ConstraintBase {
-	public String modelRef; // z.B. "table.column"	
+	protected String modelRef; // z.B. "table.column"	
 	
 	// Quell-Namen werden zuvor eingetragen. Liste wird beim erstellen der Daten nachträglich geladen
 	protected String[] sourceNames; // {"table.column", "table.column",	// "table.column"}
 
 	protected EntityFactory fab;
 	protected ArrayList<Source> sources = new ArrayList<Source>();
-	
+
 	protected Scope scope;
+	
+	protected Integer priory = 10;	// TODO: Priorität gibt an, welche Constraints zuerst behandelt werden
 
 	protected boolean sourcesLoaded;
 
@@ -48,6 +50,10 @@ public abstract class ConstraintBase {
 	
 	public void setScope(Scope scope){
 		this.scope = scope;
+	}
+	
+	public Integer getPriory() {
+		return priory;
 	}
 	
 	@Override
@@ -91,6 +97,7 @@ public abstract class ConstraintBase {
 		if (sourceNames == null)
 			return true;
 
+		// TODO: Handle all scopes
 		if(scope == Scope.Column){
 			List<EntityBlueprint> blueprints = fab.blueprints.getTableBlueprints(eb.getTable());
 			for(int i = 0; i < blueprints.size(); i++){
@@ -203,8 +210,19 @@ public abstract class ConstraintBase {
 	}
 	
 	public abstract boolean isValid(EntityBlueprint eb);	
+	
+	public abstract Hint getHint(Result result);
+	
 	public abstract ConstraintBase getCopyInstance();
-	public abstract Hint getHint(ValueGenerator generator, Comparable<?> value);
+
+	public void clearAllResults() {
+		for(Source source: sources){
+			for(Result result: source.getResults()){
+				result.setGenerated(false);
+			}
+		}
+		
+	}
 	
 	
 }

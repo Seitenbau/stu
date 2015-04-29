@@ -50,7 +50,7 @@ public class UniqueConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public Hint getHint(ValueGenerator generator, Comparable<?> value) {
+	public Hint getHint(Result result) {
 		// TODO Auto-generated method stub
 		return null;
 	}

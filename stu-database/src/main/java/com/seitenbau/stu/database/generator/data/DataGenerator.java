@@ -159,7 +159,7 @@ public class DataGenerator {
 				Object obj = eb.getValue(col);
 				if (Result.class.isInstance(obj)) {
 					Result result = (Result) obj;
-					ConstraintBase constraintCopy = sc.getCopyInstance();
+					ConstraintBase constraintCopy = sc.getCopyInstance(); // TODO: Handle the Instances
 					constraintCopy.loadSources(eb);
 					result.addConstraint(constraintCopy);
 				}
@@ -216,11 +216,8 @@ public class DataGenerator {
 
 		Result result = getResult(table, eb, col);
 
-		if (!resultList.contains(result)) {
-			resultList.add(result);
-		}else{
+		if(!addResultToList(result))
 			return true;
-		}
 
 		// Constraints zur Liste hinzufügen
 		ArrayList<ConstraintBase> cons = result.getConstraints();
@@ -231,6 +228,25 @@ public class DataGenerator {
 		}
 		
 		return true;
+	}
+
+	private boolean addResultToList(Result result) {
+		if (!resultList.contains(result)) {
+			
+			if(resultList.size() > 0){
+				for(int i = 0; i < resultList.size(); i++){
+					if(resultList.get(i).getHighestPriory() > result.getHighestPriory()){
+						resultList.add(i,result);
+						return true;
+					}
+				}
+			}
+			
+			resultList.add(result);
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	public static Integer[] convertIntegers(List<Integer> integers)
@@ -253,11 +269,9 @@ public class DataGenerator {
 		if(constraintList.size() > 0 && combi == null){
 			for(Result res: resultList){
 				res.setValue(null);
-			}
-			
+			}			
 			return false;
-		}
-		
+		}		
 		return true;
 	}
 	
@@ -291,10 +305,11 @@ public class DataGenerator {
 			
 			// TODO: Lösungsmenge davor aus Ergebnissen von resultList.get(0) bis resultList.get(i-1) reduzieren.
 			
+			// TODO: Hint priory. Bei 1 Ausnahme
 			Result result = resultList.get(i);
-			for(int j = 0; j <= i; j++){
-				
-				ArrayList<Hint> hints = resultList.get(j).getHints();
+			for(int j = 0; j < i; j++){
+
+				ArrayList<Hint> hints = resultList.get(j).getHints();				
 				for(Hint hint: hints){
 					result.getGenerator().addHint(hint);
 				}				
@@ -310,7 +325,7 @@ public class DataGenerator {
 		}
 		
 		// Kombination zurückgeben, falls alle Constraints erfüllt sind
-		if(constraintList.size() > 0 && checkConstraints() == null){
+		if(constraintList.size() == 0 || constraintList.size() > 0 && checkConstraints() == null){
 			return indexes;
 		}
 		
@@ -366,15 +381,21 @@ public class DataGenerator {
 				return constraint;
 			
 			Result result = constraint.getSources().get(0).getResults().get(0);
-			if (!constraint.isValid(result.getEb())) {
+			if (!constraint.isValid(result.getEb())) {				
+				
+				// TODO: Remove Debugging output
 				String str = ""; 
 				for(Result r: resultList){
 					str += r.toString() + " - ";
 				}
 				
+				constraint.clearAllResults();
+
+				
 				System.out.println("Fail: " + str);
 				return constraint;
 			}else{
+				// TODO: Remove Debugging output
 				String str = ""; 
 				for(Result r: resultList){
 					str += r.toString() + " - ";

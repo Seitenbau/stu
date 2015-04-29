@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
+import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
+
 public class IntegerGenerator extends ValueGenerator {
 
 	private int min;
@@ -30,38 +32,59 @@ public class IntegerGenerator extends ValueGenerator {
 	public void initialize(long seed) {
 		setRandom(new Random(seed));
 	}
-	
+
 	@Override
-	public Result nextValue(){		
-		Result result = new Result(strategy.nextValue(), true, true);
-		return result;
+	public Result nextValue() {
+		// TODO Remove
+		return null;
 	}
-	
+
 	@Override
 	public Result nextValue(Integer index) {
 		walkthroughHints();
-		
-		if(returnValue != null)
+
+		if (returnValue != null)
 			return new Result(returnValue, true, true);
-		
+
+		// TODO: Check if there are enough possible values
+
 		Random rand = new Random(index);
-		return new Result(rand.nextInt(max-min) + min, true, true);
+		Result result;
+		
+		boolean flag = true;		
+		do{
+			result = new Result(new IntValue(rand.nextInt(max - min) + min), true, true);
+
+			boolean internflag = true;
+			// Check notAllowedValues
+			for (Comparable<?> value : notAllowedValues) {
+				if (value == result.getValue()) {
+					internflag = false;
+					break;
+				}
+			}
+			
+			if(internflag)
+				flag = false;
+		}while(flag);
+
+		return result;
 	}
 
 	private interface Strategy {
 		Comparable<?> nextValue();
+
 		Comparable<?> nextValue(Integer index);
 
 		void AddRange(Comparable<?> min, Comparable<?> max);
 	}
-	
+
 	@Override
-	public void walkthroughHints(){
+	public void walkthroughHints() {
 		super.walkthroughHints();
-		
+
 		// Implement the walkthrough for Integer specific new hints here
-	}	
-	
+	}
 
 	private class LongRange implements Strategy {
 		@Override
@@ -69,11 +92,11 @@ public class IntegerGenerator extends ValueGenerator {
 			long value = (Math.abs(getRandom().nextLong()) % module) + min;
 			return value;
 		}
-		
+
 		@Override
 		public Comparable<?> nextValue(Integer index) {
 			Long value = (long) (min + index);
-			if(value <= max)
+			if (value <= max)
 				return value;
 			else
 				return null;
@@ -88,14 +111,14 @@ public class IntegerGenerator extends ValueGenerator {
 	private class IntRange implements Strategy {
 		@Override
 		public Comparable<?> nextValue() {
-			int value = getRandom().nextInt(1 + max - min) + min;			
+			int value = getRandom().nextInt(1 + max - min) + min;
 			return value;
 		}
-		
+
 		@Override
 		public Comparable<?> nextValue(Integer index) {
 			Integer value = min + index;
-			if(value <= max)
+			if (value <= max)
 				return value;
 			else
 				return null;
@@ -184,8 +207,7 @@ public class IntegerGenerator extends ValueGenerator {
 				}
 			}
 
-			return getRandom().nextInt(1 + selectedRange.max - selectedRange.min)
-					+ selectedRange.min;
+			return getRandom().nextInt(1 + selectedRange.max - selectedRange.min) + selectedRange.min;
 		}
 	}
 
@@ -202,9 +224,9 @@ public class IntegerGenerator extends ValueGenerator {
 			return max - min;
 		}
 	}
-	
+
 	@Override
 	public Integer getMaxIndex() {
-		return Integer.MAX_VALUE-1;
+		return Integer.MAX_VALUE - 1;
 	}
 }

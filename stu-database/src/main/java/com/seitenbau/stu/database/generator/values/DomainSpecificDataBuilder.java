@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
+import com.seitenbau.stu.database.generator.values.valuetypes.StringValue;
+import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class DomainSpecificDataBuilder {
 
@@ -34,8 +36,8 @@ public class DomainSpecificDataBuilder {
 		}
 	}
 	
-	public DomainSpecificDataHint addData(String key, Comparable value){
-		DomainSpecificDataHint dataConstraint = new DomainSpecificDataHint(null, key, value);
+	public DomainSpecificDataHint addData(String key, String value){
+		DomainSpecificDataHint dataConstraint = new DomainSpecificDataHint(null, key, new StringValue(value));
 		
 		if(!data.containsKey(key)){
 			ArrayList<DomainSpecificDataHint> list = new ArrayList<DomainSpecificDataHint>();

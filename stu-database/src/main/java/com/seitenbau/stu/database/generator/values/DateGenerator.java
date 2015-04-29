@@ -3,6 +3,8 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
+import com.seitenbau.stu.database.generator.values.valuetypes.StringValue;
+
 public class DateGenerator extends ValueGenerator {
 
 	private Random random;
@@ -32,7 +34,8 @@ public class DateGenerator extends ValueGenerator {
 		int iMonth = gc.get(GregorianCalendar.MONTH);
 		int iDay = gc.get(GregorianCalendar.DAY_OF_MONTH);
 
-		return new Result("asDate(\"" + getString(iDay) + "." + getString(iMonth + 1) + "." + getString(iYear) + "\")", true, true);
+		// TODO: Make DateValue
+		return new Result(new StringValue("asDate(\"" + getString(iDay) + "." + getString(iMonth + 1) + "." + getString(iYear) + "\")"), true, true);
 		// return "asDate(\"" + getString(iDay) + "." + getString(iMonth+1) + "." + getString(iYear) + "\")";
 	}
 

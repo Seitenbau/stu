@@ -23,7 +23,8 @@ public class RangeConstraint extends ConstraintBase {
 	public boolean isValid(EntityBlueprint eb) {
 
 		Result result = sources.get(0).getResults().get(0);
-		Integer value = (Integer) result.getValue();
+		// TODO: All types
+		Integer value = (Integer) result.getValue().getValue();
 
 		if (value >= min && value <= max) {
 			return true;
@@ -57,7 +58,7 @@ public class RangeConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public Hint getHint(ValueGenerator generator, Comparable<?> value) {
+	public Hint getHint(Result result) {
 		// TODO Auto-generated method stub
 		return null;
 	}

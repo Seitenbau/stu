@@ -3,6 +3,8 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.Calendar;
 import java.util.Random;
 
+import com.seitenbau.stu.database.generator.values.valuetypes.StringValue;
+
 public class TimestampGenerator extends ValueGenerator {
 
 	private Random random;
@@ -14,6 +16,8 @@ public class TimestampGenerator extends ValueGenerator {
 	public void initialize(long seed) {
 		random = new Random(seed);
 	}
+	
+	// TODO: Implement TimestampValue
 
 	@Override
 	public Result nextValue(Integer index) {
@@ -21,7 +25,7 @@ public class TimestampGenerator extends ValueGenerator {
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date now = calendar.getTime();
 		java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
-		result.setValue("asDate(\"" + currentTimestamp.toString().substring(0, 19) + "\")");
+		result.setValue(new StringValue("asDate(\"" + currentTimestamp.toString().substring(0, 19) + "\")"));
 		return result;
 	}
 

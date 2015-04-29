@@ -7,21 +7,22 @@ import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
+import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class Result implements Comparable<Object> {
-	private Comparable<?> value = null;
+	private Value<?> value = null;
 	private boolean isGenerated = false;
 	private boolean isFinal = false;
 
 	private ArrayList<ConstraintBase> constraints = new ArrayList<ConstraintBase>();
 
-	public Result(Comparable<?> value, boolean isGenerated, boolean isFinal) {
+	public Result(Value<?> value, boolean isGenerated, boolean isFinal) {
 		this.value = value;
 		this.isGenerated = isGenerated;
 		this.isFinal = isFinal;
 	}
 
-	public Result(Table table, EntityBlueprint eb, Column column, Comparable<?> value, boolean isGenerated) {
+	public Result(Table table, EntityBlueprint eb, Column column, Value<?> value, boolean isGenerated) {
 		this.table = table;
 		this.eb = eb;
 		this.col = column;
@@ -51,6 +52,19 @@ public class Result implements Comparable<Object> {
 	}
 
 	public void addConstraint(ConstraintBase constraint) {
+
+		if (constraints.contains(constraint))
+			return;
+
+		if (constraints.size() > 0) {
+			for (int i = 0; i < constraints.size(); i++) {
+				if (constraints.get(i).getPriory() > constraint.getPriory()) {
+					constraints.add(i, constraint);
+					return;
+				}
+			}
+		}
+
 		constraints.add(constraint);
 	}
 
@@ -82,12 +96,12 @@ public class Result implements Comparable<Object> {
 		this.col = col;
 	}
 
-	public void setValue(Comparable<?> value) {
+	public void setValue(Value<?> value) {
 		this.value = value;
 		isGenerated = true;
 	}
 
-	public Comparable<?> getValue() {
+	public Value<?> getValue() {
 		return value;
 	}
 
@@ -103,23 +117,23 @@ public class Result implements Comparable<Object> {
 		return isGenerated;
 	}
 
-//	@Override
-//	public String toString() {
-//		return this.getClass().getSimpleName().toString() 
-//				+ ": Cell => " 
-//				+ ((getTable() == null)? "null" : getTable().toString()) + "."
-//				+ ((getCol() == null)? "null" : getCol().toString()) 
-//				+ ": EB => " + ((getEb() == null)? "null" : getEb().toString())
-//
-//				+ ": Value => " 
-//				+ ((value == null)? "null" : value.toString())
-//		
-//		+ ": ValueGenerator => " 
-//		+ ((generator == null)? "null" : generator.getClass().getSimpleName().toString());
-//	}
-	
+	// @Override
+	// public String toString() {
+	// return this.getClass().getSimpleName().toString()
+	// + ": Cell => "
+	// + ((getTable() == null)? "null" : getTable().toString()) + "."
+	// + ((getCol() == null)? "null" : getCol().toString())
+	// + ": EB => " + ((getEb() == null)? "null" : getEb().toString())
+	//
+	// + ": Value => "
+	// + ((value == null)? "null" : value.toString())
+	//
+	// + ": ValueGenerator => "
+	// + ((generator == null)? "null" : generator.getClass().getSimpleName().toString());
+	// }
+
 	@Override
-	public String toString(){
+	public String toString() {
 		if (isGenerated) {
 			if (value != null)
 				return value.toString();
@@ -168,11 +182,11 @@ public class Result implements Comparable<Object> {
 
 	public ArrayList<Hint> getHints() {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
-		if (isGenerated) {
-			for (ConstraintBase constraint : constraints) {
-				Hint hint = constraint.getHint(this.getGenerator(), this.getValue());
-				hints.add(hint);
-			}
+
+		for (ConstraintBase constraint : constraints) {
+			Hint hint = constraint.getHint(this);
+			hints.add(hint);
+
 		}
 
 		return hints;
@@ -184,5 +198,18 @@ public class Result implements Comparable<Object> {
 
 	public void setFinal(boolean isFinal) {
 		this.isFinal = isFinal;
+	}
+
+	public int getHighestPriory() {
+		if (constraints.size() == 0)
+			return 0;
+
+		int priory = Integer.MAX_VALUE;
+		for (ConstraintBase constraint : constraints) {
+			if (constraint.getPriory() < priory)
+				priory = constraint.getPriory();
+		}
+
+		return priory;
 	}
 }

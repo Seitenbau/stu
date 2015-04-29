@@ -179,6 +179,8 @@ public class ExpressionConstraint extends ConstraintBase {
 			throw new ParserException("Parsing exception: " + s, null);
 		}
 	}
+	
+	// TODO if a is Integer and B another datatype --> ERROR
 
 	private Comparable<?> add(Object a, Object b) {
 		if (Integer.class.isInstance(a)) {
@@ -438,7 +440,7 @@ public class ExpressionConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public Hint getHint(ValueGenerator generator, Comparable<?> value) {
+	public Hint getHint(Result result) {
 		// TODO Auto-generated method stub
 		return null;
 	}

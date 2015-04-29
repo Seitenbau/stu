@@ -57,7 +57,7 @@ public class DomainSpecificDataConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public Hint getHint(ValueGenerator generator, Comparable<?> value) {
-		return new DomainSpecificDataHint(this, generator.getKey(), value);
+	public Hint getHint(Result result) {
+		return new DomainSpecificDataHint(this, result.getGenerator().getKey(), result.getValue());
 	}
 }

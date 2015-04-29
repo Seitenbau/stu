@@ -2,6 +2,8 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
+import com.seitenbau.stu.database.generator.values.valuetypes.StringValue;
+
 public class VerlagNameGenerator extends ValueGenerator {
 
 	private Random random;	
@@ -213,13 +215,13 @@ public class VerlagNameGenerator extends ValueGenerator {
 	
 	@Override
 	public Result nextValue(){		
-		return new Result(values[random.nextInt(values.length)], true, true);
+		return new Result(new StringValue(values[random.nextInt(values.length)]), true, true);
 	}	
 	
 	@Override
 	public Result nextValue(Integer index) {
 		Random rand = new Random(index);		
-		return new Result(values[rand.nextInt(values.length)], true, true);
+		return new Result(new StringValue(values[rand.nextInt(values.length)]), true, true);
 	}
 
 	public static class Factory implements ValueGeneratorFactory {
