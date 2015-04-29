@@ -15,10 +15,13 @@ import com.seitenbau.stu.database.generator.values.constraints.LogicalConstraint
 import com.seitenbau.stu.database.generator.values.constraints.LogicalConstraint.CompareType;
 import com.seitenbau.stu.database.generator.values.constraints.logicalconstraints.EqualConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.logicalconstraints.GreaterConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.logicalconstraints.GreaterEqualConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.logicalconstraints.NotEqualConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.logicalconstraints.SmallerConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.logicalconstraints.SmallerEqualConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.RangeConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
+import com.seitenbau.stu.database.generator.values.valuetypes.DoubleValue;
 import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
 
 public class BookDatabaseModel extends DatabaseModel {
@@ -55,13 +58,17 @@ public class BookDatabaseModel extends DatabaseModel {
 		//constraint(new RangeConstraint("adresse.nummer", 1, 50));
 		//constraint(new RangeConstraint("autor.nachnamelaenge", 1, 50));
 		//constraint(new EqualConstraint("autor.anzahlbuecher", "autor.summebuecher"));
-		//constraint(new EqualConstraint("autor.summebuecher", 77));
+		//constraint(new EqualConstraint("autor.summebuecher", new IntValue(77)));
 		//constraint(new EqualConstraint("autor.summebuecher", "autor.anzahlbuecher"));
-		//constraint(new EqualConstraint("autor.anzahlbuecher", "autor.summebuecher"));
-		constraint(new NotEqualConstraint("autor.mitgliedseit", new IntValue(2008)));
-		constraint(new NotEqualConstraint("autor.mitgliedseit", "autor.lastlogin"));
-		constraint(new GreaterConstraint("autor.mitgliedseit", "autor.lastlogin"));
-		constraint(new SmallerConstraint("autor.geburtsjahr", "autor.lastlogin"));
+
+		//constraint(new NotEqualConstraint("autor.mitgliedseit", new IntValue(2008)));
+		//constraint(new NotEqualConstraint("autor.mitgliedseit", "autor.lastlogin"));
+		//constraint(new GreaterConstraint("autor.mitgliedseit", "autor.lastlogin"));
+		//constraint(new GreaterEqualConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
+		//constraint(new GreaterEqualConstraint("autor.lastlogin", "autor.mitgliedseit"));
+		
+		//constraint(new SmallerConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
+		//constraint(new SmallerConstraint("autor.lastlogin", "autor.mitgliedseit"));
 //		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.land"));	
 		
 	
