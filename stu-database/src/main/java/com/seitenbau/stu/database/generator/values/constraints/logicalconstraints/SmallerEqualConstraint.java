@@ -1,10 +1,13 @@
 package com.seitenbau.stu.database.generator.values.constraints.logicalconstraints;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
+import com.seitenbau.stu.database.generator.hints.GreaterEqualHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
+import com.seitenbau.stu.database.generator.hints.SmallerEqualHint;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.constraints.CompareConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
+import com.seitenbau.stu.database.generator.values.constraints.Source;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class SmallerEqualConstraint extends CompareConstraint {
@@ -52,23 +55,23 @@ public class SmallerEqualConstraint extends CompareConstraint {
 
 	@Override
 	public Hint getHint(Result result) {
-//		if (this.getValue() != null) {
-//			EqualHint hint = new EqualHint(this);
-//			hint.setValue(this.getValue());
-//			return hint;
-//		} else {
-//			for (Source source : sources) {
-//				for (Result r : source.getResults()) {
-//					if (r != result) {
-//						if (r.isGenerated()) {
-//							EqualHint hint = new EqualHint(this);
-//							hint.setValue(r.getValue());
-//							return hint;
-//						}
-//					}
-//				}
-//			}
-//		}
+		if (this.getValue() != null) {
+			SmallerEqualHint hint = new SmallerEqualHint(this);
+			hint.setValue(this.getValue());
+			return hint;
+		} else {
+			for (Source source : sources) {
+				for (Result r : source.getResults()) {
+					if (r != result) {
+						if (r.isGenerated()) {
+							SmallerEqualHint hint = new SmallerEqualHint(this);
+							hint.setValue(r.getValue());
+							return hint;
+						}
+					}
+				}
+			}
+		}
 
 		return null;
 	}

@@ -55,4 +55,9 @@ public class DoubleValue extends Value<Double> {
 	public int compareTo(String o) {
 		return value.toString().compareTo(o);
 	}
+
+	@Override
+	public int toInt() {
+		return value.intValue();
+	}
 }

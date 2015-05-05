@@ -34,8 +34,10 @@ public abstract class Value<T> implements Comparable<T> {
 	public abstract int compareTo(Long o);
 
 	public abstract int compareTo(Short o);
-	
+
 	public abstract int compareTo(String o);
+	
+	public abstract int toInt();
 
 	public int compareTo(Value<?> value) throws Exception {
 		if (IntValue.class.isInstance(value))

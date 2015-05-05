@@ -3,7 +3,6 @@ package com.seitenbau.stu.database.generator.values.constraints;
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
-import com.seitenbau.stu.database.generator.values.ValueGenerator;
 
 public class FunctionalConstraint extends ConstraintBase {
 

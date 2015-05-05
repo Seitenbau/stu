@@ -45,6 +45,17 @@ public class IntegerGenerator extends ValueGenerator {
 
 		if (returnValue != null)
 			return new Result(returnValue, true, true);
+		
+		if(upperLimit != null){
+			if(upperLimit.compareTo(max) < 0)
+				max = Integer.valueOf(upperLimit.toInt());
+		}
+		
+		if(lowerLimit != null){
+			if(lowerLimit.compareTo(min) > 0)
+				min = Integer.valueOf(lowerLimit.toInt());
+		}
+
 
 		// TODO: Check if there are enough possible values
 

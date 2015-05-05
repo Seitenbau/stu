@@ -39,9 +39,9 @@ public class BookDatabaseModel extends DatabaseModel {
 		TableBuilder adresse = table("adresse");		
 
 		// Conststaints		
-		//constraint(new ExpressionConstraint("autor.mitgliedseit",
-		//		"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
-		
+//		constraint(new ExpressionConstraint("autor.mitgliedseit",
+//				"autor.mitgliedseit >= autor.geburtsjahr + 16 && autor.mitgliedseit % 4 == 0", "autor.geburtsjahr", "autor.mitgliedseit"));
+//		
 //		constraint(new ExpressionConstraint("autor.mitgliedseit",
 //		"autor.mitgliedseit >= autor.geburtsjahr + 16", "autor.geburtsjahr", "autor.mitgliedseit"));
 		
@@ -50,26 +50,28 @@ public class BookDatabaseModel extends DatabaseModel {
 		
 		//constraint(new UniqueConstraint("autor.geburtsjahr"));
 		
-		//constraint(new UniqueConstraint("autor.nachname"));		
-		//constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
-		//constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.sprache"));
+		constraint(new UniqueConstraint("autor.nachname"));		
+		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
+		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.sprache"));
 		//constraint(new UniqueConstraint("autor.vorname"));
 
-		//constraint(new RangeConstraint("adresse.nummer", 1, 50));
-		//constraint(new RangeConstraint("autor.nachnamelaenge", 1, 50));
-		//constraint(new EqualConstraint("autor.anzahlbuecher", "autor.summebuecher"));
-		//constraint(new EqualConstraint("autor.summebuecher", new IntValue(77)));
-		//constraint(new EqualConstraint("autor.summebuecher", "autor.anzahlbuecher"));
+		constraint(new RangeConstraint("adresse.nummer", 1, 50));
+		constraint(new RangeConstraint("autor.nachnamelaenge", 1, 50));
+//		constraint(new EqualConstraint("autor.anzahlbuecher", "autor.summebuecher"));
+//		constraint(new EqualConstraint("autor.summebuecher", new IntValue(77)));
+//		constraint(new EqualConstraint("autor.summebuecher", "autor.anzahlbuecher"));
 
-		//constraint(new NotEqualConstraint("autor.mitgliedseit", new IntValue(2008)));
-		//constraint(new NotEqualConstraint("autor.mitgliedseit", "autor.lastlogin"));
-		//constraint(new GreaterConstraint("autor.mitgliedseit", "autor.lastlogin"));
-		//constraint(new GreaterEqualConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
-		//constraint(new GreaterEqualConstraint("autor.lastlogin", "autor.mitgliedseit"));
+//		constraint(new NotEqualConstraint("autor.mitgliedseit", new IntValue(2008)));
+//		constraint(new NotEqualConstraint("autor.mitgliedseit", "autor.lastlogin"));
+		constraint(new GreaterConstraint("autor.mitgliedseit", "autor.lastlogin"));
+		constraint(new GreaterConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
+		//constraint(new GreaterConstraint("autor.lastlogin", "autor.mitgliedseit"));
+		constraint(new GreaterEqualConstraint("autor.nachnamelaenge", new DoubleValue(44.)));
+		constraint(new UniqueConstraint("autor.geburtsjahr"));
 		
-		//constraint(new SmallerConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
-		//constraint(new SmallerConstraint("autor.lastlogin", "autor.mitgliedseit"));
-//		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.land"));	
+		
+//		constraint(new SmallerConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
+//		constraint(new SmallerConstraint("autor.lastlogin", "autor.mitgliedseit"));		
 		
 	
 		buch //
@@ -118,11 +120,11 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.column("land", DataType.VARCHAR).generator(new DataGenerator("land"))
 				//
-				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1950, 2015))
+				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1900, 2015))
 				//
 				.column("mitgliedseit", DataType.INTEGER).generator(new IntegerGenerator(1980, 2015))
 				//
-				.column("lastlogin", DataType.INTEGER).generator(new IntegerGenerator(1980, 2015))
+				.column("lastlogin", DataType.INTEGER).generator(new IntegerGenerator(2000, 2015))
 				//
 				.column("anzahlbuecher", DataType.INTEGER).generator(new IntegerGenerator(0, 100))
 				//

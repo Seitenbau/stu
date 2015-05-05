@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ import com.seitenbau.stu.logger.TestLoggerFactory;
 
 public class DataGenerator {
 	public enum Mode {
-		GENERATE_AND_TEST, BACKTRACKING
+		GENERATE_AND_TEST, BACKTRACKING, BACKTRACKING_WITH_HINTS
 	}
 
 	private final Logger log = TestLoggerFactory.get(DataGenerator.class);
@@ -48,7 +49,7 @@ public class DataGenerator {
 	private final Set<Edge> visitedEdges;
 	private final Set<Table> visitedTables;
 
-	private Mode mode = Mode.GENERATE_AND_TEST;
+	private Mode mode = Mode.BACKTRACKING;
 
 	public DataGenerator(DatabaseModel model) {
 		this.model = model;
@@ -167,18 +168,27 @@ public class DataGenerator {
 		}
 	}
 	
+	// Statisitcs
+	private Integer resultCounter = 0;
+	private Integer recursiveCounter = 0;
+	private long startTimestamp;
 
 	private void generateAllValues() {
 
+		startTimestamp = new Date().getTime();
+		
 		for (Table table : getTableOrder(model)) {
 			List<EntityBlueprint> entityBlueprints = fab.getEntities().getTableBlueprints(table);
 			for (EntityBlueprint eb : entityBlueprints) {
-				for (Column col : eb.table.getColumns()) {
+				for (Column col : eb.table.getColumns()) {				
+					
 					Object obj = eb.getValue(col.getJavaName());
 					if (obj != null) {
 						if (EntityBlueprint.class.isInstance(obj))
 							continue;
-
+						
+						resultCounter++;
+						
 						Result value = (Result) obj;
 						if (value.isGenerated() && value.isFinal())// check if generated
 							continue;
@@ -193,6 +203,14 @@ public class DataGenerator {
 				}
 			}
 		}
+		
+		System.out.println("-----------------------------------------------------------------");
+		System.out.println("Modus: " + mode.toString());
+		System.out.println("Anzahl generierter Results: " + resultCounter.toString());
+		System.out.println("Rekursive Aufrufe: " + recursiveCounter.toString());
+		System.out.println("Dauer: " + ((new Date().getTime()) - startTimestamp) + "ms");
+		System.out.println("-----------------------------------------------------------------");
+
 	}	
 
 	// In der ArrayList werden alle aktuellen Constraints abgelegt um eine schnelle Prüfung zu ermöglichen.
@@ -279,6 +297,7 @@ public class DataGenerator {
 	private Integer[] recursiveResultWalkthrough(int depth, Integer[] indexes){		
 		
 		counter++;
+		recursiveCounter++;
 		
 		int maxDepth = 10 - indexes.length;
 		
@@ -305,14 +324,18 @@ public class DataGenerator {
 			
 			// TODO: Lösungsmenge davor aus Ergebnissen von resultList.get(0) bis resultList.get(i-1) reduzieren.
 			
-			// TODO: Hint priory. Bei 1 Ausnahme
 			Result result = resultList.get(i);
-			for(int j = 0; j < i; j++){
-
-				ArrayList<Hint> hints = resultList.get(j).getHints();				
-				for(Hint hint: hints){
-					result.getGenerator().addHint(hint);
-				}				
+			
+			if(mode == Mode.BACKTRACKING_WITH_HINTS){
+				for(int j = 0; j <= i; j++){
+					
+					if(i > 0 || result.getHighestPriory() < 2){
+						ArrayList<Hint> hints = resultList.get(j).getHints();				
+						for(Hint hint: hints){
+							result.getGenerator().addHint(hint);
+						}	
+					}			
+				}
 			}
 			
 			Result res = resultList.get(i).getGenerator().nextValue(seed);

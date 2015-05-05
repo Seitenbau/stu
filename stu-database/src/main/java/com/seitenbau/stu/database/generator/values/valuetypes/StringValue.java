@@ -58,4 +58,9 @@ public class StringValue extends Value<String> {
 	private int compareToValue(Number o) {
 		return value.compareTo(String.valueOf(o));
 	}
+
+	@Override
+	public int toInt() {
+		return Integer.valueOf(value);
+	}
 }

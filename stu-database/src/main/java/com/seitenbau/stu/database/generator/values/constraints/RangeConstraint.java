@@ -2,8 +2,9 @@ package com.seitenbau.stu.database.generator.values.constraints;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.Hint;
+import com.seitenbau.stu.database.generator.hints.RangeHint;
 import com.seitenbau.stu.database.generator.values.Result;
-import com.seitenbau.stu.database.generator.values.ValueGenerator;
+import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
 
 public class RangeConstraint extends ConstraintBase {
 
@@ -17,6 +18,7 @@ public class RangeConstraint extends ConstraintBase {
 		
 		this.sourceNames = new String[]{column};		
 		this.scope = Scope.Cell;
+		this.priory = 1;
 	}
 
 	@Override
@@ -59,7 +61,6 @@ public class RangeConstraint extends ConstraintBase {
 
 	@Override
 	public Hint getHint(Result result) {
-		// TODO Auto-generated method stub
-		return null;
+		return new RangeHint(this, new IntValue(max), new IntValue(min));
 	}
 }
