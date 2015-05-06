@@ -49,7 +49,7 @@ public class DataGenerator {
 	private final Set<Edge> visitedEdges;
 	private final Set<Table> visitedTables;
 
-	private Mode mode = Mode.BACKTRACKING;
+	private Mode mode = Mode.BACKTRACKING_WITH_HINTS;
 
 	public DataGenerator(DatabaseModel model) {
 		this.model = model;
@@ -190,7 +190,7 @@ public class DataGenerator {
 						resultCounter++;
 						
 						Result value = (Result) obj;
-						if (value.isGenerated() && value.isFinal())// check if generated
+						if (value.isGenerated())// check if generated
 							continue;
 					}
 
@@ -313,6 +313,7 @@ public class DataGenerator {
 //		if(counter > 10000)
 //			return null;
 
+		boolean nullValue = false;
 		
 		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
 		for(int i = 0; i < resultList.size(); i++){
@@ -332,26 +333,32 @@ public class DataGenerator {
 					if(i > 0 || result.getHighestPriory() < 2){
 						ArrayList<Hint> hints = resultList.get(j).getHints();				
 						for(Hint hint: hints){
-							result.getGenerator().addHint(hint);
+							//if(result.getHighestPriory() < 2 || hint.getSourceName().compareTo(result.getSourceName()) != 0){
+								result.getGenerator().addHint(hint);
+							//}else{
+							//	System.out.println("else");
+							//}
 						}	
 					}			
 				}
 			}
 			
-			Result res = resultList.get(i).getGenerator().nextValue(seed);
+			Result res = result.getGenerator().nextValue(seed);
 			
-			if(res == null)
+			if(res == null){
 				res = new Result(null, false, false);
-			resultList.get(i).setValue(res.getValue());	
+				nullValue = true;
+			}			
 			
+			
+			resultList.get(i).setValue(res.getValue());				
 			result.getGenerator().clearHints();
 		}
 		
 		// Kombination zurückgeben, falls alle Constraints erfüllt sind
-		if(constraintList.size() == 0 || constraintList.size() > 0 && checkConstraints() == null){
+		if(constraintList.size() == 0 || constraintList.size() > 0 && checkConstraints() == null || !nullValue){
 			return indexes;
-		}
-		
+		}		
 		
 		if(depth > maxDepth)
 			return null;
@@ -409,7 +416,7 @@ public class DataGenerator {
 				// TODO: Remove Debugging output
 				String str = ""; 
 				for(Result r: resultList){
-					str += r.toString() + " - ";
+					str += r.getCol().getJavaName().toString() + ": " + r.toString() + " - ";
 				}
 				
 				constraint.clearAllResults();
@@ -430,7 +437,7 @@ public class DataGenerator {
 		
 		String str = ""; 
 		for(Result r: resultList){
-			str += r.toString() + " - ";
+			str += r.getCol().getJavaName().toString() + ": " + r.toString() + " - ";
 		}
 		
 		System.out.println("OK: " + ": " + str);

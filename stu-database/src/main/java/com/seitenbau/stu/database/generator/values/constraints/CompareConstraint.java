@@ -8,12 +8,12 @@ public abstract class CompareConstraint extends ConstraintBase {
 
 	public CompareConstraint(){
 		this.scope = Scope.Cell;
-		this.priory = 2;
+		this.priory = 5;
 	}
 	
 	public CompareConstraint(String sourceName1, String sourceName2) {
 		this.scope = Scope.Cell;
-		this.priory = 2;
+		this.priory = 5;
 		this.modelRef = sourceName1;
 		this.sourceNames = new String[] { sourceName1, sourceName2 };
 	}

@@ -6,6 +6,7 @@ import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.hints.NotEqualHint;
 import com.seitenbau.stu.database.generator.values.Result;
+import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class UniqueConstraint extends ConstraintBase {
 
@@ -13,28 +14,36 @@ public class UniqueConstraint extends ConstraintBase {
 		this.modelRef = modelRef;
 		this.scope = Scope.Column;
 		this.sourceNames = new String[] { this.modelRef };
+		this.priory = 2;
 	}
 
 	public UniqueConstraint(String... modelRef) {
 		this.modelRef = modelRef[0];
 		this.scope = Scope.Column;
 		this.sourceNames = modelRef;
+		this.priory = 2;
 	}
 
 	@Override
 	public boolean isValid(EntityBlueprint eb) {
-		ArrayList<Comparable<?>> values = new ArrayList<Comparable<?>>();
+		ArrayList<Value<?>> values = new ArrayList<Value<?>>();
 
 		for (Source source : sources) {
 			for (Result result : source.getResults()) {
 				if (result.getValue() == null)
-					continue;
-
-				if (!values.contains(result.getValue())) {
-					values.add((Comparable<?>) result.getValue());
-				} else {
 					return false;
+
+				for(Value<?> value: values){
+					try {
+						if(value.compareTo(result.getValue()) == 0)
+							return false;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+				
+				values.add(result.getValue());
 			}
 		}
 
@@ -50,9 +59,9 @@ public class UniqueConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public Hint getHint(Result result) {
+	public ArrayList<Hint> getHint(Result result) {
 
-		ArrayList<NotEqualHint> hints = new ArrayList<NotEqualHint>();
+		ArrayList<Hint> hints = new ArrayList<Hint>();
 
 		for (Source source : sources) {
 			for (Result r : source.getResults()) {
@@ -60,12 +69,12 @@ public class UniqueConstraint extends ConstraintBase {
 					continue;
 
 				NotEqualHint hint = new NotEqualHint(this);
+				hint.setSourceName(r.getSourceName());
 				hint.setValue(r.getValue());
 				hints.add(hint);
-
 			}
 		}
 
-		return hints.get(0);
+		return hints;
 	}
 }

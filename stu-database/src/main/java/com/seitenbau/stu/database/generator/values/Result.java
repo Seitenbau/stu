@@ -184,9 +184,8 @@ public class Result implements Comparable<Object> {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 
 		for (ConstraintBase constraint : constraints) {
-			Hint hint = constraint.getHint(this);
-			hints.add(hint);
-
+			ArrayList<Hint> hs = constraint.getHint(this);			
+			hints.addAll(hs);
 		}
 
 		return hints;
@@ -211,5 +210,9 @@ public class Result implements Comparable<Object> {
 		}
 
 		return priory;
+	}
+
+	public String getSourceName() {
+		return table.getJavaNameFirstLower() + "." + col.getJavaNameFirstLower();
 	}
 }

@@ -7,7 +7,6 @@ import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
-import com.seitenbau.stu.database.generator.values.ValueGenerator;
 
 public class DomainSpecificDataConstraint extends ConstraintBase {
 
@@ -57,7 +56,9 @@ public class DomainSpecificDataConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public Hint getHint(Result result) {
-		return new DomainSpecificDataHint(this, result.getGenerator().getKey(), result.getValue());
+	public ArrayList<Hint> getHint(Result result) {
+		ArrayList<Hint> hints = new ArrayList<Hint>();
+		hints.add(new DomainSpecificDataHint(this, result.getGenerator().getKey(), result.getValue()));
+		return hints;
 	}
 }

@@ -7,11 +7,15 @@ import java.util.Random;
 import java.util.Set;
 
 import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
+import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class IntegerGenerator extends ValueGenerator {
 
 	private int min;
 	private int max;
+	
+	private int initMin;
+	private int initMax;
 
 	private final long module;
 
@@ -20,6 +24,10 @@ public class IntegerGenerator extends ValueGenerator {
 	public IntegerGenerator(int min, int max) {
 		this.min = min;
 		this.max = max;
+		
+		this.initMin = min;
+		this.initMax = max;
+		
 		module = (long) max - min;
 		if (module < Integer.MAX_VALUE) {
 			this.strategy = new IntRange();
@@ -58,27 +66,44 @@ public class IntegerGenerator extends ValueGenerator {
 
 
 		// TODO: Check if there are enough possible values
+		if(max - min < 1){
+			return null;
+		}
 
 		Random rand = new Random(index);
 		Result result;
 		
-		boolean flag = true;		
-		do{
-			result = new Result(new IntValue(rand.nextInt(max - min) + min), true, true);
+		int maxMin = max - min;
+		if(maxMin < Integer.MAX_VALUE)
+			maxMin += 1;
+		
+		boolean flag = true;	
+		int counter = 0;
+		do{		
+			counter++;
+			result = new Result(new IntValue(rand.nextInt(maxMin) + min), true, true);
 
 			boolean internflag = true;
 			// Check notAllowedValues
-			for (Comparable<?> value : notAllowedValues) {
-				if (value == result.getValue()) {
-					internflag = false;
-					break;
+			for (Value<?> value : notAllowedValues) {
+				try {
+					if (value.compareTo(result.getValue()) == 0) {
+						internflag = false;
+						break;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 			
 			if(internflag)
 				flag = false;
-		}while(flag);
-
+		}while(flag && counter < maxMin);
+		
+		if(counter == maxMin)
+			return null;
+		
 		return result;
 	}
 
@@ -239,5 +264,12 @@ public class IntegerGenerator extends ValueGenerator {
 	@Override
 	public Integer getMaxIndex() {
 		return Integer.MAX_VALUE - 1;
+	}
+	
+	@Override
+	public void clearHints(){
+		super.clearHints();
+		min = initMin;
+		max = initMax;
 	}
 }

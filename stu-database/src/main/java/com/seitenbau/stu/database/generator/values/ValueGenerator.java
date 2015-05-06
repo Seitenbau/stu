@@ -22,10 +22,9 @@ public abstract class ValueGenerator {
 	protected boolean allowNull;
 	protected ArrayList<Hint> hints = new ArrayList<Hint>();
 	
-	
 	protected String[] values;				// TODO: Change to list of Comparable; List of possible result values
 	protected Value<?> returnValue;	// TODO: Maybe change to result? If this value is set, the result value has to be this value
-	protected ArrayList<Comparable<?>> notAllowedValues = new ArrayList<Comparable<?>>(); // List of values that can't be set
+	protected ArrayList<Value<?>> notAllowedValues = new ArrayList<Value<?>>(); // List of values that can't be set
 
 	protected Value<?> upperLimit;
 	protected Value<?> lowerLimit;
@@ -81,6 +80,7 @@ public abstract class ValueGenerator {
 
 	public void walkthroughHints() {
 		for (Hint hint : getHints()) {
+			
 			if (EqualHint.class.isInstance(hint))
 				handleHint((EqualHint) hint);
 			
@@ -96,8 +96,8 @@ public abstract class ValueGenerator {
 			if(GreaterEqualHint.class.isInstance(hint))
 				handleHint((GreaterEqualHint) hint);
 			
-			if(GreaterEqualHint.class.isInstance(hint))
-				handleHint((GreaterEqualHint) hint);
+			if(SmallerEqualHint.class.isInstance(hint))
+				handleHint((SmallerEqualHint) hint);
 			
 			if(RangeHint.class.isInstance(hint))
 				handleHint((RangeHint) hint);
@@ -111,7 +111,7 @@ public abstract class ValueGenerator {
 	}
 	
 	protected void handleHint(NotEqualHint hint){
-		Comparable<?> cv = hint.getValue();
+		Value<?> cv = hint.getValue();
 		if(cv != null){
 			if(!notAllowedValues.contains(cv))
 				notAllowedValues.add(cv);
@@ -137,7 +137,7 @@ public abstract class ValueGenerator {
 		if(cv != null){
 			try {
 				// TODO
-				if(upperLimit == null || upperLimit.compareTo(cv) > 0)
+				if(upperLimit == null || upperLimit.compareTo(cv) < 0)
 					upperLimit = cv;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -163,7 +163,7 @@ public abstract class ValueGenerator {
 		Value<?> cv = hint.getValue();
 		if(cv != null){
 			try {
-				if(upperLimit == null || upperLimit.compareTo(cv) > 0)
+				if(upperLimit == null || upperLimit.compareTo(cv) < 0)
 					upperLimit = cv;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

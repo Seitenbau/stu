@@ -1,5 +1,7 @@
 package com.seitenbau.stu.database.generator.values.constraints.logicalconstraints;
 
+import java.util.ArrayList;
+
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.EqualHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
@@ -57,11 +59,13 @@ public class EqualConstraint extends CompareConstraint {
 	}
 
 	@Override
-	public Hint getHint(Result result) {
+	public ArrayList<Hint> getHint(Result result) {
+		ArrayList<Hint> hints = new ArrayList<Hint>();
+		
 		if (this.getValue() != null) {
 			EqualHint hint = new EqualHint(this);
 			hint.setValue(this.getValue());
-			return hint;
+			hints.add(hint);
 		} else {
 			for (Source source : sources) {
 				for (Result r : source.getResults()) {
@@ -69,14 +73,15 @@ public class EqualConstraint extends CompareConstraint {
 						if (r.isGenerated()) {
 							EqualHint hint = new EqualHint(this);
 							hint.setValue(r.getValue());
-							return hint;
+							hints.add(hint);
+							return hints;
 						}
 					}
 				}
 			}
 		}
 
-		return null;
+		return hints;
 	}
 
 }

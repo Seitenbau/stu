@@ -50,6 +50,22 @@ public abstract class Value<T> implements Comparable<T> {
 
 		throw new Exception();
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(this.getClass().isInstance(o)){
+			try {
+				if(this.compareTo((Value<?>)o) == 0){
+					return true;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return false;
+	}
 
 	@Override
 	public String toString() {

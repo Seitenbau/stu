@@ -1,7 +1,10 @@
 package com.seitenbau.stu.database.generator.values.constraints.logicalconstraints;
 
+import java.util.ArrayList;
+
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.GreaterEqualHint;
+import com.seitenbau.stu.database.generator.hints.GreaterHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.hints.SmallerHint;
 import com.seitenbau.stu.database.generator.values.Result;
@@ -54,11 +57,13 @@ public class SmallerConstraint extends CompareConstraint {
 	}
 
 	@Override
-	public Hint getHint(Result result) {
+	public ArrayList<Hint> getHint(Result result) {
+		ArrayList<Hint> hints = new ArrayList<Hint>();
+		
 		if (this.getValue() != null) {
 			SmallerHint hint = new SmallerHint(this);
 			hint.setValue(this.getValue());
-			return hint;
+			hints.add(hint);
 		} else {
 			for (Source source : sources) {
 				for (Result r : source.getResults()) {
@@ -66,14 +71,15 @@ public class SmallerConstraint extends CompareConstraint {
 						if (r.isGenerated()) {
 							SmallerHint hint = new SmallerHint(this);
 							hint.setValue(r.getValue());
-							return hint;
+							hints.add(hint);
+							return hints;
 						}
 					}
 				}
 			}
 		}
 
-		return null;
+		return hints;
 	}
 
 }

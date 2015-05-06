@@ -211,7 +211,7 @@ public abstract class ConstraintBase {
 	
 	public abstract boolean isValid(EntityBlueprint eb);	
 	
-	public abstract Hint getHint(Result result);
+	public abstract ArrayList<Hint> getHint(Result result);
 	
 	public abstract ConstraintBase getCopyInstance();
 

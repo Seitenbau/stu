@@ -440,9 +440,8 @@ public class ExpressionConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public Hint getHint(Result result) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Hint> getHint(Result result) {
+		return new ArrayList<Hint>();
 	}
 
 

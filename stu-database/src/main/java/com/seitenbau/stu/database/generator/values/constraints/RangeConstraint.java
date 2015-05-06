@@ -1,5 +1,7 @@
 package com.seitenbau.stu.database.generator.values.constraints;
 
+import java.util.ArrayList;
+
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.hints.RangeHint;
@@ -26,6 +28,9 @@ public class RangeConstraint extends ConstraintBase {
 
 		Result result = sources.get(0).getResults().get(0);
 		// TODO: All types
+		if(result == null || result.getValue() == null || result.getValue().getValue() == null)
+			return false;
+		
 		Integer value = (Integer) result.getValue().getValue();
 
 		if (value >= min && value <= max) {
@@ -60,7 +65,9 @@ public class RangeConstraint extends ConstraintBase {
 	}
 
 	@Override
-	public Hint getHint(Result result) {
-		return new RangeHint(this, new IntValue(max), new IntValue(min));
+	public ArrayList<Hint> getHint(Result result) {
+		ArrayList<Hint> hints = new ArrayList<Hint>();
+		hints.add(new RangeHint(this, new IntValue(max), new IntValue(min)));
+		return hints;
 	}
 }

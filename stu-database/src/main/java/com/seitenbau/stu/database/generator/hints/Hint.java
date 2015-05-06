@@ -6,10 +6,19 @@ import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 public class Hint {
 	
 	private ConstraintBase constraint;
+	private String sourceName;
 	private Value<?> value;
 	
 	public Hint(ConstraintBase constraint){
 		this.constraint = constraint;
+	}
+
+	public String getSourceName() {
+		return sourceName;
+	}
+
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
 	}
 
 	public Value<?> getValue() {
