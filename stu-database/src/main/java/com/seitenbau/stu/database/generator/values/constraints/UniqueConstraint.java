@@ -32,18 +32,11 @@ public class UniqueConstraint extends ConstraintBase {
 			for (Result result : source.getResults()) {
 				if (result.getValue() == null)
 					return false;
-
-				for(Value<?> value: values){
-					try {
-						if(value.compareTo(result.getValue()) == 0)
-							return false;
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
 				
-				values.add(result.getValue());
+				if(values.contains(result.getValue()))
+					return false;
+				else
+					values.add(result.getValue());
 			}
 		}
 
