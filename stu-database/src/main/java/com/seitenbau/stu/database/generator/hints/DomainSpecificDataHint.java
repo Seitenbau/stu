@@ -3,17 +3,15 @@ package com.seitenbau.stu.database.generator.hints;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 
-import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 /*
  * DomainSpecificData 
  */
-public class DomainSpecificDataHint extends Hint {	
+public class DomainSpecificDataHint extends Hint {
 	private String key;
 
 	public HashMap<String, ArrayList<DomainSpecificDataHint>> dataHashMap = new HashMap<String, ArrayList<DomainSpecificDataHint>>();
@@ -40,12 +38,12 @@ public class DomainSpecificDataHint extends Hint {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+
 	public boolean notAppliesTo(DomainSpecificDataHint domainSpecifData) {
 
 		Iterator<Entry<String, ArrayList<DomainSpecificDataHint>>> it = dataHashMap.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry) it.next();
+			Entry<String, ArrayList<DomainSpecificDataHint>> pairs = it.next();
 			if (pairs.getKey().equals(domainSpecifData.getKey())) {
 
 				ArrayList<DomainSpecificDataHint> al = (ArrayList<DomainSpecificDataHint>) pairs.getValue();
@@ -70,6 +68,7 @@ public class DomainSpecificDataHint extends Hint {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName().toString() + ": Key => " + ((getKey() == null)? "null" : getKey().toString()) + ", Value => " + ((getValue() == null) ? "null" : getValue().toString());
+		return this.getClass().getSimpleName().toString() + ": Key => " + ((getKey() == null) ? "null" : getKey().toString()) + ", Value => "
+				+ ((getValue() == null) ? "null" : getValue().toString());
 	}
 }

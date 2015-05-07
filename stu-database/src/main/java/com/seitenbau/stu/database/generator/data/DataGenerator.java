@@ -172,6 +172,7 @@ public class DataGenerator {
 	private Integer resultCounter = 0;
 	private Integer recursiveCounter = 0;
 	private long startTimestamp;
+	private Integer forCounter = 0;
 
 	private void generateAllValues() {
 
@@ -208,6 +209,7 @@ public class DataGenerator {
 		System.out.println("Modus: " + mode.toString());
 		System.out.println("Anzahl generierter Results: " + resultCounter.toString());
 		System.out.println("Rekursive Aufrufe: " + recursiveCounter.toString());
+		System.out.println("Generator-Aufrufe: " + forCounter.toString());
 		System.out.println("Dauer: " + ((new Date().getTime()) - startTimestamp) + "ms");
 		System.out.println("-----------------------------------------------------------------");
 
@@ -316,28 +318,35 @@ public class DataGenerator {
 		boolean nullValue = false;
 		
 		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
-		for(int i = 0; i < resultList.size(); i++){
+		for(int i = 0; i < resultList.size(); i++){			
+			forCounter++;
 			
 			int fabIndex = fab.blueprints.getTableBlueprints(resultList.get(i).getTable()).indexOf(resultList.get(i).getEb());
 			
 			// Seed für Random aus der aktuellen Kombination berechnen
 			int seed = (i+1)*10 + (fabIndex+1)*100 + indexes[i];
 			
-			// TODO: Lösungsmenge davor aus Ergebnissen von resultList.get(0) bis resultList.get(i-1) reduzieren.
-			
-			Result result = resultList.get(i);
-			
+			Result result = resultList.get(i);			
 			if(mode == Mode.BACKTRACKING_WITH_HINTS){
-				for(int j = 0; j <= i; j++){
+				for(int j = 0; j <= i; j++){					
+					
 					
 					if(i > 0 || result.getHighestPriory() < 2){
 						ArrayList<Hint> hints = resultList.get(j).getHints();				
 						for(Hint hint: hints){
 							//if(result.getHighestPriory() < 2 || hint.getSourceName().compareTo(result.getSourceName()) != 0){
+							
+							// Dem Generator dürfen nur Hints hinzugefügt werden, welche wirklich dieses Result betreffen.
+							// Andernfalls ist es möglich, dass Werte ausgeschlossen werden, welche eigentlich möglich wären.
+							
+							ArrayList<Source> hintSources = hint.getConstraint().getSources();
+							if(hint.getConstraint().containtsResult(result))
 								result.getGenerator().addHint(hint);
-							//}else{
-							//	System.out.println("else");
-							//}
+							
+							
+//							}else{
+//								System.out.println("else");
+//							}
 						}	
 					}			
 				}
@@ -356,7 +365,7 @@ public class DataGenerator {
 		}
 		
 		// Kombination zurückgeben, falls alle Constraints erfüllt sind
-		if(constraintList.size() == 0 || constraintList.size() > 0 && checkConstraints() == null || !nullValue){
+		if(constraintList.size() == 0 || constraintList.size() > 0 && checkConstraints() == null){
 			return indexes;
 		}		
 		

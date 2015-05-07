@@ -220,9 +220,15 @@ public abstract class ConstraintBase {
 			for(Result result: source.getResults()){
 				result.setGenerated(false);
 			}
-		}
-		
+		}		
 	}
 	
-	
+	public boolean containtsResult(Result result){
+		for(Source source: sources){
+			if(source.getResults().contains(result)){
+				return true;
+			}
+		}
+		return false;
+	}
 }

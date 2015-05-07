@@ -82,6 +82,8 @@ public class DomainSpecificDataBuilder {
 	
 	public DomainSpecificDataBuilder() {
 		
+		// http://www.datendieter.de/item/Postleitzahlen-Datenbank_Deutschland
+		
 		DomainSpecificDataHint maennlich = addData("geschlecht", "männlich");
 		DomainSpecificDataHint weiblich = addData("geschlecht", "weiblich");
 		
@@ -101,6 +103,10 @@ public class DomainSpecificDataBuilder {
 		DomainSpecificDataHint tilly = addData("vorname", "Tilly");
 		DomainSpecificDataHint jakob = addData("vorname", "Jakob");
 		DomainSpecificDataHint tom = addData("vorname", "Tom");
+		DomainSpecificDataHint jens = addData("vorname", "Jens");
+		DomainSpecificDataHint rainer = addData("vorname", "Rainer");
+		DomainSpecificDataHint thomas = addData("vorname", "Thomas");
+		DomainSpecificDataHint juergen = addData("vorname", "Jürgen");
 		
 		DomainSpecificDataHint deutschland = addData("land", "Deutschland");
 		DomainSpecificDataHint oesterreich = addData("land", "Österreich");
@@ -157,6 +163,22 @@ public class DomainSpecificDataBuilder {
 		combine2Constraints(tom, deutsch);
 		combine2Constraints(tom, englisch);
 		combine2Constraints(tom, franz);
+		
+		combine2Constraints(jens, maennlich);
+		combine2Constraints(jens, deutsch);
+		combine2Constraints(jens, englisch);
+		
+		combine2Constraints(rainer, maennlich);
+		combine2Constraints(rainer, deutsch);
+		combine2Constraints(rainer, englisch);
+		
+		combine2Constraints(thomas, maennlich);
+		combine2Constraints(thomas, deutsch);
+		combine2Constraints(thomas, englisch);		
+		
+		combine2Constraints(juergen, maennlich);
+		combine2Constraints(juergen, deutsch);
+		combine2Constraints(juergen, englisch);
 
 		
 		// OLD

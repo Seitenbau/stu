@@ -7,6 +7,8 @@ import java.util.Random;
 
 import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
+import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
+import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class DataGenerator extends ValueGenerator {
 
@@ -47,12 +49,39 @@ public class DataGenerator extends ValueGenerator {
 		Result result = new Result(null, false, false);
 
 		if (valueList.size() > 0) {
+			
+			boolean flag = true;	
+			int counter = 0;
+			do{		
+				counter++;
+				int i = rand.nextInt(valueList.size());
+				DomainSpecificDataHint value = valueList.get(i);
+				result.setValue(value.getValue());
+				result.setGenerated(true);
+				result.setFinal(true);
 
-			int i = rand.nextInt(valueList.size());
-			DomainSpecificDataHint value = valueList.get(i);
-			result.setValue(value.getValue());
-			result.setGenerated(true);
-			result.setFinal(true);
+				boolean internflag = true;
+				// Check notAllowedValues
+				for (Value<?> v : notAllowedValues) {
+					try {
+						if (v.compareTo(result.getValue()) == 0) {
+							internflag = false;
+							break;
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				if(internflag)
+					flag = false;
+			}while(flag && counter < valueList.size()*2);
+			
+			if(counter == valueList.size()*2)
+				return null;
+		
+			return result;
 		}
 
 		return result;
@@ -65,7 +94,10 @@ public class DataGenerator extends ValueGenerator {
 		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data.get(getKey());
 		valueList = new ArrayList<DomainSpecificDataHint>();
 		for (DomainSpecificDataHint entry : al) {
-			valueList.add(entry);
+			if(!notAllowedValues.contains(entry.getValue())) // TODO Check KEy and Value
+				valueList.add(entry);
+			else
+				System.out.println("oha");
 		}
 
 		for (Hint hint : getHints()) {
@@ -73,9 +105,9 @@ public class DataGenerator extends ValueGenerator {
 				DomainSpecificDataHint dsdh = ((DomainSpecificDataHint) hint);
 
 				String key = dsdh.getKey();
-				Comparable<?> value = dsdh.getValue();
+				Value<?> value = dsdh.getValue();
 
-				if (value != null) {
+				if (key.compareTo(key) == 0 && value != null) {
 					Iterator<Entry<String, ArrayList<DomainSpecificDataHint>>> it = ConstraintsData.data.entrySet().iterator();
 					while (it.hasNext()) {
 						Entry<String, ArrayList<DomainSpecificDataHint>> pairs = it.next();
@@ -114,5 +146,12 @@ public class DataGenerator extends ValueGenerator {
 	@Override
 	public Integer getMaxIndex() {
 		return ConstraintsData.data.get(getKey()).size();
+	}
+	
+	@Override
+	public void clearHints(){
+		super.clearHints();
+		valueList.clear();
+		notAllowedValues.clear();		
 	}
 }

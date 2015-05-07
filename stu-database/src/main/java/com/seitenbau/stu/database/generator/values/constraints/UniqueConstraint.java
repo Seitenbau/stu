@@ -58,7 +58,7 @@ public class UniqueConstraint extends ConstraintBase {
 
 		for (Source source : sources) {
 			for (Result r : source.getResults()) {
-				if (r.getValue() == null)
+				if (r.getValue() == null || result == r)
 					continue;
 
 				NotEqualHint hint = new NotEqualHint(this);

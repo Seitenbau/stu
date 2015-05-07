@@ -44,25 +44,25 @@ public class BookDatabaseModel extends DatabaseModel {
 		
 		//constraint(new UniqueConstraint("autor.geburtsjahr"));
 		
-		constraint(new UniqueConstraint("autor.nachname"));		
+		//constraint(new UniqueConstraint("autor.nachname"));		
 		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.geschlecht"));
 		constraint(new DomainSpecificDataConstraint("autor.vorname", "autor.sprache"));
-		//constraint(new UniqueConstraint("autor.vorname"));
+		constraint(new UniqueConstraint("autor.vorname"));
 
-		constraint(new RangeConstraint("adresse.nummer", 1, 50));
-		constraint(new RangeConstraint("autor.nachnamelaenge", 1, 50));
+		//constraint(new RangeConstraint("adresse.nummer", 1, 50));
+		//constraint(new RangeConstraint("autor.nachnamelaenge", 1, 50));
 		//constraint(new UniqueConstraint("adresse.nummer"));
 //		constraint(new EqualConstraint("autor.anzahlbuecher", "autor.summebuecher"));
-		constraint(new EqualConstraint("autor.summebuecher", new IntValue(77)));
-		constraint(new EqualConstraint("autor.summebuecher", "autor.anzahlbuecher"));
+		//constraint(new EqualConstraint("autor.summebuecher", new IntValue(77)));
+		//constraint(new EqualConstraint("autor.summebuecher", "autor.anzahlbuecher"));
 
 //		constraint(new NotEqualConstraint("autor.mitgliedseit", new IntValue(2008)));
 //		constraint(new NotEqualConstraint("autor.mitgliedseit", "autor.lastlogin"));
-		//constraint(new GreaterConstraint("autor.mitgliedseit", "autor.lastlogin"));
+		constraint(new GreaterConstraint("autor.mitgliedseit", "autor.lastlogin"));
 		constraint(new GreaterConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
 //		constraint(new GreaterConstraint("autor.lastlogin", "autor.mitgliedseit"));
 //		constraint(new GreaterEqualConstraint("autor.nachnamelaenge", new DoubleValue(44.)));
-		constraint(new UniqueConstraint("autor.geburtsjahr"));
+	//constraint(new UniqueConstraint("autor.geburtsjahr"));
 		
 		
 //		constraint(new SmallerConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
@@ -93,8 +93,6 @@ public class BookDatabaseModel extends DatabaseModel {
 				.generator(new VerlagNameGenerator()).build();
 
 		autor //
-
-
 		.column("id", DataType.BIGINT)
 		//
 				.defaultIdentifier()
@@ -115,9 +113,9 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.column("land", DataType.VARCHAR).generator(new DataGenerator("land"))
 				//
-				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1900, 2015))
+				.column("geburtsjahr", DataType.INTEGER).generator(new IntegerGenerator(1970, 2015))
 				//
-				.column("mitgliedseit", DataType.INTEGER).generator(new IntegerGenerator(1980, 2015))
+				.column("mitgliedseit", DataType.INTEGER).generator(new IntegerGenerator(2000, 2015))
 				//
 				.column("lastlogin", DataType.INTEGER).generator(new IntegerGenerator(2000, 2015))
 				//

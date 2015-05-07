@@ -98,6 +98,8 @@ public class GreaterConstraint extends CompareConstraint {
 								hint.setValue(r.getValue());
 								hints.add(hint);
 								return hints;
+							}else{
+								System.out.println("oO");
 							}
 						}
 					}
