@@ -60,4 +60,45 @@ public class DoubleValue extends Value<Double> {
 	public int toInt() {
 		return value.intValue();
 	}
+
+	@Override
+	public Value<?> add(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> sub(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> multi(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> div(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> mod(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<Double> clone() {
+		return new DoubleValue(value);
+	}
+
+	@Override
+	public Value<?> neg() {
+		value = -value;
+		return this;
+	}
 }

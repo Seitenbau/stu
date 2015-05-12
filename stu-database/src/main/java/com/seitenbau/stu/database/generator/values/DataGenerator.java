@@ -40,9 +40,9 @@ public class DataGenerator extends ValueGenerator {
 		Random rand = new Random(index);
 
 		// TODO: Workaround: Fix and remove
-		 if(getKey() == "geschlecht"){
+		 //if(getKey() == "geschlecht"){
 			 rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt();
-		 }
+		 //}
 
 		walkthroughHints();
 
@@ -96,8 +96,6 @@ public class DataGenerator extends ValueGenerator {
 		for (DomainSpecificDataHint entry : al) {
 			if(!notAllowedValues.contains(entry.getValue())) // TODO Check KEy and Value
 				valueList.add(entry);
-			else
-				System.out.println("oha");
 		}
 
 		for (Hint hint : getHints()) {
@@ -123,11 +121,8 @@ public class DataGenerator extends ValueGenerator {
 								valueList.remove(c);
 							}
 						}
-					}
-					
-					if (valueList.size() == 0) {
-						System.out.println("Null");
 					}					
+				
 				}
 
 			}

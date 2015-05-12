@@ -24,14 +24,22 @@ public abstract class ValueGenerator {
 	
 	protected String[] values;				// TODO: Change to list of Comparable; List of possible result values
 	protected Value<?> returnValue;	// TODO: Maybe change to result? If this value is set, the result value has to be this value
+	// TODO: Remove returnValue and use allowedValues[0] instead
 	protected ArrayList<Value<?>> notAllowedValues = new ArrayList<Value<?>>(); // List of values that can't be set
-
+	protected ArrayList<Value<?>> allowedValues = new ArrayList<Value<?>>(); 
+	
 	protected Value<?> upperLimit;
 	protected Value<?> lowerLimit;
+	
+	protected Integer lastSeed;
 	
 	// TODO: Manage possible ranges
 	// TODO: Additional...
 	
+	public Integer getLastSeed() {
+		return lastSeed;
+	}
+
 	public abstract Integer getMaxIndex();
 
 	public abstract Result nextValue();
@@ -106,8 +114,12 @@ public abstract class ValueGenerator {
 	
 	protected void handleHint(EqualHint hint){
 		Value<?> cv = hint.getValue();
-		if (cv != null)
-			returnValue = cv;
+		if (cv != null){
+			returnValue = cv;		
+			if(!allowedValues.contains(cv))
+				allowedValues.add(cv);
+		}
+			
 	}
 	
 	protected void handleHint(NotEqualHint hint){
@@ -123,7 +135,7 @@ public abstract class ValueGenerator {
 		if(cv != null){
 			try {
 				// TODO
-				if(lowerLimit == null || lowerLimit.compareTo(cv) < 0)
+				if(lowerLimit == null || cv.compareTo(lowerLimit) > 0)
 					lowerLimit = cv;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -137,7 +149,7 @@ public abstract class ValueGenerator {
 		if(cv != null){
 			try {
 				// TODO
-				if(upperLimit == null || upperLimit.compareTo(cv) < 0)
+				if(upperLimit == null || cv.compareTo(upperLimit) < 0)
 					upperLimit = cv;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -150,7 +162,7 @@ public abstract class ValueGenerator {
 		Value<?> cv = hint.getValue();
 		if(cv != null){
 			try {
-				if(lowerLimit == null || lowerLimit.compareTo(cv) < 0)
+				if(lowerLimit == null || cv.compareTo(lowerLimit) > 0)
 					lowerLimit = cv;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -163,7 +175,7 @@ public abstract class ValueGenerator {
 		Value<?> cv = hint.getValue();
 		if(cv != null){
 			try {
-				if(upperLimit == null || upperLimit.compareTo(cv) < 0)
+				if(upperLimit == null || cv.compareTo(upperLimit) < 0)
 					upperLimit = cv;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

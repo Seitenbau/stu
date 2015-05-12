@@ -1,28 +1,27 @@
-package com.seitenbau.stu.database.generator.values.constraints.logicalconstraints;
+package com.seitenbau.stu.database.generator.values.constraints.logical;
 
 import java.util.ArrayList;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.EqualHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
-import com.seitenbau.stu.database.generator.hints.NotEqualHint;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.constraints.CompareConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 import com.seitenbau.stu.database.generator.values.constraints.Source;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
-public class NotEqualConstraint extends CompareConstraint {
+public class EqualConstraint extends CompareConstraint {
 
-	public NotEqualConstraint(String sourceName1, String sourceName2) {
+	public EqualConstraint(String sourceName1, String sourceName2) {
 		super(sourceName1, sourceName2);
 	}
 
-	public NotEqualConstraint(String sourceName, Value<?> value) {
+	public EqualConstraint(String sourceName, Value<?> value) {
 		super(sourceName, value);
 	}
 
-	public NotEqualConstraint(Value<?> value, String sourceName) {
+	public EqualConstraint(Value<?> value, String sourceName) {
 		super(value, sourceName);
 	}
 
@@ -34,10 +33,10 @@ public class NotEqualConstraint extends CompareConstraint {
 		if (sourceNames.length == 2)
 			v2 = getSources().get(1).getResults().get(0).getValue();
 		else
-			v2 = getValue();		
+			v2 = getValue(0);		
 
 		try {
-			return v1.compareTo(v2) != 0;
+			return v1.compareTo(v2) == 0;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,11 +47,11 @@ public class NotEqualConstraint extends CompareConstraint {
 
 	@Override
 	public ConstraintBase getCopyInstance() {
-		NotEqualConstraint eqConstraint;
+		EqualConstraint eqConstraint;
 		if (sourceNames.length == 2)
-			eqConstraint = new NotEqualConstraint(sourceNames[0], sourceNames[1]);
+			eqConstraint = new EqualConstraint(sourceNames[0], sourceNames[1]);
 		else
-			eqConstraint = new NotEqualConstraint(getValue(), sourceNames[0]);
+			eqConstraint = new EqualConstraint(getValue(0), sourceNames[0]);
 
 		eqConstraint.fab = this.fab;
 
@@ -63,16 +62,16 @@ public class NotEqualConstraint extends CompareConstraint {
 	public ArrayList<Hint> getHint(Result result) {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 		
-		if (this.getValue() != null) {
-			NotEqualHint hint = new NotEqualHint(this);
-			hint.setValue(this.getValue());
+		if (this.getValue(0) != null) {
+			EqualHint hint = new EqualHint(this);
+			hint.setValue(this.getValue(0));
 			hints.add(hint);
 		} else {
 			for (Source source : sources) {
 				for (Result r : source.getResults()) {
 					if (r != result) {
 						if (r.isGenerated()) {
-							NotEqualHint hint = new NotEqualHint(this);
+							EqualHint hint = new EqualHint(this);
 							hint.setValue(r.getValue());
 							hints.add(hint);
 							return hints;
@@ -84,4 +83,5 @@ public class NotEqualConstraint extends CompareConstraint {
 
 		return hints;
 	}
+
 }

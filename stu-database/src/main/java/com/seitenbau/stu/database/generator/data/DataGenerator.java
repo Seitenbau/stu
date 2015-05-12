@@ -5,21 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Random;
-import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.commons.lang.ArrayUtils;
-
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import com.seitenbau.stu.database.generator.AssociativeTable;
 import com.seitenbau.stu.database.generator.Column;
@@ -28,8 +18,9 @@ import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
 import com.seitenbau.stu.database.generator.hints.Hint;
+import com.seitenbau.stu.database.generator.values.IntegerGenerator;
 import com.seitenbau.stu.database.generator.values.Result;
-import com.seitenbau.stu.database.generator.values.ValueGenerator;
+import com.seitenbau.stu.database.generator.values.constraints.Combination;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 import com.seitenbau.stu.database.generator.values.constraints.DomainSpecificDataConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.Source;
@@ -100,10 +91,10 @@ public class DataGenerator {
 		// Walk through all constraints and add them to the columns
 		for (ConstraintBase sc : model.getConstraintsList()) {
 			sc.setFab(fab);
-			if(DomainSpecificDataConstraint.class.isInstance(sc)){
+			if (DomainSpecificDataConstraint.class.isInstance(sc)) {
 				((DomainSpecificDataConstraint) sc).setData(fab.model.getDataSource().data);
 			}
-			
+
 			addContraintToColumns(sc);
 		}
 
@@ -123,10 +114,10 @@ public class DataGenerator {
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void addContraintToColumns(ConstraintBase sc) {
 		// TODO: Parse string and add Constraint to Table.Column
-		
-		for(String sourceString: sc.getSourceNames()){
-			String[] array = sourceString.split("\\."); //sc.modelRef.split("\\.");
-			
+
+		for (String sourceString : sc.getSourceNames()) {
+			String[] array = sourceString.split("\\."); // sc.modelRef.split("\\.");
+
 			if (array.length == 3) {
 				String tableName = array[0];
 				String columnName = array[1];
@@ -167,7 +158,7 @@ public class DataGenerator {
 			}
 		}
 	}
-	
+
 	// Statisitcs
 	private Integer resultCounter = 0;
 	private Integer recursiveCounter = 0;
@@ -177,34 +168,35 @@ public class DataGenerator {
 	private void generateAllValues() {
 
 		startTimestamp = new Date().getTime();
-		
+
 		for (Table table : getTableOrder(model)) {
 			List<EntityBlueprint> entityBlueprints = fab.getEntities().getTableBlueprints(table);
 			for (EntityBlueprint eb : entityBlueprints) {
-				for (Column col : eb.table.getColumns()) {				
-					
+				for (Column col : eb.table.getColumns()) {
+
 					Object obj = eb.getValue(col.getJavaName());
 					if (obj != null) {
 						if (EntityBlueprint.class.isInstance(obj))
 							continue;
-						
+
 						resultCounter++;
-						
+
 						Result value = (Result) obj;
 						if (value.isGenerated())// check if generated
 							continue;
 					}
 
-					recursiveCall(table, eb, col);					
+					addResult(table, eb, col);
 					startResultWalkthrough();
-					
+
 					constraintList.clear(); // Aktuelle Liste aller gerade betrachteten Constraints leeren
 					resultList.clear(); // Aktuelle ResultList leeren
+					combiList.clear();
 					counter = 0;
 				}
 			}
 		}
-		
+
 		System.out.println("-----------------------------------------------------------------");
 		System.out.println("Modus: " + mode.toString());
 		System.out.println("Anzahl generierter Results: " + resultCounter.toString());
@@ -213,30 +205,30 @@ public class DataGenerator {
 		System.out.println("Dauer: " + ((new Date().getTime()) - startTimestamp) + "ms");
 		System.out.println("-----------------------------------------------------------------");
 
-	}	
+	}
 
 	// In der ArrayList werden alle aktuellen Constraints abgelegt um eine schnelle Prüfung zu ermöglichen.
 	private ArrayList<ConstraintBase> constraintList = new ArrayList<ConstraintBase>();
-	
-	
+
 	// TODO List --> Queue
 	private PriorityQueue<Result> resultQueue = new PriorityQueue<Result>();
 	// In einer Liste werden alle zusammenhängenden Values festgehalten.
 	// ResultList mit Priorität:
 	// Prioriät gibt an welche Results zuerst generiert werden
-	private ArrayList<Result> resultList = new ArrayList<Result>();	
-	
+	private ArrayList<Result> resultList = new ArrayList<Result>();
+	private ArrayList<Combination> combiList = new ArrayList<Combination>();
+
 	// Counter
 	private int counter = 0;
-		
+
 	/*
 	 * Wert einer einzelnen Zelle berechnen
 	 */
-	private boolean recursiveCall(Table table, EntityBlueprint eb, Column col) {
+	private boolean addResult(Table table, EntityBlueprint eb, Column col) {
 
 		Result result = getResult(table, eb, col);
 
-		if(!addResultToList(result))
+		if (!addResultToList(result))
 			return true;
 
 		// Constraints zur Liste hinzufügen
@@ -246,161 +238,163 @@ public class DataGenerator {
 				addConstraint(c);
 			}
 		}
-		
+
 		return true;
 	}
 
 	private boolean addResultToList(Result result) {
 		if (!resultList.contains(result)) {
-			
-			if(resultList.size() > 0){
-				for(int i = 0; i < resultList.size(); i++){
-					if(resultList.get(i).getHighestPriory() > result.getHighestPriory()){
-						resultList.add(i,result);
+
+			if (resultList.size() > 0) {
+				for (int i = 0; i < resultList.size(); i++) {
+					if (resultList.get(i).getHighestPriory() > result.getHighestPriory()) {
+						resultList.add(i, result);
 						return true;
 					}
 				}
 			}
-			
+
 			resultList.add(result);
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
-	public static Integer[] convertIntegers(List<Integer> integers)
-	{
+
+	// TODO: Bessere Lösung ohne diese Funktion müsste möglich sein......
+	public static Integer[] convertIntegers(List<Integer> integers) {
 		Integer[] ret = new Integer[integers.size()];
-	    for (int i=0; i < ret.length; i++)
-	    {
-	        ret[i] = integers.get(i).intValue();
-	    }
-	    return ret;
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = integers.get(i).intValue();
+		}
+		return ret;
 	}
 	
-	private boolean startResultWalkthrough(){
-		ArrayList<Integer> indexesArrayList = new ArrayList<Integer>();
-		for(int i = 0; i < resultList.size(); i++){
-			indexesArrayList.add(0);
-		}		
+	int maxDepth = 0; 
 
-		Integer[] combi = recursiveResultWalkthrough(0, convertIntegers(indexesArrayList));
-		if(constraintList.size() > 0 && combi == null){
-			for(Result res: resultList){
+	private boolean startResultWalkthrough() {
+		ArrayList<Integer> indexesArrayList = new ArrayList<Integer>();
+		for (int i = 0; i < resultList.size(); i++) {
+			indexesArrayList.add(0);
+		}
+		
+		Combination combination = new Combination(convertIntegers(indexesArrayList));
+		maxDepth = calcMaxDeepness(combination);
+		Combination combi = generateValue(0, combination);
+		if (constraintList.size() > 0 && combi == null) {
+			for (Result res : resultList) {
 				res.setValue(null);
-			}			
+			}
 			return false;
-		}		
+		}
 		return true;
 	}
-	
+
 	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge schon richtig ist
-	private Integer[] recursiveResultWalkthrough(int depth, Integer[] indexes){		
+	private Combination generateValue(int depth, Combination indexes) {
+
+		if(combiList.contains(indexes))
+			return null;
+		else
+			combiList.add(indexes);
 		
 		counter++;
-		recursiveCounter++;
-		
-		int maxDepth = 10 - indexes.length;
-		
-		if(maxDepth < 3)
-			maxDepth = 3;
-		
-		if(maxDepth > 6)
-			maxDepth = 6;
+		if(depth > 0)
+			recursiveCounter++;		
 
-		if(resultList.size() == 1)
-			maxDepth = 1000;
-		
-//		if(counter > 10000)
-//			return null;
+		if (depth > maxDepth || ((new Date().getTime()) - startTimestamp) / 1000 > 300)
+			return null;
 
 		boolean nullValue = false;
-		
+
 		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
-		for(int i = 0; i < resultList.size(); i++){			
+		for (int i = 0; i < resultList.size(); i++) {
 			forCounter++;
-			
+
 			int fabIndex = fab.blueprints.getTableBlueprints(resultList.get(i).getTable()).indexOf(resultList.get(i).getEb());
-			
+
 			// Seed für Random aus der aktuellen Kombination berechnen
-			int seed = (i+1)*10 + (fabIndex+1)*100 + indexes[i];
-			
-			Result result = resultList.get(i);			
-			if(mode == Mode.BACKTRACKING_WITH_HINTS){
-				for(int j = 0; j <= i; j++){					
-					
-					
-					if(i > 0 || result.getHighestPriory() < 2){
-						ArrayList<Hint> hints = resultList.get(j).getHints();				
-						for(Hint hint: hints){
-							//if(result.getHighestPriory() < 2 || hint.getSourceName().compareTo(result.getSourceName()) != 0){
-							
+			int seed = (i + 1) * 10 + (fabIndex + 1) * 100 + indexes.get(i);
+
+			Result result = resultList.get(i);
+			if (mode == Mode.BACKTRACKING_WITH_HINTS) {
+				for (int j = 0; j <= i; j++) {
+
+					if (i > 0 || result.getHighestPriory() < 2) {
+						ArrayList<Hint> hints = resultList.get(j).getHints();
+						for (Hint hint : hints) {
+							// if(result.getHighestPriory() < 2 || hint.getSourceName().compareTo(result.getSourceName()) != 0){
+
 							// Dem Generator dürfen nur Hints hinzugefügt werden, welche wirklich dieses Result betreffen.
 							// Andernfalls ist es möglich, dass Werte ausgeschlossen werden, welche eigentlich möglich wären.
-							
+
 							ArrayList<Source> hintSources = hint.getConstraint().getSources();
-							if(hint.getConstraint().containtsResult(result))
+							if (hint.getConstraint().containtsResult(result))
 								result.getGenerator().addHint(hint);
-							
-							
-//							}else{
-//								System.out.println("else");
-//							}
-						}	
-					}			
+
+							// }else{
+							// System.out.println("else");
+							// }
+						}
+					}
 				}
 			}
-			
+
 			Result res = result.getGenerator().nextValue(seed);
-			
-			if(res == null){
+
+			if (res == null) {
+				// TODO Kein Wert möglich --> 
 				res = new Result(null, false, false);
 				nullValue = true;
-			}			
-			
-			
-			resultList.get(i).setValue(res.getValue());				
+			}
+
+			resultList.get(i).setValue(res.getValue());
 			result.getGenerator().clearHints();
 		}
-		
-		// Kombination zurückgeben, falls alle Constraints erfüllt sind
-		if(constraintList.size() == 0 || constraintList.size() > 0 && checkConstraints() == null){
-			return indexes;
-		}		
-		
-		if(depth > maxDepth)
-			return null;
-		
-		for(int j = 0; j < indexes.length; j++){
-			Integer[] newIndexes = indexes.clone();
-			newIndexes[j] = indexes[j] + 1;
-			
-			// RecursiveCall
-			Integer[] returnValue = recursiveResultWalkthrough(depth+1, newIndexes);
-			if(returnValue != null)
-				return returnValue;
-		}			
-	
-		return null;
-	}
 
+		// Kombination zurückgeben, falls alle Constraints erfüllt sind
+		if (!nullValue) {
+			if (constraintList.size() == 0 || constraintList.size() > 0 && checkConstraints() == null) {
+				return indexes;
+			}
+		} else {
+			String results = "";
+			int p  = 0;
+			for (Result result : resultList) {
+				results += "    Index " + indexes.get(p) + ": " + result.getSourceName() + ((IntegerGenerator)result.getGenerator()).getMin() + "-" + ((IntegerGenerator)result.getGenerator()).getMax() + "-" + ((IntegerGenerator)result.getGenerator()).getLastSeed() + ": " + result.getValue();
+				p++;
+			}
+			log.debug(results);
+		}	
+
+		for (int j = 0; j < indexes.length(); j++) {
+			Combination newIndexes = indexes.clone();
+			newIndexes.set(j, indexes.get(j) + 1);
+
+			// RecursiveCall
+			Combination returnCombi = generateValue(depth + 1, newIndexes);
+			if (returnCombi != null)
+				return returnCombi;
+		}
+
+		return null;
+	}	
 
 	// Fügt Constraint der ConstraintList hinzu
 	// Durchläuft alle zugehörigen Results und ruft Funktion auf...
 	private void addConstraint(ConstraintBase constraint) {
 		if (!constraintList.contains(constraint)) {
 			constraintList.add(constraint);
-			
+
 			// Durchlaufe alle Sources eines Constraints und füge alle Results aller Sources zur ResultList hinzu
-			ArrayList<Source> sources = constraint.getSources();			
-			for (int i = 0; i<sources.size(); i++) {
+			ArrayList<Source> sources = constraint.getSources();
+			for (int i = 0; i < sources.size(); i++) {
 				Source source = sources.get(i);
 				ArrayList<Result> results = source.getResults();
 				for (Result result : results) {
 
 					if (!resultList.contains(result)) {
-						recursiveCall(result.getTable(), result.getEb(), result.getCol());
+						addResult(result.getTable(), result.getEb(), result.getCol());
 					}
 				}
 			}
@@ -415,47 +409,59 @@ public class DataGenerator {
 
 			// TODO EB und Value überlegen. Value wahrscheinlich überflüssig, vielleicht Result mitgeben
 			// Prüfe, ob das Constraint-Bedingung erfüllt ist
-			
-			if(!constraint.allSourcesLoad())
+
+			if (!constraint.allSourcesLoad())
 				return constraint;
-			
+
 			Result result = constraint.getSources().get(0).getResults().get(0);
-			if (!constraint.isValid(result.getEb())) {				
-				
+			if (!constraint.isValid(result.getEb())) {
+
 				// TODO: Remove Debugging output
-				String str = ""; 
-				for(Result r: resultList){
+				String str = "";
+				for (Result r : resultList) {
 					str += r.getCol().getJavaName().toString() + ": " + r.toString() + " - ";
 				}
-				
+
 				constraint.clearAllResults();
 
-				
-				System.out.println("Fail: " + str);
+				log.debug("Fail: " + str);
 				return constraint;
-			}else{
+			} else {
 				// TODO: Remove Debugging output
-				String str = ""; 
-				for(Result r: resultList){
+				String str = "";
+				for (Result r : resultList) {
 					str += r.toString() + " - ";
 				}
-				
-				//System.out.println("Fail: " + result.getEb().getRefName() + ": " + str);
+
+				// System.out.println("Fail: " + result.getEb().getRefName() + ": " + str);
 			}
 		}
-		
-		String str = ""; 
-		for(Result r: resultList){
+
+		String str = "";
+		for (Result r : resultList) {
 			str += r.getCol().getJavaName().toString() + ": " + r.toString() + " - ";
 		}
-		
-		System.out.println("OK: " + ": " + str);
-		
-		for(Result r: resultList){
-			r.setGenerated(true);			
+
+		log.debug("OK: " + ": " + str);
+
+		for (Result r : resultList) {
+			r.setGenerated(true);
 		}
-		
+
 		return null;
+	}
+	
+	private int calcMaxDeepness(Combination indexes) {
+		int maxDepth = 0;
+		int ii = 0;
+		int trii = 0;
+		while(trii < 1000000){
+			ii++;
+			trii = (int) Math.pow(indexes.length()+1, ii);
+		}		
+
+		maxDepth = ii-1;
+		return maxDepth;
 	}
 
 	// ///////////////////////
@@ -480,14 +486,14 @@ public class DataGenerator {
 
 		ArrayList<EntityBlueprint> entities = (ArrayList<EntityBlueprint>) fab.blueprints.getTableBlueprints(table);
 		Integer entityIndex = getEntityIndex(table, eb);
-		if(entityIndex < 0)
+		if (entityIndex < 0)
 			return null;
-		
+
 		Object obj = entities.get(entityIndex).getValue(col.getJavaName());
-		
-		if(obj == null)
+
+		if (obj == null)
 			return null;
-		
+
 		if (Result.class.isInstance(obj))
 			return (Result) obj;
 

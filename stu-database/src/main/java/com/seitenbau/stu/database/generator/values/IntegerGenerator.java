@@ -22,8 +22,8 @@ public class IntegerGenerator extends ValueGenerator {
 	private final Strategy strategy;
 
 	public IntegerGenerator(int min, int max) {
-		this.min = min;
-		this.max = max;
+		this.setMin(min);
+		this.setMax(max);
 		
 		this.initMin = min;
 		this.initMax = max;
@@ -50,30 +50,37 @@ public class IntegerGenerator extends ValueGenerator {
 	@Override
 	public Result nextValue(Integer index) {
 		walkthroughHints();
-
-		if (returnValue != null)
-			return new Result(returnValue, true, true);
+		this.lastSeed = index;
 		
 		if(upperLimit != null){
-			if(upperLimit.compareTo(max) < 0)
-				max = Integer.valueOf(upperLimit.toInt());
+			if(upperLimit.compareTo(getMax()) < 0)
+				setMax(upperLimit.toInt());
 		}
 		
 		if(lowerLimit != null){
-			if(lowerLimit.compareTo(min) > 0)
-				min = Integer.valueOf(lowerLimit.toInt());
+			if(lowerLimit.compareTo(getMin()) > 0)
+				setMin(lowerLimit.toInt());
 		}
-
+		
+		try {
+			if (returnValue != null && returnValue.compareTo(getMin()) >= 0 && returnValue.compareTo(getMax()) <= 0)
+				return new Result(returnValue, true, true);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+		
+		System.out.println(getMin() + " - " + getMax());
 
 		// TODO: Check if there are enough possible values
-		if(max - min < 1){
+		if(getMax() - getMin() < 1){
 			return null;
 		}
 
 		Random rand = new Random(index);
 		Result result;
 		
-		int maxMin = max - min;
+		int maxMin = getMax() - getMin();
 		if(maxMin < Integer.MAX_VALUE)
 			maxMin += 1;
 		
@@ -81,7 +88,7 @@ public class IntegerGenerator extends ValueGenerator {
 		int counter = 0;
 		do{		
 			counter++;
-			result = new Result(new IntValue(rand.nextInt(maxMin) + min), true, true);
+			result = new Result(new IntValue(rand.nextInt(maxMin) + getMin()), true, true);
 
 			boolean internflag = true;
 			// Check notAllowedValues
@@ -125,14 +132,14 @@ public class IntegerGenerator extends ValueGenerator {
 	private class LongRange implements Strategy {
 		@Override
 		public Comparable<?> nextValue() {
-			long value = (Math.abs(getRandom().nextLong()) % module) + min;
+			long value = (Math.abs(getRandom().nextLong()) % module) + getMin();
 			return value;
 		}
 
 		@Override
 		public Comparable<?> nextValue(Integer index) {
-			Long value = (long) (min + index);
-			if (value <= max)
+			Long value = (long) (getMin() + index);
+			if (value <= getMax())
 				return value;
 			else
 				return null;
@@ -147,14 +154,14 @@ public class IntegerGenerator extends ValueGenerator {
 	private class IntRange implements Strategy {
 		@Override
 		public Comparable<?> nextValue() {
-			int value = getRandom().nextInt(1 + max - min) + min;
+			int value = getRandom().nextInt(1 + getMax() - getMin()) + getMin();
 			return value;
 		}
 
 		@Override
 		public Comparable<?> nextValue(Integer index) {
-			Integer value = min + index;
-			if (value <= max)
+			Integer value = getMin() + index;
+			if (value <= getMax())
 				return value;
 			else
 				return null;
@@ -269,7 +276,23 @@ public class IntegerGenerator extends ValueGenerator {
 	@Override
 	public void clearHints(){
 		super.clearHints();
-		min = initMin;
-		max = initMax;
+		setMin(initMin);
+		setMax(initMax);
+	}
+
+	public int getMin() {
+		return min;
+	}
+
+	public void setMin(int min) {
+		this.min = min;
+	}
+
+	public int getMax() {
+		return max;
+	}
+
+	public void setMax(int max) {
+		this.max = max;
 	}
 }

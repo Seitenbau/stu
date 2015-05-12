@@ -184,8 +184,9 @@ public class Result implements Comparable<Object> {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 
 		for (ConstraintBase constraint : constraints) {
-			ArrayList<Hint> hs = constraint.getHint(this);			
-			hints.addAll(hs);
+			ArrayList<Hint> hs = constraint.getHint(this);
+			if (hs != null)
+				hints.addAll(hs);
 		}
 
 		return hints;

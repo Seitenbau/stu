@@ -10,13 +10,6 @@ import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class UniqueConstraint extends ConstraintBase {
 
-	public UniqueConstraint(String modelRef) {
-		this.modelRef = modelRef;
-		this.scope = Scope.Column;
-		this.sourceNames = new String[] { this.modelRef };
-		this.priory = 2;
-	}
-
 	public UniqueConstraint(String... modelRef) {
 		this.modelRef = modelRef[0];
 		this.scope = Scope.Column;

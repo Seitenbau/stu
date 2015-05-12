@@ -1,4 +1,4 @@
-package com.seitenbau.stu.database.generator.values.constraints.logicalconstraints;
+package com.seitenbau.stu.database.generator.values.constraints.logical;
 
 import java.util.ArrayList;
 
@@ -34,7 +34,7 @@ public class SmallerConstraint extends CompareConstraint {
 			if (sourceNames.length == 2)
 				return getSources().get(0).getResults().get(0).getValue().compareTo(getSources().get(1).getResults().get(0).getValue()) < 0;
 
-			return getSources().get(0).getResults().get(0).getValue().compareTo(getValue()) < 0;
+			return getSources().get(0).getResults().get(0).getValue().compareTo(getValue(0)) < 0;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -49,7 +49,7 @@ public class SmallerConstraint extends CompareConstraint {
 		if (sourceNames.length == 2)
 			eqConstraint = new SmallerConstraint(sourceNames[0], sourceNames[1]);
 		else
-			eqConstraint = new SmallerConstraint(getValue(), sourceNames[0]);
+			eqConstraint = new SmallerConstraint(getValue(0), sourceNames[0]);
 
 		eqConstraint.fab = this.fab;
 
@@ -60,9 +60,9 @@ public class SmallerConstraint extends CompareConstraint {
 	public ArrayList<Hint> getHint(Result result) {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 		
-		if (this.getValue() != null) {
+		if (this.getValue(0) != null) {
 			SmallerHint hint = new SmallerHint(this);
-			hint.setValue(this.getValue());
+			hint.setValue(this.getValue(0));
 			hints.add(hint);
 		} else {
 			for (Source source : sources) {

@@ -59,5 +59,61 @@ public class IntValue extends Value<Integer> {
 	@Override
 	public int toInt() {
 		return value;
+	}
+
+	@Override
+	public Value<?> add(Value<?> value) {
+		if(IntValue.class.isInstance(value)){
+			return new IntValue(this.value + ((IntValue)value).getValue());
+		}
+
+		return null;		
+	}
+
+	@Override
+	public Value<?> sub(Value<?> value) {
+		if(IntValue.class.isInstance(value)){
+			return new IntValue(this.value - ((IntValue)value).getValue());
+		}
+
+		return null;	
+	}
+
+	@Override
+	public Value<?> multi(Value<?> value) {
+		if(IntValue.class.isInstance(value)){
+			return new IntValue(this.value * ((IntValue)value).getValue());
+		}
+
+		return null;	
+	}
+
+	@Override
+	public Value<?> div(Value<?> value) {
+		if(IntValue.class.isInstance(value) && ((IntValue)value).getValue() != 0){
+			return new IntValue(this.value / ((IntValue)value).getValue());
+		}
+
+		return null;	
+	}
+
+	@Override
+	public Value<?> mod(Value<?> value) {
+		if(IntValue.class.isInstance(value)){
+			return new IntValue(this.value % ((IntValue)value).getValue());
+		}
+
+		return null;	
+	}
+
+	@Override
+	public Value<Integer> clone() {
+		return new IntValue(value);
+	}
+
+	@Override
+	public Value<?> neg() {
+		value = -value;
+		return this;
 	}	
 }

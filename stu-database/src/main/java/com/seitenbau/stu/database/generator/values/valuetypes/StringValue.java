@@ -63,4 +63,45 @@ public class StringValue extends Value<String> {
 	public int toInt() {
 		return Integer.valueOf(value);
 	}
+
+	@Override
+	public Value<?> add(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> sub(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> multi(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> div(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> mod(Value<?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<String> clone() {
+		return new StringValue(value);
+	}
+
+	@Override
+	public Value<?> neg() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

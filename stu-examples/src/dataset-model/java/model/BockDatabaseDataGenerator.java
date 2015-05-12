@@ -1,5 +1,6 @@
 package model;
 
+import com.seitenbau.stu.config.TestConfiguration;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.data.DataGenerator;
 import com.seitenbau.stu.database.generator.data.Entities;
@@ -10,7 +11,7 @@ public class BockDatabaseDataGenerator
 
   public static void main(String[] args) throws Exception
   {
-	//TestConfiguration.load(Object.class);
+	TestConfiguration.load(Object.class);
 	  
     final DatabaseModel model = new BookDatabaseModel();
 
