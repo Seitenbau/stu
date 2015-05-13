@@ -60,7 +60,7 @@ public class DoubleValue extends Value<Double> {
 
 	@Override
 	public int compareTo(String o) {
-		return value.toString().compareTo(o);
+		return value.compareTo(Double.valueOf(o));
 	}
 	
 	
