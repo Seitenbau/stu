@@ -3,6 +3,8 @@ package com.seitenbau.stu.database.generator.values.valuetypes;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.apache.commons.lang.NotImplementedException;
+
 public class StringValue extends Value<String> {
 
 	public StringValue(String value) {
@@ -66,32 +68,27 @@ public class StringValue extends Value<String> {
 
 	@Override
 	public Value<?> add(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StringValue(value + value.toString());
 	}
 
 	@Override
 	public Value<?> sub(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public Value<?> multi(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public Value<?> div(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public Value<?> mod(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotImplementedException();
 	}
 
 	@Override
@@ -101,7 +98,6 @@ public class StringValue extends Value<String> {
 
 	@Override
 	public Value<?> neg() {
-		// TODO Auto-generated method stub
-		return null;
+		return new StringValue(new StringBuilder(value).reverse().toString());
 	}
 }

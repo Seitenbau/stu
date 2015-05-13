@@ -52,7 +52,7 @@ public class BookDatabaseModel extends DatabaseModel {
 //		constraint(new EqualConstraint("autor.summebuecher", new IntValue(77)));
 //		constraint(new EqualConstraint("autor.summebuecher", "autor.anzahlbuecher"));
 		constraint(new GreaterEqualConstraint("autor.lastlogin", "autor.mitgliedseit"));		
-		constraint(new GreaterEqualConstraint("autor.mitgliedseit", "autor.geburtsjahr"));		
+		constraint(new GreaterEqualConstraint("autor.mitgliedseit", "autor.geburtsjahr"));
 
 //		constraint(new AddConstraint("autor.nachnamelaenge", new IntValue(20), new IntValue(50)));
 //		constraint(new AddConstraint("autor.mitgliedseit", "autor.geburtsjahr", new IntValue(4000)));

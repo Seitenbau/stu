@@ -17,6 +17,10 @@ import com.seitenbau.stu.database.generator.values.ValueGenerator;
 /*
  * Subclasses: RangeConstraint, DomainConstraint, LogicalConstraint, UniqueConstraint, FunctionalConstraint, ExpressionConstraint
  */
+/**
+ * Base class of all constraints
+ *
+ */
 public abstract class ConstraintBase {
 	protected String modelRef; // z.B. "table.column"	
 	

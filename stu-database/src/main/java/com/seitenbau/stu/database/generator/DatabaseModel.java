@@ -69,8 +69,14 @@ public abstract class DatabaseModel {
 	}
 
 
-	public void constraint(ConstraintBase sc){
-		constraintsList.add(sc);
+	/**
+	 * Adds a constraint to the database model.
+	 * 
+	 * @param constraint
+	 * The constraint object that is attached to the model.
+	 */
+	public void constraint(ConstraintBase constraint){
+		constraintsList.add(constraint);
 	}
 	
 	public void generatedSourceFolder(String folder) {

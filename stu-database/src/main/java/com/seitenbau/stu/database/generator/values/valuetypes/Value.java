@@ -1,11 +1,14 @@
 package com.seitenbau.stu.database.generator.values.valuetypes;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
-
+/**
+ * 
+ * 
+ *
+ * @param <T>
+ */
 public abstract class Value<T> implements Comparable<T>, Cloneable {
 
 	protected T value;
@@ -39,12 +42,11 @@ public abstract class Value<T> implements Comparable<T>, Cloneable {
 	public abstract int compareTo(Short o);
 
 	public abstract int compareTo(String o);
-	
+
 	public abstract int toInt();
 
 	public int compareTo(Value<?> value) throws Exception {
-		
-		
+
 		if (IntValue.class.isInstance(value))
 			return this.compareTo(((IntValue) value).getValue());
 		else if (DoubleValue.class.isInstance(value))
@@ -55,12 +57,12 @@ public abstract class Value<T> implements Comparable<T>, Cloneable {
 
 		throw new Exception();
 	}
-	
+
 	@Override
-	public boolean equals(Object o){
-		if(this.getClass().isInstance(o)){
+	public boolean equals(Object o) {
+		if (this.getClass().isInstance(o)) {
 			try {
-				if(this.compareTo((Value<?>)o) == 0){
+				if (this.compareTo((Value<?>) o) == 0) {
 					return true;
 				}
 			} catch (Exception e) {
@@ -68,7 +70,7 @@ public abstract class Value<T> implements Comparable<T>, Cloneable {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -76,14 +78,19 @@ public abstract class Value<T> implements Comparable<T>, Cloneable {
 	public String toString() {
 		return value.toString();
 	}
-	
+
 	@Override
 	public abstract Value<T> clone();
 
 	public abstract Value<?> add(Value<?> value);
+
 	public abstract Value<?> sub(Value<?> value);
+
 	public abstract Value<?> multi(Value<?> value);
+
 	public abstract Value<?> div(Value<?> value);
+
 	public abstract Value<?> mod(Value<?> value);
+
 	public abstract Value<?> neg();
 }

@@ -12,6 +12,8 @@ public class RangeConstraint extends ConstraintBase {
 
 	private Integer min;
 	private Integer max;
+	
+	
 
 	public RangeConstraint(String column, Integer min, Integer max) {
 		this.modelRef = column;

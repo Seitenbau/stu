@@ -11,7 +11,7 @@ public class DoubleValue extends Value<Double> {
 	
 	@Override
 	public int compareTo(Double o) {
-		return o.compareTo(value);
+		return value.compareTo(o);
 	}
 	
 	@Override
@@ -36,7 +36,14 @@ public class DoubleValue extends Value<Double> {
 	
 	@Override
 	public int compareTo(Float o) {
-		return value.compareTo(Double.valueOf(o));
+		double result = value - o;
+
+		if (Math.abs(result) < 0.00001)
+			return 0;
+		else if (result < 0)
+			return 1;
+		else
+			return -1;
 	}
 
 	@Override
@@ -55,40 +62,60 @@ public class DoubleValue extends Value<Double> {
 	public int compareTo(String o) {
 		return value.toString().compareTo(o);
 	}
+	
+	
+	
+	/////////////////////////////////////////////
 
 	@Override
 	public int toInt() {
 		return value.intValue();
 	}
-
+	
+	
 	@Override
 	public Value<?> add(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		if(IntValue.class.isInstance(value)){
+			return new DoubleValue(this.value + ((DoubleValue)value).getValue());
+		}
+
+		return null;		
 	}
 
 	@Override
 	public Value<?> sub(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		if(IntValue.class.isInstance(value)){
+			return new DoubleValue(this.value - ((DoubleValue)value).getValue());
+		}
+
+		return null;	
 	}
 
 	@Override
 	public Value<?> multi(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		if(IntValue.class.isInstance(value)){
+			return new DoubleValue(this.value * ((DoubleValue)value).getValue());
+		}
+
+		return null;	
 	}
 
 	@Override
 	public Value<?> div(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		if(IntValue.class.isInstance(value) && ((IntValue)value).getValue() != 0){
+			return new DoubleValue(this.value / ((DoubleValue)value).getValue());
+		}
+
+		return null;	
 	}
 
 	@Override
 	public Value<?> mod(Value<?> value) {
-		// TODO Auto-generated method stub
-		return null;
+		if(IntValue.class.isInstance(value)){
+			return new DoubleValue(this.value % ((DoubleValue)value).getValue());
+		}
+
+		return null;	
 	}
 
 	@Override
