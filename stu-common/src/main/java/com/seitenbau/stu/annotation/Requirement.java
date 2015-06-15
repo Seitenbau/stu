@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 public @interface Requirement
 {
 
-    String value();
+  String[] value();
 
 }
