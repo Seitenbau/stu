@@ -164,6 +164,10 @@ public class DataGenerator {
 	private Integer recursiveCounter = 0;
 	private long startTimestamp;
 	private Integer forCounter = 0;
+	private Integer constraintInstanceCounter = 0;
+	private Integer maxConstraintDependencyCells = 0;
+	private Integer allConstraintDependencyCells = 0;
+	private Integer graphCount = 0;
 
 	private void generateAllValues() {
 
@@ -188,6 +192,16 @@ public class DataGenerator {
 
 					addResult(table, eb, col);
 					startResultWalkthrough();
+					
+					constraintInstanceCounter += constraintList.size();
+					if(constraintList.size() > 0)
+						graphCount += 1;
+					
+					for(ConstraintBase constraint : constraintList){						
+						allConstraintDependencyCells += (constraint.getCellCount() > 1)? constraint.getCellCount() : 0;
+						if(constraint.getCellCount() > maxConstraintDependencyCells)
+							maxConstraintDependencyCells = constraint.getCellCount();
+					}
 
 					constraintList.clear(); // Aktuelle Liste aller gerade betrachteten Constraints leeren
 					resultList.clear(); // Aktuelle ResultList leeren
@@ -199,6 +213,12 @@ public class DataGenerator {
 
 		System.out.println("-----------------------------------------------------------------");
 		System.out.println("Modus: " + mode.toString());
+		System.out.println("Modellierte Constraints: " + String.valueOf(model.getConstraintsList().size()));
+		System.out.println("Maximale Anzahl an Zellen im Graph:" + maxConstraintDependencyCells.toString());
+		System.out.println("Durchschnittliche Anzahl an Zellen im Graph:" + String.valueOf((Double.valueOf(allConstraintDependencyCells) / graphCount)));
+		System.out.println("Anzahl an Graphen: " + graphCount.toString());
+		System.out.println("Anzahl an Zellen, die Constraints unterliegen: " + allConstraintDependencyCells.toString());
+
 		System.out.println("Anzahl generierter Results: " + resultCounter.toString());
 		System.out.println("Rekursive Aufrufe: " + recursiveCounter.toString());
 		System.out.println("Generator-Aufrufe: " + forCounter.toString());
@@ -280,7 +300,7 @@ public class DataGenerator {
 		
 		Combination combination = new Combination(convertIntegers(indexesArrayList));
 		maxDepth = calcMaxDeepness(combination);
-		Combination combi = generateValue(0, combination);
+		Combination combi = generateValues(0, combination);
 		if (constraintList.size() > 0 && combi == null) {
 			for (Result res : resultList) {
 				res.setValue(null);
@@ -291,7 +311,7 @@ public class DataGenerator {
 	}
 
 	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge schon richtig ist
-	private Combination generateValue(int depth, Combination indexes) {
+	private Combination generateValues(int depth, Combination indexes) {
 
 		if(combiList.contains(indexes))
 			return null;
@@ -372,7 +392,7 @@ public class DataGenerator {
 			newIndexes.set(j, indexes.get(j) + 1);
 
 			// RecursiveCall
-			Combination returnCombi = generateValue(depth + 1, newIndexes);
+			Combination returnCombi = generateValues(depth + 1, newIndexes);
 			if (returnCombi != null)
 				return returnCombi;
 		}
@@ -455,12 +475,15 @@ public class DataGenerator {
 		int maxDepth = 0;
 		int ii = 0;
 		int trii = 0;
+		if(indexes.length() <= 1)
+			return 100;
 		while(trii < 1000000){
-			ii++;
-			trii = (int) Math.pow(indexes.length()+1, ii);
+			ii++;			
+			trii = (int) Math.pow(ii, indexes.length());
 		}		
 
-		maxDepth = ii-1;
+		maxDepth = ii;
+		System.out.println(maxDepth);
 		return maxDepth;
 	}
 
@@ -798,6 +821,10 @@ public class DataGenerator {
 
 	public Entities generate(DatabaseModel model) {
 		return generate(model.getTables().get(0));
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;		
 	}
 
 }

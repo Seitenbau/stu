@@ -12,7 +12,7 @@ public class RangeHint extends Hint {
 		super(constraint);
 	}
 	
-	public RangeHint(ConstraintBase constraint, Value<?> upperLimit, Value<?> lowerLimit) {
+	public RangeHint(ConstraintBase constraint, Value<?> lowerLimit, Value<?> upperLimit) {
 		super(constraint);
 		this.upperLimit = upperLimit;
 		this.lowerLimit = lowerLimit;

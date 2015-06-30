@@ -14,6 +14,8 @@ public class StringGenerator extends ValueGenerator {
 		
 		values = new String[]{ "\"Hund\"", "\"Katze\"", "\"Maus\"", "\"Alpha\"", "\"Beta\"", "\"Gamma\"", "\"Delta\"", "\"Lorem\"",
 				"\"ipsum\"", "\"dolor\"", "\"sit\"", "\"amet\"" };
+		
+		// http://kodejava.org/how-do-i-generate-a-random-alpha-numeric-string/
 	}
 	
 	@Override

@@ -3,8 +3,6 @@ package com.seitenbau.stu.database.generator.values.valuetypes;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.apache.commons.lang.NotImplementedException;
-
 public class ByteValue extends Value<Byte> {
 
 	public ByteValue(Byte value) {

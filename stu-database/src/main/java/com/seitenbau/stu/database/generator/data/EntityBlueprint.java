@@ -12,7 +12,7 @@ import com.seitenbau.stu.database.generator.Column;
 import com.seitenbau.stu.database.generator.Edge;
 import com.seitenbau.stu.database.generator.Table;
 import com.seitenbau.stu.database.generator.data.EntityCreationMode.Direction;
-import com.seitenbau.stu.database.generator.values.DataGenerator;
+import com.seitenbau.stu.database.generator.values.DomainGenerator;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
@@ -57,8 +57,8 @@ public class EntityBlueprint {
 			}
 			
 			ValueGenerator g = fab.getValueGenerator(col);
-			if (com.seitenbau.stu.database.generator.values.DataGenerator.class.isInstance(g)) {
-				com.seitenbau.stu.database.generator.values.DataGenerator dg = (com.seitenbau.stu.database.generator.values.DataGenerator) g;
+			if (com.seitenbau.stu.database.generator.values.DomainGenerator.class.isInstance(g)) {
+				com.seitenbau.stu.database.generator.values.DomainGenerator dg = (com.seitenbau.stu.database.generator.values.DomainGenerator) g;
 				dg.setConstraintsData(fab.model.getDataSource());
 			}
 			

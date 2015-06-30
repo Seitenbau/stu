@@ -115,6 +115,8 @@ project("stu-database") {
     testCompile( "org.apache.ant:ant-junit:1.8.4" ) {
         exclude(group: 'junit', module: 'junit')
     }
+	
+	compile("org.projectlombok:lombok:1.16.4")
   }
 }
 
@@ -210,6 +212,7 @@ project("stu-documentation") {
       attributes: [
         'source-highlighter': 'coderay',
         toc: '',
+		toclevels: 3,
         idprefix: '',
         idseparator: '-',
         copycss: ''

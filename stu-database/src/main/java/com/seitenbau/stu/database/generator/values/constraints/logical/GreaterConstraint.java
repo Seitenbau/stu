@@ -99,7 +99,14 @@ public class GreaterConstraint extends CompareConstraint {
 								hints.add(hint);
 								return hints;
 							}else{
-								System.out.println("oO");
+								hint = new SmallerHint(this);
+								// else
+								// hint = new SmallerHint(this);
+
+								hint.setSourceName(source.getName());
+								hint.setValue(r.getValue());
+								hints.add(hint);
+								return hints;
 							}
 						}
 					}

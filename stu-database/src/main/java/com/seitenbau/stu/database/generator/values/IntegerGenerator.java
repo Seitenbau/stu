@@ -68,9 +68,8 @@ public class IntegerGenerator extends ValueGenerator {
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}		
-		
-		System.out.println(getMin() + " - " + getMax());
+		}	
+
 
 		// TODO: Check if there are enough possible values
 		if(getMax() - getMin() < 1){
@@ -78,6 +77,7 @@ public class IntegerGenerator extends ValueGenerator {
 		}
 
 		Random rand = new Random(index);
+		rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt();
 		Result result;
 		
 		int maxMin = getMax() - getMin();

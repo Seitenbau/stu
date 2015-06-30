@@ -84,99 +84,105 @@ public class DomainSpecificDataBuilder {
 		
 		// http://www.datendieter.de/item/Postleitzahlen-Datenbank_Deutschland
 		
-		DomainSpecificDataHint maennlich = addData("geschlecht", "m‰nnlich");
-		DomainSpecificDataHint weiblich = addData("geschlecht", "weiblich");
+		DomainSpecificDataHint male = addData("gender", "male");
+		DomainSpecificDataHint female = addData("gender", "female");
 		
 		DomainSpecificDataHint deutsch = addData("sprache", "deutsch");
 		DomainSpecificDataHint englisch = addData("sprache", "englisch");
 		DomainSpecificDataHint franz = addData("sprache", "franzˆsisch");
 		
-		DomainSpecificDataHint robin = addData("vorname", "Robin");
-		DomainSpecificDataHint adalgis = addData("vorname", "Adalgis"); 
-		DomainSpecificDataHint adalie = addData("vorname", "Adalie");
-		DomainSpecificDataHint adam = addData("vorname", "Adam");
-		DomainSpecificDataHint aglaia = addData("vorname", "Aglaia");
-		DomainSpecificDataHint alan = addData("vorname", "Alan");
-		DomainSpecificDataHint sabrina = addData("vorname", "Sabrina");
-		DomainSpecificDataHint siegmund = addData("vorname", "Siegmund");
-		DomainSpecificDataHint tim = addData("vorname", "Tim");
-		DomainSpecificDataHint tilly = addData("vorname", "Tilly");
-		DomainSpecificDataHint jakob = addData("vorname", "Jakob");
-		DomainSpecificDataHint tom = addData("vorname", "Tom");
-		DomainSpecificDataHint jens = addData("vorname", "Jens");
-		DomainSpecificDataHint rainer = addData("vorname", "Rainer");
-		DomainSpecificDataHint thomas = addData("vorname", "Thomas");
-		DomainSpecificDataHint juergen = addData("vorname", "J¸rgen");
+		DomainSpecificDataHint robin = addData("firstname", "Robin");
+		DomainSpecificDataHint adalgis = addData("firstname", "Adalgis"); 
+		DomainSpecificDataHint adalie = addData("firstname", "Adalie");
+		DomainSpecificDataHint adam = addData("firstname", "Adam");
+		DomainSpecificDataHint aglaia = addData("firstname", "Aglaia");
+		DomainSpecificDataHint alan = addData("firstname", "Alan");
+		DomainSpecificDataHint sabrina = addData("firstname", "Sabrina");
+		DomainSpecificDataHint siegmund = addData("firstname", "Siegmund");
+		DomainSpecificDataHint tim = addData("firstname", "Tim");
+		DomainSpecificDataHint tilly = addData("firstname", "Tilly");
+		DomainSpecificDataHint jakob = addData("firstname", "Jakob");
+		DomainSpecificDataHint tom = addData("firstname", "Tom");
+		DomainSpecificDataHint jens = addData("firstname", "Jens");
+		DomainSpecificDataHint rainer = addData("firstname", "Rainer");
+		DomainSpecificDataHint thomas = addData("firstname", "Thomas");
+		DomainSpecificDataHint juergen = addData("firstname", "J¸rgen");
 		
-		DomainSpecificDataHint deutschland = addData("land", "Deutschland");
-		DomainSpecificDataHint oesterreich = addData("land", "÷sterreich");
-		DomainSpecificDataHint schweiz = addData("land", "Schweiz");
+		DomainSpecificDataHint deutschland = addData("country", "Deutschland");
+		DomainSpecificDataHint oesterreich = addData("country", "÷sterreich");
+		DomainSpecificDataHint schweiz = addData("country", "Schweiz");
 		
-		DomainSpecificDataHint schlossallee = addData("strasse", "Schlossallee");
-		DomainSpecificDataHint parkstrasse = addData("strasse", "Parkstraﬂe");
-		DomainSpecificDataHint bahnhofstrasse = addData("strasse", "Bahnhofstraﬂe");
-		DomainSpecificDataHint hauptstrasse = addData("strasse", "Hauptstraﬂe");
-		DomainSpecificDataHint rathausstrasse = addData("strasse", "Rathausstraﬂe");
+		DomainSpecificDataHint berlin = addData("city", "Berlin");
+		DomainSpecificDataHint wien = addData("city", "Wien");
+		DomainSpecificDataHint bern = addData("city", "Bern");
 		
-		combine2Constraints(robin, maennlich);
-		combine2Constraints(robin, weiblich);
+		DomainSpecificDataHint schlossallee = addData("street", "Schlossallee");
+		DomainSpecificDataHint parkstrasse = addData("steet", "Parkstraﬂe");
+		DomainSpecificDataHint bahnhofstrasse = addData("street", "Bahnhofstraﬂe");
+		DomainSpecificDataHint hauptstrasse = addData("street", "Hauptstraﬂe");
+		DomainSpecificDataHint rathausstrasse = addData("street", "Rathausstraﬂe");
+		
+		
+		
+		combine2Constraints(robin, male);
+		combine2Constraints(robin, female);
 		combine2Constraints(robin, englisch);
 		
-		combine2Constraints(adalgis, maennlich);
+		combine2Constraints(adalgis, male);
 		combine2Constraints(adalgis, deutsch);
 		combine2Constraints(adalgis, englisch);
 		
-		combine2Constraints(adalie, weiblich);
+		combine2Constraints(adalie, female);
 		combine2Constraints(adalie, deutsch);
 		combine2Constraints(adalie, franz);
 		
-		combine2Constraints(adam, maennlich);
+		combine2Constraints(adam, male);
 		combine2Constraints(adam, deutsch);
 		combine2Constraints(adam, englisch);
 		combine2Constraints(adam, franz);
 		
-		combine2Constraints(aglaia, weiblich);
+		combine2Constraints(aglaia, female);
 		combine2Constraints(aglaia, deutsch);
 		combine2Constraints(aglaia, englisch);		
 		
-		combine2Constraints(alan, maennlich);
+		combine2Constraints(alan, male);
 		combine2Constraints(alan, deutsch);
 		combine2Constraints(alan, englisch);			
 		
-		combine2Constraints(sabrina, weiblich);
+		combine2Constraints(sabrina, female);
 		combine2Constraints(sabrina, deutsch);
 		combine2Constraints(sabrina, englisch);	
 		
-		combine2Constraints(siegmund, maennlich);
+		combine2Constraints(siegmund, male);
 		combine2Constraints(siegmund, deutsch);
 		
-		combine2Constraints(tim, maennlich);
+		combine2Constraints(tim, male);
 		combine2Constraints(tim, deutsch);
 		
-		combine2Constraints(tilly, weiblich);
+		combine2Constraints(tilly, female);
 		combine2Constraints(tilly, englisch);
 		
-		combine2Constraints(jakob, maennlich);
+		combine2Constraints(jakob, male);
 		combine2Constraints(jakob, deutsch);
 		
-		combine2Constraints(tom, maennlich);
+		combine2Constraints(tom, male);
 		combine2Constraints(tom, deutsch);
 		combine2Constraints(tom, englisch);
 		combine2Constraints(tom, franz);
 		
-		combine2Constraints(jens, maennlich);
+		combine2Constraints(jens, male);
 		combine2Constraints(jens, deutsch);
 		combine2Constraints(jens, englisch);
 		
-		combine2Constraints(rainer, maennlich);
+		combine2Constraints(rainer, male);
 		combine2Constraints(rainer, deutsch);
 		combine2Constraints(rainer, englisch);
 		
-		combine2Constraints(thomas, maennlich);
+		combine2Constraints(thomas, male);
 		combine2Constraints(thomas, deutsch);
 		combine2Constraints(thomas, englisch);		
 		
-		combine2Constraints(juergen, maennlich);
+		combine2Constraints(juergen, male);
 		combine2Constraints(juergen, deutsch);
 		combine2Constraints(juergen, englisch);
 
@@ -287,7 +293,7 @@ public class DomainSpecificDataBuilder {
 		// "\"Sigmar\"", "\"Sigrid\"", "\"Sigrun\"", "\"Sindolf\"",
 		// "\"Sisgards\"", "\"Solveig\"", "\"Sonnwinn\"", "\"Stilla\"",
 		// "\"Sunhild\"", "\"Sunna\"", "\"Sunje\"", "\"Sunja\"", "\"Sven\"",
-		// "\"Swidger\"", "\"Tankred\"", "\"Vorname\"", "\"Tassilo\"",
+		// "\"Swidger\"", "\"Tankred\"", "\"firstname\"", "\"Tassilo\"",
 		// "\"Teuderun\"", "\"Thilo\"", "\"Thor\"", "\"Thorbrand\"",
 		// "\"Thorleif\"", "\"Thorsten\"", "\"Throals\"", "\"Thusnelda\"",
 		// "\"Tilrun\"", "\"Traute\"", "\"Trautwin\"", "\"Trudildis\"",

@@ -7,22 +7,58 @@ import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.hints.RangeHint;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
+import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
+// TODO: Remove RangeConstraint, because Range == GreaterEqual + SmallerEqual
 public class RangeConstraint extends ConstraintBase {
 
-	private Integer min;
-	private Integer max;
-	
-	
+	private Value<?> min;
+	private Value<?> max;	
 
 	public RangeConstraint(String column, Integer min, Integer max) {
 		this.modelRef = column;
-		this.setMin(min);
-		this.setMax(max);
+//		this.setMin(min);
+//		this.setMax(max);
 		
 		this.sourceNames = new String[]{column};		
 		this.scope = Scope.Cell;
 		this.priory = 1;
+	}
+	
+	public RangeConstraint(String sourceName1, String sourceName2, String sourceName3) {
+		this.scope = Scope.Cell;
+		this.priory = 5;
+		this.mode = 1;
+		this.modelRef = sourceName1;
+		this.sourceNames = new String[] { sourceName1, sourceName2, sourceName3 };		
+	}
+	
+	public RangeConstraint(String sourceName1, String sourceName2, Value<?> value) {
+		this.scope = Scope.Cell;
+		this.priory = 3;
+		this.mode = 2;
+		this.modelRef = sourceName1;
+		this.sourceNames = new String[] { sourceName1, sourceName2 };
+		this.max = value;
+	}
+
+	public RangeConstraint(String sourceName1, Value<?> value, String sourceName2) {
+		this.priory = 3;
+		this.scope = Scope.Cell;
+		this.mode = 3;
+		this.modelRef = sourceName1;
+		this.sourceNames = new String[] { sourceName1, sourceName2 };
+		this.min = value;
+	}
+
+	public RangeConstraint(String sourceName, Value<?> value1, Value<?> value2) {
+		this.priory = 1;
+		this.scope = Scope.Cell;
+		this.mode = 4;
+		this.modelRef = sourceName;
+		this.sourceNames = new String[] { sourceName };
+		this.min = value1;
+		this.max = value2;
 	}
 
 	@Override
@@ -35,28 +71,28 @@ public class RangeConstraint extends ConstraintBase {
 		
 		Integer value = (Integer) result.getValue().getValue();
 
-		if (value >= min && value <= max) {
-			return true;
-		}
+//		if (value >= min && value <= max) {
+//			return true;
+//		}
 		
 		return false;
 	}
 
-	public Integer getMin() {
-		return min;
-	}
-
-	public void setMin(Integer min) {
-		this.min = min;
-	}
-
-	public Integer getMax() {
-		return max;
-	}
-
-	public void setMax(Integer max) {
-		this.max = max;
-	}
+//	public Integer getMin() {
+//		return min;
+//	}
+//
+//	public void setMin(Integer min) {
+//		this.min = min;
+//	}
+//
+//	public Integer getMax() {
+//		return max;
+//	}
+//
+//	public void setMax(Integer max) {
+//		this.max = max;
+//	}
 
 	@Override
 	public ConstraintBase getCopyInstance(){	
@@ -69,7 +105,7 @@ public class RangeConstraint extends ConstraintBase {
 	@Override
 	public ArrayList<Hint> getHint(Result result) {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
-		hints.add(new RangeHint(this, new IntValue(max), new IntValue(min)));
+		hints.add(new RangeHint(this, min, max));
 		return hints;
 	}
 }

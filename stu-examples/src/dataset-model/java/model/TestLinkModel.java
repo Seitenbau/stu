@@ -5,7 +5,7 @@ import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.TableBuilder;
 import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
 import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
-import com.seitenbau.stu.database.generator.values.DataGenerator;
+import com.seitenbau.stu.database.generator.values.DomainGenerator;
 import com.seitenbau.stu.database.generator.values.IntegerGenerator;
 import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
@@ -841,7 +841,7 @@ public class TestLinkModel extends DatabaseModel {
 				// Unique, length <= 100, E-Mail-Verification, Not null
 				.column("email", DataType.VARCHAR) //
 				// 0 length <= 30, not null
-				.column("first", DataType.VARCHAR).generator(new DataGenerator("vorname")) //
+				.column("first", DataType.VARCHAR).generator(new DomainGenerator("vorname")) //
 				// 0 length <= 30, not null
 				.column("last", DataType.VARCHAR).generator(new BuchNameGenerator()) //
 				// Null OR DataGenerator("locale")

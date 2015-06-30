@@ -79,6 +79,10 @@ public abstract class DatabaseModel {
 		constraintsList.add(constraint);
 	}
 	
+//	public void constraint(ConstraintBuilder constraint){
+//		constraintsList.add(constraint.builder().build()));
+//	}
+	
 	public void generatedSourceFolder(String folder) {
 		if (generator == null) {
 			this.targetPath = folder;

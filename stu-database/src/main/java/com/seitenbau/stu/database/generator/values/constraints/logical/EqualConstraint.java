@@ -11,6 +11,7 @@ import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 import com.seitenbau.stu.database.generator.values.constraints.Source;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
+
 public class EqualConstraint extends CompareConstraint {
 
 	public EqualConstraint(String sourceName1, String sourceName2) {

@@ -4,6 +4,7 @@ import com.seitenbau.stu.database.generator.DataType;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.Table;
 
+//import static Builder; TODO
 public class PersonDatabaseModel extends DatabaseModel
 {
   public PersonDatabaseModel()
@@ -12,6 +13,12 @@ public class PersonDatabaseModel extends DatabaseModel
     packageName("com.seitenbau.stu.database.model");
     enableTableModelClassesGeneration();
     //disbaleTableDSLGeneration();
+    
+    // a != b
+    // constraint(EqualConstraint.a("autor.vorname").b("autor.bla"));
+//    constraint(Builder.column("author.vorname").notEqual("autoer.bla");
+//    constraint(Builder.column("author.vorname").equal("autoer.bla");
+//    constraint(constraintOn("target").addFromColum("one").addFixValue("one"));
 
     Table jobs = table("jobs") //
         .description("The table containing the jobs of a great company")

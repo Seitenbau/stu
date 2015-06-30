@@ -10,7 +10,7 @@ import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
-public class DataGenerator extends ValueGenerator {
+public class DomainGenerator extends ValueGenerator {
 
 	private DomainSpecificDataBuilder ConstraintsData;
 	private ArrayList<DomainSpecificDataHint> valueList;
@@ -23,11 +23,11 @@ public class DataGenerator extends ValueGenerator {
 		this.ConstraintsData = constraintsData;
 	}
 
-	public DataGenerator(String string) {
+	public DomainGenerator(String string) {
 		setKey(string);
 	}
 
-	public DataGenerator() {
+	public DomainGenerator() {
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class DataGenerator extends ValueGenerator {
 
 		// TODO: Workaround: Fix and remove
 		 //if(getKey() == "geschlecht"){
-			 rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt();
+			 rand.nextInt(); rand.nextInt(); rand.nextInt();
 		 //}
 
 		walkthroughHints();
@@ -94,7 +94,7 @@ public class DataGenerator extends ValueGenerator {
 		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data.get(getKey());
 		valueList = new ArrayList<DomainSpecificDataHint>();
 		for (DomainSpecificDataHint entry : al) {
-			if(!notAllowedValues.contains(entry.getValue())) // TODO Check KEy and Value
+			if(!notAllowedValues.contains(entry.getValue())) // TODO Check Key and Value
 				valueList.add(entry);
 		}
 
@@ -134,7 +134,7 @@ public class DataGenerator extends ValueGenerator {
 
 		@Override
 		public ValueGenerator createGenerator() {
-			return new DataGenerator();
+			return new DomainGenerator();
 		}
 	}
 

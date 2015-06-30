@@ -169,5 +169,8 @@ public class TableBuilder implements TableBuilderCommon {
 
 		};
 	}
-
+	
+	public DatabaseModel getDatabaseModel(){
+		return model;
+	}
 }

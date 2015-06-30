@@ -52,6 +52,7 @@ public class DomainSpecificDataConstraint extends ConstraintBase {
 	@Override
 	public ConstraintBase getCopyInstance() {
 		DomainSpecificDataConstraint ec = new DomainSpecificDataConstraint(sourceNames[0], sourceNames[1]);
+		ec.setScope(Scope.Cell);
 		ec.fab = fab;
 		return ec;
 	}

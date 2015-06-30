@@ -1,6 +1,6 @@
 = Simple Test Utils Users Documentation
 SEITENBAU GmbH <stu@seitenbau.com>
-v1.0, 2013-07-31
+v1.0, 2015-05-26
 :imagesdir: images
 '''
 
@@ -245,7 +245,7 @@ Extended Backus-Naur Form of the +RequirementDSL+
 
 Supported states are:
 
-* +impl/implemented+ : The requirement is implemented. The test shpuld be executed.
+* +impl/implemented+ : The requirement is implemented. The test should be executed.
 * +notimpl/notimplemented+ : The requirement is not implemented yet. The test should not be executed.
 * +custom+ : Marked as first-hand +FeatureDetector+. See +FeatureDetector+ explanation.
 
@@ -316,6 +316,592 @@ public static boolean requiresSolar;
 ----
 
 === JUnitRules
+
+
+
+
+
+
+
+== Generating test data
+In this section the generating of test data with STU is described. The generation of test data can be splitted into five steps:
+
+. Extract and generate the database model
+. Customize the database model
+. Generate the test data
+. Customize the test data
+. Import the test data into the database
+
+=== Extract and generate the database model
+If the database model is defined in a database, it can be extracted with the STU framework. 
+For this you can use the +ModelGeneratorUI+ in +com.seitenbau.stu.database.modelgenerator+ in the project +stu-database+. 
+
+=== Customize the database model
+The following sections describe the most important functions are to create and customize a database model described.
+The full example can be found in the project +stu-examples+ in the file +src/dataset-model/java/model/BookDatabaseModel.java+.
+
+==== Structure of a model class
+All model classes must be derived from +DatabaseModel+.
+In the constructor the methods +database()+ and +packageName()+ defines the name of the database and the package path the generated test data model classes will get.
+With the methods +enableTableModelClassesGeneration()+ and +disbaleTableDSLGeneration()+ can be selected whether the model classes are generated and 
+whether the generation of the table DSL to be deactivated.
+The method +infinity()+ defines the number of records that will be generated.
+This is an example of a database model:
+[source,java]
+----
+package model;
+
+import com.seitenbau.stu.database.generator.DataType;
+import com.seitenbau.stu.database.generator.DatabaseModel;
+import com.seitenbau.stu.database.generator.TableBuilder;
+
+public class BookDatabaseModel extends DatabaseModel {
+		public BookDatabaseModel() {
+			database("BookDatabase");
+			packageName("com.seitenbau.stu.bookdatabase.model");
+			enableTableModelClassesGeneration();
+			//disableTableDSLGeneration();
+			infinite(4);
+	}
+}
+----
+
+==== Add a table to the database model
+
+[source,java]
+----
+TableBuilder book = table("book");
+book.build();
+----
+
+===== Add a column to the table
+With the method +column()+ a column can be added to the table. The first parameter is name of the column and the second parameter is the datatype.
+
+[source,java]
+----
+book.column("name", DataType.VARCHAR))
+----
+
+===== Add a column with a primary key attribute to the table
+The methods +defaultIdentifier()+  and +autoInvokeNext()+ define, that a column is defined as the primary key of a table. 
+
+[source,java]
+----
+book.column("id", DataType.BIGINT).defaultIdentifier().autoInvokeNext()
+----
+
+==== Add a foreign key reference to a column
+The column of a table can contain a foreign key reference to another table. 
+In this example the methods +foreign+ and +ref+ are used to add the reference to a column.
+With the method +multiplicity+ the multiplicity is defined.
+
+[source,java]
+----
+book.foreign(publisher.ref("id")).multiplicity("0..*")
+----
+
+===== Add a data generator to columns
+With the method +generator+ a generator is linked to a column.
+
+[source,java]
+----
+book.column("price", DataType.Double).generator(new DoubleGenerator())
+----
+
+The following sections describe different generators are presented:
+
+====== IntegerGenerator
+The +IntegerGenerator+ any integer value can be generated. Optionally, with two parameters, the lower and upper limit can be specified.
+
+[source,java]
+----
+IntegerGenerator integerGenerator = new IntegerGenerator();
+IntegerGenerator integerGenerator = new IntegerGenerator(1900, 2015);
+----
+
+Similar generators, such as the +DoubleGenerator+, +LongGenerator+, etc., can be used analogously.
+
+====== DataGenerator
+
+
+
+
+
+
+
+==== Create a associative table
+[source,java]
+----
+TableBuilder book = table("book");
+book.column("id", DataType.BIGINT).defaultIdentifier().autoInvokeNext()
+book.build();
+
+TableBuilder author = table("author"); 
+author.column("id", DataType.BIGINT).defaultIdentifier().autoInvokeNext()
+author.build();
+
+associativeTable("book_author")
+	.column("book_id", DataType.BIGINT).reference.foreign(book)
+	.multiplicity("0..*")
+	.column("author_id", DataType.BIGINT).reference.foreign(author)
+	.multiplicity("1..*")
+	.build();
+----
+
+==== Add constraints to the database model
+Constraints can be add to the database model with the method +constraint()+. 
+First, the two types are described by sources constraint. Subsequently, the different types of constraints are presented.
+
+===== Constraint parameters
+There are two possible types of parameters:
+* Constant values
+* Source names
+
+====== Constant values
+[source,java]
+---- 
+IntValue intValue = new IntValue(11);
+----
+
+
+====== Source names
+There are three supported types of source names:
+
+* Source is one cell
+* Source is one column
+* Source is one table
+
+
+*A cell*
+[source,java]
+---- 
+"author.lastlogin"
+----
+
+*A column*
+[source,java]
+---- 
+"author.username"
+----
+
+*A table*
+[source,java]
+---- 
+"author"
+----
+
+===== UniqueConstraint
+The unique constraint specify one column to be unique. Normally the constructors is called with the source column, but it is also possible to specify more than one column. 
+
+[source]
+---- 
+new UniqueConstraint(String... sourceNames);
+----
+
+*Parameters:*
+[horizontal]
+Source:: The name of the source column with formatting "table.column".
+
+[source,java]
+---- 
+constraint(new UniqueConstraint("author.username");
+constraint(new UniqueConstraint("author.email1", "author.email2");
+----
+
+===== RangeConstraint
+With the range constraint you can define, that the generated value of the column is between the two values. The first parameter of the constructor has to be always the source column. The second and third parameter define the lower and upper limit. The lower and upper limits can be either constant values or source name.
+
+[listing]
+---- 
+a >= b && a <= c
+----
+
+[source]
+---- 
+new RangeConstraint(a, b, c);
+----
+
+*Parameters:*
+[horizontal]
+a:: The name of the source column with formatting "table.column".
+b:: The name of the source with formatting "table.column" *or* a constant value.
+c:: The name of the source with formatting "table.column" *or* a constant value.
+
+
+*Examples:*
+[source,java]
+---- 
+constraint(new RangeConstraint("author.yearOfBirth", new IntValue(1900), new IntValue(2015)));  
+constraint(new RangeConstraint("author.registrationYear", "author.yearOfBirth", new IntValue(2015)));
+constraint(new RangeConstraint("author.registrationYear", "author.yearOfBirth", "author.lastlogin"));
+----
+
+===== DomainConstraint
+The domain constraint... 
+
+----
+a is valid with b
+new DomainConstraint(a, b);
+----
+
+[source,java]
+---- 
+constraint(new DomainConstraint("author.postalCode", "author.city"));
+constraint(new DomainConstraint("author.postalCode", "author.street"));
+constraint(new DomainConstraint("author.streetNumber", "author.street"));
+constraint(new DomainConstraint("author.firstName", "author.gender"));
+----
+
+===== LogicalConstraint
+A logical constraint has always two parameters. The choice of the operator is done by the choice of the subclass. 
+
+[listing]
+---- 
+a operator b
+----
+
+[source]
+---- 
+new LogicalConstraint(a, b);
+----
+
+
+*Constructors:*
+[source,java]
+---- 
+LogicalConstraint(String sourceName1, String sourceName2)
+LogicalConstraint(String sourceName, Value<?> value)
+LogicalConstraint(Value<?> value, String sourceName)
+----
+
+*Parameters:*
+[horizontal]
+sourceName:: The name of the source column with formatting "table.column".
+value::  A constant value.
+
+The following sections describe the supported logical constraints.
+
+====== EqualConstraint
+[listing]
+---- 
+a == b
+----
+
+*Examples:*
+[source,java]
+---- 
+constraint(new EqualConstraint("author.country", "adresse.country"));
+constraint(new EqualConstraint("author.online", new IntValue(0)));
+----
+
+====== NotEqualConstraint
+[listing]
+---- 
+a != b
+----
+
+*Examples:*
+[source,java]
+----
+constraint(new NotEqualConstraint("author.firstname", "Test"));
+constraint(new NotEqualConstraint("author.firstname1", "author.firstname2"));
+----
+
+====== GreaterConstraint
+[listing]
+---- 
+a > b
+----
+
+*Examples:*
+[source,java]
+----
+constraint(new GreaterConstraint("author.yearOfBirth", new IntValue(1900)));
+constraint(new GreaterConstraint("author.registrationYear", "author.yearOfBirth"));
+constraint(new GreaterConstraint(new IntValue(2015), "author.yearOfBirth"));
+----
+
+====== GreaterEqualConstraint
+[listing]
+---- 
+a >= b
+----
+
+*Examples:*
+[source,java]
+----
+constraint(new GreaterEqualConstraint("author.yearOfBirth", new IntValue(1900)));
+constraint(new GreaterEqualConstraint("author.registrationYear", "author.yearOfBirth"));
+constraint(new GreaterEqualConstraint(new IntValue(2015), "author.registrationYear"));
+----
+
+====== LowerConstraint
+[listing]
+---- 
+a < b
+----
+
+*Examples:*
+[source,java]
+----
+constraint(new LowerConstraint(new IntValue(1900), "author.yearOfBirth"));
+constraint(new LowerConstraint("author.yearOfBirth", "author.registrationYear"));
+constraint(new LowerConstraint("author.registrationYear", new IntValue(2015)));
+----
+
+====== LowerEqualConstraint
+[listing]
+---- 
+a <= b
+----
+
+*Examples:*
+[source,java]
+----
+constraint(new LowerEqualConstraint(new IntValue(1900), "author.yearOfBirth"));
+constraint(new LowerEqualConstraint("author.yearOfBirth", "author.registrationYear"));
+constraint(new LowerEqualConstraint("author.registrationYear", new IntValue(2015)));
+----
+
+
+===== FunctionalConstraint
+A functional constraint has always three parameters. A maximum of 2 parameters may be constant values.
+
+[listing]
+----
+a function b = c
+----
+
+*Parameters:*
+[horizontal]
+a:: The name of the source with formatting "table.column" *or* a constant value.
+b:: The name of the source with formatting "table.column" *or* a constant value.
+c:: The name of the source with formatting "table.column" *or* a constant value.
+
+*Constructors*
+[source,java]
+---- 
+FunctionalConstraint(String sourceName1, String sourceName2, String resultSource)
+FunctionalConstraint(String sourceName1, String sourceName2, Value<?> value)
+FunctionalConstraint(String sourceName1, Value<?> value, String resultSource)
+FunctionalConstraint(Value<?> value, String sourceName1, String resultSource)
+FunctionalConstraint(String sourceName1, Value<?> value1, Value<?> value2)
+FunctionalConstraint(Value<?> value1, String sourceName1, Value<?> value2)
+FunctionalConstraint(Value<?> value1, Value<?> value2, String resultSource)
+----
+
+====== AddConstraint
+[listing]
+---- 
+a + b = c
+----
+
+*Examples:*
+[source,java]
+---- 
+constraint(new AddConstraint("author.yearOfBirth", new IntValue(1900), new IntValue(2015)));  
+constraint(new AddConstraint("author.registrationYear", "author.yearOfBirth", new IntValue(2015)));
+constraint(new AddConstraint("author.registrationYear", "author.yearOfBirth", "author.lastlogin"));
+----
+
+
+====== SubConstraint
+[listing]
+---- 
+a - b = c
+----
+
+*Examples:*
+[source,java]
+---- 
+constraint(new SubConstraint("author.yearOfBirth", new IntValue(1900), new IntValue(2015)));  
+constraint(new SubConstraint("author.registrationYear", "author.yearOfBirth", new IntValue(2015)));
+constraint(new SubConstraint("author.registrationYear", "author.yearOfBirth", "author.lastlogin"));
+----
+
+
+====== MultiConstraint
+[listing]
+---- 
+a * b = c
+----
+
+*Examples:*
+[source,java]
+---- 
+constraint(new MultiConstraint("author.yearOfBirth", new IntValue(1900), new IntValue(2015)));  
+constraint(new MultiConstraint("author.registrationYear", "author.yearOfBirth", new IntValue(2015)));
+constraint(new MultiConstraint("author.registrationYear", "author.yearOfBirth", "author.lastlogin"));
+----
+
+====== DivConstraint
+[listing]
+---- 
+a / b = c
+----
+
+*Examples:*
+[source,java]
+---- 
+constraint(new DivConstraint("author.yearOfBirth", new IntValue(1900), new IntValue(2015)));  
+constraint(new DivConstraint("author.registrationYear", "author.yearOfBirth", new IntValue(2015)));
+constraint(new DivConstraint("author.registrationYear", "author.yearOfBirth", "author.lastlogin"));
+----
+
+====== PowConstraint
+[listing]
+---- 
+a ^ b = c
+----
+
+
+*Examples:*
+[source,java]
+---- 
+constraint(new PowConstraint("author.yearOfBirth", new IntValue(1900), new IntValue(2015)));  
+constraint(new PowConstraint("author.registrationYear", "author.yearOfBirth", new IntValue(2015)));
+constraint(new PowConstraint("author.registrationYear", "author.yearOfBirth", "author.lastlogin"));
+----
+
+====== ModConstraint
+[listing]
+---- 
+a % b = c
+----
+
+*Examples:*
+[source,java]
+---- 
+constraint(new ModConstraint("author.yearOfBirth", new IntValue(1900), new IntValue(2015)));  
+constraint(new ModConstraint("author.registrationYear", "author.yearOfBirth", new IntValue(2015)));
+constraint(new ModConstraint("author.registrationYear", "author.yearOfBirth", "author.lastlogin"));
+----
+
+===== AggregateConstraint
+
+====== SumConstraint
+[listing]
+---- 
+a = Sum(b)
+----
+
+*Parameters:*
+[horizontal]
+a:: The name of the source with formatting "table.column".
+b:: The name of the source with formatting "table.column".
+
+*Examples:*
+[source,java]
+---- 
+constraint(new SumConstraint("author.shoppingCartSum", "shoppingCartArticle.price"));
+----
+
+====== ProductConstraint
+[listing]
+---- 
+a = Product(b)
+----
+
+*Parameters:*
+[horizontal]
+a:: The name of the source with formatting "table.column".
+b:: The name of the source with formatting "table.column".
+
+
+*Examples:*
+[source,java]
+---- 
+constraint(new ProductConstraint("author.shoppingCartProduct", "shoppingCartArticle.price"));
+----
+
+====== LengthConstraint
+[listing]
+---- 
+a = Length(b)
+----
+
+*Parameters:*
+[horizontal]
+a:: The name of the source with formatting "table.column".
+b:: The name of the source with formatting "table.column".
+
+
+*Examples:*
+[source,java]
+---- 
+constraint(new LengthConstraint("author.shoppingCartProduct", "shoppingCartArticle.price"));
+----
+
+====== CountConstraint
+[listing]
+---- 
+a = Count(b)
+----
+
+*Parameters:*
+[horizontal]
+a:: The name of the source with formatting "table.column".
+b:: The name of the source with formatting "table".
+
+
+*Examples:*
+[source,java]
+---- 
+constraint(new CountConstraint("author.shoppingCartCount", "shoppingCartArticle"));
+----
+
+=== Generate the test data
+Run the generator to generate the dsl...
+
+[source,java]
+----
+public class BockDatabaseDataGenerator
+{
+  public static void main(String[] args) throws Exception
+  {
+	TestConfiguration.load(Object.class);
+	  
+    final DatabaseModel model = new BookDatabaseModel();
+
+    final DataGenerator generator = new DataGenerator(model);
+
+    final Entities entities = generator.generate("book");
+
+    STUTableOutput output = new STUTableOutput();
+    final String generatedDSL = output.create(entities);
+    System.out.println(generatedDSL);
+
+    System.out.println("-----------------------------");
+    entities.printStats();
+    System.out.println();
+
+    System.out.println("Verification Loop Iterations: " + entities.getLoopCount() + "\t");
+  }
+}
+----
+
+
+=== Customize the test data
+This step is optional. Here you can change the data values directly in the DSL.
+
+
+=== Import the test data into the database
+First you have to generate the classes...after this you can import the generate the file...
+
+
+== Implement new features to the framework
+If you can't find the domain data type for the domain data generator or you need a specific value generator or a another constraint type, you have the possible the implement these features.
+
+=== Add a new data source to the domain generator
+
+
+=== Create a new value generator
+All value generator classes are subclasses of the class ValueGenerator. You have to implement the method newValue().
+
+=== Create a new constraint type
+All constraint classes are  subclasses of the class ConstraintBase. You have to implement the methods isValid(), getCopyInstance(), getHints() and the constructors you want to support.
+
+=== Generate test
 
 == Testing databases 
 Here comes information for the database classes. 

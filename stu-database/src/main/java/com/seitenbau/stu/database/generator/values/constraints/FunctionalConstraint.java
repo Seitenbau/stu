@@ -11,7 +11,6 @@ import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 public class FunctionalConstraint extends ConstraintBase {
 
 	private ArrayList<Value<?>> values = new ArrayList<Value<?>>();
-	protected Integer mode;
 
 	public FunctionalConstraint(String sourceName1, String sourceName2, String resultSource) {
 		this.scope = Scope.Cell;

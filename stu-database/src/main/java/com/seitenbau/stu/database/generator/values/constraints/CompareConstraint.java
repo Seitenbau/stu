@@ -9,7 +9,6 @@ import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 public abstract class CompareConstraint extends ConstraintBase {
 
 	private ArrayList<Value<?>> values = new ArrayList<Value<?>>();
-	protected Integer mode;
 	
 	public CompareConstraint(String sourceName1, String sourceName2) {
 		this.scope = Scope.Cell;

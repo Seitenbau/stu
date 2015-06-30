@@ -7,6 +7,8 @@ import com.seitenbau.stu.database.extend.DatabaseTesterCleanAction;
 import com.seitenbau.stu.database.extend.DatasetIdGenerator;
 import com.seitenbau.stu.database.generator.values.ValueGenerator;
 import com.seitenbau.stu.database.generator.values.ValueGeneratorRegistry;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
+import com.seitenbau.stu.database.generator.values.constraints.ConstraintBuilder;
 import com.seitenbau.stu.util.CamelCase;
 
 public class ColumnBuilder implements TableBuilderCommon {
@@ -316,7 +318,7 @@ public class ColumnBuilder implements TableBuilderCommon {
 		return generator;
 	}
 
-	TableBuilder getTableBuilder() {
+	public TableBuilder getTableBuilder() {
 		return tableBuilder;
 	}
 
@@ -324,5 +326,12 @@ public class ColumnBuilder implements TableBuilderCommon {
 		String javaName = CamelCase.makeFirstOfBlockUppercase(name);
 		return CamelCase.makeFirstUpperCase(javaName);
 	}
+	
+	public String getTableColumnString(){
+		return tableBuilder.getName() + "." + name;
+	}
 
+	public ConstraintBuilder constraint() {
+		return new ConstraintBuilder(this);
+	}
 }
