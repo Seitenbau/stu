@@ -11,21 +11,21 @@ import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 /*
  * DomainSpecificData 
  */
-public class DomainSpecificDataHint extends Hint {
+public class DomainDataHint extends Hint {
 	private String key;
 
-	public HashMap<String, ArrayList<DomainSpecificDataHint>> dataHashMap = new HashMap<String, ArrayList<DomainSpecificDataHint>>();
+	public HashMap<String, ArrayList<DomainDataHint>> dataHashMap = new HashMap<String, ArrayList<DomainDataHint>>();
 
-	public DomainSpecificDataHint(ConstraintBase constraint) {
+	public DomainDataHint(ConstraintBase constraint) {
 		super(constraint);
 	}
 
-	public DomainSpecificDataHint(ConstraintBase constraint, String key) {
+	public DomainDataHint(ConstraintBase constraint, String key) {
 		super(constraint);
 		this.key = key;
 	}
 
-	public DomainSpecificDataHint(ConstraintBase constraint, String key, Value<?> value) {
+	public DomainDataHint(ConstraintBase constraint, String key, Value<?> value) {
 		super(constraint);
 		this.key = key;
 		setValue(value);
@@ -39,14 +39,14 @@ public class DomainSpecificDataHint extends Hint {
 		this.key = key;
 	}
 
-	public boolean notAppliesTo(DomainSpecificDataHint domainSpecifData) {
+	public boolean notAppliesTo(DomainDataHint domainSpecifData) {
 
-		Iterator<Entry<String, ArrayList<DomainSpecificDataHint>>> it = dataHashMap.entrySet().iterator();
+		Iterator<Entry<String, ArrayList<DomainDataHint>>> it = dataHashMap.entrySet().iterator();
 		while (it.hasNext()) {
-			Entry<String, ArrayList<DomainSpecificDataHint>> pairs = it.next();
+			Entry<String, ArrayList<DomainDataHint>> pairs = it.next();
 			if (pairs.getKey().equals(domainSpecifData.getKey())) {
 
-				ArrayList<DomainSpecificDataHint> al = (ArrayList<DomainSpecificDataHint>) pairs.getValue();
+				ArrayList<DomainDataHint> al = (ArrayList<DomainDataHint>) pairs.getValue();
 				if (!al.contains(domainSpecifData))
 					return true;
 			}
@@ -59,8 +59,8 @@ public class DomainSpecificDataHint extends Hint {
 	public boolean equals(Object object) {
 		boolean sameSame = false;
 
-		if (object != null && object instanceof DomainSpecificDataHint) {
-			sameSame = getValue() == ((DomainSpecificDataHint) object).getValue();
+		if (object != null && object instanceof DomainDataHint) {
+			sameSame = getValue() == ((DomainDataHint) object).getValue();
 		}
 
 		return sameSame;

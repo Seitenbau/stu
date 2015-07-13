@@ -64,7 +64,7 @@ public class StringValue extends Value<String> {
 	@Override
 	public int toInt() {
 		return Integer.valueOf(value);
-	}
+	}	
 
 	@Override
 	public Value<?> add(Value<?> value) {
@@ -99,5 +99,10 @@ public class StringValue extends Value<String> {
 	@Override
 	public Value<?> neg() {
 		return new StringValue(new StringBuilder(value).reverse().toString());
+	}
+	
+	@Override
+	public String toString() {
+		return "\"" + value.toString() + "\"";
 	}
 }

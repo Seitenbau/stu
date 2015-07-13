@@ -2,12 +2,11 @@ package com.seitenbau.stu.database.generator.values.constraints.logical;
 
 import java.util.ArrayList;
 
+import com.seitenbau.stu.database.generator.hints.GreaterHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.hints.SmallerHint;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.constraints.CompareConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
-import com.seitenbau.stu.database.generator.values.constraints.Source;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 /**
@@ -144,22 +143,12 @@ public class SmallerConstraint extends CompareConstraint {
 	@Override
 	public boolean isValid() {
 
-		try {
-			if (sourceNames.length == 2)
-				return getSources()
-						.get(0)
-						.getResults()
-						.get(0)
-						.getValue()
-						.compareTo(
-								getSources().get(1).getResults().get(0)
-										.getValue()) < 0;
+		Value<?>[] values = resolveValues();
 
-			return getSources().get(0).getResults().get(0).getValue()
-					.compareTo(getValue(0)) < 0;
+		try {
+			return values[0].compareTo(values[1]) < 0;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 
 		return false;
@@ -171,23 +160,21 @@ public class SmallerConstraint extends CompareConstraint {
 	@Override
 	public ArrayList<Hint> getHints(Result result) {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
+		Value<?>[] values = resolveValues();
 
-		if (this.getValue(0) != null) {
-			SmallerHint hint = new SmallerHint(this);
-			hint.setValue(this.getValue(0));
-			hints.add(hint);
-		} else {
-			for (Source source : sources) {
-				for (Result r : source.getResults()) {
-					if (r != result) {
-						if (r.isGenerated()) {
-							SmallerHint hint = new SmallerHint(this);
-							hint.setValue(r.getValue());
-							hints.add(hint);
-							return hints;
-						}
-					}
-				}
+		int resultPos = getResultPos(result);
+
+		if (resultPos == 0) {
+			if (values[1] != null) {
+				SmallerHint eqHint = new SmallerHint(this);
+				eqHint.setValue(values[1]);
+				hints.add(eqHint);
+			}
+		} else if (resultPos == 1) {
+			if (values[0] != null) {
+				GreaterHint eqHint = new GreaterHint(this);
+				eqHint.setValue(values[0]);
+				hints.add(eqHint);
 			}
 		}
 

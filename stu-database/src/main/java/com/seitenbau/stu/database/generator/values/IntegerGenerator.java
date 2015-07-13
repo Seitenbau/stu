@@ -54,7 +54,7 @@ public class IntegerGenerator extends ValueGenerator {
 		}
 
 		Random rand = new Random(index);
-		rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt(); rand.nextInt();
+		rand.nextInt(); rand.nextInt(); rand.nextInt();
 		Result result;
 		
 		int maxMin = getMax() - getMin();
@@ -129,13 +129,16 @@ public class IntegerGenerator extends ValueGenerator {
 
 	public void setMin(int min) {
 		this.min = min;
+		this.lowerLimit = new IntValue(min);
 	}
 
 	public int getMax() {
-		return max;
+		return max;		
 	}
 
 	public void setMax(int max) {
 		this.max = max;
-	}
+		this.upperLimit = new IntValue(max);
+
+	}	
 }

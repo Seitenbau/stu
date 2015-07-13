@@ -2,8 +2,10 @@ package com.seitenbau.stu.database.generator.values.constraints.logical;
 
 import java.util.ArrayList;
 
+import com.seitenbau.stu.database.generator.hints.GreaterEqualHint;
 import com.seitenbau.stu.database.generator.hints.GreaterHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
+import com.seitenbau.stu.database.generator.hints.SmallerEqualHint;
 import com.seitenbau.stu.database.generator.hints.SmallerHint;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.constraints.CompareConstraint;
@@ -138,10 +140,10 @@ public class GreaterConstraint extends CompareConstraint {
 		super(value, sourceName);
 	}
 
-	@Override
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean isValid() {
 
 		Value<?>[] values = resolveValues();
@@ -149,17 +151,16 @@ public class GreaterConstraint extends CompareConstraint {
 		try {
 			return values[0].compareTo(values[1]) > 0;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 
 		return false;
 	}
 
-	@Override
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public ArrayList<Hint> getHints(Result result) {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 		Value<?>[] values = resolveValues();

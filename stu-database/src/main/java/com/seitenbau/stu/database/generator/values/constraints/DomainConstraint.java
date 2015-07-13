@@ -3,14 +3,14 @@ package com.seitenbau.stu.database.generator.values.constraints;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
+import com.seitenbau.stu.database.generator.hints.DomainDataHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
 
 public class DomainConstraint extends ConstraintBase {
 
 	// Data
-	private HashMap<String, ArrayList<DomainSpecificDataHint>> data = new HashMap<String, ArrayList<DomainSpecificDataHint>>();
+	private HashMap<String, ArrayList<DomainDataHint>> data = new HashMap<String, ArrayList<DomainDataHint>>();
 
 	public DomainConstraint(String column1, String column2) {
 		this.modelRef = column1;
@@ -39,11 +39,11 @@ public class DomainConstraint extends ConstraintBase {
 		return fab.model.getDataSource().isValid(key1, (Comparable<?>) v1, key2, (Comparable<?>) v2);
 	}
 
-	public HashMap<String, ArrayList<DomainSpecificDataHint>> getData() {
+	public HashMap<String, ArrayList<DomainDataHint>> getData() {
 		return data;
 	}
 
-	public void setData(HashMap<String, ArrayList<DomainSpecificDataHint>> data) {
+	public void setData(HashMap<String, ArrayList<DomainDataHint>> data) {
 		this.data = data;
 	}
 
@@ -59,7 +59,7 @@ public class DomainConstraint extends ConstraintBase {
 	public ArrayList<Hint> getHints(Result result) {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 		if (result.getValue() != null) {
-			hints.add(new DomainSpecificDataHint(this, result.getGenerator().getKey(), result.getValue()));
+			hints.add(new DomainDataHint(this, result.getGenerator().getKey(), result.getValue()));
 		}
 		return hints;
 	}

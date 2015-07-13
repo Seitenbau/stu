@@ -142,7 +142,7 @@ public class Result implements Comparable<Object> {
 				return value.toString();
 		}
 
-		return "null";
+		return "(undefined)";
 	}
 
 	public Integer getValueIndex() {

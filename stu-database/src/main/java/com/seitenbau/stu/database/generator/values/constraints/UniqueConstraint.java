@@ -46,6 +46,7 @@ public class UniqueConstraint extends ConstraintBase {
 		UniqueConstraint newInstance = new UniqueConstraint(sourceNames);
 		newInstance.fab = fab;
 		newInstance.setScope(this.scope);
+		newInstance.priory = this.priory;
 		return newInstance;
 	}
 

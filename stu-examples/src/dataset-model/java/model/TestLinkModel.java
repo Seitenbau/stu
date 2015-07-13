@@ -3,7 +3,6 @@ package model;
 import com.seitenbau.stu.database.generator.DataType;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.TableBuilder;
-import com.seitenbau.stu.database.generator.values.DomainData;
 import com.seitenbau.stu.database.generator.values.DomainGenerator;
 import com.seitenbau.stu.database.generator.values.IntegerGenerator;
 import com.seitenbau.stu.database.generator.values.StringGenerator;
@@ -15,7 +14,7 @@ public class TestLinkModel extends DatabaseModel {
 		enableTableModelClassesGeneration();
 		//disbaleTableDSLGeneration();
 
-		dataSource(new DomainData());
+		domainDataSource(new BookDomainData());
 
 		TableBuilder assignment_status = table("assignment_status");
 		TableBuilder assignment_types = table("assignment_types");

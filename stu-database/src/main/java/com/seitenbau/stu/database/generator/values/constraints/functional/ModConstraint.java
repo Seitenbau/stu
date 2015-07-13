@@ -376,15 +376,7 @@ public class ModConstraint extends FunctionConstraint {
 					hints.add(eqHint);
 				}
 			}
-		} else if (resultPos == 1) {
-			if (values[0] != null && values[2] != null) {
-				// TODO
-			}
-		} else if (resultPos == 2) {
-			if (values[0] != null && values[1] != null) {
-				// TODO
-			}
-		}
+		} 
 
 		return hints;
 	}

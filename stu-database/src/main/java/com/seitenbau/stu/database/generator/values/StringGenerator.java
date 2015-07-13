@@ -12,15 +12,14 @@ public class StringGenerator extends ValueGenerator {
 
 	@Override
 	public void initialize(long seed) {
-		random = new Random(seed);		
-
-		// http://kodejava.org/how-do-i-generate-a-random-alpha-numeric-string/
+		random = new Random(seed);
 	}
 
-
 	@Override
-	public Result nextValue(Integer index) {	
-		return new Result(new StringValue(RandomStringUtils.randomAlphabetic(5)), true, true);
+	public Result nextValue(Integer index) {
+		return new Result(
+				new StringValue(RandomStringUtils.randomAlphabetic(5)), true,
+				true);
 	}
 
 	public static class Factory implements ValueGeneratorFactory {
@@ -31,7 +30,7 @@ public class StringGenerator extends ValueGenerator {
 		}
 
 	}
-	
+
 	@Override
 	public Integer getMaxIndex() {
 		return 1000;

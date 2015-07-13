@@ -19,22 +19,26 @@ public class ConstraintBuilder {
 	}
 	
 	public ColumnBuilder range(Value<?> value1, Value<?> value2){
-		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new RangeConstraint(columnBuilder.getTableColumnString(), value1, value2));
+		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new GreaterEqualConstraint(columnBuilder.getTableColumnString(), value1));
+		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new SmallerEqualConstraint(columnBuilder.getTableColumnString(), value2));
 		return columnBuilder;
 	}
 	
 	public ColumnBuilder range(String value1, Value<?> value2){
-		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new RangeConstraint(columnBuilder.getTableColumnString(), value1, value2));
+		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new GreaterEqualConstraint(columnBuilder.getTableColumnString(), value1));
+		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new SmallerEqualConstraint(columnBuilder.getTableColumnString(), value2));
 		return columnBuilder;
 	}
 	
 	public ColumnBuilder range(Value<?> value1, String value2){
-		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new RangeConstraint(columnBuilder.getTableColumnString(), value1, value2));
+		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new GreaterEqualConstraint(columnBuilder.getTableColumnString(), value1));
+		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new SmallerEqualConstraint(columnBuilder.getTableColumnString(), value2));
 		return columnBuilder;
 	}
 	
 	public ColumnBuilder range(String value1, String value2){
-		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new RangeConstraint(columnBuilder.getTableColumnString(), value1, value2));
+		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new GreaterEqualConstraint(columnBuilder.getTableColumnString(), value1));
+		columnBuilder.getTableBuilder().getDatabaseModel().constraint(new SmallerEqualConstraint(columnBuilder.getTableColumnString(), value2));
 		return columnBuilder;
 	}	
 	

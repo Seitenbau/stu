@@ -5,15 +5,14 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
+import com.seitenbau.stu.database.generator.hints.DomainDataHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
-import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class DomainGenerator extends ValueGenerator {
 
 	private DomainData ConstraintsData;
-	private ArrayList<DomainSpecificDataHint> valueList;
+	private ArrayList<DomainDataHint> valueList;
 
 	public DomainData getConstraintsData() {
 		return this.ConstraintsData;
@@ -50,7 +49,7 @@ public class DomainGenerator extends ValueGenerator {
 			do {
 				counter++;
 				int i = rand.nextInt(valueList.size());
-				DomainSpecificDataHint value = valueList.get(i);
+				DomainDataHint value = valueList.get(i);
 				result.setValue(value.getValue());
 				result.setGenerated(true);
 				result.setFinal(true);
@@ -86,41 +85,41 @@ public class DomainGenerator extends ValueGenerator {
 	public void handleHints() {
 		super.handleHints();
 
-		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data
+		ArrayList<DomainDataHint> al = ConstraintsData.data
 				.get(getKey());
-		valueList = new ArrayList<DomainSpecificDataHint>();
+		valueList = new ArrayList<DomainDataHint>();
 
 		if (al == null)
 			log.error("DomainData with " + getKey()
 					+ "+ not found in the dictionary!");
 
-		for (DomainSpecificDataHint entry : al) {
+		for (DomainDataHint entry : al) {
 			if (!notAllowedValues.contains(entry.getValue()))
 				valueList.add(entry);
 		}
 
 		for (Hint hint : getHints()) {
-			if (DomainSpecificDataHint.class.isInstance(hint)) {
-				DomainSpecificDataHint dsdh = ((DomainSpecificDataHint) hint);
+			if (DomainDataHint.class.isInstance(hint)) {
+				DomainDataHint dsdh = ((DomainDataHint) hint);
 
 				String key = dsdh.getKey();
 				Value<?> value = dsdh.getValue();
 
 				if (key.compareTo(key) == 0 && value != null) {
-					Iterator<Entry<String, ArrayList<DomainSpecificDataHint>>> it = ConstraintsData.data
+					Iterator<Entry<String, ArrayList<DomainDataHint>>> it = ConstraintsData.data
 							.entrySet().iterator();
 					while (it.hasNext()) {
-						Entry<String, ArrayList<DomainSpecificDataHint>> pairs = it
+						Entry<String, ArrayList<DomainDataHint>> pairs = it
 								.next();
 						if (pairs.getKey() == key) {
 
-							ArrayList<DomainSpecificDataHint> intList = new ArrayList<DomainSpecificDataHint>();
-							for (DomainSpecificDataHint c : al) {
+							ArrayList<DomainDataHint> intList = new ArrayList<DomainDataHint>();
+							for (DomainDataHint c : al) {
 								if (c.notAppliesTo(dsdh))
 									intList.add(c);
 							}
 
-							for (DomainSpecificDataHint c : intList) {
+							for (DomainDataHint c : intList) {
 								valueList.remove(c);
 							}
 						}

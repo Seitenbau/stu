@@ -64,7 +64,7 @@ public abstract class DatabaseModel {
 		this.infinite = infinite;
 	}
 
-	public void dataSource(DomainData constraintsData) {
+	public void domainDataSource(DomainData constraintsData) {
 		this.setDataSource(constraintsData);
 	}
 

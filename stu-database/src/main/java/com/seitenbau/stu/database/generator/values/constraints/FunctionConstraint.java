@@ -185,10 +185,10 @@ public abstract class FunctionConstraint extends ConstraintBase {
 				cb = this.getClass().getDeclaredConstructor(String.class, Value.class, Value.class).newInstance(sourceNames[0], getValue(0), getValue(1));
 				break;
 			case 6:
-				cb = this.getClass().getDeclaredConstructor(Value.class, String.class, Value.class).newInstance(getValue(0), sourceNames[1], getValue(1));
+				cb = this.getClass().getDeclaredConstructor(Value.class, String.class, Value.class).newInstance(getValue(0), sourceNames[0], getValue(1));
 				break;
 			case 7:
-				cb = this.getClass().getDeclaredConstructor(Value.class, Value.class, String.class).newInstance(getValue(0), getValue(1), sourceNames[2]);
+				cb = this.getClass().getDeclaredConstructor(Value.class, Value.class, String.class).newInstance(getValue(0), getValue(1), sourceNames[0]);
 				break;
 			}	
 			
