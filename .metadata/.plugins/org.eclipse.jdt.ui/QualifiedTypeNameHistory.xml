@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.values.constraints.logical.EqualConstraint"/>
+<fullyQualifiedTypeName name="java.math.BigDecimal"/>
+<fullyQualifiedTypeName name="sun.reflect.generics.reflectiveObjects.NotImplementedException"/>
+<fullyQualifiedTypeName name="java.util.Random"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.data.EntityBlueprint"/>
+<fullyQualifiedTypeName name="java.lang.Override"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.values.valuetypes.StringValue"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.values.valuetypes.BooleanValue"/>
+<fullyQualifiedTypeName name="org.apache.commons.lang.RandomStringUtils"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.values.StringGenerator"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.values.DomainGenerator"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.hints.GreaterHint"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.values.constraints.functional.ModConstraint"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.values.constraints.logical.GreaterConstraint"/>
+<fullyQualifiedTypeName name="com.seitenbau.stu.database.generator.values.DomainData"/>
+</qualifiedTypeNameHistroy>

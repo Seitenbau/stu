@@ -7,8 +7,8 @@ configure(allprojects) {
 
   group     = "com.seitenbau.stu"
 
-  sourceCompatibility   = 1.8
-  targetCompatibility   = 1.8
+  sourceCompatibility   = 1.6
+  targetCompatibility   = 1.6
 
   ext.chocoVersion					= "3.3.0"
   ext.commonsdbcpVersion            = "1.4"
