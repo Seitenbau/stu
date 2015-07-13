@@ -3,7 +3,7 @@ package com.seitenbau.stu.database.generator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
+import com.seitenbau.stu.database.generator.values.DomainData;
 
 public class TableBuilder implements TableBuilderCommon {
 
@@ -25,7 +25,7 @@ public class TableBuilder implements TableBuilderCommon {
 
 	protected Integer infinite;
 
-	protected DomainSpecificDataBuilder dataSource;
+	protected DomainData dataSource;
 
 	TableBuilder(DatabaseModel model, String name) {
 		this.builtTable = null;

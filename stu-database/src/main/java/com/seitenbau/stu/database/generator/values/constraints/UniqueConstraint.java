@@ -2,7 +2,6 @@ package com.seitenbau.stu.database.generator.values.constraints;
 
 import java.util.ArrayList;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.hints.NotEqualHint;
 import com.seitenbau.stu.database.generator.values.Result;
@@ -17,8 +16,11 @@ public class UniqueConstraint extends ConstraintBase {
 		this.priory = 2;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean isValid(EntityBlueprint eb) {
+	public boolean isValid() {
 		ArrayList<Value<?>> values = new ArrayList<Value<?>>();
 
 		for (Source source : sources) {
@@ -36,6 +38,9 @@ public class UniqueConstraint extends ConstraintBase {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstraintBase getCopyInstance() {
 		UniqueConstraint newInstance = new UniqueConstraint(sourceNames);
@@ -44,8 +49,11 @@ public class UniqueConstraint extends ConstraintBase {
 		return newInstance;
 	}
 
-	@Override
-	public ArrayList<Hint> getHint(Result result) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override	
+	public ArrayList<Hint> getHints(Result result) {
 
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 

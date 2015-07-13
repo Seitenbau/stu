@@ -22,7 +22,8 @@ public class Result implements Comparable<Object> {
 		this.isFinal = isFinal;
 	}
 
-	public Result(Table table, EntityBlueprint eb, Column column, Value<?> value, boolean isGenerated) {
+	public Result(Table table, EntityBlueprint eb, Column column,
+			Value<?> value, boolean isGenerated) {
 		this.table = table;
 		this.eb = eb;
 		this.col = column;
@@ -117,20 +118,22 @@ public class Result implements Comparable<Object> {
 		return isGenerated;
 	}
 
-	// @Override
-	// public String toString() {
-	// return this.getClass().getSimpleName().toString()
-	// + ": Cell => "
-	// + ((getTable() == null)? "null" : getTable().toString()) + "."
-	// + ((getCol() == null)? "null" : getCol().toString())
-	// + ": EB => " + ((getEb() == null)? "null" : getEb().toString())
-	//
-	// + ": Value => "
-	// + ((value == null)? "null" : value.toString())
-	//
-	// + ": ValueGenerator => "
-	// + ((generator == null)? "null" : generator.getClass().getSimpleName().toString());
-	// }
+	public String getDesciptionString() {
+		return this.getClass().getSimpleName().toString()
+				+ ": Cell => "
+				+ ((getTable() == null) ? "null" : getTable().toString())
+				+ "."
+				+ ((getCol() == null) ? "null" : getCol().toString())
+				+ ": EB => "
+				+ ((getEb() == null) ? "null" : getEb().toString())
+
+				+ ": Value => "
+				+ ((value == null) ? "null" : value.toString())
+
+				+ ": ValueGenerator => "
+				+ ((generator == null) ? "null" : generator.getClass()
+						.getSimpleName().toString());
+	}
 
 	@Override
 	public String toString() {
@@ -165,7 +168,9 @@ public class Result implements Comparable<Object> {
 
 			Result externResult = (Result) o;
 
-			if (externResult.getTable() == this.getTable() && externResult.getEb() == this.getEb() && externResult.getCol() == this.getCol())
+			if (externResult.getTable() == this.getTable()
+					&& externResult.getEb() == this.getEb()
+					&& externResult.getCol() == this.getCol())
 				return 0;
 		}
 
@@ -184,7 +189,7 @@ public class Result implements Comparable<Object> {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 
 		for (ConstraintBase constraint : constraints) {
-			ArrayList<Hint> hs = constraint.getHint(this);
+			ArrayList<Hint> hs = constraint.getHints(this);
 			if (hs != null)
 				hints.addAll(hs);
 		}
@@ -214,6 +219,7 @@ public class Result implements Comparable<Object> {
 	}
 
 	public String getSourceName() {
-		return table.getJavaNameFirstLower() + "." + col.getJavaNameFirstLower();
+		return table.getJavaNameFirstLower() + "."
+				+ col.getJavaNameFirstLower();
 	}
 }

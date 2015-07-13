@@ -3,12 +3,10 @@ package model;
 import com.seitenbau.stu.database.generator.DataType;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.TableBuilder;
-import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
-import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
+import com.seitenbau.stu.database.generator.values.DomainData;
 import com.seitenbau.stu.database.generator.values.DomainGenerator;
 import com.seitenbau.stu.database.generator.values.IntegerGenerator;
-import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
-import com.seitenbau.stu.database.generator.values.ValueGenerator;
+import com.seitenbau.stu.database.generator.values.StringGenerator;
 
 public class TestLinkModel extends DatabaseModel {
 	public TestLinkModel() {
@@ -17,7 +15,7 @@ public class TestLinkModel extends DatabaseModel {
 		enableTableModelClassesGeneration();
 		//disbaleTableDSLGeneration();
 
-		dataSource(new DomainSpecificDataBuilder());
+		dataSource(new DomainData());
 
 		TableBuilder assignment_status = table("assignment_status");
 		TableBuilder assignment_types = table("assignment_types");
@@ -603,7 +601,7 @@ public class TestLinkModel extends DatabaseModel {
 		// length <= 10, id > 0, Unique, NotNull
 		.column("id", DataType.INTEGER).generator(new IntegerGenerator(1, 1000)).defaultIdentifier().autoInvokeNext() //
 				// not null, <= 100
-				.column("description", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+				.column("description", DataType.VARCHAR).generator(new StringGenerator()) //
 				// null or TEXT
 				.column("notes", DataType.VARCHAR) //
 				.build();
@@ -728,7 +726,7 @@ public class TestLinkModel extends DatabaseModel {
 				// 0 or 1
 				.column("is_public", DataType.TINYINT).generator(new IntegerGenerator(0, 1)) //
 				// length == 64, 0-9 a-f, UNIQUE
-				.column("api_key", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+				.column("api_key", DataType.VARCHAR).generator(new StringGenerator()) //
 				.build(); //
 
 //		testplan_platforms
@@ -778,7 +776,7 @@ public class TestLinkModel extends DatabaseModel {
 				// O:8:"stdClass":4:{s:19:"requirementsEnabled";i:1;s:19:"testPriorityEnabled";i:1;s:17:"automationEnabled";i:1;s:16:"inventoryEnabled";i:0;}
 				//.column("options", DataType.VARCHAR) //
 				// length <= 12, NOT NULL
-				.column("prefix", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+				.column("prefix", DataType.VARCHAR).generator(new StringGenerator()) //
 				// length <= 10, id > 0,
 				.column("tc_counter", DataType.INTEGER).generator(new IntegerGenerator(1, 1000)) //
 				// 0 or 1
@@ -788,7 +786,7 @@ public class TestLinkModel extends DatabaseModel {
 				// 0 or 1
 				.column("reqmgr_integration_enabled", DataType.TINYINT).generator(new IntegerGenerator(0, 1)) //
 				// length == 64, 0-9 a-f, UNIQUE
-				.column("api_key", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+				.column("api_key", DataType.VARCHAR).generator(new StringGenerator()) //
 				.build(); //
 //
 //		// user_id && testproject_id == UNIQUE
@@ -833,7 +831,7 @@ public class TestLinkModel extends DatabaseModel {
 		// length <= 10, id > 0, Unique, NotNull
 		.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// 0 < length <= 30, not null
-				.column("login", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+				.column("login", DataType.VARCHAR).generator(new StringGenerator()) //
 				// length == 32 (md5), not null
 				.column("password", DataType.VARCHAR) //
 				// length <= 10, not null, role exists?
@@ -843,7 +841,7 @@ public class TestLinkModel extends DatabaseModel {
 				// 0 length <= 30, not null
 				.column("first", DataType.VARCHAR).generator(new DomainGenerator("vorname")) //
 				// 0 length <= 30, not null
-				.column("last", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+				.column("last", DataType.VARCHAR).generator(new StringGenerator()) //
 				// Null OR DataGenerator("locale")
 				.column("locale", DataType.VARCHAR)//.allowNull(true) //
 				// > 0 OR null, Testproject_id exists?
@@ -853,7 +851,7 @@ public class TestLinkModel extends DatabaseModel {
 				// Null OR length == 32, 0-9 a-f
 				.column("script_key", DataType.VARCHAR)//.allowNull(true) //
 				// length == 64, 0-9 a-f
-				.column("cookie_string", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+				.column("cookie_string", DataType.VARCHAR).generator(new StringGenerator()) //
 				// null or DB or LDAP ==> constraint(match({"", "DB", LDAP}))
 				.column("auth_method", DataType.VARCHAR).set("\"DB\"", "\"LDAP\"").allowNull(true) //
 				.build(); //
@@ -883,7 +881,7 @@ public class TestLinkModel extends DatabaseModel {
 				// length <= 10, id > 0, Unique, NotNull
 				.column("id", DataType.INTEGER).defaultIdentifier().autoInvokeNext() //
 				// <= 100, UNIQUE
-				.column("title", DataType.VARCHAR).generator(new BuchNameGenerator()) //
+				.column("title", DataType.VARCHAR).generator(new StringGenerator()) //
 				// null or Text
 				.column("description", DataType.VARCHAR) //
 				.build(); //

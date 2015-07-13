@@ -12,14 +12,14 @@ import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
 public class DomainGenerator extends ValueGenerator {
 
-	private DomainSpecificDataBuilder ConstraintsData;
+	private DomainData ConstraintsData;
 	private ArrayList<DomainSpecificDataHint> valueList;
 
-	public DomainSpecificDataBuilder getConstraintsData() {
+	public DomainData getConstraintsData() {
 		return this.ConstraintsData;
 	}
 
-	public void setConstraintsData(DomainSpecificDataBuilder constraintsData) {
+	public void setConstraintsData(DomainData constraintsData) {
 		this.ConstraintsData = constraintsData;
 	}
 
@@ -31,28 +31,23 @@ public class DomainGenerator extends ValueGenerator {
 	}
 
 	@Override
-	public Result nextValue() {
-		return nextValue(0);
-	}
+	public Result nextValue(Integer seed) {
+		Random rand = new Random(seed);
 
-	@Override
-	public Result nextValue(Integer index) {
-		Random rand = new Random(index);
+		// Init Random
+		rand.nextInt();
+		rand.nextInt();
+		rand.nextInt();
 
-		// TODO: Workaround: Fix and remove
-		 //if(getKey() == "geschlecht"){
-			 rand.nextInt(); rand.nextInt(); rand.nextInt();
-		 //}
-
-		walkthroughHints();
+		handleHints();
 
 		Result result = new Result(null, false, false);
 
 		if (valueList.size() > 0) {
-			
-			boolean flag = true;	
+
+			boolean flag = true;
 			int counter = 0;
-			do{		
+			do {
 				counter++;
 				int i = rand.nextInt(valueList.size());
 				DomainSpecificDataHint value = valueList.get(i);
@@ -73,14 +68,14 @@ public class DomainGenerator extends ValueGenerator {
 						e.printStackTrace();
 					}
 				}
-				
-				if(internflag)
+
+				if (internflag)
 					flag = false;
-			}while(flag && counter < valueList.size()*2);
-			
-			if(counter == valueList.size()*2)
+			} while (flag && counter < valueList.size() * 2);
+
+			if (counter == valueList.size() * 2)
 				return null;
-		
+
 			return result;
 		}
 
@@ -88,13 +83,19 @@ public class DomainGenerator extends ValueGenerator {
 	}
 
 	@Override
-	public void walkthroughHints() {
-		super.walkthroughHints();
+	public void handleHints() {
+		super.handleHints();
 
-		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data.get(getKey());
+		ArrayList<DomainSpecificDataHint> al = ConstraintsData.data
+				.get(getKey());
 		valueList = new ArrayList<DomainSpecificDataHint>();
+
+		if (al == null)
+			log.error("DomainData with " + getKey()
+					+ "+ not found in the dictionary!");
+
 		for (DomainSpecificDataHint entry : al) {
-			if(!notAllowedValues.contains(entry.getValue())) // TODO Check Key and Value
+			if (!notAllowedValues.contains(entry.getValue()))
 				valueList.add(entry);
 		}
 
@@ -106,14 +107,16 @@ public class DomainGenerator extends ValueGenerator {
 				Value<?> value = dsdh.getValue();
 
 				if (key.compareTo(key) == 0 && value != null) {
-					Iterator<Entry<String, ArrayList<DomainSpecificDataHint>>> it = ConstraintsData.data.entrySet().iterator();
+					Iterator<Entry<String, ArrayList<DomainSpecificDataHint>>> it = ConstraintsData.data
+							.entrySet().iterator();
 					while (it.hasNext()) {
-						Entry<String, ArrayList<DomainSpecificDataHint>> pairs = it.next();
+						Entry<String, ArrayList<DomainSpecificDataHint>> pairs = it
+								.next();
 						if (pairs.getKey() == key) {
 
 							ArrayList<DomainSpecificDataHint> intList = new ArrayList<DomainSpecificDataHint>();
 							for (DomainSpecificDataHint c : al) {
-								if(c.notAppliesTo(dsdh))
+								if (c.notAppliesTo(dsdh))
 									intList.add(c);
 							}
 
@@ -121,14 +124,13 @@ public class DomainGenerator extends ValueGenerator {
 								valueList.remove(c);
 							}
 						}
-					}					
-				
+					}
+
 				}
 
 			}
 		}
 	}
-
 
 	public static class Factory implements ValueGeneratorFactory {
 
@@ -142,11 +144,11 @@ public class DomainGenerator extends ValueGenerator {
 	public Integer getMaxIndex() {
 		return ConstraintsData.data.get(getKey()).size();
 	}
-	
+
 	@Override
-	public void clearHints(){
+	public void clearHints() {
 		super.clearHints();
 		valueList.clear();
-		notAllowedValues.clear();		
+		notAllowedValues.clear();
 	}
 }

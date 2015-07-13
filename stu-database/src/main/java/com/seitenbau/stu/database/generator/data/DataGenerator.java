@@ -1,7 +1,6 @@
 package com.seitenbau.stu.database.generator.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -22,14 +21,15 @@ import com.seitenbau.stu.database.generator.values.IntegerGenerator;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.constraints.Combination;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
-import com.seitenbau.stu.database.generator.values.constraints.DomainSpecificDataConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.DomainConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.Source;
+import com.seitenbau.stu.database.generator.values.valuetypes.StringValue;
 import com.seitenbau.stu.logger.Logger;
 import com.seitenbau.stu.logger.TestLoggerFactory;
 
 public class DataGenerator {
 	public enum Mode {
-		GENERATE_AND_TEST, BACKTRACKING, BACKTRACKING_WITH_HINTS
+		BACKTRACKING, BACKTRACKING_WITH_HINTS
 	}
 
 	private final Logger log = TestLoggerFactory.get(DataGenerator.class);
@@ -91,8 +91,8 @@ public class DataGenerator {
 		// Walk through all constraints and add them to the columns
 		for (ConstraintBase sc : model.getConstraintsList()) {
 			sc.setFab(fab);
-			if (DomainSpecificDataConstraint.class.isInstance(sc)) {
-				((DomainSpecificDataConstraint) sc).setData(fab.model.getDataSource().data);
+			if (DomainConstraint.class.isInstance(sc)) {
+				((DomainConstraint) sc).setData(fab.model.getDataSource().data);
 			}
 
 			addContraintToColumns(sc);
@@ -113,26 +113,19 @@ public class DataGenerator {
 
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void addContraintToColumns(ConstraintBase sc) {
-		// TODO: Parse string and add Constraint to Table.Column
 
 		for (String sourceString : sc.getSourceNames()) {
-			String[] array = sourceString.split("\\."); // sc.modelRef.split("\\.");
+			String[] array = sourceString.split("\\.");
 
-			if (array.length == 3) {
-				String tableName = array[0];
-				String columnName = array[1];
-				String index = array[2];
-				// TODO: Constraint only to one field of a Table....
-			} else if (array.length == 2) {
+			if (array.length == 2) {
 				String tableName = array[0];
 				String columnName = array[1];
 
 				addConstraintToBlueprintEntities(tableName, columnName, sc);
 
-			} else if (array.length == 1) {
-				String tableName = array[0];
 			} else {
-				// TODO ????
+				log.error("The reference name must have the form {table.column}. "
+						+ sourceString + " is not an allowed string.");
 			}
 		}
 	}
@@ -140,18 +133,21 @@ public class DataGenerator {
 	/*
 	 * 
 	 */
-	private void addConstraintToBlueprintEntities(String table, String column, ConstraintBase sc) {
-		List<EntityBlueprint> list = fab.blueprints.getTableBlueprints(model.getTableByName(table));
+	private void addConstraintToBlueprintEntities(String table, String column,
+			ConstraintBase sc) {
+		List<EntityBlueprint> list = fab.blueprints.getTableBlueprints(model
+				.getTableByName(table));
 
 		if (list != null) {
 			for (EntityBlueprint eb : list) {
 
-				String col = column.substring(0, 1).toUpperCase() + column.substring(1);
+				String col = column.substring(0, 1).toUpperCase()
+						+ column.substring(1);
 
 				Object obj = eb.getValue(col);
 				if (Result.class.isInstance(obj)) {
 					Result result = (Result) obj;
-					ConstraintBase constraintCopy = sc.getCopyInstance(); // TODO: Handle the Instances
+					ConstraintBase constraintCopy = sc.getCopyInstance();
 					constraintCopy.loadSources(eb);
 					result.addConstraint(constraintCopy);
 				}
@@ -159,7 +155,7 @@ public class DataGenerator {
 		}
 	}
 
-	// Statisitcs
+	// Statistics
 	private Integer resultCounter = 0;
 	private Integer recursiveCounter = 0;
 	private long startTimestamp;
@@ -174,7 +170,8 @@ public class DataGenerator {
 		startTimestamp = new Date().getTime();
 
 		for (Table table : getTableOrder(model)) {
-			List<EntityBlueprint> entityBlueprints = fab.getEntities().getTableBlueprints(table);
+			List<EntityBlueprint> entityBlueprints = fab.getEntities()
+					.getTableBlueprints(table);
 			for (EntityBlueprint eb : entityBlueprints) {
 				for (Column col : eb.table.getColumns()) {
 
@@ -192,54 +189,56 @@ public class DataGenerator {
 
 					addResult(table, eb, col);
 					startResultWalkthrough();
-					
+
 					constraintInstanceCounter += constraintList.size();
-					if(constraintList.size() > 0)
+					if (constraintList.size() > 0)
 						graphCount += 1;
-					
-					for(ConstraintBase constraint : constraintList){						
-						allConstraintDependencyCells += (constraint.getCellCount() > 1)? constraint.getCellCount() : 0;
-						if(constraint.getCellCount() > maxConstraintDependencyCells)
-							maxConstraintDependencyCells = constraint.getCellCount();
+
+					for (ConstraintBase constraint : constraintList) {
+						allConstraintDependencyCells += (constraint
+								.getCellCount() > 1) ? constraint
+								.getCellCount() : 0;
+						if (constraint.getCellCount() > maxConstraintDependencyCells)
+							maxConstraintDependencyCells = constraint
+									.getCellCount();
 					}
 
-					constraintList.clear(); // Aktuelle Liste aller gerade betrachteten Constraints leeren
+					constraintList.clear(); // Aktuelle Liste aller gerade
+											// betrachteten Constraints leeren
 					resultList.clear(); // Aktuelle ResultList leeren
 					combiList.clear();
-					counter = 0;
 				}
 			}
 		}
 
-		System.out.println("-----------------------------------------------------------------");
-		System.out.println("Modus: " + mode.toString());
-		System.out.println("Modellierte Constraints: " + String.valueOf(model.getConstraintsList().size()));
-		System.out.println("Maximale Anzahl an Zellen im Graph:" + maxConstraintDependencyCells.toString());
-		System.out.println("Durchschnittliche Anzahl an Zellen im Graph:" + String.valueOf((Double.valueOf(allConstraintDependencyCells) / graphCount)));
-		System.out.println("Anzahl an Graphen: " + graphCount.toString());
-		System.out.println("Anzahl an Zellen, die Constraints unterliegen: " + allConstraintDependencyCells.toString());
+		log.info("-----------------------------------------------------------------");
+		log.info("Modus: " + mode.toString());
+		log.info("Modellierte Constraints: "
+				+ String.valueOf(model.getConstraintsList().size()));
+		log.info("Maximale Anzahl an Zellen im Graph:"
+				+ maxConstraintDependencyCells.toString());
+		log.info("Durchschnittliche Anzahl an Zellen im Graph:"
+				+ String.valueOf((Double.valueOf(allConstraintDependencyCells) / graphCount)));
+		log.info("Anzahl an Graphen: " + graphCount.toString());
+		log.info("Anzahl an Zellen, die Constraints unterliegen: "
+				+ allConstraintDependencyCells.toString());
 
-		System.out.println("Anzahl generierter Results: " + resultCounter.toString());
-		System.out.println("Rekursive Aufrufe: " + recursiveCounter.toString());
-		System.out.println("Generator-Aufrufe: " + forCounter.toString());
-		System.out.println("Dauer: " + ((new Date().getTime()) - startTimestamp) + "ms");
-		System.out.println("-----------------------------------------------------------------");
+		log.info("Anzahl generierter Results: " + resultCounter.toString());
+		log.info("Rekursive Aufrufe: " + recursiveCounter.toString());
+		log.info("Generator-Aufrufe: " + forCounter.toString());
+		log.info("Dauer: " + ((new Date().getTime()) - startTimestamp) + "ms");
+		log.info("-----------------------------------------------------------------");
 
 	}
 
-	// In der ArrayList werden alle aktuellen Constraints abgelegt um eine schnelle Prüfung zu ermöglichen.
+	// In der ArrayList werden alle aktuellen Constraints abgelegt um eine
+	// schnelle Prüfung zu ermöglichen.
 	private ArrayList<ConstraintBase> constraintList = new ArrayList<ConstraintBase>();
-
-	// TODO List --> Queue
-	private PriorityQueue<Result> resultQueue = new PriorityQueue<Result>();
 	// In einer Liste werden alle zusammenhängenden Values festgehalten.
 	// ResultList mit Priorität:
 	// Prioriät gibt an welche Results zuerst generiert werden
 	private ArrayList<Result> resultList = new ArrayList<Result>();
 	private ArrayList<Combination> combiList = new ArrayList<Combination>();
-
-	// Counter
-	private int counter = 0;
 
 	/*
 	 * Wert einer einzelnen Zelle berechnen
@@ -267,7 +266,8 @@ public class DataGenerator {
 
 			if (resultList.size() > 0) {
 				for (int i = 0; i < resultList.size(); i++) {
-					if (resultList.get(i).getHighestPriory() > result.getHighestPriory()) {
+					if (resultList.get(i).getHighestPriory() > result
+							.getHighestPriory()) {
 						resultList.add(i, result);
 						return true;
 					}
@@ -281,7 +281,6 @@ public class DataGenerator {
 		}
 	}
 
-	// TODO: Bessere Lösung ohne diese Funktion müsste möglich sein......
 	public static Integer[] convertIntegers(List<Integer> integers) {
 		Integer[] ret = new Integer[integers.size()];
 		for (int i = 0; i < ret.length; i++) {
@@ -289,17 +288,18 @@ public class DataGenerator {
 		}
 		return ret;
 	}
-	
-	int maxDepth = 0; 
+
+	int maxDepth = 0;
 
 	private boolean startResultWalkthrough() {
 		ArrayList<Integer> indexesArrayList = new ArrayList<Integer>();
 		for (int i = 0; i < resultList.size(); i++) {
 			indexesArrayList.add(0);
 		}
-		
-		Combination combination = new Combination(convertIntegers(indexesArrayList));
-		maxDepth = calcMaxDeepness(combination);
+
+		Combination combination = new Combination(
+				convertIntegers(indexesArrayList));
+		maxDepth = calcMaxDepth(combination);
 		Combination combi = generateValues(0, combination);
 		if (constraintList.size() > 0 && combi == null) {
 			for (Result res : resultList) {
@@ -310,28 +310,32 @@ public class DataGenerator {
 		return true;
 	}
 
-	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge schon richtig ist
+	// TODO: Im result seed festhalten, damit bei späterem walkthrough Teilmenge
+	// schon richtig ist
 	private Combination generateValues(int depth, Combination indexes) {
 
-		if(combiList.contains(indexes))
+		if (combiList.contains(indexes))
 			return null;
 		else
 			combiList.add(indexes);
-		
-		counter++;
-		if(depth > 0)
-			recursiveCounter++;		
 
-		if (depth > maxDepth || ((new Date().getTime()) - startTimestamp) / 1000 > 300)
+		if (depth > 0)
+			recursiveCounter++;
+
+		if (depth > maxDepth
+				|| ((new Date().getTime()) - startTimestamp) / 1000 > 300)
 			return null;
 
 		boolean nullValue = false;
 
-		// Alle beteiligten Result-Werte anhand der Indizes-Kombination erstellen
+		// Alle beteiligten Result-Werte anhand der Indizes-Kombination
+		// erstellen
 		for (int i = 0; i < resultList.size(); i++) {
 			forCounter++;
 
-			int fabIndex = fab.blueprints.getTableBlueprints(resultList.get(i).getTable()).indexOf(resultList.get(i).getEb());
+			int fabIndex = fab.blueprints.getTableBlueprints(
+					resultList.get(i).getTable()).indexOf(
+					resultList.get(i).getEb());
 
 			// Seed für Random aus der aktuellen Kombination berechnen
 			int seed = (i + 1) * 10 + (fabIndex + 1) * 100 + indexes.get(i);
@@ -343,18 +347,14 @@ public class DataGenerator {
 					if (i > 0 || result.getHighestPriory() < 2) {
 						ArrayList<Hint> hints = resultList.get(j).getHints();
 						for (Hint hint : hints) {
-							// if(result.getHighestPriory() < 2 || hint.getSourceName().compareTo(result.getSourceName()) != 0){
 
-							// Dem Generator dürfen nur Hints hinzugefügt werden, welche wirklich dieses Result betreffen.
-							// Andernfalls ist es möglich, dass Werte ausgeschlossen werden, welche eigentlich möglich wären.
-
-							ArrayList<Source> hintSources = hint.getConstraint().getSources();
+							// Dem Generator dürfen nur Hints hinzugefügt
+							// werden, welche wirklich dieses Result betreffen.
+							// Andernfalls ist es möglich, dass Werte
+							// ausgeschlossen werden, welche eigentlich möglich
+							// wären.
 							if (hint.getConstraint().containtsResult(result))
 								result.getGenerator().addHint(hint);
-
-							// }else{
-							// System.out.println("else");
-							// }
 						}
 					}
 				}
@@ -363,8 +363,9 @@ public class DataGenerator {
 			Result res = result.getGenerator().nextValue(seed);
 
 			if (res == null) {
-				// TODO Kein Wert möglich --> 
-				res = new Result(null, false, false);
+				res = new Result(null, false, false); // new StringValue("(undefined)")
+				log.info("ValueGenerator for " + result.toString()
+						+ " is undefined");
 				nullValue = true;
 			}
 
@@ -372,20 +373,30 @@ public class DataGenerator {
 			result.getGenerator().clearHints();
 		}
 
-		// Kombination zurückgeben, falls alle Constraints erfüllt sind
+		// Return combination if all constraints are valid
 		if (!nullValue) {
-			if (constraintList.size() == 0 || constraintList.size() > 0 && checkConstraints() == null) {
+			if (constraintList.size() == 0 || constraintList.size() > 0
+					&& checkConstraints() == null) {
 				return indexes;
 			}
 		} else {
 			String results = "";
-			int p  = 0;
+			int p = 0;
 			for (Result result : resultList) {
-				results += "    Index " + indexes.get(p) + ": " + result.getSourceName() + ((IntegerGenerator)result.getGenerator()).getMin() + "-" + ((IntegerGenerator)result.getGenerator()).getMax() + "-" + ((IntegerGenerator)result.getGenerator()).getLastSeed() + ": " + result.getValue();
+				results += "    Index "
+						+ indexes.get(p)
+						+ ": "
+						+ result.getSourceName()
+						+ ((IntegerGenerator) result.getGenerator()).getMin()
+						+ "-"
+						+ ((IntegerGenerator) result.getGenerator()).getMax()
+						+ "-"
+						+ ((IntegerGenerator) result.getGenerator())
+								.getLastSeed() + ": " + result.getValue();
 				p++;
 			}
 			log.debug(results);
-		}	
+		}
 
 		for (int j = 0; j < indexes.length(); j++) {
 			Combination newIndexes = indexes.clone();
@@ -398,7 +409,7 @@ public class DataGenerator {
 		}
 
 		return null;
-	}	
+	}
 
 	// Fügt Constraint der ConstraintList hinzu
 	// Durchläuft alle zugehörigen Results und ruft Funktion auf...
@@ -406,7 +417,8 @@ public class DataGenerator {
 		if (!constraintList.contains(constraint)) {
 			constraintList.add(constraint);
 
-			// Durchlaufe alle Sources eines Constraints und füge alle Results aller Sources zur ResultList hinzu
+			// Durchlaufe alle Sources eines Constraints und füge alle Results
+			// aller Sources zur ResultList hinzu
 			ArrayList<Source> sources = constraint.getSources();
 			for (int i = 0; i < sources.size(); i++) {
 				Source source = sources.get(i);
@@ -414,7 +426,8 @@ public class DataGenerator {
 				for (Result result : results) {
 
 					if (!resultList.contains(result)) {
-						addResult(result.getTable(), result.getEb(), result.getCol());
+						addResult(result.getTable(), result.getEb(),
+								result.getCol());
 					}
 				}
 			}
@@ -422,46 +435,36 @@ public class DataGenerator {
 		}
 	}
 
-	// Prüfe alle Constraints und gebe im Fall eines nicht validen Constraints das Constraint-Objekt zurück
+	// Prüfe alle Constraints und gebe im Fall eines nicht validen Constraints
+	// das Constraint-Objekt zurück
 	// Zu diesem Zeitpunkt sind alle Constraints bekannt
 	private ConstraintBase checkConstraints() {
 		for (ConstraintBase constraint : constraintList) {
 
-			// TODO EB und Value überlegen. Value wahrscheinlich überflüssig, vielleicht Result mitgeben
-			// Prüfe, ob das Constraint-Bedingung erfüllt ist
-
 			if (!constraint.allSourcesLoad())
 				return constraint;
 
-			Result result = constraint.getSources().get(0).getResults().get(0);
-			if (!constraint.isValid(result.getEb())) {
+			if (!constraint.isValid()) {
 
-				// TODO: Remove Debugging output
+				// Build debug output:
 				String str = "";
 				for (Result r : resultList) {
-					str += r.getCol().getJavaName().toString() + ": " + r.toString() + " - ";
+					str += r.getCol().getJavaName().toString() + ": "
+							+ r.toString() + " - ";
 				}
+				log.debug("Fail: " + str);
 
 				constraint.clearAllResults();
-
-				log.debug("Fail: " + str);
 				return constraint;
-			} else {
-				// TODO: Remove Debugging output
-				String str = "";
-				for (Result r : resultList) {
-					str += r.toString() + " - ";
-				}
-
-				// System.out.println("Fail: " + result.getEb().getRefName() + ": " + str);
 			}
 		}
 
+		// Build debug output:
 		String str = "";
 		for (Result r : resultList) {
-			str += r.getCol().getJavaName().toString() + ": " + r.toString() + " - ";
+			str += r.getCol().getJavaName().toString() + ": " + r.toString()
+					+ " - ";
 		}
-
 		log.debug("OK: " + ": " + str);
 
 		for (Result r : resultList) {
@@ -470,44 +473,38 @@ public class DataGenerator {
 
 		return null;
 	}
-	
-	private int calcMaxDeepness(Combination indexes) {
+
+	private int calcMaxDepth(Combination indexes) {
 		int maxDepth = 0;
-		int ii = 0;
-		int trii = 0;
-		if(indexes.length() <= 1)
+		int i = 0;
+		int j = 0;
+		if (indexes.length() <= 1) // Depth for only one value in graph
 			return 100;
-		while(trii < 1000000){
-			ii++;			
-			trii = (int) Math.pow(ii, indexes.length());
-		}		
+		while (j < 10000) {
+			i++;
+			j = (int) Math.pow(i, indexes.length());
+		}
 
-		maxDepth = ii;
-		System.out.println(maxDepth);
+		maxDepth = i;
+
+		String constraintsStr = "";
+		for (ConstraintBase constraint : constraintList)
+			constraintsStr += constraint.toString() + ", ";
+		constraintsStr = constraintsStr.substring(0,
+				constraintsStr.length() - 2);
+		log.info("Graph depth = " + maxDepth + " for graph constraints "
+				+ constraintsStr);
 		return maxDepth;
-	}
-
-	// ///////////////////////
-
-	// TODO Werden diese Hilfsfunktionen noch benötigt???
-	private Integer getTableIndex(Table table) {
-		return getTableOrder(model).indexOf(table);
 	}
 
 	private Integer getEntityIndex(Table table, EntityBlueprint eb) {
 		return fab.blueprints.getTableBlueprints(table).indexOf(eb);
 	}
 
-	private Integer getColumnIndex(Table table, EntityBlueprint eb, Column col) {
-		Integer bpIndex = getEntityIndex(table, eb);
-		EntityBlueprint ebElement = fab.blueprints.getTableBlueprints(table).get(bpIndex);
-		Object[] array = ebElement.values.values().toArray();
-		return Arrays.asList(array).indexOf(col);
-	}
-
 	private Result getResult(Table table, EntityBlueprint eb, Column col) {
 
-		ArrayList<EntityBlueprint> entities = (ArrayList<EntityBlueprint>) fab.blueprints.getTableBlueprints(table);
+		ArrayList<EntityBlueprint> entities = (ArrayList<EntityBlueprint>) fab.blueprints
+				.getTableBlueprints(table);
 		Integer entityIndex = getEntityIndex(table, eb);
 		if (entityIndex < 0)
 			return null;
@@ -522,8 +519,6 @@ public class DataGenerator {
 
 		return null;
 	}
-
-	// ///////////////////////
 
 	private void visitTable(Table table) {
 		if (visitedTables.contains(table)) {
@@ -556,22 +551,32 @@ public class DataGenerator {
 		Column leftColumn = table.getAssociativeColumns().get(0);
 		Column rightColumn = table.getAssociativeColumns().get(1);
 
-		Multiplicity leftMultiplicity = Multiplicity.parse(leftColumn.getRelation().getForeignMultiplicity());
-		Multiplicity rightMultiplicity = Multiplicity.parse(rightColumn.getRelation().getForeignMultiplicity());
+		Multiplicity leftMultiplicity = Multiplicity.parse(leftColumn
+				.getRelation().getForeignMultiplicity());
+		Multiplicity rightMultiplicity = Multiplicity.parse(rightColumn
+				.getRelation().getForeignMultiplicity());
 
-		generateAssociative(leftColumn, leftMultiplicity.getMin(), rightColumn, rightMultiplicity.getMin());
-		generateAssociative(leftColumn, leftMultiplicity.getMax(), rightColumn, rightMultiplicity.getMin());
-		generateAssociative(leftColumn, leftMultiplicity.getMin(), rightColumn, rightMultiplicity.getMax());
-		generateAssociative(leftColumn, leftMultiplicity.getMax(), rightColumn, rightMultiplicity.getMax());
+		generateAssociative(leftColumn, leftMultiplicity.getMin(), rightColumn,
+				rightMultiplicity.getMin());
+		generateAssociative(leftColumn, leftMultiplicity.getMax(), rightColumn,
+				rightMultiplicity.getMin());
+		generateAssociative(leftColumn, leftMultiplicity.getMin(), rightColumn,
+				rightMultiplicity.getMax());
+		generateAssociative(leftColumn, leftMultiplicity.getMax(), rightColumn,
+				rightMultiplicity.getMax());
 
 		// visit the associated tables :-)
 		visitTable(leftColumn.getRelation().getForeignColumn().getTable());
 		visitTable(rightColumn.getRelation().getForeignColumn().getTable());
 	}
 
-	private void generateAssociative(Column leftColumn, Multiplicity.Border leftBorder, Column rightColumn, Multiplicity.Border rightBorder) {
-		Table leftTable = leftColumn.getRelation().getForeignColumn().getTable();
-		Table rightTable = rightColumn.getRelation().getForeignColumn().getTable();
+	private void generateAssociative(Column leftColumn,
+			Multiplicity.Border leftBorder, Column rightColumn,
+			Multiplicity.Border rightBorder) {
+		Table leftTable = leftColumn.getRelation().getForeignColumn()
+				.getTable();
+		Table rightTable = rightColumn.getRelation().getForeignColumn()
+				.getTable();
 
 		Edge leftEdge = new Edge(leftColumn);
 		Edge rightEdge = new Edge(rightColumn);
@@ -579,31 +584,39 @@ public class DataGenerator {
 		visitedEdges.add(rightEdge);
 
 		// swap border counts :-)
-		int leftCount = Math.max(1, getCount(rightBorder, rightColumn).getValue());
-		int rightCount = Math.max(1, getCount(leftBorder, leftColumn).getValue());
+		int leftCount = Math.max(1, getCount(rightBorder, rightColumn)
+				.getValue());
+		int rightCount = Math.max(1, getCount(leftBorder, leftColumn)
+				.getValue());
 
 		if (isOptional(rightBorder)) {
-			fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation(), null);
+			fab.getEntity(leftTable, leftEdge, EntityCreationMode.noRelation(),
+					null);
 		}
 		if (isOptional(leftBorder)) {
-			fab.getEntity(rightTable, rightEdge, EntityCreationMode.noRelation(), null);
+			fab.getEntity(rightTable, rightEdge,
+					EntityCreationMode.noRelation(), null);
 		}
 
 		EntityBlueprint[] leftBps = new EntityBlueprint[leftCount];
 		EntityBlueprint[] rightBps = new EntityBlueprint[rightCount];
 
 		for (int l = 0; l < leftCount; l++) {
-			leftBps[l] = fab.getEntity(leftTable, leftEdge, EntityCreationMode.fixedInt(1, Direction.IN), null);
+			leftBps[l] = fab.getEntity(leftTable, leftEdge,
+					EntityCreationMode.fixedInt(1, Direction.IN), null);
 			leftBps[l].setReferencing(leftEdge);
 		}
 		for (int r = 0; r < rightCount; r++) {
-			rightBps[r] = fab.getEntity(rightTable, rightEdge, EntityCreationMode.fixedInt(1, Direction.IN), null);
+			rightBps[r] = fab.getEntity(rightTable, rightEdge,
+					EntityCreationMode.fixedInt(1, Direction.IN), null);
 			rightBps[r].setReferencing(rightEdge);
 		}
 
 		for (int l = 0; l < leftCount; l++) {
 			for (int r = 0; r < rightCount; r++) {
-				EntityBlueprint entity = fab.getEntity(leftColumn.getTable(), leftEdge, EntityCreationMode.fixedInt(1, Direction.OUT), null);
+				EntityBlueprint entity = fab.getEntity(leftColumn.getTable(),
+						leftEdge,
+						EntityCreationMode.fixedInt(1, Direction.OUT), null);
 
 				entity.setReference(leftEdge, leftBps[l]);
 				entity.setReference(rightEdge, rightBps[r]);
@@ -675,7 +688,8 @@ public class DataGenerator {
 	private boolean validateBlueprints(DatabaseModel model) {
 		for (Table table : model.getTables()) {
 			if (!table.getOutgoingEdges().isEmpty()) {
-				List<EntityBlueprint> bps = new LinkedList<EntityBlueprint>(fab.getEntities().getTableBlueprints(table));
+				List<EntityBlueprint> bps = new LinkedList<EntityBlueprint>(fab
+						.getEntities().getTableBlueprints(table));
 				for (EntityBlueprint bp : bps) {
 					if (!validateBlueprintOutgoing(bp, table)) {
 						return false;
@@ -683,7 +697,8 @@ public class DataGenerator {
 				}
 			}
 			if (!table.getIncomingEdges().isEmpty()) {
-				List<EntityBlueprint> bps = new LinkedList<EntityBlueprint>(fab.getEntities().getTableBlueprints(table));
+				List<EntityBlueprint> bps = new LinkedList<EntityBlueprint>(fab
+						.getEntities().getTableBlueprints(table));
 				for (EntityBlueprint bp : bps) {
 					if (!validateBlueprintIncoming(bp, table)) {
 						return false;
@@ -704,8 +719,10 @@ public class DataGenerator {
 
 			Column col = edge.getColumn();
 			if (bp.getValue(col.getJavaName()) == null) {
-				EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge,
-						EntityCreationMode.minMax(edge.getSource().getMin(), edge.getSource().getMax(), Direction.IN), bp);
+				EntityBlueprint entity = fab.getEntity(edge.getDestination()
+						.getTable(), edge, EntityCreationMode.minMax(edge
+						.getSource().getMin(), edge.getSource().getMax(),
+						Direction.IN), bp);
 				bp.setReference(edge, entity);
 				entity.appendLog("used for validation");
 				return false;
@@ -731,15 +748,18 @@ public class DataGenerator {
 				continue;
 			}
 
-			List<EntityBlueprint> referencedByList = bp.getReferencedByList(edge);
+			List<EntityBlueprint> referencedByList = bp
+					.getReferencedByList(edge);
 			int count = referencedByList.size();
 			if (count >= min) {
 				continue;
 			}
 
 			for (int i = count; i < min; i++) {
-				EntityBlueprint entity = fab.getEntity(edge.getSource().getTable(), edge,
-						EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax(), Direction.OUT), bp);
+				EntityBlueprint entity = fab.getEntity(edge.getSource()
+						.getTable(), edge, EntityCreationMode.minMax(edge
+						.getDestination().getMin(), edge.getDestination()
+						.getMax(), Direction.OUT), bp);
 				entity.setReference(edge, bp);
 			}
 
@@ -775,16 +795,22 @@ public class DataGenerator {
 			generate(edge.getDestination().getMax(), edge.getSource().getMax());
 
 			if (edge.getDestination().getMin().getValue() > 0) {
-				for (EntityBlueprint bp : fab.getUnrelatedBlueprints(edge.getSource().getTable(), edge)) {
-					EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge,
-							EntityCreationMode.minMax(edge.getDestination().getMin(), edge.getDestination().getMax(), Direction.IN), bp);
+				for (EntityBlueprint bp : fab.getUnrelatedBlueprints(edge
+						.getSource().getTable(), edge)) {
+					EntityBlueprint entity = fab.getEntity(edge
+							.getDestination().getTable(), edge,
+							EntityCreationMode.minMax(edge.getDestination()
+									.getMin(), edge.getDestination().getMax(),
+									Direction.IN), bp);
 					bp.setReference(edge, entity);
 				}
 			}
 		}
 
-		void generate(Multiplicity.Border destBorder, Multiplicity.Border sourceBorder) {
-			BorderValue dbValue = getCount(destBorder, edge.getColumn().getRelation().getForeignColumn());
+		void generate(Multiplicity.Border destBorder,
+				Multiplicity.Border sourceBorder) {
+			BorderValue dbValue = getCount(destBorder, edge.getColumn()
+					.getRelation().getForeignColumn());
 			BorderValue sbValue = getCount(sourceBorder, edge.getColumn());
 			generate(dbValue, sbValue);
 		}
@@ -799,13 +825,19 @@ public class DataGenerator {
 			log.info("generate " + id + " for " + edge);
 
 			if (destBorder.getValue() == 0) {
-				fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation(), null);
+				fab.getEntity(edge.getSource().getTable(), edge,
+						EntityCreationMode.noRelation(), null);
 			} else if (sourceBorder.getValue() == 0) {
-				fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation(), null);
+				fab.getEntity(edge.getDestination().getTable(), edge,
+						EntityCreationMode.noRelation(), null);
 			} else {
-				EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder, Direction.IN), null);
+				EntityBlueprint entity = fab.getEntity(edge.getDestination()
+						.getTable(), edge, EntityCreationMode.fixed(
+						sourceBorder, Direction.IN), null);
 				for (int i = 0; i < sourceBorder.getValue(); i++) {
-					EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixedInt(1, Direction.OUT), entity);
+					EntityBlueprint result = fab.getEntity(edge.getSource()
+							.getTable(), edge, EntityCreationMode.fixedInt(1,
+							Direction.OUT), entity);
 					result.setReference(edge, entity);
 				}
 			}
@@ -824,7 +856,7 @@ public class DataGenerator {
 	}
 
 	public void setMode(Mode mode) {
-		this.mode = mode;		
+		this.mode = mode;
 	}
 
 }

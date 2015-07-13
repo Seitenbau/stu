@@ -52,10 +52,4 @@ public class TimestampGenerator extends ValueGenerator {
 	public Integer getMaxIndex() {
 		return 10000;
 	}
-
-	@Override
-	public Result nextValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

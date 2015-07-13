@@ -3,28 +3,26 @@ package com.seitenbau.stu.database.generator.values.constraints;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
 
-public class DomainSpecificDataConstraint extends ConstraintBase {
+public class DomainConstraint extends ConstraintBase {
 
 	// Data
 	private HashMap<String, ArrayList<DomainSpecificDataHint>> data = new HashMap<String, ArrayList<DomainSpecificDataHint>>();
 
-	public DomainSpecificDataConstraint(String column1, String column2) {
+	public DomainConstraint(String column1, String column2) {
 		this.modelRef = column1;
 		this.sourceNames = new String[] { column1, column2 };
 
-		this.scope = Scope.Entity;
+		this.scope = Scope.Cell;
 		this.priory = 3;
 	}
 
 	@Override
-	public boolean isValid(EntityBlueprint eb) {
+	public boolean isValid() {
 
-		// TODO: DataSource über diesen Weg besorgen: this.fab.model.dataSource
 		Result value1 = sources.get(0).getResults().get(0);
 		Result value2 = sources.get(1).getResults().get(0);
 
@@ -51,14 +49,14 @@ public class DomainSpecificDataConstraint extends ConstraintBase {
 
 	@Override
 	public ConstraintBase getCopyInstance() {
-		DomainSpecificDataConstraint ec = new DomainSpecificDataConstraint(sourceNames[0], sourceNames[1]);
+		DomainConstraint ec = new DomainConstraint(sourceNames[0], sourceNames[1]);
 		ec.setScope(Scope.Cell);
 		ec.fab = fab;
 		return ec;
 	}
 
 	@Override
-	public ArrayList<Hint> getHint(Result result) {
+	public ArrayList<Hint> getHints(Result result) {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
 		if (result.getValue() != null) {
 			hints.add(new DomainSpecificDataHint(this, result.getGenerator().getKey(), result.getValue()));

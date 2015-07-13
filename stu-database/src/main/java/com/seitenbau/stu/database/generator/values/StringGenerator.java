@@ -2,6 +2,8 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
+import org.apache.commons.lang.RandomStringUtils;
+
 import com.seitenbau.stu.database.generator.values.valuetypes.StringValue;
 
 public class StringGenerator extends ValueGenerator {
@@ -10,23 +12,15 @@ public class StringGenerator extends ValueGenerator {
 
 	@Override
 	public void initialize(long seed) {
-		random = new Random(seed);
-		
-		values = new String[]{ "\"Hund\"", "\"Katze\"", "\"Maus\"", "\"Alpha\"", "\"Beta\"", "\"Gamma\"", "\"Delta\"", "\"Lorem\"",
-				"\"ipsum\"", "\"dolor\"", "\"sit\"", "\"amet\"" };
-		
+		random = new Random(seed);		
+
 		// http://kodejava.org/how-do-i-generate-a-random-alpha-numeric-string/
 	}
-	
-	@Override
-	public Result nextValue(){		
-		return new Result(new StringValue(values[random.nextInt(values.length)]), true, true);
-	}
+
 
 	@Override
-	public Result nextValue(Integer index) {
-		Random rand = new Random(index);		
-		return new Result(new StringValue(values[rand.nextInt(values.length)]), true, true);
+	public Result nextValue(Integer index) {	
+		return new Result(new StringValue(RandomStringUtils.randomAlphabetic(5)), true, true);
 	}
 
 	public static class Factory implements ValueGeneratorFactory {
@@ -40,6 +34,6 @@ public class StringGenerator extends ValueGenerator {
 	
 	@Override
 	public Integer getMaxIndex() {
-		return values.length;
+		return 1000;
 	}
 }

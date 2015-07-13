@@ -13,11 +13,11 @@ public class BockDatabaseDataGenerator
   public static void main(String[] args) throws Exception
   {
 //	TestConfiguration.load(Object.class);
-	  
+
     final DatabaseModel model = new BookDatabaseModel();
 
     final DataGenerator generator = new DataGenerator(model);
-//    generator.setMode(Mode.BACKTRACKING);
+    generator.setMode(Mode.BACKTRACKING_WITH_HINTS);
 
     final Entities entities = generator.generate("book");
 

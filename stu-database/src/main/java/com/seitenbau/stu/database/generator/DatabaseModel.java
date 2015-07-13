@@ -3,7 +3,7 @@ package com.seitenbau.stu.database.generator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
+import com.seitenbau.stu.database.generator.values.DomainData;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 
 public abstract class DatabaseModel {
@@ -26,7 +26,7 @@ public abstract class DatabaseModel {
 
 	int infinite;
 	
-	DomainSpecificDataBuilder dataSource;
+	DomainData dataSource;
 
 	public ArrayList<ConstraintBase> getConstraintsList() {
 		return constraintsList;
@@ -64,7 +64,7 @@ public abstract class DatabaseModel {
 		this.infinite = infinite;
 	}
 
-	public void dataSource(DomainSpecificDataBuilder constraintsData) {
+	public void dataSource(DomainData constraintsData) {
 		this.setDataSource(constraintsData);
 	}
 
@@ -238,11 +238,11 @@ public abstract class DatabaseModel {
 		return databaseName;
 	}
 
-	public DomainSpecificDataBuilder getDataSource() {
+	public DomainData getDataSource() {
 		return dataSource;
 	}
 
-	public void setDataSource(DomainSpecificDataBuilder dataSource) {
+	public void setDataSource(DomainData dataSource) {
 		this.dataSource = dataSource;
 	}
 

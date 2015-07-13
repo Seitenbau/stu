@@ -3,6 +3,7 @@ package com.seitenbau.stu.database.generator.values;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.seitenbau.stu.database.generator.data.DataGenerator;
 import com.seitenbau.stu.database.generator.hints.EqualHint;
 import com.seitenbau.stu.database.generator.hints.GreaterEqualHint;
 import com.seitenbau.stu.database.generator.hints.GreaterHint;
@@ -13,19 +14,25 @@ import com.seitenbau.stu.database.generator.hints.SmallerEqualHint;
 import com.seitenbau.stu.database.generator.hints.SmallerHint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
+import com.seitenbau.stu.logger.Logger;
+import com.seitenbau.stu.logger.TestLoggerFactory;
 
 public abstract class ValueGenerator {
-	public Random random; // TODO private
+	
+	protected final Logger log = TestLoggerFactory.get(DataGenerator.class);
+	
+	private Random random;
 	protected ArrayList<ConstraintBase> scs;
 	private String key;
 	protected String[] set;
 	protected boolean allowNull;
 	protected ArrayList<Hint> hints = new ArrayList<Hint>();
 	
-	protected String[] values;				// TODO: Change to list of Comparable; List of possible result values
-	protected Value<?> returnValue;	// TODO: Maybe change to result? If this value is set, the result value has to be this value
-	// TODO: Remove returnValue and use allowedValues[0] instead
-	protected ArrayList<Value<?>> notAllowedValues = new ArrayList<Value<?>>(); // List of values that can't be set
+	// Possible value
+	protected Value<?> returnValue;	
+	// List of values that can't be set
+	protected ArrayList<Value<?>> notAllowedValues = new ArrayList<Value<?>>(); 
+	// List of all not allowed values
 	protected ArrayList<Value<?>> allowedValues = new ArrayList<Value<?>>(); 
 	
 	protected Value<?> upperLimit;
@@ -33,16 +40,11 @@ public abstract class ValueGenerator {
 	
 	protected Integer lastSeed;
 	
-	// TODO: Manage possible ranges
-	// TODO: Additional...
-	
 	public Integer getLastSeed() {
 		return lastSeed;
 	}
 
 	public abstract Integer getMaxIndex();
-
-	public abstract Result nextValue();
 
 	public abstract Result nextValue(Integer index);
 
@@ -86,7 +88,7 @@ public abstract class ValueGenerator {
 		this.random = random;
 	}
 
-	public void walkthroughHints() {
+	public void handleHints() {
 		for (Hint hint : getHints()) {
 			
 			if (EqualHint.class.isInstance(hint))
@@ -134,12 +136,10 @@ public abstract class ValueGenerator {
 		Value<?> cv = hint.getValue();
 		if(cv != null){
 			try {
-				// TODO
 				if(lowerLimit == null || cv.compareTo(lowerLimit) > 0)
 					lowerLimit = cv;
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 	}
@@ -148,12 +148,10 @@ public abstract class ValueGenerator {
 		Value<?> cv = hint.getValue();
 		if(cv != null){
 			try {
-				// TODO
 				if(upperLimit == null || cv.compareTo(upperLimit) < 0)
 					upperLimit = cv;
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 	}
@@ -165,8 +163,7 @@ public abstract class ValueGenerator {
 				if(lowerLimit == null || cv.compareTo(lowerLimit) > 0)
 					lowerLimit = cv;
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 	}
@@ -178,8 +175,7 @@ public abstract class ValueGenerator {
 				if(upperLimit == null || cv.compareTo(upperLimit) < 0)
 					upperLimit = cv;
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 	}
@@ -193,7 +189,7 @@ public abstract class ValueGenerator {
 				if(lowerLimit == null || lowerL.compareTo(lowerLimit) > 0)
 					lowerLimit = lowerL;	
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 		
@@ -202,7 +198,7 @@ public abstract class ValueGenerator {
 				if(upperLimit == null || upperL.compareTo(upperLimit) < 0)
 					upperLimit = upperL;
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package com.seitenbau.stu.database.generator.values;
 
 import java.util.Random;
 
+import com.seitenbau.stu.database.generator.values.valuetypes.BooleanValue;
 import com.seitenbau.stu.database.generator.values.valuetypes.StringValue;
 
 public class BooleanGenerator extends ValueGenerator {
@@ -11,19 +12,12 @@ public class BooleanGenerator extends ValueGenerator {
 	@Override
 	public void initialize(long seed) {
 		random = new Random(seed);
-		
-		values = new String[]{ "true", "false" };
-	}
-	
-	@Override
-	public Result nextValue(){		
-		return new Result(new StringValue(values[random.nextInt(values.length)]), true, true);
 	}
 	
 	@Override
 	public Result nextValue(Integer index) {
 		Random rand = new Random(index);		
-		return new Result(new StringValue(values[rand.nextInt(values.length)]), true, true);
+		return new Result(new BooleanValue((random.nextInt(2) == 0)? true : false), true, true);
 	}
 
 	public static class Factory implements ValueGeneratorFactory {
@@ -36,6 +30,6 @@ public class BooleanGenerator extends ValueGenerator {
 
 	@Override
 	public Integer getMaxIndex() {
-		return values.length;
+		return 2;
 	}
 }

@@ -10,7 +10,7 @@ import java.util.Set;
 
 import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.data.EntityFactory;
-import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
+import com.seitenbau.stu.database.generator.values.DomainData;
 import com.seitenbau.stu.util.CamelCase;
 
 public class Table {
@@ -34,12 +34,12 @@ public class Table {
 	private final List<Column> _columns;
 
 
-	private DomainSpecificDataBuilder _dataSource;
+	private DomainData _dataSource;
 
 	protected final DatabaseModel _model;
 
 	public Table(String name, String javaName, String description, long seed, Integer infinite, int minEntities,
-			List<ColumnBuilder> columnBuilders, DomainSpecificDataBuilder dataSource, DatabaseModel model) {
+			List<ColumnBuilder> columnBuilders, DomainData dataSource, DatabaseModel model) {
 		_name = name;
 		_javaName = javaName;
 		_description = description;
@@ -341,11 +341,11 @@ public class Table {
 	}
 
 
-	public DomainSpecificDataBuilder getDataSource() {
+	public DomainData getDataSource() {
 		return _dataSource;
 	}
 
-	public void setDataSource(DomainSpecificDataBuilder dataSource) {
+	public void setDataSource(DomainData dataSource) {
 		this._dataSource = dataSource;
 	}
 }

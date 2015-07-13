@@ -10,6 +10,16 @@ public abstract class CompareConstraint extends ConstraintBase {
 
 	private ArrayList<Value<?>> values = new ArrayList<Value<?>>();
 	
+	/**
+	 * @param sourceName
+	 *            Defines the source in the form "table.column".
+	 * @param value
+	 *            Defines a constant value of type
+	 *            {@link com.seitenbau.stu.database.generator.values.valuetypes.Value
+	 *            Value<T>}.
+	 * @see com.seitenbau.stu.database.generator.values.valuetypes.Value
+	 *      Value<T>
+	 */
 	public CompareConstraint(String sourceName1, String sourceName2) {
 		this.scope = Scope.Cell;
 		this.priory = 5;
@@ -73,7 +83,9 @@ public abstract class CompareConstraint extends ConstraintBase {
 		return values;
 	}
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstraintBase getCopyInstance() {
 		ConstraintBase cb = null;
@@ -116,6 +128,9 @@ public abstract class CompareConstraint extends ConstraintBase {
 		return cb;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	protected Integer getResultPos(Result result) {
 		Integer pos = null;
 		for (int i = 0; i < sourceNames.length; i++) {

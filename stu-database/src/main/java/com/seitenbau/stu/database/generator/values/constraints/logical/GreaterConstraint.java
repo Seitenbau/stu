@@ -2,115 +2,181 @@ package com.seitenbau.stu.database.generator.values.constraints.logical;
 
 import java.util.ArrayList;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.GreaterHint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.hints.SmallerHint;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.constraints.CompareConstraint;
 import com.seitenbau.stu.database.generator.values.constraints.ConstraintBase;
-import com.seitenbau.stu.database.generator.values.constraints.Source;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
+/**
+ * <p>
+ * An instance of this class is used to define a constraint between two values.
+ * The first value must be greater than the second. A value can be either a
+ * constant value of type
+ * {@link com.seitenbau.stu.database.generator.values.valuetypes.Value Value<T>}
+ * or a reference to a cell in the form of {@code table.column}. The reference
+ * is formed either between two cells of the same entity in one table or between
+ * two cells that are in a 1:1-relation.
+ * </p>
+ * 
+ * <p>
+ * <b>Examples:</b> <code>
+ * <pre>
+ * GreaterConstraint greaterConstraint = new GreaterConstraint("author.registerDate", "author.birthday"); 
+ * GreaterConstraint greaterConstraint = new GreaterConstraint("user.age", new IntegerValue(17));
+ * GreaterConstraint greaterConstraint = new GreaterConstraint(new DoubleValue(9.99), "item.price");
+ * </pre>
+ * </code>
+ */
 public class GreaterConstraint extends CompareConstraint {
 
 	/**
-	 * The parameter sourceName1 has to be greater than the parameter sourceName2
+	 * <p>
+	 * {@code public GreaterConstraint(String sourceName1, String sourceName2)}
+	 * </p>
+	 * 
+	 * <p>
+	 * Creates an GreaterConstraint instance, which specifies that the value of
+	 * the source with reference name {@code sourceName1} must be greater than
+	 * the value of the source with the reference name {@code sourceName2}.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>Example:</b>
+	 * </p>
+	 * 
+	 * <code>
+	 * <pre>
+	 * GreaterConstraint greaterConstraint = new GreaterConstraint("author.registerDate", "author.birthday"); 
+	 * </pre>
+	 * </code>
 	 * 
 	 * @param sourceName1
-	 *            "tableName.columnName"
+	 *            Defines the name of the reference to the source in the form
+	 *            {@code table.column}.
 	 * @param sourceName2
-	 *            "tableName.columnName"
+	 *            Defines the name of the reference to the source in the form
+	 *            {@code table.column}.
 	 */
 	public GreaterConstraint(String sourceName1, String sourceName2) {
 		super(sourceName1, sourceName2);
 	}
 
 	/**
-	 * The parameter sourceName1 has to be greater than the value
+	 * <p>
+	 * {@code GreaterConstraint(String sourceName, Value<?> value)}
+	 * </p>
+	 *
+	 * <p>
+	 * Creates an GreaterConstraint instance, which specifies that the value of
+	 * the source with reference name {@code sourceName} must be greater than
+	 * the constant {@code value} of type
+	 * {@link com.seitenbau.stu.database.generator.values.valuetypes.Value
+	 * Value<T>}.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>Example:</b>
+	 * </p>
+	 * 
+	 * <code>
+	 * <pre>
+	 * GreaterConstraint greaterConstraint = new GreaterConstraint("user.age", new IntegerValue(17));
+	 * </pre>
+	 * </code>
 	 * 
 	 * @param sourceName
+	 *            Defines the name of the reference to the source in the form
+	 *            {@code table.column}.
 	 * @param value
+	 *            Defines a constant value of type
+	 *            {@link com.seitenbau.stu.database.generator.values.valuetypes.Value
+	 *            Value<T>}.
+	 * @see com.seitenbau.stu.database.generator.values.valuetypes.Value
+	 *      Value<T>
 	 */
 	public GreaterConstraint(String sourceName, Value<?> value) {
 		super(sourceName, value);
 	}
 
 	/**
+	 * <p>
+	 * {@code public GreaterConstraint(Value<?> value, String sourceName)}
+	 * </p>
+	 * 
+	 * <p>
+	 * Creates an GreaterConstraint instance, which specifies that the constant
+	 * {@code value} of type of type
+	 * {@link com.seitenbau.stu.database.generator.values.valuetypes.Value
+	 * Value<T>} must be greater than the value of the sources with the
+	 * reference name {@code sourceName}.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>Example:</b>
+	 * </p>
+	 * 
+	 * <code>
+	 * <pre>
+	 * GreaterConstraint greaterConstraint = new GreaterConstraint(new DoubleValue(9.99), "item.price");
+	 * </pre>
+	 * </code>
+	 * 
 	 * @param value
+	 *            Defines a constant value of type
+	 *            {@link com.seitenbau.stu.database.generator.values.valuetypes.Value
+	 *            Value<T>}.
 	 * @param sourceName
+	 *            Defines the name of the reference to the source in the form
+	 *            {@code table.column}.
+	 * @see com.seitenbau.stu.database.generator.values.valuetypes.Value
+	 *      Value<T>
 	 */
 	public GreaterConstraint(Value<?> value, String sourceName) {
 		super(value, sourceName);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.seitenbau.stu.database.generator.values.constraints.ConstraintBase#isValid(com.seitenbau.stu.database.generator.data.EntityBlueprint)
-	 */
 	@Override
-	public boolean isValid(EntityBlueprint eb) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isValid() {
+
+		Value<?>[] values = resolveValues();
 
 		try {
-			if (sourceNames.length == 2)
-				return getSources().get(0).getResults().get(0).getValue().compareTo(getSources().get(1).getResults().get(0).getValue()) > 0;
-
-			return getSources().get(0).getResults().get(0).getValue().compareTo(getValue(0)) > 0;
+			return values[0].compareTo(values[1]) > 0;
 		} catch (Exception e) {
-			return false;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		return false;
 	}
 
 	@Override
-	public ConstraintBase getCopyInstance() {
-		GreaterConstraint eqConstraint;
-		if (sourceNames.length == 2)
-			eqConstraint = new GreaterConstraint(sourceNames[0], sourceNames[1]);
-		else
-			eqConstraint = new GreaterConstraint(getValue(0), sourceNames[0]); // TODO: Direction....
-
-		eqConstraint.fab = this.fab;
-
-		return eqConstraint;
-	}
-
-	@Override
-	public ArrayList<Hint> getHint(Result result) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public ArrayList<Hint> getHints(Result result) {
 		ArrayList<Hint> hints = new ArrayList<Hint>();
+		Value<?>[] values = resolveValues();
 
-		if (this.getValue(0) != null) {
-			GreaterHint hint = new GreaterHint(this);
-			hint.setValue(this.getValue(0));
-			hints.add(hint);
-		} else {
-			for (Source source : sources) {
-				for (Result r : source.getResults()) {
-					if (r != result) {
-						if (r.isGenerated()) {
-							Hint hint;
-							if (source.getName().compareTo(sourceNames[0]) != 0) {
-								hint = new GreaterHint(this);
-								// else
-								// hint = new SmallerHint(this);
+		int resultPos = getResultPos(result);
 
-								hint.setSourceName(source.getName());
-								hint.setValue(r.getValue());
-								hints.add(hint);
-								return hints;
-							}else{
-								hint = new SmallerHint(this);
-								// else
-								// hint = new SmallerHint(this);
-
-								hint.setSourceName(source.getName());
-								hint.setValue(r.getValue());
-								hints.add(hint);
-								return hints;
-							}
-						}
-					}
-				}
+		if (resultPos == 0) {
+			if (values[1] != null) {
+				GreaterHint eqHint = new GreaterHint(this);
+				eqHint.setValue(values[1]);
+				hints.add(eqHint);
+			}
+		} else if (resultPos == 1) {
+			if (values[0] != null) {
+				SmallerHint eqHint = new SmallerHint(this);
+				eqHint.setValue(values[0]);
+				hints.add(eqHint);
 			}
 		}
 

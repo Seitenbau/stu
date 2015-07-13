@@ -3,16 +3,15 @@ package com.seitenbau.stu.database.generator.values.constraints;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import com.seitenbau.stu.database.generator.data.EntityBlueprint;
 import com.seitenbau.stu.database.generator.hints.Hint;
 import com.seitenbau.stu.database.generator.values.Result;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
-public class FunctionalConstraint extends ConstraintBase {
+public abstract class FunctionConstraint extends ConstraintBase {
 
 	private ArrayList<Value<?>> values = new ArrayList<Value<?>>();
 
-	public FunctionalConstraint(String sourceName1, String sourceName2, String resultSource) {
+	public FunctionConstraint(String sourceName1, String sourceName2, String resultSource) {
 		this.scope = Scope.Cell;
 		this.priory = 2;
 		mode = 1;
@@ -20,7 +19,7 @@ public class FunctionalConstraint extends ConstraintBase {
 		this.sourceNames = new String[] { sourceName1, sourceName2, resultSource };
 	}
 
-	public FunctionalConstraint(String sourceName1, String sourceName2, Value<?> value) {
+	public FunctionConstraint(String sourceName1, String sourceName2, Value<?> value) {
 		this.priory = 2;
 		this.scope = Scope.Cell;
 		mode = 2;
@@ -29,7 +28,7 @@ public class FunctionalConstraint extends ConstraintBase {
 		values.add(value);
 	}
 
-	public FunctionalConstraint(String sourceName1, Value<?> value, String resultSource) {
+	public FunctionConstraint(String sourceName1, Value<?> value, String resultSource) {
 		this.priory = 2;
 		this.scope = Scope.Cell;
 		mode = 3;
@@ -38,7 +37,7 @@ public class FunctionalConstraint extends ConstraintBase {
 		values.add(value);
 	}
 
-	public FunctionalConstraint(Value<?> value, String sourceName1, String resultSource) {
+	public FunctionConstraint(Value<?> value, String sourceName1, String resultSource) {
 		this.priory = 2;
 		this.scope = Scope.Cell;
 		mode = 4;
@@ -47,7 +46,7 @@ public class FunctionalConstraint extends ConstraintBase {
 		values.add(value);
 	}
 
-	public FunctionalConstraint(String sourceName1, Value<?> value1, Value<?> value2) {
+	public FunctionConstraint(String sourceName1, Value<?> value1, Value<?> value2) {
 		this.priory = 1;
 		this.scope = Scope.Cell;
 		mode = 5;
@@ -57,7 +56,7 @@ public class FunctionalConstraint extends ConstraintBase {
 		values.add(value2);
 	}
 
-	public FunctionalConstraint(Value<?> value1, String sourceName1, Value<?> value2) {
+	public FunctionConstraint(Value<?> value1, String sourceName1, Value<?> value2) {
 		this.priory = 1;
 		this.scope = Scope.Cell;
 		mode = 6;
@@ -67,7 +66,7 @@ public class FunctionalConstraint extends ConstraintBase {
 		values.add(value2);
 	}
 
-	public FunctionalConstraint(Value<?> value1, Value<?> value2, String resultSource) {
+	public FunctionConstraint(Value<?> value1, Value<?> value2, String resultSource) {
 		this.priory = 1;
 		this.scope = Scope.Cell;
 		mode = 7;
@@ -137,13 +136,33 @@ public class FunctionalConstraint extends ConstraintBase {
 		}
 		return values;
 	}
+	
+	protected Integer getResultPos(Result result) {
+		Integer pos = null;
+		for (int i = 0; i < sourceNames.length; i++) {
+			if (sourceNames[i].equals(result.getSourceName())) {
+				pos = i;
+			}
+		}
 
-	@Override
-	public boolean isValid(EntityBlueprint eb) {
-		// TODO Auto-generated method stub
-		return false;
+		if (pos != null) {
+			if (mode == 3) {
+				if (pos == 1) {
+					pos = 2;
+				}
+			} else if (mode == 4 || mode == 6) {
+				pos += 1;
+			} else if (mode == 7) {
+				pos = 2;
+			} 
+		}
+
+		return pos;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstraintBase getCopyInstance() {
 		ConstraintBase cb = null;
@@ -197,32 +216,13 @@ public class FunctionalConstraint extends ConstraintBase {
 		
 		return cb;
 	}
-	
-	protected Integer getResultPos(Result result) {
-		Integer pos = null;
-		for (int i = 0; i < sourceNames.length; i++) {
-			if (sourceNames[i].equals(result.getSourceName())) {
-				pos = i;
-			}
-		}
 
-		if (pos != null) {
-			if (mode == 3) {
-				if (pos == 1) {
-					pos = 2;
-				}
-			} else if (mode == 4 || mode == 6) {
-				pos += 1;
-			} else if (mode == 7) {
-				pos = 2;
-			} 
-		}
 
-		return pos;
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public ArrayList<Hint> getHint(Result result) {
+	public ArrayList<Hint> getHints(Result result) {
 		return new ArrayList<Hint>();
-	}
+	}	
 }

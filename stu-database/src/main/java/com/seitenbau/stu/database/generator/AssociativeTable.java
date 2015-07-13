@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
+import com.seitenbau.stu.database.generator.values.DomainData;
 
 public class AssociativeTable extends Table
 {
@@ -13,7 +13,7 @@ public class AssociativeTable extends Table
   private final List<Column> _dataColumns;
 
   public AssociativeTable(String name, String javaName, String description, long seed,
-      Integer infinite, int minEntities, List<ColumnBuilder> columnBuilders, DomainSpecificDataBuilder dataSource, DatabaseModel model)
+      Integer infinite, int minEntities, List<ColumnBuilder> columnBuilders, DomainData dataSource, DatabaseModel model)
   {
     super(name, javaName, description, seed, infinite, minEntities, columnBuilders, dataSource, model);
 

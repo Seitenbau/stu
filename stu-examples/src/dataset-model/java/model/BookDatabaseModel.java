@@ -3,19 +3,10 @@ package model;
 import com.seitenbau.stu.database.generator.DataType;
 import com.seitenbau.stu.database.generator.DatabaseModel;
 import com.seitenbau.stu.database.generator.TableBuilder;
-import com.seitenbau.stu.database.generator.values.BuchNameGenerator;
+import com.seitenbau.stu.database.generator.values.DomainData;
 import com.seitenbau.stu.database.generator.values.DomainGenerator;
-import com.seitenbau.stu.database.generator.values.DomainSpecificDataBuilder;
 import com.seitenbau.stu.database.generator.values.IntegerGenerator;
-import com.seitenbau.stu.database.generator.values.NachnameGenerator;
-import com.seitenbau.stu.database.generator.values.VerlagNameGenerator;
-import com.seitenbau.stu.database.generator.values.constraints.DomainSpecificDataConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.RangeConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.UniqueConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.functional.AddConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.functional.MultiConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.functional.SubConstraint;
-import com.seitenbau.stu.database.generator.values.constraints.logical.GreaterEqualConstraint;
+import com.seitenbau.stu.database.generator.values.constraints.functional.ModConstraint;
 import com.seitenbau.stu.database.generator.values.valuetypes.IntValue;
 
 public class BookDatabaseModel extends DatabaseModel {
@@ -26,7 +17,7 @@ public class BookDatabaseModel extends DatabaseModel {
 		// enableTableModelClassesGeneration();
 		// disableTableDSLGeneration();
 		infinite(5);
-		dataSource(new DomainSpecificDataBuilder());
+		dataSource(new DomainData());
 
 		TableBuilder address = table("address");
 		TableBuilder author = table("author");
@@ -36,6 +27,10 @@ public class BookDatabaseModel extends DatabaseModel {
 		TableBuilder right = table("right");
 		TableBuilder section = table("section");
 		TableBuilder user = table("user");
+		
+		constraint(new ModConstraint("author.birthyear", new IntValue(4), new IntValue(2)));
+		
+//		EqualConstraint eq = new EqualConstraint(sourceName1, sourceName2)
 
 		address.column("id", DataType.BIGINT) //
 				.defaultIdentifier() //
@@ -57,6 +52,8 @@ public class BookDatabaseModel extends DatabaseModel {
 				.column("country", DataType.VARCHAR) //
 				.generator(new DomainGenerator("country")) //
 				//
+				.column("string", DataType.VARCHAR) //
+				//
 				.build();
 
 		author //
@@ -69,7 +66,7 @@ public class BookDatabaseModel extends DatabaseModel {
 				.constraint().unique() //
 				//
 				.column("lastname", DataType.VARCHAR) //
-				.generator(new NachnameGenerator()) //
+				.generator(new DomainGenerator("lastname")) //
 				//
 				.column("gender", DataType.VARCHAR) //
 				.generator(new DomainGenerator("gender")) //
@@ -78,11 +75,13 @@ public class BookDatabaseModel extends DatabaseModel {
 				.column("birthyear", DataType.INTEGER) //
 				.generator(new IntegerGenerator(1900, 2100)) //
 				.constraint().range(new IntValue(1900), new IntValue(2015)) //
+				
 				//
 				.column("memberyear", DataType.INTEGER) //
 				.generator(new IntegerGenerator(1900, 2100)) //
-				.constraint().range(new IntValue(1980), new IntValue(2015)) //
+//				.constraint().range(new IntValue(1980), new IntValue(2015)) //
 				.constraint().greater("author.birthyear") //
+//				.constraint().smaller("author.lastlogin") //
 				//
 //				.column("lastlogin", DataType.INTEGER) //
 //				.generator(new IntegerGenerator(2000, 2015)) //
@@ -109,7 +108,7 @@ public class BookDatabaseModel extends DatabaseModel {
 				//
 				.autoInvokeNext()
 				//
-				.column("name", DataType.VARCHAR).generator(new BuchNameGenerator())
+				.column("name", DataType.VARCHAR).generator(new DomainGenerator("book"))
 				//
 				.column("price", DataType.INTEGER).generator(new IntegerGenerator(1, 20))
 				//
@@ -136,7 +135,7 @@ public class BookDatabaseModel extends DatabaseModel {
 				.autoInvokeNext() //
 				//
 				.column("name", DataType.VARCHAR) //
-				.generator(new VerlagNameGenerator()) //
+				.generator(new DomainGenerator("publisher")) //
 				//
 				.column("addressid", DataType.BIGINT).reference //
 		.local.name("belongsTo").description("").foreign(address).name("hasMembers").description("")//
@@ -148,7 +147,7 @@ public class BookDatabaseModel extends DatabaseModel {
 				.autoInvokeNext() //
 				//
 				.column("name", DataType.VARCHAR) //
-				.generator(new VerlagNameGenerator()) //
+				.generator(new DomainGenerator("publisher")) //
 				.build();
 
 		section //
@@ -176,12 +175,11 @@ public class BookDatabaseModel extends DatabaseModel {
 				.generator(new DomainGenerator("firstname")) //
 				//
 				.column("lastname", DataType.VARCHAR) //
-				.generator(new NachnameGenerator()) //
+				.generator(new DomainGenerator("lastname")) //
 				// EMail Adresse
 				//
 				.column("cardnumber", DataType.INTEGER) //
 				.generator(new IntegerGenerator(50000, 4999999)) //
-//				.constraint().range(new IntValue(100000), new IntValue(999999)) //
 				.constraint().unique() //
 				//
 				.column("birthday", DataType.INTEGER) //
@@ -224,7 +222,7 @@ public class BookDatabaseModel extends DatabaseModel {
 // // constraint(new AddConstraint("autor.mitgliedseit", "autor.geburtsjahr", new IntValue(4000)));
 // constraint(new MultiConstraint("autor.anzahlbuecher", "autor.summebuecher", new IntValue(3626)));
 // // constraint(new EqualConstraint("autor.nachnamelaenge", new IntValue(20)));
-// // constraint(new ModConstraint("autor.geburtsjahr", new IntValue(4), new IntValue(2)));
+
 // constraint(new SubConstraint("adresse.nummer", new IntValue(20), new IntValue(30)));
 
 // ///////////////////////////////////////////////////////////////////////////////////////

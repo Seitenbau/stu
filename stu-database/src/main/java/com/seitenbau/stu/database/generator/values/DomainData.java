@@ -8,7 +8,7 @@ import com.seitenbau.stu.database.generator.hints.DomainSpecificDataHint;
 import com.seitenbau.stu.database.generator.values.valuetypes.StringValue;
 import com.seitenbau.stu.database.generator.values.valuetypes.Value;
 
-public class DomainSpecificDataBuilder {
+public class DomainData {
 
 	public HashMap<String, ArrayList<DomainSpecificDataHint>> data = new HashMap<String, ArrayList<DomainSpecificDataHint>>();
 		
@@ -80,16 +80,16 @@ public class DomainSpecificDataBuilder {
 		return false;
 	}
 	
-	public DomainSpecificDataBuilder() {
+	public DomainData() {
 		
 		// http://www.datendieter.de/item/Postleitzahlen-Datenbank_Deutschland
 		
 		DomainSpecificDataHint male = addData("gender", "male");
 		DomainSpecificDataHint female = addData("gender", "female");
 		
-		DomainSpecificDataHint deutsch = addData("sprache", "deutsch");
-		DomainSpecificDataHint englisch = addData("sprache", "englisch");
-		DomainSpecificDataHint franz = addData("sprache", "französisch");
+		DomainSpecificDataHint deutsch = addData("speech", "deutsch");
+		DomainSpecificDataHint englisch = addData("speech", "englisch");
+		DomainSpecificDataHint franz = addData("speech", "französisch");
 		
 		DomainSpecificDataHint robin = addData("firstname", "Robin");
 		DomainSpecificDataHint adalgis = addData("firstname", "Adalgis"); 
@@ -121,6 +121,41 @@ public class DomainSpecificDataBuilder {
 		DomainSpecificDataHint bahnhofstrasse = addData("street", "Bahnhofstraße");
 		DomainSpecificDataHint hauptstrasse = addData("street", "Hauptstraße");
 		DomainSpecificDataHint rathausstrasse = addData("street", "Rathausstraße");
+		
+		DomainSpecificDataHint bibel = addData("book", "Bibel");
+		DomainSpecificDataHint odyssee = addData("book", "Odyssee");
+		DomainSpecificDataHint apologie = addData("book", "Apologie");
+		DomainSpecificDataHint daphnis = addData("book", "Daphnis und Chloe");
+		DomainSpecificDataHint Bekenntnisse = addData("book", "Bekenntnisse");
+		DomainSpecificDataHint tristan = addData("book", "Tristan");
+		DomainSpecificDataHint utopia = addData("book", "Utopia");
+		DomainSpecificDataHint essais = addData("book", "Essais");
+		DomainSpecificDataHint candide = addData("book", "Candide");
+		DomainSpecificDataHint siebenkaes = addData("book", "Siebenkäs");
+		
+		DomainSpecificDataHint mueller = addData("lastname", "Müller");
+		DomainSpecificDataHint schmidt = addData("lastname", "Schmidt");
+		DomainSpecificDataHint schneider = addData("lastname", "Schneider");
+		DomainSpecificDataHint fischer = addData("lastname", "Fischer");
+		DomainSpecificDataHint weber = addData("lastname", "Weber");
+		DomainSpecificDataHint meyer = addData("lastname", "Meyer");
+		DomainSpecificDataHint wagner = addData("lastname", "Wagner");
+		DomainSpecificDataHint becker = addData("lastname", "Becker");
+		DomainSpecificDataHint schulz = addData("lastname", "Schulz");
+		DomainSpecificDataHint hoffmann = addData("lastname", "Hoffmann");
+		
+		DomainSpecificDataHint a1verlag = addData("publisher", "A1 Verlag");
+		DomainSpecificDataHint akademieverlag = addData("publisher", "Akademie Verlag");
+		DomainSpecificDataHint alexanderverlag = addData("publisher", "Alexander Verlag");
+		DomainSpecificDataHint benteli = addData("publisher", "Benteli");
+		DomainSpecificDataHint benziger = addData("publisher", "Benziger");
+		DomainSpecificDataHint enkeverlag = addData("publisher", "Enke Verlag");
+		DomainSpecificDataHint expertverlag = addData("publisher", "expert verlag");
+		DomainSpecificDataHint friedrichverlag = addData("publisher", "Friedrich Verlag");
+		DomainSpecificDataHint gmeinerverlag = addData("publisher", "Gmeiner-Verlag");
+		DomainSpecificDataHint kindlerverlag = addData("publisher", "Kindler Verlag");
+
+
 		
 		
 		

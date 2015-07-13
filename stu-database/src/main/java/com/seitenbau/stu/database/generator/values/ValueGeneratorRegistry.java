@@ -28,6 +28,8 @@ public enum ValueGeneratorRegistry {
 		register(new IntegerGenerator.Factory(0, Integer.MAX_VALUE)).forType(DataType.INTEGER_UNSIGNED);
 		
 		register(new IntegerGenerator.Factory(0, Integer.MAX_VALUE)).forType(DataType.BIGINT);
+		
+		
 		register(new StringGenerator.Factory()).forType(DataType.VARCHAR);
 		register(new BooleanGenerator.Factory()).forType(DataType.BOOLEAN);
 		register(new DateGenerator.Factory()).forType(DataType.DATE);
