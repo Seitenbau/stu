@@ -977,7 +977,7 @@ public class DatabaseTesterBase<MY_TYPE>
     while (true)
     {
       int count = getRowCount(tableName);
-      if (count > newMinRowCount)
+      if (count >= newMinRowCount)
       {
         return count;
       }
