@@ -85,7 +85,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Constructor that sets connection data to the database.
-   * 
+   *
    * <code><pre>
    *     dbTester = new DatabaseTester(
    *        "org.gjt.mm.mysql.Driver",
@@ -94,13 +94,13 @@ public class DatabaseTesterBase<MY_TYPE>
    *        "password"
    *       );
    * </pre></code>
-   * 
+   *
    * @param driverName Class name of the database driver.
-   * 
+   *
    * @param url URL of the database.
-   * 
+   *
    * @param username Database user.
-   * 
+   *
    * @param password Database user password.
    */
   public DatabaseTesterBase(String driverName, String url, String username, String password,
@@ -115,7 +115,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Constructor that sets connection data to the database.
-   * 
+   *
    * <code><pre>
    *     dbTester = new DatabaseTester(
    *        "org.gjt.mm.mysql.Driver",
@@ -125,7 +125,7 @@ public class DatabaseTesterBase<MY_TYPE>
    *        getClass()
    *       );
    * </pre></code>
-   * 
+   *
    * @param driverName Class name of the database driver.
    * @param url URL of the database.
    * @param username Database user.
@@ -145,7 +145,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Constructor that sets connection data to the database.
-   * 
+   *
    * <code><pre>
    *     dbTester = new DatabaseTester(
    *        "org.gjt.mm.mysql.Driver",
@@ -155,25 +155,21 @@ public class DatabaseTesterBase<MY_TYPE>
    *        getClass()
    *       );
    * </pre></code>
-   * 
+   *
    * @param driverName Class name of the database driver.
-   * 
    * @param url URL of the database.
-   * 
    * @param username Database user.
-   * 
    * @param password Database user password.
-   * 
-   * @param fSchema Database schema.
+   * @param schema Database schema.
    */
-  public DatabaseTesterBase(String driverName, String url, String username, String password, String schemema,
+  public DatabaseTesterBase(String driverName, String url, String username, String password, String schema,
       IDataSetModifier... defaultModifiers)
   {
     fDriverName = driverName;
     fUrl = url;
     fUsername = username;
     fPassword = password;
-    fSchema = schemema;
+    fSchema = schema;
     init(defaultModifiers, null);
   }
 
@@ -210,7 +206,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Sets a type factory that is registered on a new connection.
-   * 
+   *
    * @param registerTypeFactory
    */
   public MY_TYPE setTypeFactoryToRegister(IDataTypeFactory registerTypeFactory)
@@ -256,7 +252,7 @@ public class DatabaseTesterBase<MY_TYPE>
    * The default modifiers are applied whenever datasets are loaded
    * (e.g. via {@link #getDataSet(String, IDataSetModifier...)}).
    * </p>
-   * 
+   *
    * @param aModifier the additional modifier.
    * @return instance of the generic type
    */
@@ -276,7 +272,7 @@ public class DatabaseTesterBase<MY_TYPE>
    * The default modifiers are applied whenever datasets are loaded
    * (e.g. via {@link #getDataSet(String, IDataSetModifier...)}).
    * </p>
-   * 
+   *
    * @param modifiers the additional modifiers.
    * @return instance of the generic type
    */
@@ -294,7 +290,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Method that compares a dataset to the actual database.
-   * 
+   *
    * @param expectedDataSet the expected dataset
    * @param modifiers to modify the dataset
    * @throws Exception if the assertion fails
@@ -306,7 +302,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Method that compares a dataset to the actual database.
-   * 
+   *
    * @param factory factory for the dataset
    * @param modifiers to modify the dataset
    * @throws Exception if the assertion fails
@@ -406,14 +402,14 @@ public class DatabaseTesterBase<MY_TYPE>
    * Compares the current state of the database with the given XML
    * file. Convenient method. For more database assertion methods see
    * {@link DBAssertion}.
-   * 
+   *
    * @param xmlFileRelativToClass XML file relative to the package. If
    *        a prefix is set via {@link #setClassPathPrefix(String)} it
    *        is put in front.
-   * 
+   *
    * @param modifiers Optional list of {@link IDataSetModifier} that
    *        can manipulate the content of the loaded dataset.
-   * 
+   *
    * @throws Exception Error that occurs while loading or comparison.
    */
   public void assertDataBase(String xmlFileRelativToClass, IDataSetModifier... modifiers) throws Exception
@@ -433,7 +429,7 @@ public class DatabaseTesterBase<MY_TYPE>
    * Compares the database with the dataset that was last added with
    * the cleanInsert method. Derived classes may have manipulate the
    * last dataset via {@link #setLastInsertedDataSet(IDataSet)}.
-   * 
+   *
    * @throws Exception Error during comparison
    */
   public void assertDataBaseStillTheSame() throws Exception
@@ -446,7 +442,7 @@ public class DatabaseTesterBase<MY_TYPE>
    * the cleanInsert method. The asserion is done according to the
    * given sorting configuration. Derived classes may have manipulate
    * the last dataset via {@link #setLastInsertedDataSet(IDataSet)}.
-   * 
+   *
    * @param sortConfig the sorting configuration
    * @throws Exception Error during comparison
    */
@@ -474,9 +470,9 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Util method that wraps the loading of the dataset and the
    * CLEAN_INSERT.
-   * 
+   *
    * @param datasetFactory creates the actual dataset on the fly
-   * 
+   *
    * @param modifiers additional modifiers.
    * @throws Exception
    */
@@ -489,9 +485,9 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Util method that wraps the loading of the dataset and the
    * CLEAN_INSERT.
-   * 
+   *
    * @param dataset
-   * 
+   *
    * @param modifiers additional modifiers.
    * @throws Exception
    */
@@ -507,9 +503,9 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Util method that wraps the loading of the dataset and the
    * CLEAN_INSERT.
-   * 
+   *
    * @param dataset
-   * 
+   *
    * @param modifiers additional modifiers.
    * @throws Exception
    */
@@ -524,9 +520,9 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Util method that wraps the loading of the dataset and the
    * CLEAN_INSERT.
-   * 
+   *
    * @param datasetFactory Factory that return the actual dataset.
-   * 
+   *
    * @param modifiers additional modifiers.
    * @throws Exception
    */
@@ -543,7 +539,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Util method for truncate all data set tables.
-   * @param dataset1 the dataset Factory which create the actual
+   * @param datasetFactory the dataset Factory which create the actual
    *        Dataset for the truncate.
    * @throws Exception
    */
@@ -601,7 +597,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Closes the connection to the database.
-   * 
+   *
    * @throws Exception Error that occurs while closing the connection.
    */
   public void close() throws Exception
@@ -615,7 +611,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Creates a dataset with a live snapshot of the entire database.
-   * 
+   *
    * @return the database dump.
    */
   public IDataSet createDatabaseSnapshot() throws Exception
@@ -625,12 +621,12 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Returns the connection to the database or throws an exception.
-   * 
+   *
    * @return The connction to the database-
-   * 
+   *
    * @throws ClassNotFoundException Database driver could not be
    *         loaded.
-   * 
+   *
    * @throws SQLException Error while connecting to database.
    * @throws DatabaseUnitException
    */
@@ -735,18 +731,18 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Load the dataset from the given XML file relative to the package
-   * 
+   *
    * @param xmlFileRelativToClass Filename. In addition the optiomal
    *        {@link #setClassPathPrefix(String)} dcoulf be put in
    *        front.
-   * 
+   *
    * @param modifiers Optional list of modifiers that manipulate the
    *        dataset. In addition to the optional modifiers the global
    *        default modifiers are applied.
-   * 
+   *
    * @return The dataset of the XML file. Could be manipulated by the
    *         modifiers.
-   * 
+   *
    * @throws Exception Error while reading file or applying a
    *         modifier.
    */
@@ -758,7 +754,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Util method for the last inserted dataset.
-   * 
+   *
    * @return Returns the last via
    *         {@link #cleanInsert(IDataSet, IDataSetModifier...)}
    *         inserted dataset. {@code null} if no dataset inserted
@@ -771,9 +767,9 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Method to access the default modifiers.
-   * 
+   *
    * @param modifiers optional list of additional modifiers.
-   * 
+   *
    * @return Returns the provided optional modifiers and the default
    *         modifiers as array.
    */
@@ -789,12 +785,12 @@ public class DatabaseTesterBase<MY_TYPE>
     {
       list.addAll(Arrays.asList(modifiers));
     }
-    return list.toArray(new IDataSetModifier[] {});
+    return list.toArray(new IDataSetModifier[list.size()]);
   }
 
   /**
    * Sets the prefix in front of all file read operations.
-   * 
+   *
    * @param prefixForClasspath The prefix. Put in front of every
    *        filename. Can consist of a path ("Test-02-resources/"). If
    *        {@code null} is provided the prefix is ignored.
@@ -848,7 +844,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Sets the clazz instance to detect the target package directory.
-   * 
+   *
    * @param clazz The Class instance.
    */
   protected void setClazz(Class<?> clazz)
@@ -858,7 +854,7 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Setter
-   * 
+   *
    * @param loadedDS the dataset instance of the last inserted
    *        dataset.
    */
@@ -891,14 +887,14 @@ public class DatabaseTesterBase<MY_TYPE>
    * Compares the current state of the database with the given XML
    * file. Convenient method. For more database assertion methods see
    * {@link DBAssertion}.
-   * 
+   *
    * @param xmlFileRelativToClass XML file relative to the package. If
    *        a prefix is set via {@link #setClassPathPrefix(String)} it
    *        is put in front.
    * @param tableName The name of the table.
    * @param modifiers Optional list of {@link IDataSetModifier} that
    *        can manipulate the content of the loaded dataset.
-   * 
+   *
    * @throws Exception Error that occurs while loading or comparison.
    */
   public void assertTable(String xmlFileRelativToClass, String tableName, IDataSetModifier... modifiers)
@@ -923,7 +919,7 @@ public class DatabaseTesterBase<MY_TYPE>
     {
       String feature = item.getKey();
       boolean value = item.getValue();
-      databaseConnection.getConfig().setFeature(feature, value);
+      databaseConnection.getConfig().setProperty(feature, value);
     }
   }
 
@@ -955,25 +951,25 @@ public class DatabaseTesterBase<MY_TYPE>
   }
 
   /**
-   * Wait until database table has at least n- new rows.
-   * @param tableName
-   * @param minNewRowCount
+   * Wait until database table has at least newMinRowCount rows.
+   * @param tableName table to wait for
+   * @param newMinRowCount number of rows which the table should have
    * @return the row count at the time the inner loop stopped.
    * @throws Exception
    */
-  public int waitForNewRows(String tableName, int minNewRowCount) throws Exception
+  public int waitForNewRows(String tableName, int newMinRowCount) throws Exception
   {
-    return waitForNewRows(tableName, minNewRowCount, 70);
+    return waitForNewRows(tableName, newMinRowCount, 70);
   }
 
   /**
-   * Wait until database table has at least n- new rows.
-   * @param tableName
-   * @param minNewRowCount
+   * Wait until database table has at least newMinRowCount rows.
+   * @param tableName table to wait for
+   * @param newMinRowCount number of rows which the table should have
    * @return the row count at the time the inner loop stopped.
    * @throws Exception
    */
-  public int waitForNewRows(String tableName, int minNewRowCount, int timeoutSeconds) throws Exception
+  public int waitForNewRows(String tableName, int newMinRowCount, int timeoutSeconds) throws Exception
   {
     long time = 0;
     long maxTime = timeoutSeconds * 1000;
@@ -981,7 +977,7 @@ public class DatabaseTesterBase<MY_TYPE>
     while (true)
     {
       int count = getRowCount(tableName);
-      if (count > minNewRowCount)
+      if (count >= newMinRowCount)
       {
         return count;
       }
@@ -1000,10 +996,10 @@ public class DatabaseTesterBase<MY_TYPE>
 
   /**
    * Get the actual row count of a table.
-   * 
+   *
    * @param tableName the table name
    * @return the count 0 or greater not null
-   * 
+   *
    * @throws Exception
    */
   public int getRowCount(String tableName) throws Exception
@@ -1149,7 +1145,7 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Set a config feature on the underlying DBUnit. See
    * {@link DatabaseConfig} for possile features.
-   * 
+   *
    * @param feature feature id
    * @param value activate deactivate feature
    * @return this
@@ -1172,7 +1168,7 @@ public class DatabaseTesterBase<MY_TYPE>
   /**
    * Set a config property on the underlying DBUnit. See
    * {@link DatabaseConfig} for possile features.
-   * 
+   *
    * @param name of the property
    * @param value activate deactivate feature
    * @return this
